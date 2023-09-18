@@ -28,7 +28,7 @@ export default function Signup() {
     if(res.return) {
       enqueueSnackbar('Registered Successfully.',{variant: 'success'});
       setTimeout(() => {
-        navigate('?view=login')
+        navigate('?view=verify')
       },2000)
     } else enqueueSnackbar('Registration Failed.', {variant: 'error'})
   }

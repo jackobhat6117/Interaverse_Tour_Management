@@ -4,7 +4,7 @@ import EmailInput from '../forms/EmailInput'
 import Button1 from '../forms/Button1'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
-import resetPassword from '../../controllers/Auth/resetPassword'
+import forgotPassword from '../../controllers/Auth/forgotPassword'
 
 
 export default function ResetPassword() {
@@ -17,10 +17,10 @@ export default function ResetPassword() {
     ev.preventDefault();
 
     setLoading(true);
-    const res = await resetPassword({email});
+    const res = await forgotPassword({email});
     setLoading(false);
     if(res.return) {
-      enqueueSnackbar('Reset link sent to your email.',{variant: 'success'});
+      enqueueSnackbar(res.msg || 'Reset link sent to your email.',{variant: 'success'});
       setTimeout(() => {
         navigate('?view=login')
       },2000)

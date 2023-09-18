@@ -10,6 +10,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  @apply bg-primary/10;
 }
 
 code {
@@ -42,10 +43,22 @@ code {
     @apply text-base font-bold;
   }
 
+
+  .pd-md {
+    @apply px-16 py-10;
+  }
+  .px-md {
+    @apply px-16;
+  }
+
 }
 
 @layer components {
   .card {
     @apply bg-secondary p-16 rounded-3xl 
+  }
+
+  .tooltip {
+    @apply bg-[#D9A513]/20 border border-l-[10px] border-l-[#D9A513] text-[#A97500] p-2;
   }
 }

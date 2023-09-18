@@ -9,7 +9,7 @@ TextInput.propTypes = {
 }
 export default function TextInput(props) {
   return (
-    <div>
+    <div className='w-full'>
       <TextField className='w-full ' label={<div className='font-bold' >
             {props.label}
         </div>}

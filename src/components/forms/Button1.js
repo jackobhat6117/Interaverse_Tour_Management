@@ -3,11 +3,11 @@ import React from 'react'
 
 
 function Button1(props) {
-  const {label,loading} = props;
+  const {label,children,loading,...buttonProps} = props;
   return (
-    <Button {...props} disabled={loading} variant='contained' className='w-full !p-2 !rounded-lg !font-bold'>
+    <Button variant='contained' type='button' {...buttonProps} disabled={loading} className={'w-full !p-2 !rounded-lg !font-bold !min-w-[80px] '+props.className}>
       {loading ? 'Please Wait...' :
-        label
+        label || children
       }
     </Button>
   )

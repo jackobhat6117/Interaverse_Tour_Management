@@ -1,7 +1,9 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import Outlet from 'react-router-dom/dist/umd/react-router-dom.development'
 import Auth from './Auth/Auth';
+import { Outlet } from 'react-router-dom';
+import ProfileSurvey from './ProfileSurvey/ProfileSurvey';
+import Header from './Header';
 
 export default function Navbar() {
   const {userData} = useSelector(state => state.user)
@@ -11,7 +13,11 @@ export default function Navbar() {
   return (
     <div>
       {loggedIn ? (
-        <Outlet />
+        <div>
+          <Header />
+          <ProfileSurvey />
+          <Outlet />
+        </div>
       ):<Auth />}
     </div>
   )

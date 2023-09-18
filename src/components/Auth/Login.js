@@ -3,17 +3,19 @@ import textlogo from '../../assets/icons/textlogo.png'
 import EmailInput from '../forms/EmailInput'
 import PasswordInput from '../forms/PasswordInput'
 import Button1 from '../forms/Button1'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import { loginReqData } from '../../data/user/Auth/loginReq'
 import login from '../../controllers/Auth/login'
+import { useDispatch } from 'react-redux'
+import { setUserData } from '../../redux/reducers/userSlice'
 
 
 export default function Login() {
   const [data,setData] = useState({...loginReqData,confirmPassword: ''});
-  const navigate = useNavigate()
   const [loading,setLoading] = useState(false);
   const {enqueueSnackbar} = useSnackbar();
+  const dispatch = useDispatch();
 
   async function handleSubmit(ev) {
     ev.preventDefault();
@@ -23,10 +25,12 @@ export default function Login() {
     setLoading(false);
     if(res.return) {
       enqueueSnackbar('You are logged in.',{variant: 'success'});
-      setTimeout(() => {
-        navigate('?view=login')
-      },2000)
-    } else enqueueSnackbar('Invalid Credentials.', {variant: 'error'})
+      dispatch(setUserData({
+        loggedIn: true,
+        accessToken: res?.data?.token,
+        user: res?.data?.account
+      }))
+    } else enqueueSnackbar(res?.msg || 'Invalid Credentials.', {variant: 'error'})
   }
 
   return (
@@ -45,7 +49,7 @@ export default function Login() {
             value={data.password}
             onChange={(ev) => setData({...data,password: ev.target.value})}
           />
-          <Button1 loading={loading} type={'submit'} label={'Login'}></Button1>
+          <Button1 loading={loading} type='submit' label={'Login'}></Button1>
           <div className='self-center text-center flex flex-col gap-3'>
             <Link to="?view=reset" className='self-center text-primary/60'>I have forgoten my password</Link>
             <div className='flex gap-2 items-center'>
