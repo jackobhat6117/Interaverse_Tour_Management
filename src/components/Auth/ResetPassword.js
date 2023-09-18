@@ -1,0 +1,52 @@
+import React, { useState } from 'react'
+import textlogo from '../../assets/icons/textlogo.png'
+import EmailInput from '../forms/EmailInput'
+import Button1 from '../forms/Button1'
+import { Link, useNavigate } from 'react-router-dom'
+import { useSnackbar } from 'notistack'
+import resetPassword from '../../controllers/Auth/resetPassword'
+
+
+export default function ResetPassword() {
+  const [email,setEmail] = useState('');
+  const navigate = useNavigate()
+  const [loading,setLoading] = useState(false);
+  const {enqueueSnackbar} = useSnackbar();
+
+  async function handleSubmit(ev) {
+    ev.preventDefault();
+
+    setLoading(true);
+    const res = await resetPassword({email});
+    setLoading(false);
+    if(res.return) {
+      enqueueSnackbar('Reset link sent to your email.',{variant: 'success'});
+      setTimeout(() => {
+        navigate('?view=login')
+      },2000)
+    } else enqueueSnackbar('Failed sending to your email!', {variant: 'error'})
+  }
+
+  return (
+    <div className='flex flex-col min-h-screen font-bold'>
+      <div className='w-full p-3 px-5'>
+        <img src={textlogo} alt='Miles' />
+      </div>
+      <form onSubmit={handleSubmit} className='w-full flex flex-col items-center justify-center flex-1'>
+        <div className='card bg-[#00000007] flex flex-col gap-5'>
+          <h2 className='pb-4'>Forgot Password</h2>
+          <EmailInput required
+            value={email}
+            onChange={(ev) => setEmail(ev.target.value)}
+          />
+          <Button1 loading={loading} type='submit' label={'Send Reset Link'}></Button1>
+          <div className='self-center text-center flex flex-col gap-3'>
+            <div className='flex gap-2 items-center'>
+              <p className='text-primary/40'>Dont have an account?</p><Link className='text-theme1 font-bold' to="?view=register">Sign up</Link>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  )
+}
