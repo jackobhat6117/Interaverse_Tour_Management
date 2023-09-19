@@ -67,6 +67,10 @@ export default function Signup() {
             value={data.email}
             onChange={(ev) => setData({...data,email: ev.target.value})}          
           />
+          {/* <PhoneNumberInput required
+            value={data.phone}
+            onChange={(ev) => setData({...data,phone: ev.target.value})}          
+          /> */}
           <PasswordInput required
             value={data.password}
             onChange={(ev) => setData({...data,password: ev.target.value})}          

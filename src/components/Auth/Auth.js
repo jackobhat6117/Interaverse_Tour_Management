@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import Signup from './Signup';
 import ResetPassword from './ResetPassword';
 import VerifyEmail from './VerifyEmail';
+import RecoverPassword from './RecoverPassword';
 
 
 export default function Auth() {
@@ -18,11 +19,14 @@ export default function Auth() {
       {view === 'register' ? 
         <Signup />
       :
+      view === 'verify' ?
+        <VerifyEmail />
+      :
       view === 'reset' ?
         <ResetPassword />
       :
-      view === 'verify' ?
-        <VerifyEmail />
+      view === 'recover' ?
+        <RecoverPassword />
       :
         <Login />
       }

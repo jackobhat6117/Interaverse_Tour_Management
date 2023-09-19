@@ -10,7 +10,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  @apply bg-primary/10;
+  @apply light-bg;
 }
 
 code {
@@ -19,9 +19,13 @@ code {
 }
 
 @layer base {
-
+  
   .test {
     @apply border border-red-500;
+  }
+  
+  .light-bg {
+    background-color: rgba(var(--primary-color), 0.05);
   }
 
   h1 {
@@ -43,6 +47,10 @@ code {
     @apply text-base font-bold;
   }
 
+
+  .btn {
+    @apply rounded-md border bg-primary/80 text-white p-2 px-4 ;
+  }
 
   .pd-md {
     @apply px-16 py-10;

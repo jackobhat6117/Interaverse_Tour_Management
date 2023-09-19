@@ -10,13 +10,14 @@ SelectInput.propTypes = {
 export default function SelectInput(props) {
   return (
     <div className='w-full'>
-      <TextField className='w-full test' label={<div className='font-bold' >
+      <TextField label={<div className='font-bold' >
             {props.label || 'Select'}
         </div>}
         // InputLabelProps={{
         //   shrink: true,
         // }}
         {...props}
+        className={'w-full !min-w-[100px] rounded-md '+props.className}
         select
       >
         {props.children}
