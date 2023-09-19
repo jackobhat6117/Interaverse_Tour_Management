@@ -96,7 +96,7 @@ export default function Header() {
           </div>
         }>
           <div className='min-w-[40vw] max-w-[800px] shadow-md border'>
-            <div className='flex justify-between items-center gap-4 p-2 px-4'>
+            <div className='flex justify-between items-center gap-4 p-2 px-4 bg-secondary/70 ' style={{backdropFilter: 'blur(8px)'}}>
               Notifications
               <small>Last updated: 2hrs ago</small>
             </div>
