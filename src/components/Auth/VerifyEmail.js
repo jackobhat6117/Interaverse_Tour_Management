@@ -63,13 +63,18 @@ export default function VerifyEmail() {
             value={data.otp}
             onChange={(ev) => setData({...data,otp: ev.target.value})}
           />
-          <Button1 loading={loading} type='submit' label={'Verify'}></Button1>
           <div className='self-start'>
             <Button1 loading={loading} type='submit' label={'Resend'} onClick={resSubmit} variant='text'></Button1>
           </div>
-          <div className='self-center text-center flex flex-col gap-3'>
-            <div className='flex gap-2 items-center'>
-              <p className='text-primary/40'>Dont have an account?</p><Link className='text-theme1 font-bold' to="?view=register">Sign up</Link>
+          <Button1 loading={loading} type='submit' label={'Verify'}></Button1>
+          <div className='self-center text-center flex flex-col gap-3 w-full'>
+            <div className='flex gap-2 justify-between flex-wrap gap-4 flex-1'>
+              <div className=''>
+                <Link className='text-theme1 font-bold' to="?view=login">Login</Link>
+              </div>
+              <div className='flex gap-2 flex-wrap'>
+                <p className='text-primary/40'>Dont have an account?</p><Link className='text-theme1 font-bold' to="?view=register">Sign up</Link>
+              </div>
             </div>
           </div>
         </div>

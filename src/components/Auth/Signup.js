@@ -11,6 +11,8 @@ import TextInput from '../forms/TextInput'
 import { signupReqData } from '../../data/user/Auth/signupReq'
 import signup from '../../controllers/Auth/signup'
 import { useSnackbar } from 'notistack'
+import { Radio, RadioGroup } from '@mui/material'
+import Checkbox from '../forms/Checkbox'
 
 
 export default function Signup() {
@@ -52,41 +54,88 @@ export default function Signup() {
           </Service>
         </div>
       </div>
-      <form onSubmit={handleSubmit} className='w-1/2 flex flex-col items-center flex-1 bg-[#CCE2FA] p-10'>
-        <div className='card flex flex-col gap-5'>
-          <h3 className='pb-4'>Enter Sign up Details</h3>
-          <TextInput required label={'First Name'} placeholder={'e.g John'}
-            value={data.firstName}
-            onChange={(ev) => setData({...data,firstName: ev.target.value})}
-          />
-          <TextInput required label={'Last Name'} placeholder={'e.g Doe'} 
-            value={data.lastName}
-            onChange={(ev) => setData({...data,lastName: ev.target.value})}          
-          />
-          <EmailInput required
-            value={data.email}
-            onChange={(ev) => setData({...data,email: ev.target.value})}          
-          />
-          {/* <PhoneNumberInput required
-            value={data.phone}
-            onChange={(ev) => setData({...data,phone: ev.target.value})}          
-          /> */}
-          <PasswordInput required
-            value={data.password}
-            onChange={(ev) => setData({...data,password: ev.target.value})}          
-          />
-          <PasswordInput label={'Confirm password'} required
-            value={data.confirmPassword}
-            onChange={(ev) => setData({...data,confirmPassword: ev.target.value})}
-          />
-          <Button1 loading={loading} type={'submit'} label={'Sign up'}></Button1>
-          <div className='self-center text-center flex flex-col gap-3'>
-            <div className='flex gap-2 items-center'>
-              <p className='text-primary/40'>Already have an account?</p><Link className='text-theme1 font-bold' to="?login">Login</Link>
+      {data.userType === '' ? (
+        <div className='flex flex-col justify-center gap-10 p-10 flex-1 bg-[#CCE2FA]'>
+          <h3>Tell us about your business</h3>
+          <RadioGroup name='userType' className='flex flex-col gap-4' value={data.userType} onChange={((ev) => setData({...data,userType: ev.target.value}))}>
+            <label className='card cursor-pointer p-4 flex gap-4'>
+                <Radio value={'Agency'} />
+                <div>
+                  <h4>Travel Agency</h4>
+                  <p>Access airline, hotel and tours inventory, make bookings and issue tickets on behalf of your customers</p>
+                </div>
+            </label>
+            <label className='card cursor-pointer p-4 flex gap-4'>
+                <Radio value={'Business'} />
+                <div>
+                  <h4>Business</h4>
+                  <p>Access airline, hotel and tours inventory, make bookings and issue tickets on behalf of your customers</p>
+                </div>
+            </label>
+            <label className='card cursor-pointer p-4 flex gap-4'>
+                <Radio value={'Customer'} />
+                <div>
+                  <h4>Freelancer</h4>
+                  <p>Access airline, hotel and tours inventory, make bookings and issue tickets on behalf of your customers</p>
+                </div>
+            </label>
+            <label className='card cursor-pointer p-4 flex gap-4'>
+                <Radio value={'Affiliate'} />
+                <div>
+                  <h4>Developer</h4>
+                  <p>Access airline, hotel and tours inventory, make bookings and issue tickets on behalf of your customers</p>
+                </div>
+            </label>
+          </RadioGroup>
+        </div>
+      ):(
+        <form onSubmit={handleSubmit} className='w-1/2 flex flex-col items-center flex-1 sm:bg-[#CCE2FA] sm:p-10'>
+          <div className='lg:px-20 px-4 sm:hidden shadow-md w-full mb-2 bg-secondary'>
+            <img src={textlogo} alt='Miles' className=' h-8 my-2' />
+          </div>
+          <div className='bg-secondary rounded-lg p-4 sm:card flex flex-col gap-5 m-2'>
+            <h3 className='pb-4 text-center sm:text-left'>Enter Sign up Details</h3>
+            <TextInput required label={'First Name'} placeholder={'e.g John'}
+              value={data.firstName}
+              onChange={(ev) => setData({...data,firstName: ev.target.value})}
+            />
+            <TextInput required label={'Last Name'} placeholder={'e.g Doe'} 
+              value={data.lastName}
+              onChange={(ev) => setData({...data,lastName: ev.target.value})}          
+            />
+            <EmailInput required
+              value={data.email}
+              onChange={(ev) => setData({...data,email: ev.target.value})}          
+            />
+            {/* <PhoneNumberInput required
+              value={data.phone}
+              onChange={(ev) => setData({...data,phone: ev.target.value})}          
+            /> */}
+            <PasswordInput required
+              value={data.password}
+              onChange={(ev) => setData({...data,password: ev.target.value})}          
+            />
+            <PasswordInput label={'Confirm password'} required
+              value={data.confirmPassword}
+              onChange={(ev) => setData({...data,confirmPassword: ev.target.value})}
+            />
+            <div className='flex flex-col gap-2 text-primary/70'>
+              <Checkbox labelClassName='bg-secondary'>
+                I’d like to receive occasionaly updates
+              </Checkbox>
+              <Checkbox labelClassName='bg-secondary'>
+                I’ve read and agree with Miles Terms & Privacy Policy
+              </Checkbox>
+            </div>
+            <Button1 loading={loading} type={'submit'} label={'Sign up'}></Button1>
+            <div className='self-center text-center flex flex-col gap-3'>
+              <div className='flex gap-2 items-center'>
+                <p className='text-primary/40'>Already have an account?</p><Link className='text-theme1 font-bold' to="?login">Login</Link>
+              </div>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+      )}
     </div>
   )
 }

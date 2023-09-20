@@ -22,7 +22,7 @@ export default function ResetPassword() {
     if(res.return) {
       enqueueSnackbar(res.msg || 'Reset link sent to your email.',{variant: 'success'});
       setTimeout(() => {
-        navigate('?view=recover')
+        navigate(`?view=recover&email=${email}`)
       },2000)
     } else enqueueSnackbar('Failed sending to your email!', {variant: 'error'})
   }

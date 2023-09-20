@@ -8,6 +8,7 @@ import TextInput from '../forms/TextInput'
 import PasswordInput from '../forms/PasswordInput'
 import { useDispatch } from 'react-redux'
 import { setUserData } from '../../redux/reducers/userSlice'
+import resendOTP from '../../controllers/Auth/resendOTP'
 
 
 export default function RecoverPassword() {
@@ -16,6 +17,9 @@ export default function RecoverPassword() {
   const [loading,setLoading] = useState(false);
   const {enqueueSnackbar} = useSnackbar();
   const dispatch = useDispatch();
+  const searchParams = new URLSearchParams(window.location.search);
+  const email = searchParams.get('email');
+  console.log('emailL: ',email)
 
   async function handleSubmit(ev) {
     ev.preventDefault();
@@ -34,6 +38,21 @@ export default function RecoverPassword() {
     } else enqueueSnackbar('Failed recovering password!', {variant: 'error'})
   }
 
+  async function handleResendOTP() {
+    setLoading(true);
+    const res = await resendOTP({email});
+    setLoading(false);
+    if(res.return) {
+      enqueueSnackbar(res.msg || 'Password Recovered.',{variant: 'success'});
+      let {token: accessToken,account: user} = res.data;
+      dispatch(setUserData({accessToken,user,loggedIn: true}))
+
+      setTimeout(() => {
+        navigate('?view=login')
+      },2000)
+    } else enqueueSnackbar('Failed recovering password!', {variant: 'error'})
+  } 
+
   return (
     <div className='flex flex-col min-h-screen font-bold'>
       <div className='w-full p-3 px-5'>
@@ -50,6 +69,11 @@ export default function RecoverPassword() {
             value={data.password}
             onChange={(ev) => setData({...data,password: ev.target.value})}
           />
+          {email ? 
+            <div className='self-start'>
+              <Button1 loading={loading} variant='text' className='self-end' label='Resend OTP' onClick={handleResendOTP} />
+            </div>
+          :null}
           <Button1 loading={loading} type='submit' label={'Recover Password'}></Button1>
           <div className='self-center text-center flex flex-col gap-3 w-full'>
             <div className='flex gap-2 justify-between flex-wrap gap-4 flex-1'>
