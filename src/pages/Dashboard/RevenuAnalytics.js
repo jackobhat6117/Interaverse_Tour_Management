@@ -3,7 +3,9 @@ import { Button, MenuItem } from '@mui/material';
 import { BarElement, Chart, CategoryScale, Legend, LineElement, LinearScale, PointElement, Title, Tooltip, ArcElement } from 'chart.js';
 import { Bar, Doughnut, Line } from 'react-chartjs-2'
 import SelectInput from '../../components/forms/SelectInput';
-import { CalendarMonth, WbIncandescent } from '@mui/icons-material';
+import { WbIncandescent } from '@mui/icons-material';
+import Button1 from '../../components/forms/Button1';
+import CalendarInput1 from '../../components/forms/CalendarInput1';
 
 Chart.register(
   CategoryScale,
@@ -111,22 +113,19 @@ export default function RevenuAnalytics() {
 
 
   return (
-    <div>
+    <div className='flex flex-col gap-4'>
       <div className='flex flex-wrap py-4 items-center justify-between gap-4'>
         <h5>Revenu Analytics</h5>
         <div className='flex gap-2'>
-          <Button variant='text font-bold'>Export</Button>
-          <div className='bg-primary/10 p-2 rounded-md flex flex-wrap items-center gap-2'>
-            <SelectInput size='small' label={''} className='bg-secondary'>
-              <MenuItem>Weekly</MenuItem>
-              <MenuItem>Monthly</MenuItem>
-              <MenuItem>Yearly</MenuItem>
-              <MenuItem>All</MenuItem>
+          <Button1 variant='text'>Export</Button1>
+          <div className='bg-primary/10 p-2 rounded-md flex flex-wrap sm:flex-nowrap items-center gap-2'>
+            <SelectInput size='small' label={''} defaultValue='Weekly' className='bg-secondary'>
+              <MenuItem value='Weekly'>Weekly</MenuItem>
+              <MenuItem value='Monthly'>Monthly</MenuItem>
+              <MenuItem value='Yearly'>Yearly</MenuItem>
+              <MenuItem value='All'>All</MenuItem>
             </SelectInput>
-            <div>
-              <span className='whitespace-nowrap'>1st Jul - 31st Jul </span>
-              <CalendarMonth className='text-xs' size='small' />
-            </div>
+            <CalendarInput1 />
           </div>
         </div>
       </div>

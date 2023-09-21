@@ -3,7 +3,7 @@ import textlogo from '../../assets/icons/textlogo.png'
 import EmailInput from '../forms/EmailInput'
 import PasswordInput from '../forms/PasswordInput'
 import Button1 from '../forms/Button1'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import flightCheckedIcon from '../../assets/icons/Checkmark.png';
 import hotelCheckedIcon from '../../assets/icons/Layer 2.png';
 import packageCheckedIcon from '../../assets/icons/Checkmark (1).png';
@@ -20,6 +20,9 @@ export default function Signup() {
   const navigate = useNavigate()
   const [loading,setLoading] = useState(false);
   const {enqueueSnackbar} = useSnackbar();
+  const location = useLocation();
+  const searchParam = new URLSearchParams(location.search)
+  let type = searchParam.get('type')
 
   async function handleSubmit(ev) {
     ev.preventDefault();
@@ -30,7 +33,7 @@ export default function Signup() {
     if(res.return) {
       enqueueSnackbar('Registered Successfully.',{variant: 'success'});
       setTimeout(() => {
-        navigate('?view=verify')
+        navigate(`?view=verify&email=${data.email}`)
       },2000)
     } else enqueueSnackbar('Registration Failed.', {variant: 'error'})
   }
@@ -54,38 +57,39 @@ export default function Signup() {
           </Service>
         </div>
       </div>
-      {data.userType === '' ? (
+      {!type ? (
         <div className='flex flex-col justify-center gap-10 p-10 flex-1 bg-[#CCE2FA]'>
           <h3>Tell us about your business</h3>
           <RadioGroup name='userType' className='flex flex-col gap-4' value={data.userType} onChange={((ev) => setData({...data,userType: ev.target.value}))}>
             <label className='card cursor-pointer p-4 flex gap-4'>
                 <Radio value={'Agency'} />
-                <div>
+                <div className='flex flex-col gap-4'>
                   <h4>Travel Agency</h4>
                   <p>Access airline, hotel and tours inventory, make bookings and issue tickets on behalf of your customers</p>
                 </div>
             </label>
             <label className='card cursor-pointer p-4 flex gap-4'>
                 <Radio value={'Business'} />
-                <div>
+                <div className='flex flex-col gap-4'>
                   <h4>Business</h4>
                   <p>Access airline, hotel and tours inventory, make bookings and issue tickets on behalf of your customers</p>
                 </div>
             </label>
             <label className='card cursor-pointer p-4 flex gap-4'>
                 <Radio value={'Customer'} />
-                <div>
+                <div className='flex flex-col gap-4'>
                   <h4>Freelancer</h4>
                   <p>Access airline, hotel and tours inventory, make bookings and issue tickets on behalf of your customers</p>
                 </div>
             </label>
             <label className='card cursor-pointer p-4 flex gap-4'>
                 <Radio value={'Affiliate'} />
-                <div>
+                <div className='flex flex-col gap-4'>
                   <h4>Developer</h4>
                   <p>Access airline, hotel and tours inventory, make bookings and issue tickets on behalf of your customers</p>
                 </div>
             </label>
+            <Link to={`?view=register&type=${data.userType}`}><Button1 size='large' className='p-3' >Signup</Button1></Link>
           </RadioGroup>
         </div>
       ):(

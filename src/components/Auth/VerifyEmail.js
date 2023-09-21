@@ -12,7 +12,9 @@ import resendVerifyEmail from '../../controllers/Auth/resendVerifyEmail'
 
 
 export default function VerifyEmail() {
-  const [data,setData] = useState({otp: '',email: ''});
+  const searchParam = new URLSearchParams(window?.location?.search);
+  const email = searchParam.get('email')
+  const [data,setData] = useState({otp: '',email: email || ''});
   const navigate = useNavigate()
   const [loading,setLoading] = useState(false);
   const {enqueueSnackbar} = useSnackbar();
@@ -53,8 +55,12 @@ export default function VerifyEmail() {
         <img src={textlogo} alt='Miles' />
       </div>
       <form onSubmit={handleSubmit} className='w-full flex flex-col items-center justify-center flex-1'>
-        <div className='card bg-[#00000007] flex flex-col gap-5'>
-          <h2 className='pb-4'>Verify Email</h2>
+        <div className='card bg-[#00000007] flex flex-col gap-5 max-w-[600px]'>
+          <h3 className='pb-4 text-center'>Verify your email address</h3>
+          <p className='text-center font-semibold text-primary/70 pb-4'>
+            Please verify your email with the link we sent to chiemenaokafor.co@gmail.com The link we send is only valid for 24 hours, click the button below to get a new link.
+          </p>
+
           <EmailInput required
             value={data.email}
             onChange={(ev) => setData({...data,email: ev.target.value})}
@@ -63,7 +69,7 @@ export default function VerifyEmail() {
             value={data.otp}
             onChange={(ev) => setData({...data,otp: ev.target.value})}
           />
-          <div className='self-start'>
+          <div className='self-start -my-3'>
             <Button1 loading={loading} type='submit' label={'Resend'} onClick={resSubmit} variant='text'></Button1>
           </div>
           <Button1 loading={loading} type='submit' label={'Verify'}></Button1>

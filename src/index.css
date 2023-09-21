@@ -59,6 +59,16 @@ code {
     @apply px-16;
   }
 
+
+  .error {
+    @apply bg-red-300 px-2 py-1 rounded-md text-red-800 font-bold;
+  }
+  .success {
+    @apply bg-green-300 px-2 py-1 rounded-md text-green-800 font-bold;
+  }
+  .warn {
+    @apply bg-orange-300 px-2 py-1 rounded-md text-orange-800 font-bold;
+  }
 }
 
 @layer components {

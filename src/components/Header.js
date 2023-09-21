@@ -68,8 +68,10 @@ const colors = [
 export default function Header() {
   const dispatch = useDispatch();
   const notifications = [
-    {date: '9/17/2023',title: 'Complete the quick start tutorial',description: 'This tutorial shows you how easy and fast it is to start selling flights with Miles'},
-    {date: '9/10/2023',title: 'View our guides',description: 'Visit our guide section to learn more about the Miles API, and start building your integration'}
+    {date: '9/19/2023',title: 'Complete the quick start tutorial',description: 'This tutorial shows you how easy and fast it is to start selling flights with Miles'},
+    {date: '9/10/2023',title: 'View our guides',description: 'Visit our guide section to learn more about the Miles API, and start building your integration'},
+    {date: '9/10/2023',title: 'View our guides',description: 'Visit our guide section to learn more about the Miles API, and start building your integration'},
+    {date: '9/10/2023',title: 'View our guides',description: 'Visit our guide section to learn more about the Miles API, and start building your integration'},
   ]
 
   function handleLogout() {
@@ -100,7 +102,7 @@ export default function Header() {
               Notifications
               <small>Last updated: 2hrs ago</small>
             </div>
-            <div className='p-4 bg-secondary flex flex-col gap-2 '>
+            <div className='p-4 bg-secondary flex flex-col gap-2 overflow-y-auto max-h-[80vh]'>
               {notifications.map((obj,i) => {
                 const currentDate = moment();
                 const objDate = moment(obj.date);
