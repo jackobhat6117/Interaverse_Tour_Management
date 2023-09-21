@@ -13,7 +13,7 @@ export default function Navbar() {
 
   return (
     <div>
-      {!loggedIn ? (
+      {loggedIn ? (
         <div>
           <Header />
           <div className='w-full px-md shadow-sm bg-secondary border-b'>
