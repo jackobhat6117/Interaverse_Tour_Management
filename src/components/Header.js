@@ -2,7 +2,7 @@ import React from 'react'
 import logo from '../assets/icons/textlogo.png';
 import SearchInput from './forms/SearchInput';
 import { FormControlLabel, Switch, styled } from '@mui/material';
-import { Close, Notifications, Person } from '@mui/icons-material';
+import { Close, Menu, Notifications, Person } from '@mui/icons-material';
 import CustomMenu from './utils/CustomMenu';
 import moment from 'moment/moment';
 import Button1 from './forms/Button1';
@@ -78,7 +78,8 @@ export default function Header() {
     dispatch(logout())
   }
   return (
-    <div className='flex items-center gap-10 px-md py-2'>
+    <div>
+      <div className='hidden md:flex items-center gap-10 px-md py-2'>
       <div>
         <img src={logo} alt='Miles' />
       </div>
@@ -136,6 +137,15 @@ export default function Header() {
             <Button1 onClick={handleLogout} variant={'text'} className='text-primary'>Logout</Button1>
           </div>
         </CustomMenu>
+      </div>
+      </div>
+
+      {/* Mobile View */}
+      <div className='bg-black'>
+        <div className='flex md:hidden justify-between items-center bg-opacity-40 gap-6 bg-theme1 text-white py-4 px-md'>
+          <h4>Miles</h4>
+          <Menu />
+        </div>
       </div>
     </div>
   )

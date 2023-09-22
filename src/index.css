@@ -53,10 +53,10 @@ code {
   }
 
   .pd-md {
-    @apply px-16 py-10;
+    @apply px-6 sm:px-16 py-10;
   }
   .px-md {
-    @apply px-16;
+    @apply px-6 sm:px-16;
   }
 
 

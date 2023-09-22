@@ -35,7 +35,7 @@ export default function RecoverPassword() {
       setTimeout(() => {
         navigate('?view=login')
       },2000)
-    } else enqueueSnackbar('Failed recovering password!', {variant: 'error'})
+    } else enqueueSnackbar(res?.msg || 'Failed recovering password!', {variant: 'error'})
   }
 
   async function handleResendOTP() {
@@ -43,14 +43,8 @@ export default function RecoverPassword() {
     const res = await resendOTP({email});
     setLoading(false);
     if(res.return) {
-      enqueueSnackbar(res.msg || 'Password Recovered.',{variant: 'success'});
-      let {token: accessToken,account: user} = res.data;
-      dispatch(setUserData({accessToken,user,loggedIn: true}))
-
-      setTimeout(() => {
-        navigate('?view=login')
-      },2000)
-    } else enqueueSnackbar('Failed recovering password!', {variant: 'error'})
+      enqueueSnackbar(res.msg || 'OTP has been resent.',{variant: 'success'});
+    } else enqueueSnackbar('Failed resending OTP!', {variant: 'error'})
   } 
 
   return (

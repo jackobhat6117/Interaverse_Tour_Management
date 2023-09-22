@@ -50,10 +50,10 @@ export default function Signup() {
             Search, book and issue tickets - without the need for accreditation or industry expertise.
           </Service>
           <Service title={'Get instant connection to top flight GDS'} icon={hotelCheckedIcon}>
-            Search, book and issue tickets - without the need for accreditation or industry expertise.
+            Earn commissions by promoting accommodations at more than 1 million properties globally.
           </Service>
           <Service title={'Get instant connection to top flight GDS'} icon={packageCheckedIcon}>
-            Search, book and issue tickets - without the need for accreditation or industry expertise.
+            Give your customers the flexibility they want. Offer them tours, events and activities from around the globe.
           </Service>
         </div>
       </div>

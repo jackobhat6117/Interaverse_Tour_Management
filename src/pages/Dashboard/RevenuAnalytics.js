@@ -114,11 +114,11 @@ export default function RevenuAnalytics() {
 
   return (
     <div className='flex flex-col gap-4'>
-      <div className='flex flex-wrap py-4 items-center justify-between gap-4'>
+      <div className='flex flex-wrap py-4 items-center justify-between gap-4 '>
         <h5>Revenu Analytics</h5>
-        <div className='flex gap-2'>
-          <Button1 variant='text'>Export</Button1>
-          <div className='bg-primary/10 p-2 rounded-md flex flex-wrap sm:flex-nowrap items-center gap-2'>
+        <div className='flex gap-2 flex-wrap'>
+          <Button1 variant='text' className='flex-1'>Export</Button1>
+          <div className='bg-primary/10 p-2 rounded-md flex-1  flex items-center gap-2'>
             <SelectInput size='small' label={''} defaultValue='Weekly' className='bg-secondary'>
               <MenuItem value='Weekly'>Weekly</MenuItem>
               <MenuItem value='Monthly'>Monthly</MenuItem>
@@ -151,35 +151,37 @@ export default function RevenuAnalytics() {
           <span>10,234,900</span>
         </div>
       </div>
-      <div className='flex flex-wrap items-start gap-4 min-w-[25%]'>
-        <div className='light-bg flex-1 p-4 max-w-full'>
-          <Bar options={options} data={data} className='md:min-h-[60vh] max-h-[80vh]' />
+      <div className='flex flex-col sm:flex-row flex-wrap lg:flex-nowrap sm:items-start gap-4 min-w-[25%] w-full '>
+        <div className='light-bg flex-1 p-4 max-w-full lg:w-[65%]'>
+          <Bar options={options} data={data} className='md:min-h-[60vh] max-h-[80vh] w-full' />
         </div>
-        <div className='light-bg p-4 flex flex-col gap-3'>
-          <b>Packages</b>
-          <div className='flex gap-6 justify-between'>
-            <div className='flex items-center gap-1'>
-              <span className={`w-3 h-3 inline-block rounded-full ${legendColors['flightsbg']} `}></span>
-              Flight
+        <div className='light-bg p-4 flex md:flex-col flex-1 md:flex-none justify-between flex-wrap gap-6 '>
+          <div className='flex flex-col w-full gap-3'>
+            <b>Packages</b>
+            <div className='flex gap-6 justify-between'>
+              <div className='flex items-center gap-1'>
+                <span className={`w-3 h-3 inline-block rounded-full ${legendColors['flightsbg']} `}></span>
+                Flight
+              </div>
+              <span>2,750,000</span>
             </div>
-            <span>2,750,000</span>
-          </div>
-          <div className='flex gap-6 justify-between'>
-            <div className='flex items-center gap-1'>
-              <span className={`w-3 h-3 inline-block rounded-full ${legendColors['staysbg']} `}></span>
-              Stays
+            <div className='flex gap-6 justify-between'>
+              <div className='flex items-center gap-1'>
+                <span className={`w-3 h-3 inline-block rounded-full ${legendColors['staysbg']} `}></span>
+                Stays
+              </div>
+              <span>2,750,000</span>
             </div>
-            <span>2,750,000</span>
-          </div>
-          <div className='flex gap-6 justify-between'>
-            <div className='flex items-center gap-1'>
-              <span className={`w-3 h-3 inline-block rounded-full ${legendColors['toursbg']} `}></span>
-              Tours
+            <div className='flex gap-6 justify-between'>
+              <div className='flex items-center gap-1'>
+                <span className={`w-3 h-3 inline-block rounded-full ${legendColors['toursbg']} `}></span>
+                Tours
+              </div>
+              <span>2,750,000</span>
             </div>
-            <span>2,750,000</span>
           </div>
-          <div>
-            <Doughnut options={
+          <div className='flex justify-center w-full'>
+            <Doughnut className='w-full' options={
               {
                 cutoutPercentage: 70, // Adjust the cutout percentage as needed
                 tooltips: {
@@ -200,7 +202,31 @@ export default function RevenuAnalytics() {
                     },
                   },
                 },
-              }} data={dohnutData} />
+              }} data={
+                {
+                  // labels: datas.map((d) => moment(d.date).format('MM DD')),
+                  labels: Object.keys(obj),
+                  
+                  datasets: [
+                    {
+                      label: 'Total ',
+                      data: Object.values(obj).map(datas => datas.length),
+                      // data: obj.map((d) => d.editedtotalPrice),
+                      // borderColor: theme?.palette?.primary?.main || '#1362FC',
+                      barThickness: 4,
+                      borderWidth: 2,
+                      pointRadius: 1,
+                      tension: 0.4,
+                      backgroundColor: [
+                        legendColors.flights,
+                        legendColors.stays,
+                        legendColors.tours
+                      ]
+                      // backgroundColor: theme?.palette?.primaryLight?.main || '#1362FCaa',
+                    }
+                  ]
+                }
+              } />
           </div>
         </div>
       </div>
