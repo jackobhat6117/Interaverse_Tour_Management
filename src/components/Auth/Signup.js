@@ -62,7 +62,7 @@ export default function Signup() {
           <h3>Tell us about your business</h3>
           <RadioGroup name='userType' className='flex flex-col gap-4' value={data.userType} onChange={((ev) => setData({...data,userType: ev.target.value}))}>
             <label className='card cursor-pointer p-4 flex gap-4'>
-                <Radio value={'Agency'} />
+                <Radio value={'Agent'} />
                 <div className='flex flex-col gap-4'>
                   <h4>Travel Agency</h4>
                   <p>Access airline, hotel and tours inventory, make bookings and issue tickets on behalf of your customers</p>
