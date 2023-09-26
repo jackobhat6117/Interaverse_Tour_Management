@@ -33,7 +33,7 @@ export default function ResetPassword() {
         <img src={textlogo} alt='Miles' />
       </div>
       <form onSubmit={handleSubmit} className='w-full flex flex-col items-center justify-center flex-1'>
-        <div className='card bg-[#00000007] flex flex-col gap-5'>
+        <div className='p-6 sm:card sm:bg-[#00000007] flex flex-col gap-5'>
           <h2 className='pb-4'>Forgot Password</h2>
           <EmailInput required
             value={email}

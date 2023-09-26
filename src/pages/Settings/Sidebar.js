@@ -21,8 +21,8 @@ export default function SettingSideBar() {
         <div className='hidden sm:flex flex-wrap gap-2 overflow-x-auto w-full'>
           <Link to="/settings/"> <Button className={`${!page ? 'btn-theme' : 'btn-theme-light'} `}><SettingsOutlined className={`${!page ? 'text-secondary/80' : ''} `} fontSize='small' /> Preference</Button></Link>
           <Link to="/settings/team"> <Button className={`${page === 'team' ? 'btn-theme':'btn-theme-light'}`}><GroupsOutlined className={`${page === 'team' ? 'text-secondary/80' : ''} `} fontSize='small' /> Team Members</Button></Link>
-          <Link to="/settings/#"> <Button className={`${page === 'contact' ? 'btn-theme':'btn-theme-light'}`}><EmailOutlined className={`${page === 'contact' ? 'text-secondary/80' : ''} `} fontSize='small' /> Contact Emails</Button></Link>
-          <Link to="/settings/#"> <Button className={`${page === 'security' ? 'btn-theme':'btn-theme-light'}`}><LockOutlined className={`${page === 'security' ? 'text-secondary/80' : ''} `} fontSize='small' /> Security</Button></Link>
+          <Link to="/settings/contact"> <Button className={`${page === 'contact' ? 'btn-theme':'btn-theme-light'}`}><EmailOutlined className={`${page === 'contact' ? 'text-secondary/80' : ''} `} fontSize='small' /> Contact Emails</Button></Link>
+          <Link to="/settings/security"> <Button className={`${page === 'security' ? 'btn-theme':'btn-theme-light'}`}><LockOutlined className={`${page === 'security' ? 'text-secondary/80' : ''} `} fontSize='small' /> Security</Button></Link>
           <Link to="/settings/#"> <Button className={`${page === 'balance' ? 'btn-theme':'btn-theme-light'}`}><LayersOutlined className={`${page === 'balance' ? 'text-secondary/80' : ''} `} fontSize='small' /> Balance</Button></Link>
           <Link to="/settings/#"> <Button className={`${page === 'developer' ? 'btn-theme':'btn-theme-light'}`}><Code className={`${page === 'developer' ? 'text-secondary/80' : ''} `} fontSize='small' /> Developers</Button></Link>
         </div>

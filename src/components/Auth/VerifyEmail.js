@@ -58,7 +58,7 @@ export default function VerifyEmail() {
         <div className='card bg-[#00000007] flex flex-col gap-5 max-w-[600px]'>
           <h3 className='pb-4 text-center'>Verify your email address</h3>
           <p className='text-center font-semibold text-primary/70 pb-4'>
-            Please verify your email with the link we sent to chiemenaokafor.co@gmail.com The link we send is only valid for 24 hours, click the button below to get a new link.
+            Please verify your email with the link we sent to {email} The link we send is only valid for 24 hours, click the RESEND button below to get a new link.
           </p>
 
           <EmailInput required

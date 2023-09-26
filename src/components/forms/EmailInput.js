@@ -18,10 +18,10 @@ export default function EmailInput(props) {
     return emailPattern.test(value);
   };
   return (
-    <div>
+    <div className='w-full'>
       <TextField type='email' className='w-full ' 
         error={error}
-        pattern
+        // pattern
         // helperText={'Invalid Email Pattern'}
         label={<div className='font-bold inline' >
             Your email Address

@@ -29,22 +29,22 @@ code {
   }
 
   h1 {
-    @apply text-6xl font-bold;
+    @apply text-5xl sm:text-6xl font-bold;
   }
   h2 {
-    @apply text-5xl font-bold;
+    @apply text-4xl sm:text-5xl font-bold;
   }
   h3 {
-    @apply text-4xl font-bold;
+    @apply text-2xl sm:text-4xl font-bold;
   }
   h4 {
-    @apply text-2xl font-bold;
+    @apply text-xl sm:text-2xl font-bold;
   }
   h5 {
-    @apply text-xl font-bold;
+    @apply text-base sm:text-xl font-bold;
   }
   h6 {
-    @apply text-base font-bold;
+    @apply text-sm sm:text-base font-bold;
   }
 
 

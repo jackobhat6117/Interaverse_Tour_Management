@@ -10,6 +10,8 @@ import Settings from './pages/Settings/Settings';
 import AuthValidate from './components/Auth/AuthValidate';
 import SettingSideBar from './pages/Settings/Sidebar';
 import TeamMembers from './pages/Settings/TeamMembers';
+import ContactEmails from './pages/Settings/ContactEmails';
+import SecuritySettings from './pages/Settings/Security';
 // import 'dotenv/config'
 
 
@@ -63,6 +65,8 @@ function App() {
                 <Route path='settings' element={<SettingSideBar />}>
                   <Route index element={<Settings />} />
                   <Route path='team' element={<TeamMembers />} />
+                  <Route path='contact' element={<ContactEmails />} />
+                  <Route path='security' element={<SecuritySettings />} />
                 </Route>
               </Route>
             </Routes>
