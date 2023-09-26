@@ -24,7 +24,7 @@ export default function ResetPassword() {
       setTimeout(() => {
         navigate(`?view=recover&email=${email}`)
       },2000)
-    } else enqueueSnackbar('Failed sending to your email!', {variant: 'error'})
+    } else enqueueSnackbar(res.msg || 'Failed sending to your email!', {variant: 'error'})
   }
 
   return (

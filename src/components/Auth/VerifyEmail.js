@@ -45,7 +45,7 @@ export default function VerifyEmail() {
     if(res.return) {
       enqueueSnackbar(res.msg || 'Verification code sent.',{variant: 'success'});
       setData({...data,otp: ''})
-    } else enqueueSnackbar(res.msg, {variant: 'error'})
+    } else enqueueSnackbar(res.msg || 'Something went wrong!', {variant: 'error'})
 
   }
 

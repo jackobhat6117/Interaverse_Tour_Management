@@ -8,7 +8,7 @@ export default async function login(data) {
     console.log('res: ',res)
     if(res.data && res?.data?.data) {
       result = {return: 1,msg: 'Welcome',data: res.data?.data}
-    } else result['msg'] = res?.data?.error
+    } else result['msg'] = res?.data?.error || result['msg']
   })
   .catch((err) => {
     console.log('Network Error!')

@@ -59,6 +59,14 @@ code {
     @apply px-6 sm:px-16;
   }
 
+  
+  .btn-theme {
+    @apply !bg-theme1 !text-secondary !capitalize flex gap-2 p-2 !px-4;
+  }
+  .btn-theme-light {
+    @apply !bg-secondary p-2 !px-4 flex gap-2 hover:shadow !capitalize;
+  }
+
 
   .error {
     @apply bg-red-300 px-2 py-1 rounded-md text-red-800 font-bold;
@@ -69,6 +77,11 @@ code {
   .warn {
     @apply bg-orange-300 px-2 py-1 rounded-md text-orange-800 font-bold;
   }
+
+  .vector-bg {
+    background-image: url(./assets/images/bg-vector.png);
+    background-size: cover;
+  }
 }
 
 @layer components {
@@ -77,6 +90,6 @@ code {
   }
 
   .tooltip {
-    @apply bg-[#D9A513]/20 border border-l-[10px] border-l-[#D9A513] text-[#A97500] p-2;
+    @apply bg-[#D9A513]/20 border-l border-l-[10px] border-l-[#D9A513] text-[#A97500] p-2;
   }
 }

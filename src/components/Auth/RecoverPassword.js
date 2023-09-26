@@ -44,7 +44,7 @@ export default function RecoverPassword() {
     setLoading(false);
     if(res.return) {
       enqueueSnackbar(res.msg || 'OTP has been resent.',{variant: 'success'});
-    } else enqueueSnackbar('Failed resending OTP!', {variant: 'error'})
+    } else enqueueSnackbar(res.msg || 'Failed resending OTP!', {variant: 'error'})
   } 
 
   return (

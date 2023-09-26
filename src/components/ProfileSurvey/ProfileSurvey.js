@@ -21,7 +21,9 @@ export default function ProfileSurvey() {
   }
 
   const stepNext = () => {
-    setStep(step => step < steps.length-1 ? step+1 : step)
+    if(step < steps.length-1 )
+      setStep(step => step+1)
+    else setOpen(false);
   }
 
   const stepBack = () => {
@@ -33,13 +35,13 @@ export default function ProfileSurvey() {
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth={'sm'} className='backdrop-blur-sm'>
         <div className='pd-md'>
           <CurComp component={steps[step]} next={stepNext} back={stepBack} />
-          <div className='flex justify-between flex-wrap items-center self-stretch gap-4 py-4'>
+          <div className='flex justify-between items-start self-stretch gap-4 py-4'>
             <div>
               <Button1 onClick={stepNext} >Next</Button1>
             </div>
-            <div className='flex gap-6 items-center'>
-              <Button1 className='whitespace-nowrap self-center test' variant={'text'} onClick={stepBack}>Go back</Button1>
-              <Button1 variant={'outlined'} onClick={stepNext}>Skip</Button1>
+            <div className='flex gap-6 flex-wrap-reverse items-start flex-1 justify-end'>
+              <Button1 className='whitespace-nowrap !w-auto ' variant={'text'} onClick={stepBack}>Go back</Button1>
+              <Button1 variant={'outlined'} className='!w-auto' onClick={stepNext}>Skip</Button1>
             </div>
           </div>
         </div>

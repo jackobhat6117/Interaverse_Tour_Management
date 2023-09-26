@@ -6,6 +6,10 @@ import { store } from './redux/store';
 import { Provider } from 'react-redux';
 import { SnackbarProvider } from 'notistack';
 import { ThemeProvider, createTheme } from '@mui/material';
+import Settings from './pages/Settings/Settings';
+import AuthValidate from './components/Auth/AuthValidate';
+import SettingSideBar from './pages/Settings/Sidebar';
+import TeamMembers from './pages/Settings/TeamMembers';
 // import 'dotenv/config'
 
 
@@ -52,8 +56,14 @@ function App() {
         <CustomThemeProvider>
           <SnackbarProvider maxSnack={3} anchorOrigin={{vertical: 'top',horizontal: 'right'}} >
             <Routes>
-              <Route path='/' element={<Navbar />}>
-                <Route index element={<Dashboard />} />
+              <Route path='/' element={<AuthValidate />}>
+                <Route path='/' element={<Navbar />}>
+                  <Route index element={<Dashboard />} />
+                </Route>
+                <Route path='settings' element={<SettingSideBar />}>
+                  <Route index element={<Settings />} />
+                  <Route path='team' element={<TeamMembers />} />
+                </Route>
               </Route>
             </Routes>
           </SnackbarProvider>

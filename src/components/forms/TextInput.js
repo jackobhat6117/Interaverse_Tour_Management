@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 
 TextInput.propTypes = {
   label: PropTypes.string,
-  placeHolder: PropTypes.string,
+  placeholder: PropTypes.string,
 }
 export default function TextInput(props) {
   return (

@@ -7,7 +7,7 @@ export default async function verifyEmail(data) {
   .then((res) => {
     if(res?.data && !res?.data?.error) {
       result = {return: 1,msg: res?.data?.message || 'Successfull',data: res.data}
-    } else result['msg'] = res?.data?.error
+    } else result['msg'] = res?.data?.error || result['msg']
   })
   .catch((err) => {
     console.log('Network Error!')

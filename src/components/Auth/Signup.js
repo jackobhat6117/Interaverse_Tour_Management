@@ -16,13 +16,13 @@ import Checkbox from '../forms/Checkbox'
 
 
 export default function Signup() {
-  const [data,setData] = useState({...signupReqData,confirmPassword: ''});
-  const navigate = useNavigate()
-  const [loading,setLoading] = useState(false);
-  const {enqueueSnackbar} = useSnackbar();
   const location = useLocation();
   const searchParam = new URLSearchParams(location.search)
   let type = searchParam.get('type')
+  const [data,setData] = useState({...signupReqData,userType: type || "",confirmPassword: ''});
+  const navigate = useNavigate()
+  const [loading,setLoading] = useState(false);
+  const {enqueueSnackbar} = useSnackbar();
 
   async function handleSubmit(ev) {
     ev.preventDefault();
@@ -35,7 +35,7 @@ export default function Signup() {
       setTimeout(() => {
         navigate(`?view=verify&email=${data.email}`)
       },2000)
-    } else enqueueSnackbar('Registration Failed.', {variant: 'error'})
+    } else enqueueSnackbar(res.msg || 'Registration Failed.', {variant: 'error'})
   }
 
   return (
@@ -49,10 +49,10 @@ export default function Signup() {
           <Service title={'Get instant connection to top flight GDS'} icon={flightCheckedIcon}>
             Search, book and issue tickets - without the need for accreditation or industry expertise.
           </Service>
-          <Service title={'Get instant connection to top flight GDS'} icon={hotelCheckedIcon}>
+          <Service title={'Sell stays at over 1m hotels globally'} icon={hotelCheckedIcon}>
             Earn commissions by promoting accommodations at more than 1 million properties globally.
           </Service>
-          <Service title={'Get instant connection to top flight GDS'} icon={packageCheckedIcon}>
+          <Service title={'Upsell your customers with tour packages'} icon={packageCheckedIcon}>
             Give your customers the flexibility they want. Offer them tours, events and activities from around the globe.
           </Service>
         </div>

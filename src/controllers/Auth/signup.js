@@ -5,9 +5,9 @@ export default async function signup(data) {
 
   await fetchServer({method: 'POST',url: '/main/v1/account',data})
   .then((res) => {
-    if(res?.data) {
+    if(res?.data && !res?.data?.error) {
       result = {return: 1,msg: 'Successfull',data: res.data}
-    } else result['msg'] = res.error.message
+    } else result['msg'] = res?.data?.error
   })
   .catch((err) => {
     console.log('Network Error!')
