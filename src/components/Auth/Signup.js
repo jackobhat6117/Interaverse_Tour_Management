@@ -13,6 +13,7 @@ import signup from '../../controllers/Auth/signup'
 import { useSnackbar } from 'notistack'
 import { Radio, RadioGroup } from '@mui/material'
 import Checkbox from '../forms/Checkbox'
+import PhoneNumberInput from '../forms/PhoneNumberInput'
 
 
 export default function Signup() {
@@ -111,10 +112,11 @@ export default function Signup() {
               value={data.email}
               onChange={(ev) => setData({...data,email: ev.target.value})}          
             />
-            {/* <PhoneNumberInput required
+            <PhoneNumberInput required
+              label={'Your phone number'}
               value={data.phone}
-              onChange={(ev) => setData({...data,phone: ev.target.value})}          
-            /> */}
+              onChange={(value) => setData({...data,phone: value})}          
+            />
             <PasswordInput required
               value={data.password}
               onChange={(ev) => setData({...data,password: ev.target.value})}          
