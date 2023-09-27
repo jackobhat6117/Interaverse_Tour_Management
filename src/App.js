@@ -12,6 +12,7 @@ import SettingSideBar from './pages/Settings/Sidebar';
 import TeamMembers from './pages/Settings/TeamMembers';
 import ContactEmails from './pages/Settings/ContactEmails';
 import SecuritySettings from './pages/Settings/Security';
+import BalanceSetting from './pages/Settings/Balance';
 // import 'dotenv/config'
 
 
@@ -67,6 +68,7 @@ function App() {
                   <Route path='team' element={<TeamMembers />} />
                   <Route path='contact' element={<ContactEmails />} />
                   <Route path='security' element={<SecuritySettings />} />
+                  <Route path='balance' element={<BalanceSetting />} />
                 </Route>
               </Route>
             </Routes>

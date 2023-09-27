@@ -11,7 +11,7 @@ export default function AuthValidate() {
 
   return (
     <div>
-      {!loggedIn ? (
+      {loggedIn ? (
           <Outlet />
       ):<Auth />}
     </div>
