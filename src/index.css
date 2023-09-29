@@ -64,7 +64,7 @@ code {
     @apply !bg-theme1 !text-secondary !capitalize flex gap-2 p-2 !px-4;
   }
   .btn-theme-light {
-    @apply !bg-secondary p-2 !px-4 flex gap-2 hover:shadow !capitalize;
+    @apply !bg-secondary !text-primary p-2 !px-4 flex gap-2 !shadow-none hover:shadow !capitalize;
   }
 
 

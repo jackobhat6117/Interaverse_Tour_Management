@@ -106,7 +106,7 @@ export default function Header() {
             <div className='p-4 bg-secondary flex flex-col gap-2 overflow-y-auto max-h-[80vh]'>
               {notifications.map((obj,i) => {
                 const currentDate = moment();
-                const objDate = moment(obj.date);
+                const objDate = moment(new Date(obj.date));
                 const formattedDate = objDate.isSame(currentDate, 'day')
                   ? 'Today'
                   : objDate.isSame(currentDate.clone().subtract(1, 'day'), 'day')
@@ -144,7 +144,15 @@ export default function Header() {
       <div className='bg-black'>
         <div className='flex md:hidden justify-between items-center bg-opacity-40 gap-6 bg-theme1 text-white py-4 px-md'>
           <h4>Miles</h4>
-          <Menu />
+          <CustomMenu element={
+              <div className='rounded-md bg-primary/10 w-7 h-7 text-center flex-center justify-center'>
+                <Menu className='cursor-pointer' />
+              </div>
+            }>
+              <div className='shadow-md border bg-secondary'>
+                <Button1 onClick={handleLogout} variant={'text'} className='text-primary'>Logout</Button1>
+              </div>
+          </CustomMenu>
         </div>
       </div>
     </div>

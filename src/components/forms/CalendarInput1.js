@@ -36,7 +36,7 @@ export default function CalendarInput1() {
     selected: { from: selectedRange.start, to: selectedRange.end },
   };
 
-  console.log(selectedRange)
+  // console.log(selectedRange)
 
   return (
     <div >

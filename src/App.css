@@ -3,6 +3,11 @@
   --theme-color: 30, 120, 220; /* Default theme color */
 }
 
+hr {
+  border-color: rgba(var(--primary-color),.5);
+}
+
 input {
   outline: none;
 }
+

@@ -7,7 +7,7 @@ SelectInput.propTypes = {
   label: PropTypes.string,
   placeHolder: PropTypes.string,
 }
-export default function SelectInput(props) {
+export default function SelectInput(props) {  
   return (
     <div className='w-full'>
       <TextField label={<div className='font-bold' >

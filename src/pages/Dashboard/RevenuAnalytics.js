@@ -88,28 +88,28 @@ export default function RevenuAnalytics() {
       }
     })
   }
-  const dohnutData = {
-    // labels: datas.map((d) => moment(d.date).format('MM DD')),
-    labels: Object.keys(obj),
-    datasets: [
-      {
-        label: 'Total ',
-        data: Object.values(obj).map(datas => datas.length),
-        // data: obj.map((d) => d.editedtotalPrice),
-        // borderColor: theme?.palette?.primary?.main || '#1362FC',
-        barThickness: 4,
-        borderWidth: 2,
-        pointRadius: 1,
-        tension: 0.4,
-        backgroundColor: [
-          legendColors.flights,
-          legendColors.stays,
-          legendColors.tours
-        ]
-        // backgroundColor: theme?.palette?.primaryLight?.main || '#1362FCaa',
-      }
-    ]
-  }
+  // const dohnutData = {
+  //   // labels: datas.map((d) => moment(d.date).format('MM DD')),
+  //   labels: Object.keys(obj),
+  //   datasets: [
+  //     {
+  //       label: 'Total ',
+  //       data: Object.values(obj).map(datas => datas.length),
+  //       // data: obj.map((d) => d.editedtotalPrice),
+  //       // borderColor: theme?.palette?.primary?.main || '#1362FC',
+  //       barThickness: 4,
+  //       borderWidth: 2,
+  //       pointRadius: 1,
+  //       tension: 0.4,
+  //       backgroundColor: [
+  //         legendColors.flights,
+  //         legendColors.stays,
+  //         legendColors.tours
+  //       ]
+  //       // backgroundColor: theme?.palette?.primaryLight?.main || '#1362FCaa',
+  //     }
+  //   ]
+  // }
 
 
   return (

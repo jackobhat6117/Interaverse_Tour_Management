@@ -2,6 +2,7 @@ import { TextField } from '@mui/material'
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Search } from '@mui/icons-material'
+import { alertType } from '../../data/constants'
 
 
 SearchInput.propTypes = {
@@ -70,8 +71,6 @@ function SearchHandle({open}) {
     {time: '14 July 2023, 2:30pm',status: 'pending',PNR: '2VBE4W',extra: 'LOS - IST | $123,123 | Okafar Chiemena'},
     {time: '12 July 2023, 2:30pm',status: 'past',PNR: '2VBE4W',extra: 'LOS - IST | $123,123 | Okafar Chiemena'},
   ]
-
-  let alertType = {'cancelled': 'error','confirmed': 'success','pending': 'warn','past': 'error'};
 
   return (
     <div className={`absolute w-full bg-secondary rounded-b-md my-2 shadow-md border ${data?.length && open ? ' flex flex-col ':' hidden '}`}>

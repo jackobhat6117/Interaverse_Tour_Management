@@ -13,10 +13,11 @@ import TeamMembers from './pages/Settings/TeamMembers';
 import ContactEmails from './pages/Settings/ContactEmails';
 import SecuritySettings from './pages/Settings/Security';
 import BalanceSetting from './pages/Settings/Balance';
+import DeveloperSetting from './pages/Settings/Developer';
 // import 'dotenv/config'
 
 
-const rootElement = document.getElementById("root");
+// const rootElement = document.getElementById("root");
 
 
 const CustomThemeProvider = ({ children }) => {
@@ -35,18 +36,18 @@ const CustomThemeProvider = ({ children }) => {
       //   main: themeColor ? themeColor+'aa' : "#3a3"
       // }
     },
-    components: {
-      MuiPopover: {
-        defaultProps: {
-          container: rootElement,
-        },
-      },
-      MuiPopper: {
-        defaultProps: {
-          container: rootElement,
-        },
-      },
-    },
+    // components: {
+    //   MuiPopover: {
+    //     defaultProps: {
+    //       container: rootElement,
+    //     },
+    //   },
+    //   MuiPopper: {
+    //     defaultProps: {
+    //       container: rootElement,
+    //     },
+    //   },
+    // },
     });
 
   return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
@@ -69,6 +70,7 @@ function App() {
                   <Route path='contact' element={<ContactEmails />} />
                   <Route path='security' element={<SecuritySettings />} />
                   <Route path='balance' element={<BalanceSetting />} />
+                  <Route path='developers' element={<DeveloperSetting />} />
                 </Route>
               </Route>
             </Routes>

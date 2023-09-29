@@ -15,7 +15,7 @@ export default function Table(props) {
   console.log('sotred dat: ',sortedData)
 
   return (
-    <table className='w-full my-2'>
+    <table className='w-full my-2' {...restProps}>
       <thead className='!bg-theme1/20 p-2'>
         {columns.map((obj,i) => (
           <TD>{obj.headerName}</TD>

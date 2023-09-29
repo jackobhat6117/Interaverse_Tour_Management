@@ -44,7 +44,9 @@ function Sidebar() {
     <div className=''>
       <div className='p-4 hidden sm:flex flex-col whitespace-nowrap'>
         <div className='flex gap-1 py-4 mb-4'>
-          <ArrowBack /> Go back
+          <Link to="/">
+            <ArrowBack /> Go back
+          </Link>
         </div>
         <Link to='/' className='flex gap-2 font-bold p-2 px-4 btn'>
           <Settings />

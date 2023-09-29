@@ -3,26 +3,34 @@ import React, { useState } from 'react'
 import Button1 from '../../components/forms/Button1'
 import SelectInput from '../../components/forms/SelectInput'
 import CalendarInput1 from '../../components/forms/CalendarInput1'
-import { FileDownloadOutlined } from '@mui/icons-material'
+import { FileDownloadOutlined,Visibility, VisibilityOff } from '@mui/icons-material'
 import CustomTable from '../../components/Table/CustomTable'
-import { alertType } from '../../data/constants'
 import Modal1 from '../../components/DIsplay/Modal/Modal1'
 import TextInput from '../../components/forms/TextInput'
 
 
-export default function BalanceSetting() {
+function ActionCol({params}) {
+  const [view] = useState(false);
+  return (
+    <div>
+      {params.value}
+      {view?<Visibility />:<VisibilityOff />}
+    </div>
+  )
+}
+
+export default function DeveloperSetting() {
   const columns = [
-    {field: 'description',headerName: 'Description',flex: 1},
-    {field: 'bookingRef',headerName: 'Booking Ref',flex: 1},
-    {field: 'amount',headerName: 'Amount (NGN)',flex: 1},
-    {field: 'balance',headerName: 'Balance (NGN)',flex: 1},
-    {field: 'supplier',headerName: 'Supplier',flex: 1},
-    {field: 'action',headerName: 'Action',flex: 1,
+    {field: 'name',headerName: 'Description',flex: 1},
+    {field: 'clientId',headerName: 'Booking Ref',flex: 1},
+    {field: 'secret',headerName: 'Amount (NGN)',flex: 1},
+    {field: 'lastUsed',headerName: 'Balance (NGN)',flex: 1},
+    {field: 'scope',headerName: 'Supplier',flex: 1},
+    {field: 'key',headerName: 'Action',flex: 1,
       renderCell: (params) => (
-        <div className={`${alertType[params.value]}`}>{params.value}</div>
+        <ActionCol params={params} />
       )
     },
-    {field: 'date',headerName: 'Date Created',flex: 1},
   ]
   const data = [
     {id: 1,description: 'ord_0000AV9MwafcDvAKVr6zWC',bookingRef: '1RD231',amount: 123123,balance: 123123,supplier: 'Turkish Airline',action: 'created',date: '9/29/2023'},

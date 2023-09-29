@@ -18,6 +18,9 @@ export default function TextInput(props) {
         }}
         {...props}
       />
+      {props.tooltip ? 
+        <div className='tooltip'>{props.tooltip}</div>
+      :null}
     </div>
   )
 }
