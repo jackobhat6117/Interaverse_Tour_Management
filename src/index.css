@@ -90,6 +90,9 @@ code {
   }
 
   .tooltip {
-    @apply bg-[#D9A513]/20 border-l border-l-[10px] border-l-[#D9A513] text-[#A97500] p-2;
+    @apply bg-[#D9A513]/20 border-l-[10px] border-l-[#D9A513] text-[#A97500] p-2;
+  }
+  .tooltip.error {
+    @apply bg-[#ea4545]/20 border-l-[10px] border-l-[#ea4545] text-[#ea4545];
   }
 }

@@ -3,16 +3,18 @@ import {store} from '../redux/store'
 import { logout } from "../redux/reducers/userSlice";
 
 export default async function fetchServer({
-      method,url,data,headers,
+      method,url,data,headers={},
       api=process.env.API || 'https://miles-staging-gateway.onrender.com/api'
   }) {
 
-    console.log('api: ',api,process.env)
+    console.log('api: ',api,process.env.REACT_APP_API)
 
   try {
-    const {accessToken} = store.getState()?.user?.userData;
-    if(accessToken) {
-      headers.Authorization = 'Bearer '+accessToken
+    let token = store.getState().user.userData.accessToken;
+
+    // const {accessToken} = store.getState()?.user?.userData;
+    if(token) {
+      headers.Authorization = 'Bearer '+token
     } else headers.Authorization = null;
 
 

@@ -67,8 +67,8 @@ export default function ProfileSurvey() {
         <Box className='pd-md relative'>
           <CurComp data={data} key={'editor'} returnData={handleChange} component={steps[step]} />
           <div className='flex justify-between items-start self-stretch gap-4 py-4'>
-            <div className='flex gap-6 flex-wrap-reverse items-start flex-1 justify-start'>
-              <Button1 className='whitespace-nowrap !w-auto ' variant={'text'} onClick={stepBack}>Go back</Button1>
+            <div className='flex gap-6 flex-wrap items-start flex-1 justify-start'>
+              <Button1 className='whitespace-nowrap !w-auto !text-primary/70' variant={'text'} onClick={stepBack}>Go back</Button1>
               <Button1 variant={'outlined'} className='!w-auto' onClick={skip}>Skip</Button1>
             </div>
             <div>

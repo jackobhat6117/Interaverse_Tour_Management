@@ -70,7 +70,7 @@ function App() {
                   <Route path='contact' element={<ContactEmails />} />
                   <Route path='security' element={<SecuritySettings />} />
                   <Route path='balance' element={<BalanceSetting />} />
-                  <Route path='developers' element={<DeveloperSetting />} />
+                  <Route path='developer' element={<DeveloperSetting />} />
                 </Route>
               </Route>
             </Routes>

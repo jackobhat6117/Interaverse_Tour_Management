@@ -25,17 +25,17 @@ export default function ProductTypes({data,returnData}) {
 
     // returnData({...data,interestedIn: newval})
 
-    console.log('selected: ',selectedValues,newval)
+    // console.log('selected: ',selectedValues,newval)
   };
   return (
     <div className='flex flex-col gap-4 items-center'>
       <h4 className='text-center'>What products are you interested in selling?</h4>
       <p className=''>Sharing this information will enhance your experience without any restrictions on feature access.</p>
       <div className='flex flex-wrap gap-4 justify-between self-stretch py-4'>
-        <Checkbox name='type' checked={selectedValues.includes('Flight')} onChange={handleChange} value='Flight'>Flight</Checkbox>
-        <Checkbox name='type' checked={selectedValues.includes('Stay')} onChange={handleChange} value='Stay'>Stay</Checkbox>
-        <Checkbox name='type' checked={selectedValues.includes('Tour')} onChange={handleChange} value='Tour'>Tour</Checkbox>
-        <Checkbox name='type' checked={selectedValues.includes('Protection')} onChange={handleChange} value='Protection'>Protection</Checkbox>
+        <Checkbox labelClassName='flex-1' name='type' checked={selectedValues.includes('Flight')} onChange={handleChange} value='Flight'>Flight</Checkbox>
+        <Checkbox labelClassName='flex-1' name='type' checked={selectedValues.includes('Stay')} onChange={handleChange} value='Stay'>Stay</Checkbox>
+        <Checkbox labelClassName='flex-1' name='type' checked={selectedValues.includes('Tour')} onChange={handleChange} value='Tour'>Tour</Checkbox>
+        <Checkbox labelClassName='' name='type' checked={selectedValues.includes('Protection')} onChange={handleChange} value='Protection'>Protection</Checkbox>
       </div>
     </div>
   )

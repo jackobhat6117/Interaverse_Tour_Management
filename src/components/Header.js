@@ -8,6 +8,7 @@ import moment from 'moment/moment';
 import Button1 from './forms/Button1';
 import { useDispatch } from 'react-redux';
 import { logout } from '../redux/reducers/userSlice';
+import { Link } from 'react-router-dom';
 
 
 const IOSSwitch = styled((props) => (
@@ -133,7 +134,8 @@ export default function Header() {
             <Person className='!text-base' />
           </div>
         }>
-          <div className='shadow-md border'>
+          <div className='shadow-md border bg-secondary flex flex-col gap-1'>
+            <Link className='btn-theme-light text-end' variant='text' to='/settings/'>Settings</Link>
             <Button1 onClick={handleLogout} variant={'text'} className='text-primary'>Logout</Button1>
           </div>
         </CustomMenu>
@@ -149,8 +151,9 @@ export default function Header() {
                 <Menu className='cursor-pointer' />
               </div>
             }>
-              <div className='shadow-md border bg-secondary'>
-                <Button1 onClick={handleLogout} variant={'text'} className='text-primary'>Logout</Button1>
+              <div className='shadow-md border bg-secondary flex flex-col '>
+                <Link className='btn-theme-light text-end' variant='text' to='/settings/'>Settings</Link>
+                <Button1 onClick={handleLogout} variant={'text'} className='text-primary !w-auto'>Logout</Button1>
               </div>
           </CustomMenu>
         </div>

@@ -22,7 +22,8 @@ export default function TeamMembers() {
   async function load() {
     const res = await getTeamMembers()
     if(res.return) {
-      setData(res?.data?.data || []);
+      let data = (res?.data?.data || []).map(obj => ({...obj,...obj.member,name: obj.member.firstName+' '+obj.member.lastName}))
+      setData(data);
       // console.log(res.data?.data)
     }
   }

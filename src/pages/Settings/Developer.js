@@ -1,104 +1,152 @@
-import { MenuItem } from '@mui/material'
-import React, { useState } from 'react'
-import Button1 from '../../components/forms/Button1'
-import SelectInput from '../../components/forms/SelectInput'
-import CalendarInput1 from '../../components/forms/CalendarInput1'
-import { FileDownloadOutlined,Visibility, VisibilityOff } from '@mui/icons-material'
+import React, { useEffect, useState } from 'react'
+import {Visibility, VisibilityOff } from '@mui/icons-material'
 import CustomTable from '../../components/Table/CustomTable'
-import Modal1 from '../../components/DIsplay/Modal/Modal1'
-import TextInput from '../../components/forms/TextInput'
+import { Link, useLocation } from 'react-router-dom'
+import Button1 from '../../components/forms/Button1';
+import Modal1 from '../../components/DIsplay/Modal/Modal1';
+import TextInput from '../../components/forms/TextInput';
+import RadioInput from '../../components/forms/RadioInput';
+import { RadioGroup } from '@mui/material';
+import getAPIKeys from '../../controllers/settings/APIKeys/getAPIKeys';
+import createAPIKey from '../../controllers/settings/APIKeys/createAPIKey';
+import { useSnackbar } from 'notistack';
+
+
+export default function DeveloperSetting() {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search)
+  let view = queryParams.get('view') || '';
+
+  return (
+    <div className='flex flex-col gap-4 !text-primary/60 '>
+
+      {view === 'webhook' ? 
+        <WebHook />
+      :
+        <AccessKeys />
+      }
+    </div>
+  )
+}
+
+function WebHook() {
+  return (
+    <div className='flex flex-col gap-4 !text-primary/60'>
+      <div className='flex gap-4 justify-between'>
+        <div className='flex gap-2 self-start'>
+          <Link className={`btn-theme-light`} to="?view=accessKeys">Access Keys</Link>
+          <Link className={`btn`} to="?view=webhook">Web Hooks</Link>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 
 
 function ActionCol({params}) {
   const [view] = useState(false);
   return (
-    <div>
-      {params.value}
+    <div className='flex gap-4 justify-between'>
+      View key
       {view?<Visibility />:<VisibilityOff />}
     </div>
   )
 }
 
-export default function DeveloperSetting() {
+function AccessKeys() {
+  const [open,setOpen] = useState(false);
+  const [scope,setScope] = useState('');
+  const [name,setName] = useState('');
+  const [loading,setLoading] = useState(false);
+  const {enqueueSnackbar} = useSnackbar();
+  const [data,setData] = useState([]);
+  // const data = [
+  //   {id: 1,name: 'General',clientId: 'miles_test_************gDje',secret: 'miles_secrete_************gDE',lastUsed: 'Never used',scope: 'Read and write',key: 'View Key'}
+  // ]
+
+
+
+  useEffect(() => {
+    load();
+  },[])
+
+  async function load() {
+    const res = await getAPIKeys();
+    if(res.return) {
+      let data = res?.data?.data?.map(obj => ({...obj,id: obj._id}))
+      setData(data)
+      console.log(data)
+    }
+  }
+
+  async function handleSubmit(ev) {
+    ev.preventDefault();
+
+    setLoading(true);
+    const res = await createAPIKey({name,scope});
+    setLoading(false);
+    if(res.return ) {
+      load();
+      enqueueSnackbar('Api Creation Successful',{variant: 'success'})
+      setOpen(false);
+    } else enqueueSnackbar('Failed creating key',{variant: 'error'})
+  }
   const columns = [
-    {field: 'name',headerName: 'Description',flex: 1},
-    {field: 'clientId',headerName: 'Booking Ref',flex: 1},
-    {field: 'secret',headerName: 'Amount (NGN)',flex: 1},
-    {field: 'lastUsed',headerName: 'Balance (NGN)',flex: 1},
-    {field: 'scope',headerName: 'Supplier',flex: 1},
-    {field: 'key',headerName: 'Action',flex: 1,
+    {field: 'name',headerName: 'Name',flex: 1},
+    {field: 'clientId',headerName: 'Client ID',flex: 1},
+    {field: 'clientSecret',headerName: 'Client Secret',flex: 1},
+    {field: 'lastUsed',headerName: 'LastUsed',flex: 1},
+    {field: 'scope',headerName: 'Scope',flex: 1},
+    {field: 'key',headerName: 'Secret Key',flex: 1,
       renderCell: (params) => (
         <ActionCol params={params} />
       )
     },
   ]
-  const data = [
-    {id: 1,description: 'ord_0000AV9MwafcDvAKVr6zWC',bookingRef: '1RD231',amount: 123123,balance: 123123,supplier: 'Turkish Airline',action: 'created',date: '9/29/2023'},
-    {id: 2,description: 'TOP-UP',bookingRef: null,amount: 123123,balance: 123123,supplier: 'Turkish Airline',date: '9/29/2023',action: 'created'},
-    {id: 3,description: 'ord_0000AV9MwafcDvAKVr6zWC',bookingRef: '1RD231',amount: 123123,balance: 123123,supplier: 'Turkish Airline',action: 'cancelled',date: '9/29/2023'},
-  ]
   return (
-    <div className='flex flex-col gap-4 !text-primary/60 '>
-      <div className='flex justify-between items-center gap-4 flex-wrap'>
-        <div>
-          <SetupThreshold />
-        </div>
-        <div className='flex gap-5 items-center'>
-          <div className='bg-primary/10 p-2 rounded-md  flex items-center gap-2'>
-            <SelectInput size='small' label={''} defaultValue='Weekly' className='bg-secondary'>
-              <MenuItem value='Weekly'>Weekly</MenuItem>
-              <MenuItem value='Monthly'>Monthly</MenuItem>
-              <MenuItem value='Yearly'>Yearly</MenuItem>
-              <MenuItem value='All'>All</MenuItem>
-            </SelectInput>
-            <CalendarInput1 />
-          </div>
-          <FileDownloadOutlined color='primary' className='cursor-pointer' />
-        </div>
-      </div>
-      <hr />
-      <div className='flex justify-between flex-wrap'>
-        <div className='flex flex-col gap-3'>
-          <div className='inline-block self-start'>
-            <Button1>Top-up Balance</Button1>
-          </div>
-          <div className='tooltip'>In test mode your balance is unlimited. It is topped-off automatically as you spend it.</div>
-          <div className='tooltip error'>In test mode your balance is unlimited. It is topped-off automatically as you spend it.</div>
+    <div className='flex flex-col gap-4 !text-primary/60'>
+      <div className='flex gap-4 justify-between'>
+        <div className='flex gap-2 self-start'>
+          <Link className={`btn`} to="?view=accessKeys">Access Keys</Link>
+          <Link className={`btn-theme-light`} to="?view=webhook">Web Hooks</Link>
         </div>
         <div>
-          <div className='card p-4 rounded-lg text-right'>
-            <h5>Current Balance <span className='text-primary/50'>(NGN)</span></h5>
-            <h4 className='text-theme1'>100,000,000.00</h4>
-          </div>
+          <Button1 className='' onClick={() => setOpen(true)}>Create Key</Button1>
+          <Modal1 open={open} setOpen={setOpen}>
+            <form onSubmit={handleSubmit} className='p-4 flex flex-col gap-6 max-w-[800px]'>
+              <h5>Create an access key</h5>
+              <TextInput 
+                value={name}
+                onChange={(ev) => setName(ev.target.value)}
+                label={'Token name'} placeholder={'e.g Miles token'} />
+              <div>
+                <span>Scope</span>
+                <RadioGroup name='scope' value={scope} onChange={(ev) => setScope(ev.target.value)} className='flex flex-col gap-2'>
+                  <RadioInput checked={scope === 'Full'} value={'Full'}>
+                    <div className='flex flex-col '>
+                      <h5>Read and write</h5>
+                      <p className='text-primary/70'>A read and write token is able to read and modify any resource</p>
+                    </div>
+                  </RadioInput>
+                  <RadioInput checked={scope === 'ReadOnly'} value={'ReadOnly'}>
+                    <div className='flex flex-col '>
+                      <h5>Read only</h5>
+                      <p className='text-primary/70'>A read token is able to read but not modify any resource</p>
+                    </div>
+                  </RadioInput>
+                </RadioGroup>
+              </div>
+              <div className='flex gap-2 '>
+                <Button1 className='!w-[20%]' variant='text' onClick={() => setOpen(false)}>Cancel</Button1>
+                <Button1 type='submit' className='!w-auto flex-1' loading={loading}>Create token</Button1>
+              </div>
+            </form>
+          </Modal1>
         </div>
       </div>
-      <CustomTable rows={data} columns={columns} />
-    </div>
-  )
-}
 
-function SetupThreshold() {
-  const [open,setOpen] = useState(false);
-  return (
-    <div>
-      <Button1 
-        onClick={() => setOpen(true)}
-        className='btn-theme-light !shadow-none !lowercase !text-gray-500'>Set-up low balance threshold</Button1>
-      <Modal1 open={open} setOpen={setOpen}>
-        <div className='p-4 flex flex-col gap-6 max-w-[800px]'>
-          <h4>Setup lowbalance threshold</h4>
-          <TextInput label='Low balance threshold (ngn)' 
-            tooltip='When your Miles balance reaches this value or below, all administrators in your organization will receive a low balance email. You should configure a threshold that will allow you to top up your balance on time.'
-            InputProps={{
-              endAdornment: 'NGN'
-            }}
-           />
-        </div>
-        <div className='flex gap-2 p-4'>
-          <Button1 className='btn-theme-light'>Cancel</Button1>
-          <Button1>Save Changes</Button1>
-        </div>
-      </Modal1>
+      <CustomTable rows={data} columns={columns} />
     </div>
   )
 }

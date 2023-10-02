@@ -50,12 +50,12 @@ export default function BalanceSetting() {
       </div>
       <hr />
       <div className='flex justify-between flex-wrap'>
-        <div className='flex flex-col gap-3'>
+        <div className='flex flex-col gap-3 mb-4'>
           <div className='inline-block self-start'>
             <Button1>Top-up Balance</Button1>
           </div>
           <div className='tooltip'>In test mode your balance is unlimited. It is topped-off automatically as you spend it.</div>
-          <div className='tooltip error'>In test mode your balance is unlimited. It is topped-off automatically as you spend it.</div>
+          <div className='tooltip error'>You don't have enought amount in your balance. Please top-up.</div>
         </div>
         <div>
           <div className='card p-4 rounded-lg text-right'>
