@@ -25,31 +25,40 @@ code {
   }
   
   .light-bg {
-    background-color: rgba(var(--primary-color), 0.05);
+    background-color: rgba(var(--primary-color), 0.03);
   }
 
   h1 {
-    @apply text-5xl sm:text-6xl font-bold;
+    @apply text-4xl sm:text-6xl font-bold;
   }
   h2 {
-    @apply text-4xl sm:text-5xl font-bold;
+    @apply text-3xl sm:text-5xl font-bold;
   }
   h3 {
-    @apply text-2xl sm:text-4xl font-bold;
+    @apply text-xl sm:text-4xl font-bold;
   }
   h4 {
-    @apply text-xl sm:text-2xl font-bold;
+    @apply text-base sm:text-2xl font-bold;
   }
   h5 {
-    @apply text-base sm:text-xl font-bold;
+    @apply text-sm sm:text-xl font-bold;
   }
   h6 {
-    @apply text-sm sm:text-base font-bold;
+    @apply text-xs sm:text-base font-bold;
+  }
+
+  p {
+    @apply !text-primary/60;
   }
 
 
   .btn {
     @apply rounded-md border bg-primary/80 text-white p-2 px-4 ;
+  }
+
+  .bg-emptypage {
+    background: url('./assets/images/cancelled-ticket\ 1.png') no-repeat;
+    background-position: right top;
   }
 
   .pd-md {

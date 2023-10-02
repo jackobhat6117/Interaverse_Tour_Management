@@ -10,11 +10,11 @@ TextInput.propTypes = {
 export default function TextInput(props) {
   return (
     <div className='w-full'>
-      <TextField className='w-full ' label={<div className='font-bold' >
+      <TextField className='w-full !min-w-[100px] ' label={<div className='font-bold' >
             {props.label}
         </div>}
         InputLabelProps={{
-          shrink: true,
+          shrink: props.noShrink ? false : true,
         }}
         {...props}
       />

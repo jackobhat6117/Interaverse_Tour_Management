@@ -1,9 +1,9 @@
 import { Add, Cancel } from "@mui/icons-material";
 import { Box, Button, Modal } from "@mui/material";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export function ProfilePicture() {
-  // const file = useRef();
+  const file = useRef(null);
   const [pic,setPic] = useState();
   const [open,setOpen] = useState(false);
   const [loading] = useState(false);
@@ -12,15 +12,16 @@ export function ProfilePicture() {
 
 
   function handleSubmit() {
-
+    file.current.click();
   }
 
   return (
     <div>
       <span className='w-[100px] h-[100px] flex items-center justify-center light-bg'>
-        <Add fontSize='large' onClick={() => setOpen(true)} className='cursor-pointer' />
+        <Add fontSize='large' onClick={handleSubmit} className='cursor-pointer' />
+        <input type='file' name='profile' className='hidden' ref={file} />
       </span>
-      <Modal open={open}>
+      {/* <Modal open={open}>
         <Box className='w-full h-full flex items-center justify-center'>
         <div className='flex flex-col gap-10 p-6 bg-secondary rounded-lg relative' name='profile_picture' id='prof_pic_form'>
           <Cancel className='absolute top-0 right-0 m-3 cursor-pointer' onClick={() => setOpen(false)} />
@@ -37,7 +38,7 @@ export function ProfilePicture() {
           </div>
         </div>
         </Box>        
-      </Modal>
+      </Modal> */}
     </div>
   )
 }

@@ -6,10 +6,12 @@ import Button1 from '../../components/forms/Button1';
 import Modal1 from '../../components/DIsplay/Modal/Modal1';
 import TextInput from '../../components/forms/TextInput';
 import RadioInput from '../../components/forms/RadioInput';
-import { RadioGroup } from '@mui/material';
+import { Button, MenuItem, RadioGroup } from '@mui/material';
 import getAPIKeys from '../../controllers/settings/APIKeys/getAPIKeys';
 import createAPIKey from '../../controllers/settings/APIKeys/createAPIKey';
 import { useSnackbar } from 'notistack';
+import CustomTabs from '../../components/DIsplay/CustomTabs';
+import { DataGrid } from '@mui/x-data-grid';
 
 
 export default function DeveloperSetting() {
@@ -18,7 +20,7 @@ export default function DeveloperSetting() {
   let view = queryParams.get('view') || '';
 
   return (
-    <div className='flex flex-col gap-4 !text-primary/60 '>
+    <div className='flex flex-col gap-4 !text-primary/60 flex-1'>
 
       {view === 'webhook' ? 
         <WebHook />
@@ -30,14 +32,119 @@ export default function DeveloperSetting() {
 }
 
 function WebHook() {
+  const [data] = useState([
+    {id: 1,status: 'Succeded',event:'miles_test_**********_asd',date: '12:54 22/1/31'},
+    {id: 2,status: 'Succeded',event:'miles_test_**********_asd',date: '12:54 22/1/31'},
+    {id: 3,status: 'Succeded',event:'miles_test_**********_asd',date: '12:54 22/1/31'},
+  ])
+
+  let columns = [
+    {field: 'status',headerName: 'Status',flex: 1},
+    {field: 'event',headerName: 'Event',flex: 1},
+    {field: 'date',headerName: 'Date Created',flex: 1},
+  ];
+
+
+  let filterOptions = [
+    {label: 'All',value: 'All'},
+    {label: 'Succeded',value: 'Succeded'},
+    {label: 'Failed',value: 'Failed'}
+  ]
   return (
-    <div className='flex flex-col gap-4 !text-primary/60'>
+    <div className={`flex flex-col gap-4 !text-primary/60 ${!data.length ? 'bg-emptypage flex-1 h-full ':''}`}>
       <div className='flex gap-4 justify-between'>
         <div className='flex gap-2 self-start'>
           <Link className={`btn-theme-light`} to="?view=accessKeys">Access Keys</Link>
           <Link className={`btn`} to="?view=webhook">Web Hooks</Link>
         </div>
       </div>
+      {!data.length ? (
+        <div className=' text-center flex flex-col items-center gap-8'>
+          <h4>You don't have any test webooks</h4>
+          <div className='flex gap-2'>
+            <Button variant='outlined' className='!capitalize'>Learn about webhooks</Button>
+            <CreateWebHook />
+          </div>
+        </div>
+      ):(
+        <div className='max-w-[600px] flex flex-col gap-2'>
+          <div className='flex gap-2 justify-between'>
+            <h4>Miles Token</h4>
+            <div>
+              <TextInput select size='small' noShrink={true} label='Options'>
+                <MenuItem>Option</MenuItem>
+              </TextInput>
+            </div>
+          </div>
+          <hr />
+          <div className='flex flex-col gap-1'>
+            <div className='flex gap-2 justify-between'>
+              <b>URL</b>
+              <span>http://something.com</span>
+            </div>
+            <div className='flex gap-2 justify-between'>
+              <b>Status</b>
+              <span className='success'>Enabled</span>
+            </div>
+            <div className='flex gap-2 justify-between'>
+              <b>Listening To</b>
+              <span>One event</span>
+            </div>
+          </div>
+          <hr />
+          <br />
+          <h6>Delivery Log</h6>
+          <div className='flex gap-2 justify-between items-center self-start w-full'>
+            <CustomTabs defaultValue='All' options={filterOptions} />
+            <div>
+              <TextInput select size='small' label='Filter' noShrink></TextInput>
+            </div>
+          </div>
+          <hr />
+          <div className='flex justify-end'>
+            <p>Updated 22:22, 05/05/2023</p>
+          </div>
+          <br />
+          <DataGrid rows={data} columns={columns} />
+        </div>
+      )}
+    </div>
+  )
+}
+
+function CreateWebHook() {
+  const [data,setData] = useState({url: '',event: ''});
+  const [open,setOpen] = useState(false);
+  let objs = [
+    {title: 'Order created'},
+    {title: 'Airline initiation change'},
+  ]
+  return (
+    <div>
+      <Button variant='contained' className='!capitalize' onClick={() => setOpen(true)}>Create test webhook</Button>
+      <Modal1 open={open} setOpen={setOpen}>
+        <div className='flex flex-col gap-4 p-4 px-6'>
+          <h4>Create a test webhook</h4>
+          <TextInput 
+            value={data.url} 
+            onChange={(ev) => setData({...data,url: ev.target.value})}
+            label={'URL'} placeholder={'https://www.webhook.com'} tooltip='Must be for an https server. We do not accept IP addresses and some URLs are blacklisted (e.g. https://localhost).' />
+          <RadioGroup className='flex flex-col gap-2' onChange={(ev) => setData({...data,event: ev.target.value})}>
+            Events to listen to
+            {objs.map((obj,i) => (
+              <RadioInput value={obj.title} checked={data.event === obj.title}>
+                <div className='self-center'>
+                  {obj.title}
+                </div>
+              </RadioInput>
+            ))}
+          </RadioGroup>
+          <div className='flex gap-2 '>
+            <Button1 variant='outlined' className='w-[20%]'>Cancel</Button1>
+            <Button1 className='flex-1'>Create test webtoken</Button1>
+          </div>
+        </div>
+      </Modal1>
     </div>
   )
 }
