@@ -1,11 +1,10 @@
 import React from 'react'
-import { Button, MenuItem } from '@mui/material';
+import { Button } from '@mui/material';
 import { BarElement, Chart, CategoryScale, Legend, LineElement, LinearScale, PointElement, Title, Tooltip, ArcElement } from 'chart.js';
 import { Bar, Doughnut, Line } from 'react-chartjs-2'
-import SelectInput from '../../components/forms/SelectInput';
 import { WbIncandescent } from '@mui/icons-material';
 import Button1 from '../../components/forms/Button1';
-import CalendarInput1 from '../../components/forms/CalendarInput1';
+import FilterCalendar from '../../components/forms/FilterCalendar';
 
 Chart.register(
   CategoryScale,
@@ -118,15 +117,7 @@ export default function RevenuAnalytics() {
         <h5>Revenu Analytics</h5>
         <div className='flex gap-2 flex-wrap'>
           <Button1 variant='text' className='flex-1'>Export</Button1>
-          <div className='bg-primary/10 p-2 rounded-md flex-1  flex items-center gap-2'>
-            <SelectInput size='small' label={''} defaultValue='Weekly' className='bg-secondary'>
-              <MenuItem value='Weekly'>Weekly</MenuItem>
-              <MenuItem value='Monthly'>Monthly</MenuItem>
-              <MenuItem value='Yearly'>Yearly</MenuItem>
-              <MenuItem value='All'>All</MenuItem>
-            </SelectInput>
-            <CalendarInput1 />
-          </div>
+          <FilterCalendar />
         </div>
       </div>
       <div className='flex flex-wrap gap-4 items-center'>

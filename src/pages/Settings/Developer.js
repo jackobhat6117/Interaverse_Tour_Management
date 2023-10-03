@@ -12,6 +12,7 @@ import createAPIKey from '../../controllers/settings/APIKeys/createAPIKey';
 import { useSnackbar } from 'notistack';
 import CustomTabs from '../../components/DIsplay/CustomTabs';
 import { DataGrid } from '@mui/x-data-grid';
+import LearnMoreButton from '../../components/mini/LearnMoreButton';
 
 
 export default function DeveloperSetting() {
@@ -33,9 +34,9 @@ export default function DeveloperSetting() {
 
 function WebHook() {
   const [data] = useState([
-    {id: 1,status: 'Succeded',event:'miles_test_**********_asd',date: '12:54 22/1/31'},
-    {id: 2,status: 'Succeded',event:'miles_test_**********_asd',date: '12:54 22/1/31'},
-    {id: 3,status: 'Succeded',event:'miles_test_**********_asd',date: '12:54 22/1/31'},
+    // {id: 1,status: 'Succeded',event:'miles_test_**********_asd',date: '12:54 22/1/31'},
+    // {id: 2,status: 'Succeded',event:'miles_test_**********_asd',date: '12:54 22/1/31'},
+    // {id: 3,status: 'Succeded',event:'miles_test_**********_asd',date: '12:54 22/1/31'},
   ])
 
   let columns = [
@@ -62,7 +63,7 @@ function WebHook() {
         <div className=' text-center flex flex-col items-center gap-8'>
           <h4>You don't have any test webooks</h4>
           <div className='flex gap-2'>
-            <Button variant='outlined' className='!capitalize'>Learn about webhooks</Button>
+            <LearnMoreButton label='Learn about webhooks' />
             <CreateWebHook />
           </div>
         </div>
@@ -140,7 +141,9 @@ function CreateWebHook() {
             ))}
           </RadioGroup>
           <div className='flex gap-2 '>
-            <Button1 variant='outlined' className='w-[20%]'>Cancel</Button1>
+            <div>
+              <Button1 variant='outlined' className='w-[20%]'>Cancel</Button1>
+            </div>
             <Button1 className='flex-1'>Create test webtoken</Button1>
           </div>
         </div>
@@ -151,12 +154,16 @@ function CreateWebHook() {
 
 
 
-function ActionCol({params}) {
-  const [view] = useState(false);
+function ActionCol({params,toggleView}) {
+  const [view,setView] = useState(false);
+  function handleClick() {
+    setView(!view)
+    toggleView && toggleView(params.row.id,!view)
+  }
   return (
-    <div className='flex gap-4 justify-between'>
+    <div className='flex gap-4 items-center cursor-pointer justify-between' onClick={handleClick}>
       View key
-      {view?<Visibility />:<VisibilityOff />}
+      {!view?<Visibility className='text-primary/60' />:<VisibilityOff className='text-primary/60' />}
     </div>
   )
 }
@@ -179,9 +186,11 @@ function AccessKeys() {
   },[])
 
   async function load() {
+    setLoading(true);
     const res = await getAPIKeys();
+    setLoading(false);
     if(res.return) {
-      let data = res?.data?.data?.map(obj => ({...obj,id: obj._id}))
+      let data = res?.data?.data?.map(obj => ({...obj,id: obj._id,clientSecretView: obj.clientSecret,clientSecret: '******************'}))
       setData(data)
       console.log(data)
     }
@@ -199,6 +208,20 @@ function AccessKeys() {
       setOpen(false);
     } else enqueueSnackbar('Failed creating key',{variant: 'error'})
   }
+
+  function handleVisibilityToggle(id,view) {
+    setData(oldData =>
+      oldData.map((row) => {
+        if(row.id === id) {
+          return {
+            ...row,
+            clientSecret: view ? row.clientSecretView : '*****************'
+          }
+        }
+        return row
+      })
+    )
+  }
   const columns = [
     {field: 'name',headerName: 'Name',flex: 1},
     {field: 'clientId',headerName: 'Client ID',flex: 1},
@@ -207,7 +230,7 @@ function AccessKeys() {
     {field: 'scope',headerName: 'Scope',flex: 1},
     {field: 'key',headerName: 'Secret Key',flex: 1,
       renderCell: (params) => (
-        <ActionCol params={params} />
+        <ActionCol params={params} toggleView={handleVisibilityToggle} />
       )
     },
   ]
@@ -253,7 +276,7 @@ function AccessKeys() {
         </div>
       </div>
 
-      <CustomTable rows={data} columns={columns} />
+      <CustomTable loading={loading} rows={data} columns={columns} />
     </div>
   )
 }

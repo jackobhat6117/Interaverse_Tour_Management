@@ -58,7 +58,12 @@ code {
 
   .bg-emptypage {
     background: url('./assets/images/cancelled-ticket\ 1.png') no-repeat;
-    background-position: right top;
+    background-position: right -10% bottom 0;
+    background-size: contain;
+  }
+
+  .content-max-w {
+    @apply max-w-[830px];
   }
 
   .pd-md {
@@ -73,7 +78,7 @@ code {
     @apply !bg-theme1 !text-secondary !capitalize flex gap-2 p-2 !px-4;
   }
   .btn-theme-light {
-    @apply !bg-secondary !text-primary p-2 !px-4 flex gap-2 !shadow-none hover:shadow !capitalize;
+    @apply !bg-secondary !text-primary/60 p-2 !px-4 flex gap-2 !shadow-none hover:shadow !capitalize;
   }
 
 

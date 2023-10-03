@@ -7,7 +7,7 @@ export default async function fetchServer({
       api=process.env.API || 'https://miles-staging-gateway.onrender.com/api'
   }) {
 
-    console.log('api: ',api,process.env.REACT_APP_API)
+  // console.log('api: ',api,process.env.REACT_APP_API)
 
   try {
     let token = store.getState().user.userData.accessToken;

@@ -1,15 +1,8 @@
-import { Add, Cancel } from "@mui/icons-material";
-import { Box, Button, Modal } from "@mui/material";
-import { useRef, useState } from "react";
+import { Add } from "@mui/icons-material";
+import { useRef } from "react";
 
-export function ProfilePicture() {
+export function ProfilePicture({value,onChange}) {
   const file = useRef(null);
-  const [pic,setPic] = useState();
-  const [open,setOpen] = useState(false);
-  const [loading] = useState(false);
-
-  console.log(pic)
-
 
   function handleSubmit() {
     file.current.click();
@@ -19,7 +12,7 @@ export function ProfilePicture() {
     <div>
       <span className='w-[100px] h-[100px] flex items-center justify-center light-bg'>
         <Add fontSize='large' onClick={handleSubmit} className='cursor-pointer' />
-        <input type='file' name='profile' className='hidden' ref={file} />
+        <input type='file' name='profile' onChange={onChange} className='hidden' ref={file} />
       </span>
       {/* <Modal open={open}>
         <Box className='w-full h-full flex items-center justify-center'>

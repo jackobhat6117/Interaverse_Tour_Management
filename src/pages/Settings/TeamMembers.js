@@ -67,7 +67,7 @@ export default function TeamMembers() {
   useEffect(() => {
     if(filter !== '')
       load()
-    // eslint-disable-next-line react-hooks/exhaustive-deps    
+    //eslint-disable-next-line react-hooks/exhaustive-deps    
   },[filter])
 
   let columns = [
@@ -93,7 +93,12 @@ export default function TeamMembers() {
           <Tab label='All' value='All'/>
           <Tab label='Invited' value='Active' />
         </Tabs>
-        <CustomTable loading={loading} rows={data} columns={columns} />
+        <CustomTable loading={loading} rows={data} columns={columns}
+          autoHeight
+          // components={{
+          //   NoRowsOverlay: () => <div>No rows</div>,
+          // }}
+         />
         {/* <Table rows={data} columns={columns} /> */}
         {/* <table className='w-full my-2'>
           <thead className='!bg-theme1/20 p-2'>

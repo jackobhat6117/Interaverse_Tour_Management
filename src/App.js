@@ -14,6 +14,12 @@ import ContactEmails from './pages/Settings/ContactEmails';
 import SecuritySettings from './pages/Settings/Security';
 import BalanceSetting from './pages/Settings/Balance';
 import DeveloperSetting from './pages/Settings/Developer';
+import AccountNav from './components/Settings/AccountNav';
+import AccountSetupNav from './components/Settings/AccountSetupNav';
+import AccountSettings from './pages/Settings/Agency/Account/Account';
+import AgencySetupSetting from './pages/Settings/Agency/AgencySetup.js.js';
+import MarkupSetting from './pages/Settings/Agency/Markup';
+import CommissionSettings from './pages/Settings/Agency/Commision';
 // import 'dotenv/config'
 
 
@@ -65,12 +71,20 @@ function App() {
                   <Route index element={<Dashboard />} />
                 </Route>
                 <Route path='settings' element={<SettingSideBar />}>
-                  <Route index element={<Settings />} />
-                  <Route path='team' element={<TeamMembers />} />
-                  <Route path='contact' element={<ContactEmails />} />
-                  <Route path='security' element={<SecuritySettings />} />
-                  <Route path='balance' element={<BalanceSetting />} />
-                  <Route path='developer' element={<DeveloperSetting />} />
+                  <Route path='' element={<AccountNav />}>
+                    <Route index element={<Settings />} />
+                    <Route path='team' element={<TeamMembers />} />
+                    <Route path='contact' element={<ContactEmails />} />
+                    <Route path='security' element={<SecuritySettings />} />
+                    <Route path='balance' element={<BalanceSetting />} />
+                    <Route path='developer' element={<DeveloperSetting />} />
+                  </Route>
+                  <Route path='agency' element={<AccountSetupNav />}>
+                    <Route index element={<AccountSettings />} />
+                    <Route path='setup' element={<AgencySetupSetting />} />
+                    <Route path='markup' element={<MarkupSetting />} />
+                    <Route path='commission' element={<CommissionSettings />} />
+                  </Route>
                 </Route>
               </Route>
             </Routes>

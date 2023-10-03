@@ -1,13 +1,11 @@
-import { MenuItem } from '@mui/material'
 import React, { useState } from 'react'
 import Button1 from '../../components/forms/Button1'
-import SelectInput from '../../components/forms/SelectInput'
-import CalendarInput1 from '../../components/forms/CalendarInput1'
 import { FileDownloadOutlined } from '@mui/icons-material'
 import CustomTable from '../../components/Table/CustomTable'
 import { alertType } from '../../data/constants'
 import Modal1 from '../../components/DIsplay/Modal/Modal1'
 import TextInput from '../../components/forms/TextInput'
+import FilterCalendar from '../../components/forms/FilterCalendar'
 
 
 export default function BalanceSetting() {
@@ -36,15 +34,7 @@ export default function BalanceSetting() {
           <SetupThreshold />
         </div>
         <div className='flex gap-5 items-center'>
-          <div className='bg-primary/10 p-2 rounded-md  flex items-center gap-2'>
-            <SelectInput size='small' label={''} defaultValue='Weekly' className='bg-secondary'>
-              <MenuItem value='Weekly'>Weekly</MenuItem>
-              <MenuItem value='Monthly'>Monthly</MenuItem>
-              <MenuItem value='Yearly'>Yearly</MenuItem>
-              <MenuItem value='All'>All</MenuItem>
-            </SelectInput>
-            <CalendarInput1 />
-          </div>
+          <FilterCalendar />
           <FileDownloadOutlined color='primary' className='cursor-pointer' />
         </div>
       </div>

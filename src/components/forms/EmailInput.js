@@ -1,5 +1,5 @@
-import { TextField } from '@mui/material'
 import React, { useState } from 'react'
+import TextInput from './TextInput';
 
 export default function EmailInput(props) {
   const [error,setError] = useState(false);
@@ -19,7 +19,7 @@ export default function EmailInput(props) {
   };
   return (
     <div className='w-full'>
-      <TextField type='email' className='w-full ' 
+      <TextInput type='email' className='w-full ' 
         error={error}
         // pattern
         // helperText={'Invalid Email Pattern'}

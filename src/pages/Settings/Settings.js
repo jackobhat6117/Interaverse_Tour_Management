@@ -4,27 +4,63 @@ import Button1 from '../../components/forms/Button1'
 import { ProfilePicture } from '../../components/forms/ProfilePicture'
 import { useSnackbar } from 'notistack'
 import addCustomKey from '../../controllers/settings/paystack/addCustomKey'
+import updateProfile from '../../controllers/user/updateProfile'
 
 export default function Settings() {
+  const [data,setData] = useState({
+    agencyLogo: '',
+    agencyName: '',
+    agencyUrl: '',
+  })
+  const {enqueueSnackbar} = useSnackbar();
+  const [loading,setLoading] = useState(false);
+
+  async function handleSubmit(ev) {
+    ev.preventDefault();
+
+    const formData = new FormData();
+    Object.entries(data).map(([key,val]) => formData.append(key,val));
+
+    setLoading(true);
+    const res = await updateProfile(formData);
+    setLoading(false);
+    if(res.return) {
+      enqueueSnackbar('Profile Updated',{variant: 'success'})
+    } else enqueueSnackbar(res.msg || 'Error',{variant: 'error'})
+    // for (let [key, value] of formData.entries()) {
+    //   console.log(`${key}: ${value}`);
+    // }
+
+  }
   return (
     <div className='flex flex-col gap-4'>
-      <form className='flex flex-col gap-4 max-w-[700px]'>
+      <form onSubmit={handleSubmit} className='flex flex-col gap-4 max-w-[700px]'>
         <div className='flex gap-4'>
-          <ProfilePicture />
+          <ProfilePicture
+            value={data.agencyLogo}
+            onChange={(ev) => setData({...data,agencyLogo: ev.target.files[0]})}
+          
+          />
           <div className='flex flex-col justify-center'>
             <h3>Logo</h3>
             <p>Pick a logo for your agency. The upload file size limit is 1MB.</p>
           </div>
         </div>
         <div className='flex flex-col gap-4'>
-          <TextInput label={'Agency Name'} placeholder={'xyz team'}/>
+          <TextInput label={'Agency Name'} placeholder={'xyz team'}
+            value={data.agencyName}
+            onChange={(ev) => setData({...data,agencyName: ev.target.value})}
+          />
           <div>
-            <TextInput label={'Agency URL'} placeholder={'app.miles.com/agencyname'}/>
+            <TextInput
+              value={data.agencyUrl}
+              onChange={(ev) => setData({...data,agencyUrl: ev.target.value})}
+              label={'Agency URL'} placeholder={'app.miles.com/agencyname'}/>
             <div className='tooltip'>This is a unique identifier for your team. It must contain only URL-friendly characters.</div>
           </div>
         </div>
         <div className='flex sm:justify-end'>
-          <Button1 className='!self-end !text-base sm:!w-auto !px-4 !capitalize'>Save Changes</Button1>
+          <Button1 loading={loading} type='submit' className='!self-end !text-base sm:!w-auto !px-4 !capitalize'>Save Changes</Button1>
         </div>
       </form>
       <PaymentGateway />
@@ -35,7 +71,8 @@ export default function Settings() {
 function PaymentGateway() {
   const [data,setData] = useState({
     "clientId":"",
-    "clientSecret":""
+    "clientSecret":"",
+    "webhook": ''
   });
   const {enqueueSnackbar} = useSnackbar();
   const [loading,setLoading] = useState(false);
@@ -43,7 +80,6 @@ function PaymentGateway() {
   async function handleSubmit(ev) {
     ev.preventDefault()
     
-    console.log('submiting')
     setLoading(true);
     const res = await addCustomKey(data);
     setLoading(false);
@@ -59,15 +95,18 @@ function PaymentGateway() {
         <p>Use your own payment gateway by providing your Paystack key details.</p>
       </div>
       <div className='flex flex-col gap-6'>
-        <TextInput label={'Paystack Secret Key'}
+        <TextInput label={'Paystack Secret Key'} requried
           value={data.clientSecret}
           onChange={(ev) => setData({...data,clientSecret: ev.target.value})}
           placeholder={'Sk_2909320932'}/>
-        <TextInput label={'Paystack Public Key'}
+        <TextInput label={'Paystack Public Key'} requried
           value={data.clientId}
           onChange={(ev) => setData({...data,clientId: ev.target.value})}
           placeholder={'Pk_2909320932'}/>
-        <TextInput label={'Webhook'} />
+        <TextInput label={'webhook'}
+          value={data.webhook}
+          onChange={(ev) => setData({...data,webhook: ev.target.value})}
+        />
       </div>
       <div className='flex sm:justify-end'>
         <Button1 type='submit' loading={loading} className='sm:!self-end !text-base sm:!w-auto !px-4 !capitalize'>Save Changes</Button1>
