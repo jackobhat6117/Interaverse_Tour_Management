@@ -11,7 +11,7 @@ export default function AccountNav() {
   // console.log('page: ',page)
 
   return (
-    <div className='flex flex-col gap-4'>
+    <div className='flex flex-col gap-4 w-full h-full'>
       <div className='hidden sm:flex gap-2 overflow-x-auto overflow-hidden w-full'>
         <Link to="/settings/"> <Button className={`${!page ? 'btn-theme' : 'btn-theme-light'}  whitespace-nowrap`}><SettingsOutlined className={`${!page || (page==='') ? 'text-secondary/80' : ''} `} fontSize='small' /> Preference</Button></Link>
         <Link to="/settings/team"> <Button className={`${page === 'team' ? 'btn-theme':'btn-theme-light'} whitespace-nowrap`}><GroupsOutlined className={`${page === 'team' ? 'text-secondary/80' : ''} `} fontSize='small' /> Team Members</Button></Link>

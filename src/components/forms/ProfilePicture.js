@@ -10,8 +10,13 @@ export function ProfilePicture({value,onChange}) {
 
   return (
     <div>
-      <span className='w-[100px] h-[100px] flex items-center justify-center light-bg'>
-        <Add fontSize='large' onClick={handleSubmit} className='cursor-pointer' />
+      <span className='w-[100px] h-[100px] flex items-center justify-center light-bg relative'>
+        {value ? 
+          <div className="absolute">
+              <img src={value} alt='Logo' className="w-full h-full object-cover" />
+          </div>
+        :null}
+        <Add fontSize='large' onClick={handleSubmit} className='cursor-pointer hover:scale-[1.2] relative' />
         <input type='file' name='profile' onChange={onChange} className='hidden' ref={file} />
       </span>
       {/* <Modal open={open}>

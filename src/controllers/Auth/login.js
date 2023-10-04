@@ -3,7 +3,7 @@ import fetchServer from "../fetchServer";
 export default async function login(data) {
   let result = {return: 0,msg: 'Something went wrong logging user!'}
 
-  await fetchServer({method: 'POST',url: '/main/v1/account/login',data})
+  await fetchServer({method: 'POST',url: '/main/v1/account/login?populate=detail',data})
   .then((res) => {
     console.log('res: ',res)
     if(res.data && res?.data?.data) {

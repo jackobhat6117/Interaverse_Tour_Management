@@ -20,6 +20,7 @@ import AccountSettings from './pages/Settings/Agency/Account/Account';
 import AgencySetupSetting from './pages/Settings/Agency/AgencySetup.js.js';
 import MarkupSetting from './pages/Settings/Agency/Markup';
 import CommissionSettings from './pages/Settings/Agency/Commision';
+import PointsSettings from './pages/Settings/Agency/Points';
 // import 'dotenv/config'
 
 
@@ -84,6 +85,7 @@ function App() {
                     <Route path='setup' element={<AgencySetupSetting />} />
                     <Route path='markup' element={<MarkupSetting />} />
                     <Route path='commission' element={<CommissionSettings />} />
+                    <Route path='points' element={<PointsSettings />} />
                   </Route>
                 </Route>
               </Route>

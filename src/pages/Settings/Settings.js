@@ -5,15 +5,21 @@ import { ProfilePicture } from '../../components/forms/ProfilePicture'
 import { useSnackbar } from 'notistack'
 import addCustomKey from '../../controllers/settings/paystack/addCustomKey'
 import updateProfile from '../../controllers/user/updateProfile'
+import { useDispatch, useSelector } from 'react-redux'
+import { setUser } from '../../redux/reducers/userSlice'
 
 export default function Settings() {
+  const {user} = useSelector(state => state.user.userData);
   const [data,setData] = useState({
-    agencyLogo: '',
-    agencyName: '',
-    agencyUrl: '',
+    agencyLogo: user?.detail?.agencyLogo || '',
+    registeredBusinessName: user?.detail?.registeredBusinessName || '',
+    agencyUrl: user?.detail?.agencyUrl || '',
   })
   const {enqueueSnackbar} = useSnackbar();
   const [loading,setLoading] = useState(false);
+  const dispatch = useDispatch();
+
+  console.log(user)
 
   async function handleSubmit(ev) {
     ev.preventDefault();
@@ -26,6 +32,9 @@ export default function Settings() {
     setLoading(false);
     if(res.return) {
       enqueueSnackbar('Profile Updated',{variant: 'success'})
+      // console.log(res.data);
+      if(res?.data?.data)
+        dispatch(setUser(res.data.data))
     } else enqueueSnackbar(res.msg || 'Error',{variant: 'error'})
     // for (let [key, value] of formData.entries()) {
     //   console.log(`${key}: ${value}`);
@@ -48,8 +57,8 @@ export default function Settings() {
         </div>
         <div className='flex flex-col gap-4'>
           <TextInput label={'Agency Name'} placeholder={'xyz team'}
-            value={data.agencyName}
-            onChange={(ev) => setData({...data,agencyName: ev.target.value})}
+            value={data.registeredBusinessName}
+            onChange={(ev) => setData({...data,registeredBusinessName: ev.target.value})}
           />
           <div>
             <TextInput

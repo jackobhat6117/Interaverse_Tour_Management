@@ -28,22 +28,22 @@ code {
     background-color: rgba(var(--primary-color), 0.03);
   }
 
-  h1 {
+  h1,.h1 {
     @apply text-4xl sm:text-6xl font-bold;
   }
-  h2 {
+  h2,.h2 {
     @apply text-3xl sm:text-5xl font-bold;
   }
-  h3 {
+  h3,.h3 {
     @apply text-xl sm:text-4xl font-bold;
   }
-  h4 {
+  h4,.h4 {
     @apply text-base sm:text-2xl font-bold;
   }
-  h5 {
+  h5,.h5 {
     @apply text-sm sm:text-xl font-bold;
   }
-  h6 {
+  h6,.h6 {
     @apply text-xs sm:text-base font-bold;
   }
 
@@ -54,6 +54,9 @@ code {
 
   .btn {
     @apply rounded-md border bg-primary/80 text-white p-2 px-4 ;
+  }
+  .btn-small {
+    @apply btn text-sm;
   }
 
   .bg-emptypage {
