@@ -37,15 +37,16 @@ function ActionCol() {
   )
 }
 export default function TeamMembers() {
-  const [data,setData] = useState([
-    {id: 1,name: 'John Doe',email: 'johndoe@gmail.com',role: 'Owner'}
-  ])
+  const [data,setData] = useState([])
   const [filter,setFilter] = useState('All')
   const [loading,setLoading] = useState(false);
 
+  
   useEffect(() => {
-    load();
-  },[])
+    if(filter !== '')
+      load()
+    //eslint-disable-next-line react-hooks/exhaustive-deps    
+  },[filter])
 
   async function load() {
     let query = {
@@ -63,12 +64,6 @@ export default function TeamMembers() {
       // console.log(res.data?.data)
     }
   }
-
-  useEffect(() => {
-    if(filter !== '')
-      load()
-    //eslint-disable-next-line react-hooks/exhaustive-deps    
-  },[filter])
 
   let columns = [
     {field: 'name',headerName: 'Member',flex: 1},

@@ -1,11 +1,25 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import FilterCalendar from '../../../components/forms/FilterCalendar'
 import TableFilter from '../../../components/Table/TableFilter';
 import SearchInput from '../../../components/forms/SearchInput';
 import Button1 from '../../../components/forms/Button1';
 import CustomTable from '../../../components/Table/CustomTable';
+import getCommissionTransactions from '../../../controllers/Flight/Commission/getTransactions';
 
 export default function CommissionSettings() {
+  const [commissionFor,setCommissionFor] = useState('Flights');
+
+  useEffect(() => {
+    load();
+  },[])
+
+  async function load() {
+    const res = await getCommissionTransactions();
+    if(res.return) {
+      console.log(res.data)
+    }
+  }
+
   let objs = [
     {label: "Today's earnings",inc: 5,price: '10,000.00'},
     {label: "Last 7 days",inc: 15,price: '23,450.00'},
@@ -37,6 +51,24 @@ export default function CommissionSettings() {
   ]
   return (
     <div className='content-max-w flex flex-col gap-5'>
+      <div className='flex gap-3 flex-wrap'>
+        <button onClick={() => setCommissionFor('Flights')}
+          className={`flex p-3 px-5 items-center min-w-[120px] justify-center gap-2 ${commissionFor === 'Flights' ? '!btn':'!btn-theme-light'} `}
+        >
+          Flights
+        </button>
+        <button onClick={() => setCommissionFor('Stays')}
+          className={`flex p-3 px-5 items-center min-w-[120px] justify-center gap-2 ${commissionFor === 'Stays' ? '!btn':'!btn-theme-light'} `}
+        >
+          Stays
+        </button>
+        <button onClick={() => setCommissionFor('Tours')}
+          className={`flex p-3 px-5 items-center min-w-[120px] justify-center gap-2 ${commissionFor === 'Tours' ? '!btn':'!btn-theme-light'} `}
+        >
+          Tours
+        </button>
+      </div>
+
       <div className='flex items-center justify-between gap-4'>
         <h4 className='text-primary/40'>Commission Overview</h4>
         <div>

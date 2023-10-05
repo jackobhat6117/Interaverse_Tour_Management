@@ -28,7 +28,7 @@ export default function PhoneNumberInput({value,onChange,label,className,disable
     setOpen(false);
     try {
       let cod = newVal || code;
-      onChange(cod.replace('+','')+"-"+phone);
+      onChange && onChange(cod.replace('+','')+"-"+phone);
     } catch(ex) {}
   }
   return (
@@ -43,7 +43,7 @@ export default function PhoneNumberInput({value,onChange,label,className,disable
         onChange={() => true}
         onFocus={() => {setOpen(true); setTimeout(() => {sqRef.current && sqRef.current.focus()},100)}} />
       <input className='flex-1 !border-0' name='phone' ref={phoneRef} disabled={disabled}
-        placeholder='912341234'
+        placeholder='940067966'
         value={phone||""}
         maxLength={10}
         tabIndex={0}

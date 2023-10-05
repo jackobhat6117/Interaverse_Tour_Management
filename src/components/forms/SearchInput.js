@@ -8,6 +8,8 @@ import { alertType } from '../../data/constants'
 SearchInput.propTypes = {
   label: PropTypes.string,
   placeHolder: PropTypes.string,
+  exampleView: PropTypes.bool,
+  searchView: PropTypes.bool,
 }
 export default function SearchInput(props) {
   const [exampleOpen,setExampleOpen] = useState(false);
@@ -56,8 +58,12 @@ export default function SearchInput(props) {
           // }}
         {...props}
       />
-      <ExampleHandle open={exampleOpen} />
-      <SearchHandle open={resultOpen} />
+      {props.exampleview ? 
+        <ExampleHandle open={exampleOpen} />
+      :null}
+      {props.searchView ? 
+        <SearchHandle open={resultOpen} />
+      :null}
     </div>
   )
 }

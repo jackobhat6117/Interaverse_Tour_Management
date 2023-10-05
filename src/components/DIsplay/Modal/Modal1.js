@@ -1,13 +1,17 @@
 import { Clear } from '@mui/icons-material'
-import { ClickAwayListener, Modal } from '@mui/material'
+import { Modal } from '@mui/material'
 import React from 'react'
 
 export default function Modal1({open,setOpen,children}) {
+  function handleCLickAway(ev) {
+    if(ev.target.parentElement.getAttribute('name') && (ev.target.getAttribute('name') !== 'modalChild'))
+      setOpen(false);
+  }
   return (
     <div>
-      <Modal open={open} setOpen={setOpen} className='flex flex-col relative items-center justify-center p-4'>
-        <ClickAwayListener onClickAway={() => setOpen(false)}>
-          <div className='flex flex-col gap-3 max-h-screen p-4 '>
+      <Modal open={open} setOpen={setOpen} className='flex flex-col relative items-center justify-center p-4' name='ModalParent' onClick={(ev) => handleCLickAway(ev)}>
+        {/* <ClickAwayListener onClickAway={() => setOpen(false)}> */}
+          <div className='flex flex-col gap-3 max-h-screen p-4 ' name='modalChild'>
             <div className='block sm:hidden bg-secondary text-primary p-2 rounded-md self-end cursor-pointer hover:scale-[.9] ' onClick={() => setOpen(false)}>
               <Clear />
             </div>
@@ -15,7 +19,7 @@ export default function Modal1({open,setOpen,children}) {
               {children}
             </div>
           </div>
-        </ClickAwayListener>
+        {/* </ClickAwayListener> */}
       </Modal>
     </div>
   )

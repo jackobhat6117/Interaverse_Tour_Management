@@ -144,7 +144,7 @@ export default function RevenuAnalytics() {
       </div>
       <div className='flex flex-col sm:flex-row flex-wrap lg:flex-nowrap sm:items-start gap-4 min-w-[25%] w-full '>
         <div className='light-bg flex-1 p-4 max-w-full lg:w-[65%]'>
-          <Bar options={options} data={data} className='md:min-h-[60vh] max-h-[80vh] w-full' />
+          <Bar options={options} data={data} className='md:xmin-h-[60vh] max-h-[80vh] w-full' />
         </div>
         <div className='light-bg p-4 flex md:flex-col flex-1 md:flex-none justify-between flex-wrap gap-6 '>
           <div className='flex flex-col w-full gap-3'>

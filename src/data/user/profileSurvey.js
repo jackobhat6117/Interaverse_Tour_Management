@@ -4,5 +4,9 @@ export const profileSurveyData = {
   "sizeOfOrganization": "", //Small, Medium, Large
   "typeOfBusiness": "",
   "goalsWithMiles": "",
-  "interestedIn": "" //Flight, Stay, Tour, Protection
+  "interestedIn": "", //Flight, Stay, Tour, Protection
+
+  "address": {
+    'location': []
+  }
 }

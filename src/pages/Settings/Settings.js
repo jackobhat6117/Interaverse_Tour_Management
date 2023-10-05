@@ -47,7 +47,7 @@ export default function Settings() {
         <div className='flex gap-4'>
           <ProfilePicture
             value={data.agencyLogo}
-            onChange={(ev) => setData({...data,agencyLogo: ev.target.files[0]})}
+            onChange={(value) => {setData({...data,agencyLogo: value}); console.log(value)}}
           
           />
           <div className='flex flex-col justify-center'>
@@ -104,11 +104,11 @@ function PaymentGateway() {
         <p>Use your own payment gateway by providing your Paystack key details.</p>
       </div>
       <div className='flex flex-col gap-6'>
-        <TextInput label={'Paystack Secret Key'} requried
+        <TextInput label={'Paystack Secret Key'} required
           value={data.clientSecret}
           onChange={(ev) => setData({...data,clientSecret: ev.target.value})}
           placeholder={'Sk_2909320932'}/>
-        <TextInput label={'Paystack Public Key'} requried
+        <TextInput label={'Paystack Public Key'} required
           value={data.clientId}
           onChange={(ev) => setData({...data,clientId: ev.target.value})}
           placeholder={'Pk_2909320932'}/>
