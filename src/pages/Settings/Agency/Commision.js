@@ -21,10 +21,10 @@ export default function CommissionSettings() {
   }
 
   let objs = [
-    {label: "Today's earnings",inc: 5,price: '10,000.00'},
-    {label: "Last 7 days",inc: 15,price: '23,450.00'},
-    {label: "Last 30 days",inc: 15,price: '23,450.00'},
-    {label: "Overall",inc: 15,price: '12,345,000.00'},
+    {label: "Today's earnings",inc: 5,price: '10,000'},
+    {label: "Last 7 days",inc: 15,price: '23,450'},
+    {label: "Last 30 days",inc: 15,price: '23,450'},
+    {label: "Overall",inc: 15,price: '12,345,000'},
   ];
   const filterOptions = [
     {value: 'All',count: 293},

@@ -50,7 +50,7 @@ export default function BalanceSetting() {
         <div>
           <div className='card p-4 rounded-lg text-right'>
             <h5>Current Balance <span className='text-primary/50'>(NGN)</span></h5>
-            <h4 className='text-theme1'>100,000,000.00</h4>
+            <h4 className='text-theme1'>100,000,000</h4>
           </div>
         </div>
       </div>

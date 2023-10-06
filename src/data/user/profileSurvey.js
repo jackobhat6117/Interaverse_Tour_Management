@@ -7,6 +7,27 @@ export const profileSurveyData = {
   "interestedIn": "", //Flight, Stay, Tour, Protection
 
   "address": {
-    'location': []
+    'location': [],
+    "businessLocation": "",
+    "lga": "",
+    "addressOne": "",
+    "addressTwo": "",
+    "additionalInfo": "",
+  },
+  "businessLocation": '',
+  'position': '',
+
+	"agencyURL":"",
+	"agencyLogo":"",
+  "legalInfo": {
+    "phone": '',
+    "country": '',
+    "taxIdentification": '',
+  },
+  "contact": {
+    "firstName": '',
+    "lastName": '',
+    "position": '',
+    "email": '',
   }
 }
