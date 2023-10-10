@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Button1 from '../../components/forms/Button1'
 import { FileDownloadOutlined } from '@mui/icons-material'
 import CustomTable from '../../components/Table/CustomTable'
@@ -6,6 +6,9 @@ import { alertType } from '../../data/constants'
 import Modal1 from '../../components/DIsplay/Modal/Modal1'
 import TextInput from '../../components/forms/TextInput'
 import FilterCalendar from '../../components/forms/FilterCalendar'
+import getWallet from '../../controllers/settings/wallet/getWallet'
+import topupWallet from '../../controllers/settings/wallet/topupWallet'
+import { useSnackbar } from 'notistack'
 
 
 export default function BalanceSetting() {
@@ -27,6 +30,18 @@ export default function BalanceSetting() {
     {id: 2,description: 'TOP-UP',bookingRef: null,amount: 123123,balance: 123123,supplier: 'Turkish Airline',date: '9/29/2023',action: 'created'},
     {id: 3,description: 'ord_0000AV9MwafcDvAKVr6zWC',bookingRef: '1RD231',amount: 123123,balance: 123123,supplier: 'Turkish Airline',action: 'cancelled',date: '9/29/2023'},
   ]
+  const [balanceData,setBalanceData] = useState({balance: 0});
+
+  useEffect(() => {
+    load();
+  },[])
+
+  async function load() {
+    const res = await getWallet();
+    if(res.return) {
+      setBalanceData(res?.data);
+    }
+  }
   return (
     <div className='flex flex-col gap-4 !text-primary/60 '>
       <div className='flex justify-between items-center gap-4 flex-wrap'>
@@ -42,7 +57,7 @@ export default function BalanceSetting() {
       <div className='flex justify-between flex-wrap'>
         <div className='flex flex-col gap-3 mb-4'>
           <div className='inline-block self-start'>
-            <Button1>Top-up Balance</Button1>
+            <TopupBalance reload={load} />
           </div>
           <div className='tooltip'>In test mode your balance is unlimited. It is topped-off automatically as you spend it.</div>
           <div className='tooltip error'>You don't have enought amount in your balance. Please top-up.</div>
@@ -50,11 +65,63 @@ export default function BalanceSetting() {
         <div>
           <div className='card p-4 rounded-lg text-right'>
             <h5>Current Balance <span className='text-primary/50'>(NGN)</span></h5>
-            <h4 className='text-theme1'>100,000,000</h4>
+            <h4 className='text-theme1'>{balanceData.balance}</h4>
           </div>
         </div>
       </div>
       <CustomTable rows={data} columns={columns} />
+    </div>
+  )
+}
+
+function TopupBalance({reload}) {
+  const [open,setOpen] = useState(false);
+  const [data,setData] = useState({amount: 0})
+  const [loading,setLoading] = useState(false);
+  const {enqueueSnackbar} = useSnackbar();
+
+  async function handleTopup() {
+    setLoading(true);
+    const res = await topupWallet(data)
+    setLoading(false);
+    if(res.return) {
+      const newWindow = window.open(res?.data?.data?.authorization_url,'_blank');
+      
+      const intervalId = setInterval(() => {
+        if (newWindow.closed) {
+          clearInterval(intervalId); // Stop checking
+          handleClose(); // Call your close handler function
+        }
+      }, 1000);
+      
+      function handleClose() {
+        setOpen(false)
+        enqueueSnackbar('Successful',{variant: 'success'})
+        reload && reload();
+      }
+    } else enqueueSnackbar(res.msg,{variant: 'error'})
+  }
+  return (
+    <div>
+      <Button1
+        onClick={() => setOpen(true)}
+      >Top-up Balance</Button1>
+      <Modal1 open={open} setOpen={setOpen}>
+        <div className='p-4 flex flex-col gap-6 max-w-[800px]'>
+          <h4>Top-up balance</h4>
+          <TextInput label='Amount' 
+            value={data.amount}
+            onChange={(ev) => setData({...data,amount: ev.target.value})}
+            InputProps={{
+              endAdornment: 'NGN'
+            }}
+           />
+        </div>
+        <div className='flex gap-2 p-4'>
+          <Button1 className='btn-theme-light' onClick={() => setOpen(false)}>Cancel</Button1>
+          <Button1 loading={loading} onClick={handleTopup}>Save Changes</Button1>
+        </div>
+      </Modal1>
     </div>
   )
 }

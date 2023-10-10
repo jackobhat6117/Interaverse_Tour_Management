@@ -23,6 +23,8 @@ import removeWebhook from '../../controllers/webhook/removeWebhook';
 import suspendWebhook from '../../controllers/webhook/suspendWebhook';
 import { alertType } from '../../data/constants';
 import EditableInput from '../../components/forms/EditableInput';
+import getWebhookEvents from '../../controllers/webhook/getWebookEvent';
+import Checkbox from '../../components/forms/Checkbox';
 
 
 export default function DeveloperSetting() {
@@ -62,7 +64,7 @@ function WebHook() {
     const res = await getWebhooks();
     if(res.return) {
       if(res?.data?.data) {
-        let data = res?.data?.data?.data?.map(obj => ({...obj,id: obj._id})) || []
+        let data = res?.data?.data?.map(obj => ({...obj,id: obj._id})) || []
         setData(data)
       }
     }
@@ -79,7 +81,13 @@ function WebHook() {
 
   let columns = [
     {field: 'status',headerName: 'Status',flex: 1},
-    {field: 'events',headerName: 'Event',flex: 1},
+    {field: 'events',headerName: 'Event',flex: 1,
+      renderCell: (params) => (
+        <div title={params.value?.join(', ')}>
+          {params.value?.join(', ')}
+        </div>
+      )
+    },
     {field: 'createdAt',headerName: 'Date Created',flex: 1,
       renderCell: (params) => (
         <div>
@@ -137,6 +145,7 @@ function WebHook() {
     {label: 'Succeded',value: 'Succeded'},
     {label: 'Failed',value: 'Failed'}
   ]
+  console.log('data ',data)
   return (
     <div className={`flex flex-col gap-4 !text-primary/60 ${!data.length ? 'bg-emptypage flex-1 h-full ':''}`}>
       <div className='flex gap-4 justify-between'>
@@ -155,6 +164,9 @@ function WebHook() {
         </div>
       ):(
         <div className='max-w-[600px] flex flex-col gap-2'>
+          <div className='flex '>
+            <CreateWebHook reload={() => load()} />
+          </div>
             
           {webhook && !loading ?  // Single webhook view
             <div className='flex flex-col gap-2'>
@@ -216,14 +228,22 @@ function WebHook() {
 }
 
 function CreateWebHook({reload}) {
-  const [data,setData] = useState({url: '',event: ''});
+  const [data,setData] = useState({url: '',events: []});
+  const [events,setEvents] = useState([]);
   const [open,setOpen] = useState(false);
   const [loading,setLoading] = useState(false);
   const {enqueueSnackbar} = useSnackbar();
-  let objs = [
-    {title: 'Order created'},
-    {title: 'Airline initiation change'},
-  ]
+
+  useEffect(() => {
+    load();
+  },[])
+
+  async function load() {
+    const res = await getWebhookEvents();
+    if(res.return) {
+      setEvents(res.data || [])
+    }
+  }
 
   async function handleSubmit(ev) {
     ev.preventDefault();
@@ -241,6 +261,15 @@ function CreateWebHook({reload}) {
     } else enqueueSnackbar(res.msg,{variant: 'error'})
   }
 
+  const handleCheckboxChange = (value) => {
+    setData((data) => {
+      if (data.events.includes(value)) {
+        return {...data,events: data.events.filter((val) => val !== value)};
+      } else {
+        return {...data,events: [...data.events, value]};
+      }
+    });
+  };
 
   return (
     <div>
@@ -252,16 +281,21 @@ function CreateWebHook({reload}) {
             value={data.url} 
             onChange={(ev) => setData({...data,url: ev.target.value})}
             label={'URL'} placeholder={'https://www.webhook.com'} tooltip='Must be for an https server. We do not accept IP addresses and some URLs are blacklisted (e.g. https://localhost).' />
-          <RadioGroup className='flex flex-col gap-2' onChange={(ev) => setData({...data,event: ev.target.value})}>
+          {/* <RadioGroup className='flex flex-col gap-2' multiple onChange={(ev) => setData({...data,event: ev.target.value})}>
             Events to listen to
-            {objs.map((obj,i) => (
-              <RadioInput value={obj.title} checked={data.event === obj.title}>
+            {events.map((val,i) => (
+              <RadioInput key={i} value={val} checked={data.event === val}>
                 <div className='self-center'>
-                  {obj.title}
+                  {val}
                 </div>
               </RadioInput>
             ))}
-          </RadioGroup>
+          </RadioGroup> */}
+          <div className='flex flex-col gap-2'>
+            {events.map((val,i) => (
+              <Checkbox key={i} onChange={() => handleCheckboxChange(val)}>{val}</Checkbox>
+            ))}
+          </div>
           <div className='flex gap-2 '>
             <div>
               <Button1 onClick={() => setOpen(false)} variant='outlined' className='w-[20%]'>Cancel</Button1>

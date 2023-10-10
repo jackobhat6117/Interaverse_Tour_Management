@@ -11,7 +11,7 @@ export default function Dashboard() {
       <div className='flex gap-6 flex-wrap '>
         <div className='flex gap-1 whitespace-nowrap'>
           Welcome back,
-          <b>{user.firstName} {user.lastName}</b>
+          <b>{user?.firstName} {user?.lastName}</b>
         </div>
         <div className='flex-1 flex flex-wrap md:flex-nowrap gap-4 justify-end'>
           <Link className='btn whitespace-nowrap flex-1 md:flex-none' to="/">Create a new order</Link>

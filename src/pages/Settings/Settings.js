@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import TextInput from '../../components/forms/TextInput'
 import Button1 from '../../components/forms/Button1'
 import { ProfilePicture } from '../../components/forms/ProfilePicture'
@@ -7,13 +7,14 @@ import addCustomKey from '../../controllers/settings/paystack/addCustomKey'
 import updateProfile from '../../controllers/user/updateProfile'
 import { useDispatch, useSelector } from 'react-redux'
 import { setUser } from '../../redux/reducers/userSlice'
+import getCustomKeys from '../../controllers/settings/paystack/getCustomKey'
 
 export default function Settings() {
   const {user} = useSelector(state => state.user.userData);
   const [data,setData] = useState({
     agencyLogo: user?.detail?.agencyLogo || '',
     registeredBusinessName: user?.detail?.registeredBusinessName || '',
-    agencyUrl: user?.detail?.agencyUrl || '',
+    agencyURL: user?.detail?.agencyURL || '',
   })
   const {enqueueSnackbar} = useSnackbar();
   const [loading,setLoading] = useState(false);
@@ -62,8 +63,8 @@ export default function Settings() {
           />
           <div>
             <TextInput
-              value={data.agencyUrl}
-              onChange={(ev) => setData({...data,agencyUrl: ev.target.value})}
+              value={data.agencyURL}
+              onChange={(ev) => setData({...data,agencyURL: ev.target.value})}
               label={'Agency URL'} placeholder={'app.miles.com/agencyname'}/>
             <div className='tooltip'>This is a unique identifier for your team. It must contain only URL-friendly characters.</div>
           </div>
@@ -85,6 +86,24 @@ function PaymentGateway() {
   });
   const {enqueueSnackbar} = useSnackbar();
   const [loading,setLoading] = useState(false);
+
+  useEffect(() => {
+    load()
+  },[])
+
+  async function load() {
+    const res = await getCustomKeys();
+    if(res.return) {
+      let datas = res.data?.data || []
+      try {
+        setData({
+          clientId: datas[0].clientId,
+          clientSecret: datas[0].clientSecret,
+          webhook: datas[0].webhook || '',
+        })
+      } catch(ex) {}
+    }
+  }
 
   async function handleSubmit(ev) {
     ev.preventDefault()

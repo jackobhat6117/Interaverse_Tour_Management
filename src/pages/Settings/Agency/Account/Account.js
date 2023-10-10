@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import TextInput from '../../../../components/forms/TextInput'
 import EmailInput from '../../../../components/forms/EmailInput'
 import Button1 from '../../../../components/forms/Button1'
@@ -6,23 +6,59 @@ import PasswordInput from '../../../../components/forms/PasswordInput'
 import { Link } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import updatePassword from '../../../../controllers/user/updatePassword'
+import { useSelector } from 'react-redux'
+import updateProfile from '../../../../controllers/user/updateProfile'
 
 export default function AccountSettings() {
+  const {user} = useSelector(state => state.user.userData);
+  const [data,setData] = useState({firstName: '',lastName: '',email: ''});
+  const [loading,setLoading] = useState(false);
+  const {enqueueSnackbar} = useSnackbar();
+
+  useEffect(() => {
+    setData(data => ({...data,firstName: user?.firstName || '',lastName: user?.lastName || '',email: user?.email || ''}))
+  },[user])
+
+  function handleFullName(val) {
+    let fullName = val.split(' ');
+    let firstName = fullName[0]
+    let lastName = fullName[1]
+    setData({...data,firstName,lastName})
+  }
+
+  async function handleSubmit(ev) {
+    ev && ev.preventDefault();
+
+    setLoading(true);
+    const res = await updateProfile(data);
+    setLoading(false);
+    if(res.return) {
+      enqueueSnackbar('Profile Updated.',{variant: 'success'})
+    } else enqueueSnackbar(res.msg,{variant: 'error'})
+  }
+
   return (
     <div className='content-max-w flex flex-col gap-4'>
-      <div className='flex flex-col gap-4'>
+      <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
         <h4>Information</h4>
-        <TextInput label={'Full name'} placeholder={'Okafor Chiemena'} />
-        <EmailInput tooltip={
-          <div>
-            To complete your registration, please verify your email with the link we sent to <b>abcdefxyz@gmail.com.</b> 
-            Didn't receive an email? <b>Resend confirmation link</b>
-          </div>
-        } />
+        <TextInput label={'Full name'} placeholder={'Okafor Chiemena'} 
+          value={data.firstName+' '+data.lastName}
+          onChange={(ev) => handleFullName(ev.target.value)}
+        />
+        <EmailInput 
+          value={data.email}
+          onChange={(ev) => setData({...data,email: ev.target.value})}
+          tooltip={
+            <div>
+              To complete your registration, please verify your email with the link we sent to <b>abcdefxyz@gmail.com.</b> 
+              Didn't receive an email? <b>Resend confirmation link</b>
+            </div>
+          } 
+        />
         <div className='flex justify-end'>
-          <Button1 className='!w-auto'>Save Changes</Button1>
+          <Button1 type='submit' loading={loading} className='!w-auto'>Save Changes</Button1>
         </div>
-      </div>
+      </form>
       <ChangePassword />
       <div className='bg-red-300 text-gray-600 flex flex-col gap-3 p-4 rounded-lg'>
         <h5>Delete Account</h5>

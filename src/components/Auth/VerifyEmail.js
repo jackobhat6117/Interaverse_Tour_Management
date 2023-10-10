@@ -27,7 +27,7 @@ export default function VerifyEmail() {
     const res = await verifyEmail((new URLSearchParams(data)).toString());
     setLoading(false);
     if(res.return) {
-      enqueueSnackbar(res.msg || 'Welcome, your email has been verified.',{variant: 'success'});
+      enqueueSnackbar('Welcome, your email has been verified.',{variant: 'success'});
       let {token: accessToken,account: user} = res.data;
       dispatch(setUserData({accessToken,user,loggedIn: true}))
       setTimeout(() => {
@@ -70,7 +70,7 @@ export default function VerifyEmail() {
             onChange={(ev) => setData({...data,otp: ev.target.value})}
           />
           <div className='self-start -my-3'>
-            <Button1 loading={loading} type='submit' label={'Resend'} onClick={resSubmit} variant='text'></Button1>
+            <Button1 loading={loading} label={'Resend'} onClick={resSubmit} variant='text'></Button1>
           </div>
           <Button1 loading={loading} type='submit' label={'Verify'}></Button1>
           <div className='self-center text-center flex flex-col gap-3 w-full'>

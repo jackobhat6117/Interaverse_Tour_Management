@@ -5,6 +5,7 @@ import SearchInput from '../../../components/forms/SearchInput';
 import Button1 from '../../../components/forms/Button1';
 import CustomTable from '../../../components/Table/CustomTable';
 import getCommissionTransactions from '../../../controllers/Flight/Commission/getTransactions';
+// import { commissionTransactionData } from '../../../data/transaction/commissionTransaction';
 
 export default function CommissionSettings() {
   const [commissionFor,setCommissionFor] = useState('Flights');
@@ -49,6 +50,7 @@ export default function CommissionSettings() {
     {sn: '5',provider: 'gb Travels',type: 'tour',id: 'ord_000A9123FW3aCGq6c',amount: '234,234',commission: '4,900',date: '22/12/99'},
     {sn: '6',provider: 'gb Travels',type: 'tour',id: 'ord_000A9123FW3aqBq6c',amount: '234,234',commission: '4,900',date: '22/12/99'},
   ]
+  // let tempData = commissionTransactionData.map(obj => ({...obj,id: obj._id}));
   return (
     <div className='content-max-w flex flex-col gap-5'>
       <div className='flex gap-3 flex-wrap'>

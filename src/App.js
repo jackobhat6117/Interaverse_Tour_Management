@@ -21,6 +21,7 @@ import AgencySetupSetting from './pages/Settings/Agency/AgencySetup.js.js';
 import MarkupSetting from './pages/Settings/Agency/Markup';
 import CommissionSettings from './pages/Settings/Agency/Commision';
 import PointsSettings from './pages/Settings/Agency/Points';
+import PageNotFound from './pages/PageNotFound';
 // import 'dotenv/config'
 
 
@@ -70,6 +71,7 @@ function App() {
               <Route path='/' element={<AuthValidate />}>
                 <Route path='/' element={<Navbar />}>
                   <Route index element={<Dashboard />} />
+                  <Route path='*' element={<PageNotFound />} />
                 </Route>
                 <Route path='settings' element={<SettingSideBar />}>
                   <Route path='' element={<AccountNav />}>
@@ -79,6 +81,7 @@ function App() {
                     <Route path='security' element={<SecuritySettings />} />
                     <Route path='balance' element={<BalanceSetting />} />
                     <Route path='developer' element={<DeveloperSetting />} />
+                    <Route path='*' element={<PageNotFound />} />
                   </Route>
                   <Route path='agency' element={<AccountSetupNav />}>
                     <Route index element={<AccountSettings />} />
@@ -86,6 +89,7 @@ function App() {
                     <Route path='markup' element={<MarkupSetting />} />
                     <Route path='commission' element={<CommissionSettings />} />
                     <Route path='points' element={<PointsSettings />} />
+                    <Route path='*' element={<PageNotFound />} />
                   </Route>
                 </Route>
               </Route>

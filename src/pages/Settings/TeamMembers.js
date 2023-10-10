@@ -10,17 +10,28 @@ import { useSnackbar } from 'notistack';
 import CustomTable from '../../components/Table/CustomTable';
 import { Delete, Edit, Settings } from '@mui/icons-material';
 import TableMenu from '../../components/mini/TableMenu';
+import deleteTeamMember from '../../controllers/settings/team/deleteTeamMember';
 
 
 
-function ActionCol() {
+function ActionCol({params,reload}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
+  const {enqueueSnackbar} = useSnackbar();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
     setOpen((prev) => !prev);
   };
+
+  async function handleDelete() {
+    const res = await deleteTeamMember(params.id);
+    if(res.return) {
+      enqueueSnackbar('Removed',{variant: 'success'})
+      reload && reload();
+    } else
+      enqueueSnackbar(res.msg,{variant: 'error'})
+  }
   
   return (
     <div className='flex justify-end px-2 w-full'>
@@ -29,8 +40,10 @@ function ActionCol() {
         <Button className='flex btn-theme-light !test !justify-start !text-start items-center gap-2 p-2'>
           <Edit className='text-primary/50' fontSize='small' />
           Update role</Button>
-        <Button className='flex btn-theme-light !test !justify-start !text-start items-center gap-2 p-2'>
-          <Delete className='text-primary/50' fontSize='small' />
+        <Button className='flex btn-theme-light !test !justify-start !text-start items-center gap-2 p-2'
+          onClick={handleDelete}
+        >
+          <Delete className='text-primary/50' fontSize='small'/>
           Delete</Button>
       </TableMenu>
     </div>
@@ -72,7 +85,7 @@ export default function TeamMembers() {
     {field: 'action',headerName: '',flex: 2,
       renderCell: (params) => {
         return (
-          <ActionCol />
+          <ActionCol reload={load} params={params} />
         )
       }
     },

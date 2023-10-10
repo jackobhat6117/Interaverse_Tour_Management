@@ -3,7 +3,7 @@ import Checkbox from '../forms/Checkbox'
 
 
 export default function ProductTypes({data,returnData}) {
-  const [selectedValues, setSelectedValues] = useState(data?.interestedIn || []);
+  const [selectedValues, setSelectedValues] = useState([]);
 
   useEffect(() => {
     selectedValues.length && returnData &&

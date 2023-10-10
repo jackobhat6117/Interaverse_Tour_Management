@@ -1,4 +1,4 @@
-import React, { cloneElement, useCallback, useState } from 'react'
+import React, { cloneElement, useCallback, useEffect, useState } from 'react'
 import ProductTypes from './ProductTypes';
 import { Box, Dialog } from '@mui/material';
 import Button1 from '../forms/Button1';
@@ -8,6 +8,8 @@ import MilesGoal from './MilesGoal';
 import { profileSurveyData } from '../../data/user/profileSurvey';
 import updateProfile from '../../controllers/user/updateProfile';
 import { useSnackbar } from 'notistack';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser } from '../../redux/reducers/userSlice';
 
 
 const steps = [
@@ -21,31 +23,54 @@ const CurComp = (props) => {
 }
 
 export default function ProfileSurvey() {
-  const [step,setStep] = useState(0);
   let skiped = sessionStorage?.getItem('profileSurvey');
   const [open,setOpen] = useState(skiped === 'skip' ? false : true);
-  const [data,setData] = useState(profileSurveyData);
+  const {user} = useSelector(state => state.user.userData);
+  const [data,setData] = useState({...profileSurveyData,...(user?.detail || {})});
   const {enqueueSnackbar} = useSnackbar();
   const [loading,setLoading] = useState(false);
-
+  const dispatch = useDispatch();
+  const [step,setStep] = useState(() => {
+    let cur = 0;
+    if(user?.detail?.interestedIn.length)
+      cur = 1;
+    if(user?.detail?.sizeOfOrganization)
+      cur = 2;
+    if(user?.detail?.registeredBusinessName && user?.detail?.typeOfBusiness)
+      cur = 3;
+    
+    return cur
+  });
 
   async function sendProfile() {
     let modData = {...data};
-    modData['interestedIn'] = data?.interestedIn?.join(',');
-    console.log('modData: ',data,modData)
+    // modData['interestedIn'] = data?.interestedIn?.join(',');
+    // console.log('modData: ',data,{...profileSurveyData,...(user.detail || {})})
+    // if(JSON.stringify(data) === JSON.stringify({...profileSurveyData,...(user.detail || {})}))
+    //   return setStep(step => step < steps.length-1 ? step+1 : step && setOpen(false))
+
     setLoading(true);
     const res = await updateProfile(modData)
     setLoading(false);
     if(res.return) {
-      enqueueSnackbar('Profile Updated',{variant: 'success'});
-      setOpen(false);
+      if(step < steps.length-1) {
+        setStep(step => step+1)
+      } else {
+        enqueueSnackbar('Profile Completed',{variant: 'success'});
+        // dispatch(setUser(res?.data?.data))
+        setOpen(false);
+      }
+      res?.data?.data &&
+      dispatch(setUser(res?.data?.data))
+
     } else enqueueSnackbar(res.msg,{variant: 'error'})
   }
 
   const stepNext = () => {
-    if(step < steps.length-1 )
-      setStep(step => step+1)
-    else sendProfile(data);
+    // if(step < steps.length-1 )
+      // setStep(step => step+1)
+    // else 
+      sendProfile(data);
   }
 
   const stepBack = () => {
@@ -61,7 +86,7 @@ export default function ProfileSurvey() {
     setData((prevData) => ({...prevData,...updatedData}));
   },[])
 
-  return (
+  return !user?.detail?.isProfileComplete && (
     <div>
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth={'sm'} className='backdrop-blur-sm relative'>
         <Box className='pd-md relative'>

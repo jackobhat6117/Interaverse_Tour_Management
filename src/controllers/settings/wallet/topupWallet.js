@@ -1,9 +1,9 @@
 import fetchServer from "../../fetchServer"
 
-export default async function deleteTeamMember(id) {
+export default async function topupWallet(data) {
   let result = {return: 0,msg: 'Something went wrong removing member!'}
 
-  await fetchServer({method: 'DELETE',url: '/main/v1/team/remove/'+id})
+  await fetchServer({method: 'POST',url: '/payment/v1/wallet',data})
   .then((res) => {
     // console.log(" => ",res)
     if(res?.data && !res?.data?.error) {
