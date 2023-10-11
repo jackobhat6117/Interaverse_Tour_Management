@@ -8,6 +8,7 @@ import updateProfile from '../../controllers/user/updateProfile'
 import { useDispatch, useSelector } from 'react-redux'
 import { setUser } from '../../redux/reducers/userSlice'
 import getCustomKeys from '../../controllers/settings/paystack/getCustomKey'
+import PasswordInput from '../../components/forms/PasswordInput'
 
 export default function Settings() {
   const {user} = useSelector(state => state.user.userData);
@@ -123,7 +124,7 @@ function PaymentGateway() {
         <p>Use your own payment gateway by providing your Paystack key details.</p>
       </div>
       <div className='flex flex-col gap-6'>
-        <TextInput label={'Paystack Secret Key'} required
+        <PasswordInput label={'Paystack Secret Key'} required
           value={data.clientSecret}
           onChange={(ev) => setData({...data,clientSecret: ev.target.value})}
           placeholder={'Sk_2909320932'}/>

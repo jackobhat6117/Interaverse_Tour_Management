@@ -5,8 +5,8 @@ import TextInput from './TextInput';
 
 
 export default function PasswordInput(props) {
-  const {label,className,...restProps} = props;
-  const [showPassword, setShowPassword] = useState(false);
+  const {label,className,show,...restProps} = props;
+  const [showPassword, setShowPassword] = useState(show || false);
 
 
   return (

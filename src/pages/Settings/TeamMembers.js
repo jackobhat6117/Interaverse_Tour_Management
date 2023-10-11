@@ -11,6 +11,9 @@ import CustomTable from '../../components/Table/CustomTable';
 import { Delete, Edit, Settings } from '@mui/icons-material';
 import TableMenu from '../../components/mini/TableMenu';
 import deleteTeamMember from '../../controllers/settings/team/deleteTeamMember';
+import LearnMoreButton from '../../components/mini/LearnMoreButton';
+import activateTeamMember from '../../controllers/settings/team/activateTeamMember';
+import deactivateTeamMember from '../../controllers/settings/team/deactivateTeamMember copy';
 
 
 
@@ -32,14 +35,40 @@ function ActionCol({params,reload}) {
     } else
       enqueueSnackbar(res.msg,{variant: 'error'})
   }
+  async function handleActivate() {
+    const res = await activateTeamMember(params.id);
+    if(res.return) {
+      enqueueSnackbar('Activated',{variant: 'success'})
+      reload && reload();
+    } else
+      enqueueSnackbar(res.msg,{variant: 'error'})
+  }
+  async function handleDeactivate() {
+    const res = await deactivateTeamMember(params.id);
+    if(res.return) {
+      enqueueSnackbar('Deactivated',{variant: 'success'})
+      reload && reload();
+    } else
+      enqueueSnackbar(res.msg,{variant: 'error'})
+  }
   
   return (
     <div className='flex justify-end px-2 w-full'>
       <Settings onClick={handleClick} className='text-primary/70 cursor-pointer' />
       <TableMenu open={open} anchorEl={anchorEl} setOpen={setOpen}>
-        <Button className='flex btn-theme-light !test !justify-start !text-start items-center gap-2 p-2'>
-          <Edit className='text-primary/50' fontSize='small' />
-          Update role</Button>
+        {['Inactive','Deactivated'].includes(params?.row?.status) ? 
+          <Button className='flex btn-theme-light !test !justify-start !text-start items-center gap-2 p-2'
+            onClick={handleActivate}
+          >
+            <Edit className='text-primary/50' fontSize='small' />
+            Activate</Button>
+        :
+          <Button className='flex btn-theme-light !test !justify-start !text-start items-center gap-2 p-2'
+            onClick={handleDeactivate}
+          >
+            <Edit className='text-primary/50' fontSize='small' />
+            Deactivate</Button>
+        }
         <Button className='flex btn-theme-light !test !justify-start !text-start items-center gap-2 p-2'
           onClick={handleDelete}
         >
@@ -92,8 +121,18 @@ export default function TeamMembers() {
   ]
   return (
     <div className='flex flex-col gap-4'>
+      {!data.length ? (
+        <div className=' text-center flex flex-col items-center gap-8'>
+          <h4>You don't have any team members</h4>
+          <div className='flex gap-2'>
+            <LearnMoreButton label='Learn about team members' />
+            <InviteTeam reload={load} label='Invite a team member' />
+          </div>
+        </div>
+      ):(
+
       <div className='xmax-w-[500px] flex flex-col gap-4'>
-        <div className='flex justify-between gap-4'>
+        <div className='flex justify-between items-center gap-4'>
           <h5 className='text-primary/50'>Team Members</h5>
           <InviteTeam reload={load} />
         </div>
@@ -128,11 +167,12 @@ export default function TeamMembers() {
           </tbody>
         </table> */}
       </div>
+      )}
     </div>
   )
 }
 
-function InviteTeam({reload}) {
+function InviteTeam({reload,label='Invite'}) {
   const [open,setOpen] = useState(false);
   const [data,setData] = useState({email: '',role: ''});
   const roles = [
@@ -176,21 +216,24 @@ function InviteTeam({reload}) {
 
   return (
     <div>
-      <Button variant='contained' onClick={() => setOpen(true)}>Invite</Button>
+      <Button variant='contained' className='!capitalize' onClick={() => setOpen(true)}>{label}</Button>
       <Modal1 open={open} setOpen={setOpen}>
         <form onSubmit={handleSubmit} className='p-4 flex flex-col gap-4'>
           <h5>Invite a team member</h5>
           <EmailInput label='email' value={data.email} onChange={(ev) => setData({...data,email: ev.target.value})} />
-          <RadioGroup value={data.role} onChange={(ev) => setData({...data,role: ev.target.value})} className='flex flex-col gap-2'>
-            {roles.map((role,i) => (
-              <RadioInput value={role.title} checked={data.role === role.title}>
-                <div className='flex flex-col'>
-                  <h6>{role.label}</h6>
-                  <p className='text-primary/80'>{role.description}</p>
-                </div>
-              </RadioInput>
-            ))}
-          </RadioGroup>
+          <div>
+            Role
+            <RadioGroup value={data.role} onChange={(ev) => setData({...data,role: ev.target.value})} className='flex flex-col gap-2'>
+              {roles.map((role,i) => (
+                <RadioInput value={role.title} checked={data.role === role.title}>
+                  <div className='flex flex-col'>
+                    <h6>{role.label}</h6>
+                    <p className='text-primary/80'>{role.description}</p>
+                  </div>
+                </RadioInput>
+              ))}
+            </RadioGroup>
+          </div>
           <div className='flex gap-2'>
             <div className='w-[30%]'>
               <Button1 type='submit' className='btn-theme-light'>Cancel</Button1>

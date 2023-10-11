@@ -9,9 +9,9 @@ import RadioInput from '../../components/forms/RadioInput';
 import { Button, MenuItem, RadioGroup } from '@mui/material';
 import getAPIKeys from '../../controllers/settings/APIKeys/getAPIKeys';
 import createAPIKey from '../../controllers/settings/APIKeys/createAPIKey';
-import { enqueueSnackbar, useSnackbar } from 'notistack';
+import { useSnackbar } from 'notistack';
 import CustomTabs from '../../components/DIsplay/CustomTabs';
-import { DataGrid } from '@mui/x-data-grid';
+// import { DataGrid } from '@mui/x-data-grid';
 import LearnMoreButton from '../../components/mini/LearnMoreButton';
 import getWebhooks from '../../controllers/webhook/getWebooks';
 import createWebhook from '../../controllers/webhook/createWebhook.js';
@@ -25,6 +25,8 @@ import { alertType } from '../../data/constants';
 import EditableInput from '../../components/forms/EditableInput';
 import getWebhookEvents from '../../controllers/webhook/getWebookEvent';
 import Checkbox from '../../components/forms/Checkbox';
+import CopyButton from '../../components/mini/CopyButton';
+import deleteAPIKey from '../../controllers/settings/APIKeys/deleteAPIKey';
 
 
 export default function DeveloperSetting() {
@@ -148,11 +150,16 @@ function WebHook() {
   console.log('data ',data)
   return (
     <div className={`flex flex-col gap-4 !text-primary/60 ${!data.length ? 'bg-emptypage flex-1 h-full ':''}`}>
-      <div className='flex gap-4 justify-between'>
+      <div className='flex gap-4 justify-between items-center'>
         <div className='flex gap-2 self-start'>
           <Link className={`btn-theme-light`} to="?view=accessKeys">Access Keys</Link>
           <Link className={`btn`} to="?view=webhook">Web Hooks</Link>
         </div>
+        {data.length?(
+          <div className='flex '>
+            <CreateWebHook reload={() => load()} />
+          </div>
+        ):null}
       </div>
       {!data.length ? (
         <div className=' text-center flex flex-col items-center gap-8'>
@@ -163,11 +170,7 @@ function WebHook() {
           </div>
         </div>
       ):(
-        <div className='max-w-[600px] flex flex-col gap-2'>
-          <div className='flex '>
-            <CreateWebHook reload={() => load()} />
-          </div>
-            
+        <div className='max-w-[600px] flex flex-col gap-2'>            
           {webhook && !loading ?  // Single webhook view
             <div className='flex flex-col gap-2'>
               <div className='flex gap-2 justify-between'>
@@ -218,7 +221,7 @@ function WebHook() {
             <p>Updated 22:22, 05/05/2023</p>
           </div>
           <br />
-          <DataGrid rows={data} columns={columns}
+          <CustomTable rows={data} columns={columns}
             onRowSelectionModelChange={(val) => handleRowChange(val)}
           />
         </div>
@@ -310,16 +313,23 @@ function CreateWebHook({reload}) {
 
 
 
-function ActionCol({params,toggleView}) {
+function ActionCol({params,select,toggleView}) {
   const [view,setView] = useState(false);
   function handleClick() {
     setView(!view)
-    toggleView && toggleView(params.row.id,!view)
+    toggleView && toggleView(params.id,!view)
+  }
+  function handleView() {
+    select && select(params.id)
   }
   return (
-    <div className='flex gap-4 items-center cursor-pointer justify-between' onClick={handleClick}>
-      View key
-      {!view?<Visibility className='text-primary/60' />:<VisibilityOff className='text-primary/60' />}
+    <div className='flex gap-4 items-center cursor-pointer justify-between'>
+      <div onClick={handleView}>
+        View key
+      </div>
+      <div onClick={handleClick}>
+        {!view?<Visibility className='text-primary/60' />:<VisibilityOff className='text-primary/60' />}
+      </div>
     </div>
   )
 }
@@ -331,6 +341,7 @@ function AccessKeys() {
   const [loading,setLoading] = useState(false);
   const {enqueueSnackbar} = useSnackbar();
   const [data,setData] = useState([]);
+  const [selected,setSelected] = useState();
   // const data = [
   //   {id: 1,name: 'General',clientId: 'miles_test_************gDje',secret: 'miles_secrete_************gDE',lastUsed: 'Never used',scope: 'Read and write',key: 'View Key'}
   // ]
@@ -378,6 +389,9 @@ function AccessKeys() {
       })
     )
   }
+  function handleView(id) {
+    setSelected(data.find(obj => obj.id === id));
+  }
   const columns = [
     {field: 'name',headerName: 'Name',flex: 1},
     {field: 'clientId',headerName: 'Client ID',flex: 1},
@@ -386,53 +400,130 @@ function AccessKeys() {
     {field: 'scope',headerName: 'Scope',flex: 1},
     {field: 'key',headerName: 'Secret Key',flex: 1,
       renderCell: (params) => (
-        <ActionCol params={params} toggleView={handleVisibilityToggle} />
+        <ActionCol params={params} select={handleView} toggleView={handleVisibilityToggle} />
       )
     },
   ]
   return (
-    <div className='flex flex-col gap-4 !text-primary/60'>
+    <div className={`flex flex-col gap-4 !text-primary/60 ${!data.length ? 'bg-emptypage flex-1 h-full ':''}`}>
       <div className='flex gap-4 justify-between'>
         <div className='flex gap-2 self-start'>
           <Link className={`btn`} to="?view=accessKeys">Access Keys</Link>
           <Link className={`btn-theme-light`} to="?view=webhook">Web Hooks</Link>
         </div>
         <div>
-          <Button1 className='' onClick={() => setOpen(true)}>Create Key</Button1>
-          <Modal1 open={open} setOpen={setOpen}>
-            <form onSubmit={handleSubmit} className='p-4 flex flex-col gap-6 max-w-[800px]'>
-              <h5>Create an access key</h5>
-              <TextInput 
-                value={name}
-                onChange={(ev) => setName(ev.target.value)}
-                label={'Token name'} placeholder={'e.g Miles token'} />
-              <div>
-                <span>Scope</span>
-                <RadioGroup name='scope' value={scope} onChange={(ev) => setScope(ev.target.value)} className='flex flex-col gap-2'>
-                  <RadioInput checked={scope === 'Full'} value={'Full'}>
-                    <div className='flex flex-col '>
-                      <h5>Read and write</h5>
-                      <p className='text-primary/70'>A read and write token is able to read and modify any resource</p>
-                    </div>
-                  </RadioInput>
-                  <RadioInput checked={scope === 'ReadOnly'} value={'ReadOnly'}>
-                    <div className='flex flex-col '>
-                      <h5>Read only</h5>
-                      <p className='text-primary/70'>A read token is able to read but not modify any resource</p>
-                    </div>
-                  </RadioInput>
-                </RadioGroup>
-              </div>
-              <div className='flex gap-2 '>
-                <Button1 className='!w-[20%]' variant='text' onClick={() => setOpen(false)}>Cancel</Button1>
-                <Button1 type='submit' className='!w-auto flex-1' loading={loading}>Create token</Button1>
-              </div>
-            </form>
-          </Modal1>
+          <Button variant='contained' className='' onClick={() => setOpen(true)}>Create Key</Button>
+        </div>
+      </div>
+      {!data.length ? (
+        <div className=' text-center flex flex-col items-center gap-8 py-3'>
+          <h4>You don't have any access keys</h4>
+          <div className='flex gap-2'>
+            <LearnMoreButton label='Learn about access keys'  />
+            <Button variant='contained' className='' onClick={() => setOpen(true)}>Create Access Keys</Button>
+          </div>
+        </div>
+      ): [
+        <AccessKeyView selected={selected} reload={() => {load();setSelected(null)}} />
+        ,
+        <CustomTable loading={loading} rows={data} columns={columns} />
+      ]}
+
+      <Modal1 open={open} setOpen={setOpen}>
+        <form onSubmit={handleSubmit} className='p-4 flex flex-col gap-6 max-w-[800px]'>
+          <h5>Create an access key</h5>
+          <TextInput 
+            value={name}
+            onChange={(ev) => setName(ev.target.value)}
+            label={'Token name'} placeholder={'e.g Miles token'} />
+          <div>
+            <span>Scope</span>
+            <RadioGroup name='scope' value={scope} onChange={(ev) => setScope(ev.target.value)} className='flex flex-col gap-2'>
+              <RadioInput checked={scope === 'Full'} value={'Full'}>
+                <div className='flex flex-col '>
+                  <h5>Read and write</h5>
+                  <p className='text-primary/70'>A read and write token is able to read and modify any resource</p>
+                </div>
+              </RadioInput>
+              <RadioInput checked={scope === 'ReadOnly'} value={'ReadOnly'}>
+                <div className='flex flex-col '>
+                  <h5>Read only</h5>
+                  <p className='text-primary/70'>A read token is able to read but not modify any resource</p>
+                </div>
+              </RadioInput>
+            </RadioGroup>
+          </div>
+          <div className='flex gap-2 '>
+            <Button1 className='!w-[20%]' variant='text' onClick={() => setOpen(false)}>Cancel</Button1>
+            <Button1 type='submit' className='!w-auto flex-1' loading={loading}>Create token</Button1>
+          </div>
+        </form>
+      </Modal1>
+
+    </div>
+  )
+}
+
+function AccessKeyView({selected,reload}) {
+  const [open,setOpen] = useState(false);
+  const [loading,setLoading] = useState(false);
+  const {enqueueSnackbar} = useSnackbar();
+
+  async function handleDelete() {
+    setLoading(true);
+    const res = await deleteAPIKey(selected?.clientId);
+    if(res.return) {
+      enqueueSnackbar('Acecss key removed.',{variant: 'success'})
+      setOpen(false);
+      reload && reload();
+    } else enqueueSnackbar(res?.msg,{variant: 'error'})
+    setLoading(false);
+  }
+  console.log(selected)
+  return selected && (
+    <div className='flex flex-col gap-4 max-w-[600px] self-center'>
+      <h4>{selected?.name}</h4>
+      <hr />
+      <div className='flex flex-col gap-2'>
+        <div className='flex gap-4 justify-between'>
+          <b>Scope</b>
+          {selected?.scope}
+        </div>
+      </div>
+      <p className='border-y'>Client ID</p>
+      <div className='flex gap-4 justify-between'>
+        <p id='clientId' className='break-all'>{selected?.clientId}</p>
+        <CopyButton id='clientId' />
+      </div>
+      <p className='border-y'>Client Secret Key</p>
+      <div className='flex gap-4 justify-between'>
+        <p id='clientSecret' className='break-all'>{selected.clientSecretView || selected?.clientSecret}</p>
+        <CopyButton id='clientSecret' />
+      </div>
+      <hr />
+      <div className='p-4 bg-red-100 flex flex-col gap-4'>
+        <h5>Danger Zone</h5>
+        <div className='text-red-700'>
+          By deleting this token it will immediately disable its access to the Miles API.
+          Please make sure it's safe to delete this token before doing so.
+        </div>
+        <div className='flex justify-end mb-2'>
+          <Button1 className='!bg-red-500 !text-white !w-auto' onClick={() => setOpen(true)}>Delete</Button1>
         </div>
       </div>
 
-      <CustomTable loading={loading} rows={data} columns={columns} />
+      <Modal1 open={open} setOpen={setOpen}>
+        <div className='card flex flex-col items-center gap-4'>
+          <h4>Delete Access Key</h4>
+          <p>Are you sure you want to delete this access token?<br />
+            you will not be able to undo this action
+          </p>
+          <div className='flex gap-2 w-full'>
+            <Button1 className='bg-theme-light !w-auto flex-1' variant='text' onClick={() => setOpen(false)}>Cancel</Button1>
+            <Button1 loading={loading} className='!bg-red-500 !text-white !flex-1' onClick={handleDelete}>Delete</Button1>
+          </div>
+        </div>
+      </Modal1>
     </div>
   )
 }

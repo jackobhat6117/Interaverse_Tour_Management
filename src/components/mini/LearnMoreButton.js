@@ -3,11 +3,11 @@ import React, { useState } from 'react'
 import Modal1 from '../DIsplay/Modal/Modal1'
 
 export default function LearnMoreButton(props) {
-  const {label,component,...restProps} = props;
+  const {label,component,buttonClassName,...restProps} = props;
   const [open,setOpen] = useState(false)
   return (
     <div>
-      <Button variant='outlined' {...restProps} className='!capitalize' onClick={() => setOpen(true)}>{label || "Learn more"}</Button>
+      <Button variant='outlined' {...restProps} className={'!capitalize '+buttonClassName} onClick={() => setOpen(true)}>{label || "Learn more"}</Button>
       <Modal1 open={open} setOpen={setOpen}>
         <div className='p-4 max-w-[500px]'>
           {component || `

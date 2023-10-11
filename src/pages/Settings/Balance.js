@@ -9,6 +9,7 @@ import FilterCalendar from '../../components/forms/FilterCalendar'
 import getWallet from '../../controllers/settings/wallet/getWallet'
 import topupWallet from '../../controllers/settings/wallet/topupWallet'
 import { useSnackbar } from 'notistack'
+import setLowBalanceThreshold from '../../controllers/settings/wallet/setLowBalanceThreshold'
 
 
 export default function BalanceSetting() {
@@ -45,12 +46,14 @@ export default function BalanceSetting() {
   return (
     <div className='flex flex-col gap-4 !text-primary/60 '>
       <div className='flex justify-between items-center gap-4 flex-wrap'>
-        <div>
-          <SetupThreshold />
+        <div className='w-full sm:w-auto'>
+          <SetupThreshold reload={load} />
         </div>
-        <div className='flex gap-5 items-center'>
-          <FilterCalendar />
-          <FileDownloadOutlined color='primary' className='cursor-pointer' />
+        <div className='w-full sm:w-auto flex justify-end'>
+          <div className='flex gap-5 items-center'>
+            <FilterCalendar />
+            <FileDownloadOutlined color='primary' className='cursor-pointer' />
+          </div>
         </div>
       </div>
       <hr />
@@ -60,7 +63,9 @@ export default function BalanceSetting() {
             <TopupBalance reload={load} />
           </div>
           <div className='tooltip'>In test mode your balance is unlimited. It is topped-off automatically as you spend it.</div>
-          <div className='tooltip error'>You don't have enought amount in your balance. Please top-up.</div>
+          {balanceData?.lowBalanceThreshold > balanceData.balance &&
+            <div className='tooltip error'>You are running low on funds. To avoid service disruption, please top-up.</div>
+          }
         </div>
         <div>
           <div className='card p-4 rounded-lg text-right'>
@@ -126,27 +131,45 @@ function TopupBalance({reload}) {
   )
 }
 
-function SetupThreshold() {
+function SetupThreshold({reload}) {
   const [open,setOpen] = useState(false);
+  const [loading,setLoading] = useState(false);
+  const [amount,setAmount] = useState();
+  const {enqueueSnackbar} = useSnackbar();
+
+  async function handleSubmit(ev) {
+    ev.preventDefault();
+
+    setLoading(true);
+    const res = await setLowBalanceThreshold({amount});
+    if(res.return) {
+      enqueueSnackbar('Successful',{variant: 'success'})
+      setOpen(false);
+      reload && reload();
+    } else enqueueSnackbar(res.msg,{variant: 'error'})
+    setLoading(false);
+  }
   return (
     <div>
       <Button1 
         onClick={() => setOpen(true)}
-        className='btn-theme-light !shadow-none !lowercase !text-gray-500'>Set-up low balance threshold</Button1>
+        className='!light-bg sm:!bg-secondary !w-full sm:!w-auto !shadow-none !lowercase !text-gray-500'>Set-up low balance threshold</Button1>
       <Modal1 open={open} setOpen={setOpen}>
-        <div className='p-4 flex flex-col gap-6 max-w-[800px]'>
-          <h4>Setup lowbalance threshold</h4>
+        <form onSubmit={handleSubmit} className='p-4 flex flex-col gap-6 max-w-[800px]'>
+          <h4>Set-Up lowbalance threshold</h4>
           <TextInput label='Low balance threshold (ngn)' 
+            value={amount}
+            onChange={(ev) => setAmount(ev.target.value)}
             tooltip='When your Miles balance reaches this value or below, all administrators in your organization will receive a low balance email. You should configure a threshold that will allow you to top up your balance on time.'
             InputProps={{
               endAdornment: 'NGN'
             }}
            />
-        </div>
-        <div className='flex gap-2 p-4'>
-          <Button1 className='btn-theme-light'>Cancel</Button1>
-          <Button1>Save Changes</Button1>
-        </div>
+          <div className='flex gap-2 p-4'>
+            <Button1 className='btn-theme-light' onClick={() => setOpen(false)}>Cancel</Button1>
+            <Button1 loading={loading} type='submit'>Save Changes</Button1>
+          </div>
+        </form>
       </Modal1>
     </div>
   )
