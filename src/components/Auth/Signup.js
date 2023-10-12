@@ -66,28 +66,28 @@ export default function Signup() {
                 <Radio value={'Agent'} />
                 <div className='flex flex-col gap-4'>
                   <h4>Travel Agency</h4>
-                  <p>Access airline, hotel and tours inventory, make bookings and issue tickets on behalf of your customers</p>
+                  <p>Allow your customers to search, book and pay for flights, stays and tours on your own website. Manage bookings and issue tickets.</p>
                 </div>
             </label>
             <label className='card cursor-pointer p-4 flex gap-4'>
                 <Radio value={'Business'} />
                 <div className='flex flex-col gap-4'>
                   <h4>Business</h4>
-                  <p>Access airline, hotel and tours inventory, make bookings and issue tickets on behalf of your customers</p>
+                  <p>Search, book and pay for flights, stays and tours. Manage bookings and issue tickets.</p>
                 </div>
             </label>
             <label className='card cursor-pointer p-4 flex gap-4'>
                 <Radio value={'Customer'} />
                 <div className='flex flex-col gap-4'>
                   <h4>Freelancer</h4>
-                  <p>Access airline, hotel and tours inventory, make bookings and issue tickets on behalf of your customers</p>
+                  <p>Search, book and pay for flights, stays and tours for your customers using the Miles dashboard. Manage bookings and issue tickets.</p>
                 </div>
             </label>
             <label className='card cursor-pointer p-4 flex gap-4'>
                 <Radio value={'Affiliate'} />
                 <div className='flex flex-col gap-4'>
                   <h4>Developer</h4>
-                  <p>Access airline, hotel and tours inventory, make bookings and issue tickets on behalf of your customers</p>
+                  <p>Access to comprehensive documentation for the Miles API</p>
                 </div>
             </label>
             <Link to={`?view=register&type=${data.userType}`}><Button1 size='large' className='p-3' >Signup</Button1></Link>
