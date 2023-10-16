@@ -225,7 +225,7 @@ function InviteTeam({reload,label='Invite'}) {
             Role
             <RadioGroup value={data.role} onChange={(ev) => setData({...data,role: ev.target.value})} className='flex flex-col gap-2'>
               {roles.map((role,i) => (
-                <RadioInput value={role.title} checked={data.role === role.title}>
+                <RadioInput key={i} value={role.title} checked={data.role === role.title}>
                   <div className='flex flex-col'>
                     <h6>{role.label}</h6>
                     <p className='text-primary/80'>{role.description}</p>

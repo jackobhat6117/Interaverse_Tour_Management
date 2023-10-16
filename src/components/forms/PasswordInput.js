@@ -11,9 +11,12 @@ export default function PasswordInput(props) {
 
   return (
     <div className='w-full'>
-      <TextInput className={'w-full '+className} label={<div className='font-bold inline' >
+      <TextInput className={'w-full '+className} 
+        label={
+          <div className='font-bold inline' >
             {label || 'Your password'}
-        </div>}
+          </div>
+        }
         placeholder={'e.g. PassW07d!!'}
         InputLabelProps={{
           shrink: true,

@@ -79,7 +79,7 @@ export default function CommissionSettings() {
       </div>
       <div className='flex gap-2 overflow-hidden overflow-x-auto'>
         {objs.map((obj,i) => (
-          <Stats data={obj} />
+          <Stats key={i} data={obj} />
         ))}
       </div>
       <TableFilter value={'All'} options={filterOptions} />

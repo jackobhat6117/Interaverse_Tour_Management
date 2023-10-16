@@ -359,7 +359,6 @@ function AccessKeys() {
     if(res.return) {
       let data = res?.data?.data?.map(obj => ({...obj,id: obj._id,clientSecretView: obj.clientSecret,clientSecret: '******************'}))
       setData(data)
-      console.log(data)
     }
   }
 
@@ -424,9 +423,9 @@ function AccessKeys() {
           </div>
         </div>
       ): [
-        <AccessKeyView selected={selected} reload={() => {load();setSelected(null)}} />
+        <AccessKeyView key={1} selected={selected} reload={() => {load();setSelected(null)}} />
         ,
-        <CustomTable loading={loading} rows={data} columns={columns} />
+        <CustomTable key={2} loading={loading} rows={data} columns={columns} />
       ]}
 
       <Modal1 open={open} setOpen={setOpen}>
@@ -479,7 +478,7 @@ function AccessKeyView({selected,reload}) {
     } else enqueueSnackbar(res?.msg,{variant: 'error'})
     setLoading(false);
   }
-  console.log(selected)
+
   return selected && (
     <div className='flex flex-col gap-4 max-w-[600px] self-center'>
       <h4>{selected?.name}</h4>

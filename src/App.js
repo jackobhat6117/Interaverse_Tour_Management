@@ -22,6 +22,10 @@ import MarkupSetting from './pages/Settings/Agency/Markup';
 import CommissionSettings from './pages/Settings/Agency/Commision';
 import PointsSettings from './pages/Settings/Agency/Points';
 import PageNotFound from './pages/PageNotFound';
+import PaymentSetting from './pages/Settings/Agency/Payment';
+import Finance from './pages/Settings/Finance/Finance';
+import FinanceContainer from './pages/Settings/Finance/FinanceContainer';
+import Orders from './pages/Orders/Orders';
 // import 'dotenv/config'
 
 
@@ -66,11 +70,12 @@ function App() {
     <Router>
       <Provider store={store}>
         <CustomThemeProvider>
-          <SnackbarProvider maxSnack={3} anchorOrigin={{vertical: 'top',horizontal: 'right'}} >
+          <SnackbarProvider autoHideDuration={3000} maxSnack={3} anchorOrigin={{vertical: 'top',horizontal: 'right'}} >
             <Routes>
               <Route path='/' element={<AuthValidate />}>
                 <Route path='/' element={<Navbar />}>
                   <Route index element={<Dashboard />} />
+                  <Route path='orders' element={<Orders />} />
                   <Route path='*' element={<PageNotFound />} />
                 </Route>
                 <Route path='settings' element={<SettingSideBar />}>
@@ -89,7 +94,11 @@ function App() {
                     <Route path='markup' element={<MarkupSetting />} />
                     <Route path='commission' element={<CommissionSettings />} />
                     <Route path='points' element={<PointsSettings />} />
+                    <Route path='payment' element={<PaymentSetting />} />
                     <Route path='*' element={<PageNotFound />} />
+                  </Route>
+                  <Route path='finance' element={<FinanceContainer />}>
+                    <Route index element={<Finance />} />
                   </Route>
                 </Route>
               </Route>

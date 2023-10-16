@@ -1,66 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 import logo from '../assets/icons/textlogo.png';
 import SearchInput from './forms/SearchInput';
-import { FormControlLabel, Switch, styled } from '@mui/material';
-import { Close, Menu, Notifications, Person } from '@mui/icons-material';
+import { Drawer, FormControlLabel } from '@mui/material';
+import { Close, Home, Menu, Notifications, Person, Settings } from '@mui/icons-material';
 import CustomMenu from './utils/CustomMenu';
 import moment from 'moment/moment';
 import Button1 from './forms/Button1';
 import { useDispatch } from 'react-redux';
 import { logout } from '../redux/reducers/userSlice';
 import { Link } from 'react-router-dom';
+import IOSSwitch from './forms/IOSSwitch';
 
 
-const IOSSwitch = styled((props) => (
-  <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
-))(({ theme }) => ({
-  width: 32,
-  height: 16,
-  padding: 0,
-  '& .MuiSwitch-switchBase': {
-    padding: 0,
-    margin: 2,
-    transitionDuration: '300ms',
-    '&.Mui-checked': {
-      transform: 'translateX(16px)',
-      color: '#fff',
-      '& + .MuiSwitch-track': {
-        backgroundColor: theme.palette.mode === 'dark' ? '#2ECA45' : '#65C466',
-        opacity: 1,
-        border: 0,
-      },
-      '&.Mui-disabled + .MuiSwitch-track': {
-        opacity: 0.5,
-      },
-    },
-    '&.Mui-focusVisible .MuiSwitch-thumb': {
-      color: '#33cf4d',
-      border: '6px solid #fff',
-    },
-    '&.Mui-disabled .MuiSwitch-thumb': {
-      color:
-        theme.palette.mode === 'light'
-          ? theme.palette.grey[100]
-          : theme.palette.grey[600],
-    },
-    '&.Mui-disabled + .MuiSwitch-track': {
-      opacity: theme.palette.mode === 'light' ? 0.7 : 0.3,
-    },
-  },
-  '& .MuiSwitch-thumb': {
-    boxSizing: 'border-box',
-    width: 12,
-    height: 12,
-  },
-  '& .MuiSwitch-track': {
-    borderRadius: 16 / 2,
-    backgroundColor: theme.palette.mode === 'light' ? '#E9E9EA' : '#39393D',
-    opacity: 1,
-    transition: theme.transitions.create(['background-color'], {
-      duration: 500,
-    }),
-  },
-}));
 
 const colors = [
   '#1E61DC','#D9A513','#1EA994','#1E61DC','#B52026'
@@ -68,6 +19,7 @@ const colors = [
 
 export default function Header() {
   const dispatch = useDispatch();
+  const [open,setOpen] = useState(false);
   const notifications = [
     {date: '9/19/2023',title: 'Complete the quick start tutorial',description: 'This tutorial shows you how easy and fast it is to start selling flights with Miles'},
     {date: '9/10/2023',title: 'View our guides',description: 'Visit our guide section to learn more about the Miles API, and start building your integration'},
@@ -146,7 +98,19 @@ export default function Header() {
       <div className='bg-black'>
         <div className='flex md:hidden justify-between items-center bg-opacity-40 gap-6 bg-theme1 text-white py-4 px-md'>
           <h4>Miles</h4>
-          <CustomMenu element={
+          <div className='rounded-md bg-primary/10 w-7 h-7 text-center flex-center justify-center' onClick={() => setOpen(true)}>
+            <Menu className='cursor-pointer' />
+          </div>
+          <Drawer open={open} onClose={() => setOpen(false)} anchor='right'
+            SlideProps={{className: 'min-w-[300px]'}}
+          >
+            <div className='w-full h-full shadow-md border bg-secondary flex flex-col gap-4 p-4 overflow-y-auto overflow-hidden'>
+              <CustomLink to={'/'} active={true} Icon={Home} label='Home' />
+              <CustomLink to={'/settings/'} active={false} Icon={Settings} label='Settings' />
+              <Button1 onClick={handleLogout} variant={'text'} className='text-primary !w-auto'>Logout</Button1>
+            </div>
+          </Drawer>
+          {/* <CustomMenu element={
               <div className='rounded-md bg-primary/10 w-7 h-7 text-center flex-center justify-center'>
                 <Menu className='cursor-pointer' />
               </div>
@@ -155,9 +119,17 @@ export default function Header() {
                 <Link className='btn-theme-light text-end' variant='text' to='/settings/'>Settings</Link>
                 <Button1 onClick={handleLogout} variant={'text'} className='text-primary !w-auto'>Logout</Button1>
               </div>
-          </CustomMenu>
+          </CustomMenu> */}
         </div>
       </div>
     </div>
+  )
+}
+function CustomLink({to,active,Icon,label}) {
+  return (
+    <Link to={to}> <Button1 className={`!justify-between ${active ? 'btn-theme' : 'btn-theme-light'}  whitespace-nowrap`}>
+      {label}
+      <Icon className={`${active ? 'text-secondary/80' : ''} `} fontSize='small' />
+    </Button1></Link>
   )
 }

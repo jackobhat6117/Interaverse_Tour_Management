@@ -51,6 +51,11 @@ code {
     @apply !text-primary/60;
   }
 
+  .bg-emptypage {
+    background: url('./assets/images/cancelled-ticket\ 1.png') no-repeat;
+    background-position: right -10% bottom 0;
+    background-size: contain;
+  }
 
   .btn {
     @apply rounded-md border bg-primary/80 text-white p-2 px-4 cursor-pointer;
@@ -58,16 +63,19 @@ code {
   .btn-small {
     @apply btn text-sm;
   }
-
-  .bg-emptypage {
-    background: url('./assets/images/cancelled-ticket\ 1.png') no-repeat;
-    background-position: right -10% bottom 0;
-    background-size: contain;
+    
+  .btn-theme {
+    @apply !bg-theme1 !text-secondary !capitalize flex gap-2 p-2 !px-4 cursor-pointer;
   }
+  .btn-theme-light {
+    @apply !bg-secondary !text-primary/60 p-2 !px-4 flex gap-2 !shadow-none hover:shadow !capitalize cursor-pointer;
+  }
+
 
   .content-max-w {
     @apply max-w-[830px];
   }
+
 
   .pd-md {
     @apply px-6 sm:px-16 py-10;
@@ -76,14 +84,21 @@ code {
     @apply px-6 sm:px-16;
   }
 
-  
-  .btn-theme {
-    @apply !bg-theme1 !text-secondary !capitalize flex gap-2 p-2 !px-4 cursor-pointer;
-  }
-  .btn-theme-light {
-    @apply !bg-secondary !text-primary/60 p-2 !px-4 flex gap-2 !shadow-none hover:shadow !capitalize cursor-pointer;
-  }
 
+  .title {
+    @apply relative;
+  }
+  .title:hover::after {
+    content: attr(custom-title);
+    @apply bg-secondary mx-4 shadow-md shadow-primary/40 text-sm text-primary font-normal p-2 rounded-md; /* Example styles for the ::after element */
+    position: absolute;
+    top: 0;
+    left: 100%;
+  }
+  .title.title-hide::after {
+    content: '';
+    @apply hidden;
+  }
 
   .error {
     @apply bg-red-300 px-2 py-1 rounded-md text-red-800 font-bold;

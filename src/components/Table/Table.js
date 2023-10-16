@@ -18,7 +18,7 @@ export default function Table(props) {
     <table className='w-full my-2' {...restProps}>
       <thead className='!bg-theme1/20 p-2'>
         {columns.map((obj,i) => (
-          <TD>{obj.headerName}</TD>
+          <TD key={i}>{obj.headerName}</TD>
         ))}
       </thead>
       <tbody>

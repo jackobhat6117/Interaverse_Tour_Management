@@ -75,7 +75,7 @@ export default function ContactEmails() {
             </div>
           ):null}
           {data.map((obj,i) => (
-            <div className='flex justify-between gap-3'>
+            <div key={i} className='flex justify-between gap-3'>
               {obj.email}
               <Button className='!text-red-500 !font-bold' onClick={() => handleRemove(obj._id)}>Remove</Button>
             </div>
@@ -127,7 +127,7 @@ function ScheduleChanges() {
           </div>
         ):null}
         {data.map((obj,i) => (
-          <div className='flex justify-between gap-3'>
+          <div key={i} className='flex justify-between gap-3'>
             {obj.email}
             <Button className='!text-red-500 !font-bold' onClick={() => handleRemove(obj._id)}>Remove</Button>
           </div>

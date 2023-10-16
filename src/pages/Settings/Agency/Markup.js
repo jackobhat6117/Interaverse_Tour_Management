@@ -31,7 +31,7 @@ export default function MarkupSetting() {
     {field: 'name',headerName: 'Mark-up name',flex: 1},
     {field: 'type',headerName: 'Type',flex: 1},
     {field: 'figure',headerName: 'Figure',flex: 1},
-    {field: 'status',headerName: 'Action',flex: 1,
+    {field: 'status',headerName: 'Action',flex: 1,minWidth: 120,
       renderCell: (props) => {
         return (
           <TextInput select value={props.value || ''} size='small' label=''>
