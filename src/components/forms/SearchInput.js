@@ -41,7 +41,7 @@ export default function SearchInput(props) {
   }
 
   return (
-    <div className='w-full relative z-20'>
+    <div className={`w-full relative z-[80]`}>
       <TextField className='w-full bg-secondary rounded-md ' size='small' 
         // label={<div className='font-bold' >
         //     {props.label || 'Search'}

@@ -3,7 +3,7 @@ import { Radio } from '@mui/material';
 import React, { useEffect, useState } from 'react'
 
 export default function RadioInput(props) {
-  const { children, checked, ...radioProps } = props;
+  const { children, checked, className, ...radioProps } = props;
   const [check, setCheck] = useState(checked || false);
 
   useEffect(() => {
@@ -11,7 +11,7 @@ export default function RadioInput(props) {
   },[checked])
 
   return (
-    <label className={`flex items-start gap-2 cursor-pointer rounded-md p-1 px-3 w-full ${check ? ' bg-[#A7D9D1] text-[#016726] ' : ' bg-primary bg-opacity-5 '}`}>
+    <label className={`flex items-start gap-2 cursor-pointer rounded-md p-1 px-3 w-full ${check ? ' bg-[#A7D9D1] text-[#016726] ' : ' bg-primary bg-opacity-5 '} ${className}`}>
       <Radio
         type="radio"
         {...radioProps}

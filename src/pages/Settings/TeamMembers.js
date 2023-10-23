@@ -216,7 +216,7 @@ function InviteTeam({reload,label='Invite'}) {
 
   return (
     <div>
-      <Button variant='contained' className='!capitalize' onClick={() => setOpen(true)}>{label}</Button>
+      <Button1 variant='contained' className='!capitalize' onClick={() => setOpen(true)}>{label}</Button1>
       <Modal1 open={open} setOpen={setOpen}>
         <form onSubmit={handleSubmit} className='p-4 flex flex-col gap-4'>
           <h5>Invite a team member</h5>

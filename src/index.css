@@ -60,6 +60,9 @@ code {
   .btn {
     @apply rounded-md border bg-primary/80 text-white p-2 px-4 cursor-pointer;
   }
+  .btn.disabled {
+    @apply text-primary/30 font-bold cursor-not-allowed;
+  }
   .btn-small {
     @apply btn text-sm;
   }

@@ -1,4 +1,4 @@
-import React, { cloneElement, useCallback, useEffect, useState } from 'react'
+import React, { cloneElement, useCallback, useState } from 'react'
 import ProductTypes from './ProductTypes';
 import { Box, Dialog } from '@mui/material';
 import Button1 from '../forms/Button1';

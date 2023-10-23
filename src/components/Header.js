@@ -36,8 +36,8 @@ export default function Header() {
       <div>
         <img src={logo} alt='Miles' />
       </div>
-      <div className='flex-1'>
-        <SearchInput />
+      <div className='flex-1 z-[90]'>
+        <SearchInput exampleview searchView />
       </div>
       <div className='flex gap-3 items-center text-primary/50'>
         <b>Test mode</b>

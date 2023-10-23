@@ -6,13 +6,15 @@ import NavLinks from './NavLinks';
 
 export default function Navbar() {
   return (
-    <div>
+    <div className='flex flex-col min-h-screen '>
       <Header />
       <div className='w-full px-md shadow-sm bg-secondary border-b'>
         <NavLinks />
       </div>
       <ProfileSurvey />
-      <Outlet />
+      <div className='bg-secondary flex flex-col h-full flex-1'>
+        <Outlet />
+      </div>
     </div>
   )
 }

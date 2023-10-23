@@ -1,7 +1,7 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import RevenuAnalytics from './RevenuAnalytics'
 import { useSelector } from 'react-redux'
+import Button1 from '../../components/forms/Button1'
 
 
 export default function Dashboard() {
@@ -14,9 +14,9 @@ export default function Dashboard() {
           <b>{user?.firstName} {user?.lastName}</b>
         </div>
         <div className='flex-1 flex flex-wrap md:flex-nowrap gap-4 justify-end'>
-          <Link className='btn whitespace-nowrap flex-1 md:flex-none' to="/">Create a new order</Link>
-          <Link className='btn whitespace-nowrap flex-1 md:flex-none' to="/">View orders needing review</Link>
-          <Link className='btn whitespace-nowrap flex-1 md:flex-none' to="/">View pending orders</Link>
+          <Button1 className='btn-theme1 whitespace-nowrap flex-1 md:flex-none !w-auto !p-4 !px-6 ' to="/">Create a new order</Button1>
+          {/* <Link className='btn whitespace-nowrap flex-1 md:flex-none' to="/">View orders needing review</Link>
+          <Link className='btn whitespace-nowrap flex-1 md:flex-none' to="/">View pending orders</Link> */}
         </div>
       </div>
       <RevenuAnalytics />

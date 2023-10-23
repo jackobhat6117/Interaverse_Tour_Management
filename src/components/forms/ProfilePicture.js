@@ -9,7 +9,7 @@ import { MenuItem } from "@mui/material";
 import { useSnackbar } from "notistack";
 
 
-export function ProfilePicture({value,onChange,sizeLimit=1024*1024}) {
+export function ProfilePicture({value,onChange,sizeLimit=1024*1024,readOnly}) {
   const [open,setOpen] = useState(false);
   const [preview,setPreview] = useState('');
   const [previewOrig,setPreviewOrig] = useState('');
@@ -27,7 +27,7 @@ export function ProfilePicture({value,onChange,sizeLimit=1024*1024}) {
   useEffect(() => {
     crop && previewCanvasRef.current &&
     canvasPreview(imgRef.current,previewCanvasRef.current,crop,scale,rotate)
-  },[crop])
+  },[crop,rotate,scale])
 
 
   function handleSubmit() {
@@ -92,14 +92,18 @@ export function ProfilePicture({value,onChange,sizeLimit=1024*1024}) {
   }
   return (
     <div>
-      <span className='w-[100px] h-[100px] flex items-center justify-center light-bg relative'>
+      <span className='w-[100px] h-[100px] flex items-center justify-center light-bg relative rounded-md'>
         {value ? 
           <div className="absolute">
               <img src={preview || previewOrig || value} alt='Logo' className="w-full h-full object-cover" />
           </div>
         :null}
-        <Add fontSize='large' onClick={handleSubmit} className='cursor-pointer hover:scale-[1.2] relative' />
-        <input type='file' name='profile' onChange={handleChange} className='hidden' ref={file} />
+        {!readOnly && 
+          <Add fontSize='large' onClick={handleSubmit} className='cursor-pointer hover:scale-[1.2] relative' />
+        }
+        {!readOnly && 
+          <input type='file' name='profile' onChange={handleChange} className='hidden' ref={file} />
+        }
       </span>
       <Modal1 open={open} setOpen={setOpen}>
         <div className="p-4 flex flex-col gap-4">

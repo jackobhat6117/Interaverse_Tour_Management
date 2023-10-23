@@ -5,8 +5,11 @@ export default function CustomTable(props) {
   const {columns,rows,...restProps} = props;
   
   let minWidths = {}
+  let modRows = Array.isArray(rows) ? [...rows] : [rows];
 
-  rows.map((obj) => {
+  rows.map((obj,i) => {
+    if(!obj.id)
+      modRows[i]['id'] = i;
     Object.entries(obj).map(([key,val]) => {
       let length = (val)?.toString()?.length || 1;
         
@@ -29,7 +32,7 @@ export default function CustomTable(props) {
 
   return (
     <div>
-      <DataGrid autoHeight columns={modCols} rows={rows} {...restProps} />
+      <DataGrid autoHeight columns={modCols} rows={modRows} {...restProps} />
     </div>
   )
 }
