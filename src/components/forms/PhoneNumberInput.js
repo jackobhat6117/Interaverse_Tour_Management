@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Autocomplete, FormControl, FormGroup, InputAdornment, InputLabel, TextField } from '@mui/material';
 import {countries} from 'country-data';
 
-export default function PhoneNumberInput({value,onChange,label,className,disabled,required}) {
+export default function PhoneNumberInput({value,onChange,label,className,disabled,required,size}) {
   const option = countries.all.filter((country) => country.status === 'assigned');
   let code = "234";
   let phone = "";
@@ -35,14 +35,14 @@ export default function PhoneNumberInput({value,onChange,label,className,disable
     <div className={'relative text-[15px] '+className}>
     <FormControl variant='outlined' className='!border-primary/20 hover:!border-primary !rounded-md !flex !nowrap !p-2 ' sx={{border: 1}} required={required}>
       <InputLabel shrink className='bg-secondary font-bold !px-2 -ml-2' >{label !== null ? label : 'Phone Number'} </InputLabel>
-      <div className='flex'>
-      <input className='w-[50px] !p-2 cursor-pointer' disabled={disabled}
+      <div className='flex justify-end'>
+      <input className={'!w-[60px] !p-2 flex-none cursor-pointer '+(size==='small'?'!py-0':'')} disabled={disabled}
         name='phoneCode'
         value={"+"+(code||'234')}
         tabIndex={0}
         onChange={() => true}
         onFocus={() => {setOpen(true); setTimeout(() => {sqRef.current && sqRef.current.focus()},100)}} />
-      <input className='flex-1 !border-0' name='phone' ref={phoneRef} disabled={disabled}
+      <input className='!flex-1 !xborder-0' name='phone' ref={phoneRef} disabled={disabled}
         placeholder='940067966'
         value={phone||""}
         maxLength={10}

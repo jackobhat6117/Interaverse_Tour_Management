@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { createContext, useState } from 'react'
 import TableFilter from '../../components/Table/TableFilter'
 import CreateOrder from './CreateOrder'
 import Button1 from '../../components/forms/Button1'
@@ -9,18 +9,23 @@ import CustomTable from '../../components/Table/CustomTable'
 import { alertType } from '../../data/constants'
 import CustomMenu from '../../components/utils/CustomMenu'
 import { Icon } from '@iconify/react'
+import AddBags from './AddBags'
+import AddSeats from './AddSeats'
+import CancelOrder from './cancelOrder'
 
+
+const ActionContext = createContext();
 
 function StatusCol({params}) {
   const status = params.value || '';
 
   const Menu = (props) => {
-    const {className,label,value,showFor,hideFor} = props;
+    const {className,label,value,showFor,hideFor,...extraProps} = props;
     const ShowerClass = showFor?.includes(value?.toLowerCase() || value) ? '' : !showFor ? '' : '!hidden'
     const hiderClass = !hideFor?.includes(value?.toLowerCase() || value) ? '' : !hideFor ? '' : '!hidden'
     
     return (
-      <MenuItem className={`${className} ${ShowerClass} ${hiderClass}`} value={value}>{label || value}</MenuItem>
+      <MenuItem className={`${className} ${ShowerClass} ${hiderClass}`} value={value} {...extraProps} >{label || value}</MenuItem>
     )
   }
 
@@ -32,22 +37,27 @@ function StatusCol({params}) {
           <Icon icon={'pepicons-pop:dots-y'} />
         </label>
       )}>
-        <div className='flex flex-col bg-secondary rounded-lg p-2'>
-          <Menu value={status} label='View Order' />
-          <Menu value={status} label='Make Payment' showFor={['confirmed']} />
-          <Menu value={status} label='Issue Ticket' showFor={['confirmed']} className='!btn disabled' />
-          <Menu value={status} label='Manage Ticket' showFor={['confirmed']} />
-          <Menu value={status} label='Add Seats' hideFor={['confirmed']} />
-          <Menu value={status} label='Add Bags' hideFor={['confirmed']} />
-          <Menu value={status} label='Confirm Payment' showFor={['pending','on hold']} />
-          <Menu value={status} label='Edit PNR' hideFor={['confirmed']} />
-          <Menu value={status} label='Hold Order' hideFor={['confirmed']} />
-          <Menu value={status} label='Cancel Order' className='!bg-red-500 !text-white !rounded-md' />
-        </div>
+        <ActionContext.Consumer>
+          {({bags,seats,cancel}) => (
+            <div className='flex flex-col bg-secondary rounded-lg p-2'>
+              <Menu value={status} label='View Order' />
+              <Menu value={status} label='Make Payment' showFor={['confirmed']} />
+              <Menu value={status} label='Issue Ticket' showFor={['confirmed']} className='!btn disabled' />
+              <Menu value={status} label='Manage Ticket' showFor={['confirmed']} />
+              <Menu value={status} label='Add Seats' hideFor={['confirmed']} onClick={seats.open} />
+              <Menu value={status} label='Add Bags' hideFor={['confirmed']} onClick={bags.open} />
+              <Menu value={status} label='Confirm Payment' showFor={['pending','on hold']} />
+              <Menu value={status} label='Edit PNR' hideFor={['confirmed']} />
+              <Menu value={status} label='Hold Order' hideFor={['confirmed']} />
+              <Menu value={status} label='Cancel Order' className='!bg-red-500 !text-white !rounded-md' onClick={cancel.open}/>
+            </div>
+          )}
+        </ActionContext.Consumer>
       </CustomMenu>
     </div>
   )
 }
+
 
 export default function OrdersData({data,setData}) {
   const tempObj = {
@@ -57,6 +67,10 @@ export default function OrdersData({data,setData}) {
     bookRef: parseInt(Math.random()*99999),
     status: ['confirmed','pending','on hold','cancelled','expired'][parseInt(Math.random()*5)]
   }
+  const [openAddBags,setOpenAddBags] = useState(false);
+  const [openAddSeats,setOpenAddSeats] = useState(false);
+  const [openCancelOrder,setOpenCancelOrder] = useState(false);
+
   const filterOptions = [
     {label: 'All',value: 'ALL',count: 293},
     {label: 'Flights',value: 'FLIGHTS',count: 190},
@@ -75,7 +89,7 @@ export default function OrdersData({data,setData}) {
     {field: 'bookRef',headerName: 'Book Ref'},
     {field: 'status',headerName: 'Status',minWidth: 160,
       renderCell: (params) => (
-        <StatusCol params={params} />
+        <StatusCol params={params} addBags={() => setOpenAddBags(true)} addSeats={() => setOpenAddSeats(true)} />
       )
     },
   ]
@@ -110,7 +124,18 @@ export default function OrdersData({data,setData}) {
         </div>
       </div>
       <hr />
-      <CustomTable rows={data} columns={columns} />
+      <ActionContext.Provider value={{
+        bags: {openAddBags,setOpenAddBags,open: () => setOpenAddBags(true)},
+        seats: {openAddSeats,setOpenAddSeats,open: () => setOpenAddSeats(true)},
+        cancel: {openCancelOrder,setOpenCancelOrder,open: () => setOpenCancelOrder(true)}
+      }}>
+        <CustomTable rows={data} columns={columns} />
+      </ActionContext.Provider>
+
+      <AddBags open={openAddBags} setOpen={setOpenAddBags} />
+      <AddSeats open={openAddSeats} setOpen={setOpenAddSeats} />
+      <CancelOrder open={openCancelOrder} setOpen={setOpenCancelOrder} />
+
     </div>
   )
 }

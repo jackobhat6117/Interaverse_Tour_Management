@@ -215,13 +215,13 @@ function InviteTeam({reload,label='Invite'}) {
   }
 
   return (
-    <div>
+    <div className='flex flex-col'>
       <Button1 variant='contained' className='!capitalize' onClick={() => setOpen(true)}>{label}</Button1>
       <Modal1 open={open} setOpen={setOpen}>
         <form onSubmit={handleSubmit} className='p-4 flex flex-col gap-4'>
           <h5>Invite a team member</h5>
           <EmailInput label='email' value={data.email} onChange={(ev) => setData({...data,email: ev.target.value})} />
-          <div>
+          <div className='text-start'>
             Role
             <RadioGroup value={data.role} onChange={(ev) => setData({...data,role: ev.target.value})} className='flex flex-col gap-2'>
               {roles.map((role,i) => (

@@ -3,14 +3,28 @@ import { Tab, Tabs } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+
+const returnPage = (link) => link === 0 ? ''  
+:
+link ===  1 ? 'order'
+:
+link ===  2 ? 'users'
+:
+link ===  3 ? 'support'
+:
+0
+
 export default function NavLinks() {
   const location = useLocation();
   const locations = location.pathname?.split('/');
   const page = locations[locations.length-1];
-  const [initialRender,setInitialRender] = useState(true);
   const navigate = useNavigate();
-  const [link,setLink] = useState(
-    page === '' ? 0 
+  const [link,setLink] = useState(0)
+  const [initialPage,setInitialPage] = useState(link);
+
+
+  useEffect(() => {
+    setLink(page === '' ? 0 
     :
     page === 'order' ? 1
     :
@@ -18,25 +32,17 @@ export default function NavLinks() {
     :
     page === 'support' ? 3
     :
-    0
-  )
+    0)
+  },[page])
 
   useEffect(() => {
     // let link = ev.target.getAttribute('link');
-    if(!initialRender) {
-      const returnPage = () => link === 0 ? ''  
-      :
-      link ===  1 ? 'order'
-      :
-      link ===  2 ? 'users'
-      :
-      link ===  3 ? 'support'
-      :
-      0
+    if(initialPage !== link) {
       
-      navigate(returnPage());
-    } else setInitialRender(0)
-  },[link,navigate,initialRender])
+      navigate(returnPage(link));
+      setInitialPage(link)
+    }
+  },[link,navigate,initialPage])
 
   function handleLink(ev,val) {
     setLink(val)
