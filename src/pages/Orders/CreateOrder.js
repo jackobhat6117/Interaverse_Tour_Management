@@ -1,17 +1,20 @@
 import { useState } from "react";
-import Button1 from "../../components/forms/Button1";
+import Button1 from "../../components/form/Button1";
 import Modal1 from "../../components/DIsplay/Modal/Modal1";
 import { RadioGroup } from "@mui/material";
-import RadioInput from "../../components/forms/RadioInput";
+import RadioInput from "../../components/form/RadioInput";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateOrder({label,handleReturn}) {
   const [open,setOpen] = useState(false);
   const [selected,setSelected] = useState();
+  const navigate = useNavigate()
 
   function handleSubmit(val) {
     setSelected(val);
     setOpen(false);
-    handleReturn && handleReturn();
+    // handleReturn && handleReturn();
+    navigate('/order/new/'+val)
   }
 
   return (

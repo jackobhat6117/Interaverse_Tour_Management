@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import SelectInput from '../../components/forms/SelectInput'
+import SelectInput from '../../components/form/SelectInput'
 import { MenuItem } from '@mui/material'
 import updateProfile from '../../controllers/user/updateProfile';
 import { useSelector } from 'react-redux';

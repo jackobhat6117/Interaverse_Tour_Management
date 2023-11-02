@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import SelectInput from '../forms/SelectInput'
+import SelectInput from '../form/SelectInput'
 import { MenuItem } from '@mui/material'
 
 

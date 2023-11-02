@@ -1,31 +1,31 @@
-import { Button, RadioGroup, Tab, Tabs } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import { MenuItem, RadioGroup, Tab, Tabs } from '@mui/material'
+import React, { createContext, useEffect, useState } from 'react'
 import getTeamMembers from '../../controllers/settings/team/getTeamMembers';
 import Modal1 from '../../components/DIsplay/Modal/Modal1';
-import EmailInput from '../../components/forms/EmailInput';
-import RadioInput from '../../components/forms/RadioInput';
-import Button1 from '../../components/forms/Button1';
+import EmailInput from '../../components/form/EmailInput';
+import RadioInput from '../../components/form/RadioInput';
+import Button1 from '../../components/form/Button1';
 import addTeamMember from '../../controllers/settings/team/addTeamMember';
 import { useSnackbar } from 'notistack';
 import CustomTable from '../../components/Table/CustomTable';
-import { Delete, Edit, Settings } from '@mui/icons-material';
-import TableMenu from '../../components/mini/TableMenu';
+import { Delete, Settings } from '@mui/icons-material';
 import deleteTeamMember from '../../controllers/settings/team/deleteTeamMember';
 import LearnMoreButton from '../../components/mini/LearnMoreButton';
 import activateTeamMember from '../../controllers/settings/team/activateTeamMember';
 import deactivateTeamMember from '../../controllers/settings/team/deactivateTeamMember copy';
+import CustomMenu from '../../components/utils/CustomMenu';
+import Icon from '../../components/HOC/Icon';
+import SelectInput from '../../components/form/SelectInput';
+import { teamRolesData } from '../../data/team/rolesData';
+import { clone } from '../../features/utils/objClone';
+import updateTeamMemberRole from '../../controllers/settings/team/updateTeamMemberRole';
+import getSentInvitations from '../../controllers/settings/team/getSentInvitations';
 
 
+const Action = createContext();
 
 function ActionCol({params,reload}) {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [open, setOpen] = React.useState(false);
   const {enqueueSnackbar} = useSnackbar();
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-    setOpen((prev) => !prev);
-  };
 
   async function handleDelete() {
     const res = await deleteTeamMember(params.id);
@@ -53,42 +53,64 @@ function ActionCol({params,reload}) {
   }
   
   return (
-    <div className='flex justify-end px-2 w-full'>
-      <Settings onClick={handleClick} className='text-primary/70 cursor-pointer' />
-      <TableMenu open={open} anchorEl={anchorEl} setOpen={setOpen}>
-        {['Inactive','Deactivated'].includes(params?.row?.status) ? 
-          <Button className='flex btn-theme-light !test !justify-start !text-start items-center gap-2 p-2'
-            onClick={handleActivate}
-          >
-            <Edit className='text-primary/50' fontSize='small' />
-            Activate</Button>
-        :
-          <Button className='flex btn-theme-light !test !justify-start !text-start items-center gap-2 p-2'
-            onClick={handleDeactivate}
-          >
-            <Edit className='text-primary/50' fontSize='small' />
-            Deactivate</Button>
+    <div className='flex justify-end px-2'>
+      <CustomMenu
+        element={
+          <Settings className='text-primary/70 cursor-pointer' />
         }
-        <Button className='flex btn-theme-light !test !justify-start !text-start items-center gap-2 p-2'
-          onClick={handleDelete}
-        >
-          <Delete className='text-primary/50' fontSize='small'/>
-          Delete</Button>
-      </TableMenu>
+      >
+        <Action.Consumer>
+          {({updateRole}) => (
+
+            <div className='flex flex-col bg-secondary rounded-lg p-2'>
+            {['Inactive','Deactivated'].includes(params?.row?.status) ? 
+              <Button1 className='flex btn-theme-light !justify-start !text-start items-center gap-2 p-2'
+                onClick={handleActivate}
+                >
+                <Icon icon={'mdi:user-check'} fontSize={20} className='w-6 h-6' />
+                Activate</Button1>
+            :
+              <Button1 className='flex btn-theme-light !justify-start !text-start items-center gap-2 p-2'
+                onClick={handleDeactivate}
+                >
+                <Icon icon={'basil:user-block-solid'} fontSize={20} className='w-6 h-6' />
+                {/* <Edit className='text-primary/50' fontSize='small' /> */}
+                Deactivate</Button1>
+            }
+            <Button1 variant='text' className='btn-theme-light' onClick={() => updateRole.open(params.row)}>
+              <Icon icon={'tabler:edit'} />
+              Update role
+            </Button1>
+            <Button1 className='!bg-red-500 !text-white flex !gap-2 !justify-start '
+              onClick={handleDelete}
+            >
+              <Delete className='!w-6 !h-6 ' fontSize='small' />
+              Delete</Button1>
+            </div>
+          )}
+        </Action.Consumer>
+              
+      </CustomMenu>
     </div>
   )
 }
+
+const filterItems = [
+  {items:[{id: 0,field: 'status',operator: '',value:''}]},
+  {items:[{id: 1,field: 'status', operatorValue: 'is', value: 'Pending'}]},
+];
+
 export default function TeamMembers() {
   const [data,setData] = useState([])
-  const [filter,setFilter] = useState('All')
+  const [filter,setFilter] = useState(filterItems[0])
   const [loading,setLoading] = useState(false);
 
+  const [openUpdateRole,setOpenUpdateRole] = useState(false);
   
   useEffect(() => {
-    if(filter !== '')
-      load()
-    //eslint-disable-next-line react-hooks/exhaustive-deps    
-  },[filter])
+    load();    
+    //eslint-disable-next-line
+  },[])
 
   async function load() {
     let query = {
@@ -101,17 +123,26 @@ export default function TeamMembers() {
     const res = await getTeamMembers((new URLSearchParams(query)).toString())
     setLoading(false);
     if(res.return) {
-      let data = (res?.data?.data || []).map(obj => ({...obj,...obj.member,id: obj._id,name: obj.member.firstName+' '+obj.member.lastName}))
+      let data = res?.data?.data || [];
+      const res2 = await getSentInvitations();
+      if(res2.return) {
+        data = [...data,...(res2?.data?.data?.map((obj,i) => ({...obj,id: i+"Inv"})) || [])];
+      }
+      // console.log('dat: ',data)
+      data = data.map(obj => ({...obj,...obj?.member,id: obj._id,name: (obj?.member?.firstName||'')+' '+(obj?.member?.lastName||'')}))
+      data = data.filter((cur,i,arr) => arr.findIndex((obj) => obj.email === cur.email) === i)
       setData(data);
       // console.log(res.data?.data)
     }
   }
 
+  console.log('data: ',data)
+
   let columns = [
     {field: 'name',headerName: 'Member',flex: 1},
     {field: 'email',headerName: 'Email',flex: 1},
     {field: 'role',headerName: 'Role',flex: 2},
-    {field: 'action',headerName: '',flex: 2,
+    {field: 'action',headerName: '',flex: 2,minWidth: 60,
       renderCell: (params) => {
         return (
           <ActionCol reload={load} params={params} />
@@ -121,7 +152,7 @@ export default function TeamMembers() {
   ]
   return (
     <div className='flex flex-col gap-4'>
-      {!data.length ? (
+      {!data.length && !loading ? (
         <div className=' text-center flex flex-col items-center gap-8'>
           <h4>You don't have any team members</h4>
           <div className='flex gap-2'>
@@ -136,38 +167,62 @@ export default function TeamMembers() {
           <h5 className='text-primary/50'>Team Members</h5>
           <InviteTeam reload={load} />
         </div>
-        <Tabs className='bg-secondary px-2' value={filter} onChange={(ev,newVal) => setFilter(newVal)}>
-          <Tab label='All' value='All'/>
-          <Tab label='Invited' value='Active' />
+        <Tabs className='bg-secondary px-2' value={filter.items[0].id} onChange={(ev,newVal) => setFilter(filterItems[newVal])}>
+          <Tab label='All' />
+          <Tab label='Invited' />
         </Tabs>
-        <CustomTable loading={loading} rows={data} columns={columns}
-          autoHeight
-          // components={{
-          //   NoRowsOverlay: () => <div>No rows</div>,
-          // }}
-         />
-        {/* <Table rows={data} columns={columns} /> */}
-        {/* <table className='w-full my-2'>
-          <thead className='!bg-theme1/20 p-2'>
-            <TD>Member</TD>
-            <TD>Email</TD>
-            <TD>Role</TD>
-          </thead>
-          <tbody>
-            <tr>
-              <TD>John Doe</TD>
-              <TD>johndoe@gmail.com</TD>
-              <TD>Owner</TD>
-            </tr>
-            <tr>
-              <TD>John Doe</TD>
-              <TD>johndoe@gmail.com</TD>
-              <TD>Owner</TD>
-            </tr>
-          </tbody>
-        </table> */}
+        <Action.Provider value={{updateRole: {open: (val) => setOpenUpdateRole(val || true)}}}>
+          <CustomTable loading={loading} rows={data} columns={columns}
+            // filterModel={filter}
+            // onFilterModelChange={(newFilter) => setFilter(newFilter)}
+          
+            autoHeight
+          />
+        </Action.Provider>
+        <Modal1 open={openUpdateRole} setOpen={setOpenUpdateRole}>
+          <UpdateRole data={openUpdateRole} close={() => setOpenUpdateRole(false)} reload={load} />
+        </Modal1>
       </div>
       )}
+    </div>
+  )
+}
+
+function UpdateRole({data,close,reload}) {
+  const [reqData,setReqData] = useState({email: data?.email || '',role: data?.role || ''});
+  const [loading,setLoading] = useState(false);
+  const {enqueueSnackbar} = useSnackbar();
+
+  useEffect(() => {
+    if(data)
+      setReqData({email: data?.email || '',role: data?.role || ''})
+  },[data])
+
+  async function handleSubmit() {
+    setLoading(true);
+    const res = await updateTeamMemberRole(data?.id,reqData);
+    if(res.return) {
+      enqueueSnackbar('Role updated.',{variant: 'success'})
+      close();
+      reload && reload();
+    } else
+      enqueueSnackbar(res.msg,{variant: 'error'})
+    setLoading(false);
+  }
+  return (
+    <div className='card !p-10 flex flex-col gap-4 w-[450px] !max-w-full'>
+      <h4>Update Role</h4>
+      <SelectInput size='small' 
+        value={reqData.role}
+        onChange={(ev) => setReqData({...reqData,role:ev.target.value})}
+      >
+        {teamRolesData.map((obj,i) => (
+          <MenuItem value={obj.value} key={i}>{obj.label}</MenuItem>
+        ))}
+      </SelectInput>
+      <Button1 onClick={handleSubmit} loading={loading}>
+        Update
+      </Button1>
     </div>
   )
 }
@@ -175,28 +230,7 @@ export default function TeamMembers() {
 function InviteTeam({reload,label='Invite'}) {
   const [open,setOpen] = useState(false);
   const [data,setData] = useState({email: '',role: ''});
-  const roles = [
-    {
-      title: "TicketOfficer",
-      label: "Ticket Officer",
-      description: 'Able to search, book and issue tickets',
-    },
-    {
-      title: "BookingOfficer",
-      label: "Booking Officer",
-      description: 'Search and book flights, stays and tours'
-    },
-    {
-      title: "Developer",
-      label: "Developer",
-      description: 'Full access to orders as well as API access tokens.',
-    },
-    {
-      title: 'Admin',
-      label: 'Adminsitrator',
-      description: 'Admin have full access to search, book and manage access tokens.'
-    }
-  ]
+  const roles = clone(teamRolesData);
   const [loading,setLoading] = useState(false);
   const {enqueueSnackbar} = useSnackbar();
 
@@ -236,7 +270,7 @@ function InviteTeam({reload,label='Invite'}) {
           </div>
           <div className='flex gap-2'>
             <div className='w-[30%]'>
-              <Button1 type='submit' className='btn-theme-light'>Cancel</Button1>
+              <Button1 className='btn-theme-light' onClick={() => setOpen(false)}>Cancel</Button1>
             </div>
             <div className='flex-1'>
               <Button1 loading={loading} type='submit' className=''>Send Invite</Button1>

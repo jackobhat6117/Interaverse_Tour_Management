@@ -1,7 +1,7 @@
 import { Button } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import EmailInput from '../../components/forms/EmailInput'
-import Button1 from '../../components/forms/Button1'
+import EmailInput from '../../components/form/EmailInput'
+import Button1 from '../../components/form/Button1'
 import { useSelector } from 'react-redux'
 import getContactMails from '../../controllers/contactMail/getContactMails'
 import removeContactMail from '../../controllers/contactMail/removeContactMail'
@@ -24,7 +24,11 @@ export default function ContactEmails() {
 
   async function load() {
     setLoading(true);
-    const res = await getContactMails();
+    let query = {
+      filterBy: 'type',
+      filterValue: 'Support',
+    }
+    const res = await getContactMails((new URLSearchParams(query)).toString());
     setLoading(false);
     if(res.return) {
       setData(res.data?.data)
@@ -42,10 +46,11 @@ export default function ContactEmails() {
   }
 
   async function handleAdd() {
-    const res = await createContactMail({email,actions: ['Account']});
+    const res = await createContactMail({email,type:'Support',actions: ['Account']});
     if(res.return) {
       enqueueSnackbar('Email Added',{variant: 'success'})
       load();
+      setEmail('')
     } else enqueueSnackbar(res.msg,{variant: 'error'})
   }
   // console.log(data);
@@ -91,19 +96,42 @@ function ScheduleChanges() {
   const [data,setData] = useState([]);
   const [email,setEmail] = useState('');
   const [loading,setLoading] = useState(false);
+  const [loadingAdd,setAddLoading] = useState(false);
+  const {enqueueSnackbar} = useSnackbar();
 
   useEffect(() => {
     load();
   },[])
 
-  function load() {
+  async function load() {
+    setLoading(true);
+    let query = {
+      filterBy: 'type',
+      filterValue: 'Event',
+    }
+    const res = await getContactMails((new URLSearchParams(query)).toString());
     setLoading(false);
+    if(res.return) {
+      setData(res.data?.data)
+    }
   }
   async function handleAdd() {
-    setData([])
+    setAddLoading(true);
+    const res = await createContactMail({email,type: 'Event',actions: ['Account']});
+    setAddLoading(false);
+    if(res.return) {
+      enqueueSnackbar('Email Added',{variant: 'success'})
+      load();
+    } else enqueueSnackbar(res.msg,{variant: 'error'})
   }
-  async function handleRemove() {
-
+  async function handleRemove(id) {
+    setLoading(true);
+    const res = await removeContactMail(id);
+    setLoading(false);
+    if(res.return) {
+      load();
+      enqueueSnackbar('Removed',{variant: 'success'})
+    } else enqueueSnackbar(res.msg,{variant: 'error'})
   }
   return (
     <div className='flex flex-col gap-4'>
@@ -118,7 +146,7 @@ function ScheduleChanges() {
           }
           onChange={(ev) => setEmail(ev.target.value)}
         />
-        <Button1 className='!w-auto' onClick={handleAdd}>Add</Button1>
+        <Button1 className='!w-auto' onClick={handleAdd} loading={loadingAdd}>Add</Button1>
       </div>
       <div className='flex flex-col gap-3 py-3'>
         {loading ? (

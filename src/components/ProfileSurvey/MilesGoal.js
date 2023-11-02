@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import RadioInput from '../forms/RadioInput'
+import RadioInput from '../form/RadioInput'
 import { RadioGroup } from '@mui/material'
-import TextInput from '../forms/TextInput';
+import TextInput from '../form/TextInput';
 
 
 let goals = [

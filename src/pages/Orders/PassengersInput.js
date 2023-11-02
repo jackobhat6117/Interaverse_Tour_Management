@@ -3,9 +3,9 @@ import { useSelector } from "react-redux";
 import { passengerDataTemp, passengerDataTempFilled } from '../../data/user/passengerData';
 import { clone } from "../../features/utils/objClone";
 import moment from "moment";
-import FetchUsersInput from "../../components/forms/FetchUsersInput";
+import FetchUsersInput from "../../components/form/FetchUsersInput";
 import { MenuItem, TextField } from "@mui/material";
-import CountriesInput from "../../components/forms/CountriesInput";
+import CountriesInput from "../../components/form/CountriesInput";
 
 
 export function PassengerInputs({returnData,ind,type}) {

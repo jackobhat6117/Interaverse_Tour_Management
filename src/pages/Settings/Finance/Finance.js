@@ -1,9 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import TextInput from '../../../components/forms/TextInput'
+import TextInput from '../../../components/form/TextInput'
 import { FormControlLabel, MenuItem } from '@mui/material'
-import Button1 from '../../../components/forms/Button1'
-import IOSSwitch from '../../../components/forms/IOSSwitch'
+import Button1 from '../../../components/form/Button1'
+import IOSSwitch from '../../../components/form/IOSSwitch'
 
 export default function Finance() {
   const data = [1]

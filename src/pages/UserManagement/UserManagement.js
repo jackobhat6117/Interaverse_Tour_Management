@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
-import SearchInput from '../../components/forms/SearchInput'
-import Button1 from '../../components/forms/Button1'
+import SearchInput from '../../components/form/SearchInput'
+import Button1 from '../../components/form/Button1'
 import CustomTable from '../../components/Table/CustomTable'
 import { CloseOutlined } from '@mui/icons-material';
-import { ProfilePicture } from '../../components/forms/ProfilePicture';
+import { ProfilePicture } from '../../components/form/ProfilePicture';
 import { Icon } from '@iconify/react';
 import Modal1 from '../../components/DIsplay/Modal/Modal1';
-import TextInput from '../../components/forms/TextInput';
-import EmailInput from '../../components/forms/EmailInput';
-import PhoneNumberInput from '../../components/forms/PhoneNumberInput';
-import SelectInput from '../../components/forms/SelectInput';
+import TextInput from '../../components/form/TextInput';
+import EmailInput from '../../components/form/EmailInput';
+import PhoneNumberInput from '../../components/form/PhoneNumberInput';
+import SelectInput from '../../components/form/SelectInput';
 import { MenuItem } from '@mui/material';
 
 export default function UserManagement() {

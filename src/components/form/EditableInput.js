@@ -14,11 +14,11 @@ export default function EditableInput(props) {
   }, [disabled]);
 
   return (
-    <div className='flex gap-4 items-center'>
-      <div className='flex items-center gap-2 px-2 py-2'>
+    <div className='flex gap-4 items-center max-w-full'>
+      <div className='flex items-center gap-2 px-2 py-2 max-w-[92%]'>
         <div ref={inputRef} type='text' contentEditable={!disabled}
           style={{minWidth: 'unset'}}
-          className={" text-inherit !min-w-[none] "+className}
+          className={" text-inherit !min-w-[none] max-w-full "+className}
           onChange={(ev) => setData(ev.target.value)}
           {...restProps}>
             {data}

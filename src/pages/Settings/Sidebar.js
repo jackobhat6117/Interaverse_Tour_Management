@@ -1,7 +1,7 @@
 import { ArrowBack, Home, Menu, Money, PersonOutlined, Settings } from '@mui/icons-material';
 import React, { useState } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import Button1 from '../../components/forms/Button1';
+import Button1 from '../../components/form/Button1';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/reducers/userSlice';
 import { Drawer } from '@mui/material';

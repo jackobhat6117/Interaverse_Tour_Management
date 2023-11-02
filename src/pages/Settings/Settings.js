@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import TextInput from '../../components/forms/TextInput'
-import Button1 from '../../components/forms/Button1'
-import { ProfilePicture } from '../../components/forms/ProfilePicture'
+import TextInput from '../../components/form/TextInput'
+import Button1 from '../../components/form/Button1'
+import { ProfilePicture } from '../../components/form/ProfilePicture'
 import { useSnackbar } from 'notistack'
 import addCustomKey from '../../controllers/settings/paystack/addCustomKey'
 import updateProfile from '../../controllers/user/updateProfile'
 import { useDispatch, useSelector } from 'react-redux'
 import { setUser } from '../../redux/reducers/userSlice'
 import getCustomKeys from '../../controllers/settings/paystack/getCustomKey'
-import PasswordInput from '../../components/forms/PasswordInput'
+import PasswordInput from '../../components/form/PasswordInput'
 
 export default function Settings() {
   const {user} = useSelector(state => state.user.userData);

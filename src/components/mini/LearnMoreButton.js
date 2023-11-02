@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Modal1 from '../DIsplay/Modal/Modal1'
-import Button1 from '../forms/Button1';
+import Button1 from '../form/Button1';
 
 export default function LearnMoreButton(props) {
   const {label,component,buttonClassName,...restProps} = props;

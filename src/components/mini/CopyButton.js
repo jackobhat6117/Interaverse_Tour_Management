@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import Button1 from '../forms/Button1'
+import Button1 from '../form/Button1'
 
 export default function CopyButton({id}) {
   const [loading,setLoading] = useState(false);

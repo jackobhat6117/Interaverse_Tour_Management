@@ -4,23 +4,23 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 
-const returnPage = (link) => link === 0 ? ''  
-:
-link ===  1 ? 'order'
-:
-link ===  2 ? 'users'
-:
-link ===  3 ? 'support'
-:
-0
+// const returnPage = (link) => link === 0 ? ''  
+// :
+// link ===  1 ? 'order'
+// :
+// link ===  2 ? 'users'
+// :
+// link ===  3 ? 'support'
+// :
+// 0
 
 export default function NavLinks() {
   const location = useLocation();
   const locations = location.pathname?.split('/');
-  const page = locations[locations.length-1];
+  const page = locations[1]||'';
   const navigate = useNavigate();
   const [link,setLink] = useState(0)
-  const [initialPage,setInitialPage] = useState(link);
+  // const [initialPage,setInitialPage] = useState(link);
 
 
   useEffect(() => {
@@ -35,26 +35,29 @@ export default function NavLinks() {
     0)
   },[page])
 
-  useEffect(() => {
-    // let link = ev.target.getAttribute('link');
-    if(initialPage !== link) {
+  // useEffect(() => {
+  //   // let link = ev.target.getAttribute('link');
+  //   if(initialPage !== link) {
       
-      navigate(returnPage(link));
-      setInitialPage(link)
-    }
-  },[link,navigate,initialPage])
+  //     navigate(returnPage(link));
+  //     setInitialPage(link)
+  //   }
+  // },[link,navigate,initialPage])
 
   function handleLink(ev,val) {
     setLink(val)
+    navigate(ev.target.dataset.link)
+    // console.log(ev.target,val,third)
   }
+
   return (
     <div className="">
       <Tabs variant="scrollable" value={link} onChange={handleLink} className="font-bold" 
         TabIndicatorProps={{sx: {height: '4px'}}}>
-        <Tab label='Home' link="/" icon={<HomeOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
-        <Tab label='Order' link="/order" icon={<ShoppingCartOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
-        <Tab label='User Management' link="/users" icon={<Person />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
-        <Tab label='Support' link="/support" icon={<SupportAgentOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
+        <Tab label='Home' data-link="/" icon={<HomeOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
+        <Tab label='Order' data-link="/order" icon={<ShoppingCartOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
+        <Tab label='User Management' data-link="/users" icon={<Person />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
+        <Tab label='Support' data-link="/support" icon={<SupportAgentOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
       </Tabs>
     </div>
   )

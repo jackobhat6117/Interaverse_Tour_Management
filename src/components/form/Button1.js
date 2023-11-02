@@ -6,7 +6,7 @@ function Button1(props) {
   const {label,children,loading,...buttonProps} = props;
   return (
     <Button variant='contained' type='button' {...buttonProps} sx={{textTransform: 'none'}} disabled={loading} 
-      className={'w-full !rounded-lg !font-bold !min-w-[80px] '+props.className}
+      className={'w-full !rounded-lg !min-w-[80px] !px-2 !py-[7px] '+props.className+' '+(props.size === 'small' ? ' !px-3 !rounded-sm !py-0 sm:!py-0 ':'')}
     >
       {loading ? 'Please Wait...' :
         label || children

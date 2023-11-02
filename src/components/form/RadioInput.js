@@ -11,7 +11,7 @@ export default function RadioInput(props) {
   },[checked])
 
   return (
-    <label className={`flex items-start gap-2 cursor-pointer rounded-md p-1 px-3 w-full ${check ? ' bg-[#A7D9D1] text-[#016726] ' : ' bg-primary bg-opacity-5 '} ${className}`}>
+    <label className={`flex items-start cursor-pointer rounded-md p-1 px-3 w-full ${check ? ' bg-[#A7D9D1] text-[#016726] ' : ' bg-primary bg-opacity-5 '} ${className}`}>
       <Radio
         type="radio"
         {...radioProps}
@@ -20,7 +20,9 @@ export default function RadioInput(props) {
         checkedIcon={<TaskAlt className='text-[#016726]' />}
         size="small"
       />
-      {children}
+      <div className='py-[7px] '>
+        {children}
+      </div>
     </label>
   );
 }

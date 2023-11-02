@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import FilterCalendar from '../../../components/forms/FilterCalendar'
+import FilterCalendar from '../../../components/form/FilterCalendar'
 import TableFilter from '../../../components/Table/TableFilter';
-import SearchInput from '../../../components/forms/SearchInput';
-import Button1 from '../../../components/forms/Button1';
+import SearchInput from '../../../components/form/SearchInput';
+import Button1 from '../../../components/form/Button1';
 import CustomTable from '../../../components/Table/CustomTable';
 import getCommissionTransactions from '../../../controllers/Flight/Commission/getTransactions';
 // import { commissionTransactionData } from '../../../data/transaction/commissionTransaction';

@@ -1,7 +1,7 @@
 import React from 'react'
 import Modal1 from '../../components/DIsplay/Modal/Modal1';
 import { PassengerInputs } from './PassengersInput';
-import Button1 from '../../components/forms/Button1';
+import Button1 from '../../components/form/Button1';
 
 export default function AddSeats({open,setOpen}) {
   return (

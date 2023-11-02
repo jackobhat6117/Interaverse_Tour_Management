@@ -27,6 +27,10 @@ import Finance from './pages/Settings/Finance/Finance';
 import FinanceContainer from './pages/Settings/Finance/FinanceContainer';
 import Orders from './pages/Orders/Orders';
 import UserManagement from './pages/UserManagement/UserManagement';
+import Links from './pages/Links/Links';
+import CreateFlightOrder from './pages/Orders/Flight/CreateFlightOrder';
+import OffersList from './pages/Orders/Flight/FlightSearch/OffersList';
+import FlightBook from './pages/Orders/Flight/Book/FlightBook';
 // import 'dotenv/config'
 
 
@@ -77,7 +81,11 @@ function App() {
                 <Route path='/' element={<Navbar />}>
                   <Route index element={<Dashboard />} />
                   <Route path='order' element={<Orders />} />
+                  <Route path='order/new/:order' element={<CreateFlightOrder />} />
+                  <Route path='order/new/flight/offers' element={<OffersList />} />
+                  <Route path='order/new/flight/book/:id' element={<FlightBook />} />
                   <Route path='users' element={<UserManagement />} />
+                  <Route path='link' element={<Links />} />
                   <Route path='*' element={<PageNotFound />} />
                 </Route>
                 <Route path='settings' element={<SettingSideBar />}>

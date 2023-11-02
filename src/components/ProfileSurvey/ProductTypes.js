@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Checkbox from '../forms/Checkbox'
+import Checkbox from '../form/Checkbox'
 
 
 export default function ProductTypes({data,returnData}) {

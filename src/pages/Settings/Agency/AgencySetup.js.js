@@ -1,8 +1,8 @@
 import { MenuItem } from "@mui/material";
-import Button1 from "../../../components/forms/Button1";
-import TextInput from "../../../components/forms/TextInput";
-import PhoneNumberInput from "../../../components/forms/PhoneNumberInput";
-import EmailInput from "../../../components/forms/EmailInput";
+import Button1 from "../../../components/form/Button1";
+import TextInput from "../../../components/form/TextInput";
+import PhoneNumberInput from "../../../components/form/PhoneNumberInput";
+import EmailInput from "../../../components/form/EmailInput";
 import { useState } from "react";
 import { profileSurveyData } from "../../../data/user/profileSurvey";
 import updateProfile from "../../../controllers/user/updateProfile";

@@ -1,19 +1,19 @@
 import React, { useState } from 'react'
 import textlogo from '../../assets/icons/textlogo.png'
-import EmailInput from '../forms/EmailInput'
-import PasswordInput from '../forms/PasswordInput'
-import Button1 from '../forms/Button1'
+import EmailInput from '../form/EmailInput'
+import PasswordInput from '../form/PasswordInput'
+import Button1 from '../form/Button1'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import flightCheckedIcon from '../../assets/icons/Checkmark.png';
 import hotelCheckedIcon from '../../assets/icons/Layer 2.png';
 import packageCheckedIcon from '../../assets/icons/Checkmark (1).png';
-import TextInput from '../forms/TextInput'
+import TextInput from '../form/TextInput'
 import { signupReqData } from '../../data/user/Auth/signupReq'
 import signup from '../../controllers/Auth/signup'
 import { useSnackbar } from 'notistack'
 import { Radio, RadioGroup } from '@mui/material'
-import Checkbox from '../forms/Checkbox'
-import PhoneNumberInput from '../forms/PhoneNumberInput'
+import Checkbox from '../form/Checkbox'
+import PhoneNumberInput from '../form/PhoneNumberInput'
 
 
 export default function Signup() {

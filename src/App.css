@@ -12,11 +12,41 @@ hr {
 }
 
 
+.dot {
+  @apply bg-primary rounded-full w-2 h-2;
+}
+
+
+.sqr1 {
+  @apply !w-1 !h-1;
+}
+.sqr2 {
+  @apply !w-2 !h-2;
+}
+.sqr3 {
+  @apply !w-3 !h-3;
+}
+.sqr4 {
+  @apply !w-4 !h-4;
+}
+.sqr5 {
+  @apply !w-5 !h-5;
+}
+.sqr6 {
+  @apply !w-6 !h-6;
+}
+.sqr8 {
+  @apply !w-8 !h-8;
+}
+.sqr10 {
+  @apply !w-10 !h-10;
+}
 
 
 
-
-
+.vr {
+  @apply border-l-[3px] border-[#aaa] self-center min-h-[20px] inline-block;
+}
 
 
 

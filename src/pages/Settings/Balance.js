@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import Button1 from '../../components/forms/Button1'
+import Button1 from '../../components/form/Button1'
 import { FileDownloadOutlined } from '@mui/icons-material'
 import CustomTable from '../../components/Table/CustomTable'
 import { alertType } from '../../data/constants'
 import Modal1 from '../../components/DIsplay/Modal/Modal1'
-import TextInput from '../../components/forms/TextInput'
-import FilterCalendar from '../../components/forms/FilterCalendar'
+import TextInput from '../../components/form/TextInput'
+import FilterCalendar from '../../components/form/FilterCalendar'
 import getWallet from '../../controllers/settings/wallet/getWallet'
 import topupWallet from '../../controllers/settings/wallet/topupWallet'
 import { useSnackbar } from 'notistack'
@@ -153,10 +153,10 @@ function SetupThreshold({reload}) {
     <div>
       <Button1 
         onClick={() => setOpen(true)}
-        className='!light-bg sm:!bg-secondary !w-full sm:!w-auto !shadow-none !lowercase !text-gray-500'>Set-up low balance threshold</Button1>
+        className='!light-bg sm:!bg-secondary !w-full sm:!w-auto !shadow-none !text-none !text-gray-500'>Set-up low balance threshold</Button1>
       <Modal1 open={open} setOpen={setOpen}>
         <form onSubmit={handleSubmit} className='p-4 flex flex-col gap-6 max-w-[800px]'>
-          <h4>Set-Up lowbalance threshold</h4>
+          <h4>Set-Up low balance threshold</h4>
           <TextInput label='Low balance threshold (ngn)' 
             value={amount}
             onChange={(ev) => setAmount(ev.target.value)}

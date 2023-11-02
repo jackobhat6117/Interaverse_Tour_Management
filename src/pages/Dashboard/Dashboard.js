@@ -1,7 +1,7 @@
 import React from 'react'
 import RevenuAnalytics from './RevenuAnalytics'
 import { useSelector } from 'react-redux'
-import Button1 from '../../components/forms/Button1'
+import Button1 from '../../components/form/Button1'
 import { Link } from 'react-router-dom'
 
 

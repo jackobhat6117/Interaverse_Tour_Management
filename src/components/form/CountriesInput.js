@@ -6,7 +6,6 @@ export default function CountriesInput({value,onChange,label,icon,className,requ
   const option = countries.all.filter((country) => country.status === 'assigned');
 
   function handleChange(newVal) {
-    console.log('country change: ',newVal)
     if(onChange)
       onChange(newVal);
   }
@@ -40,7 +39,7 @@ export default function CountriesInput({value,onChange,label,icon,className,requ
     renderOption={(props,opt) => {
       return (
         <div {...props} className='flex flex-col !p-2 !cursor-pointer' style={{padding: 10,cursor: 'pointer'}}>
-          <h4>{opt.alpha2}</h4>
+          <h5>{opt.alpha2}</h5>
           <small className='!whitespace-nowrap !text-ellipsis !block' title={opt.name}>{opt.name}</small>
         </div>
       )

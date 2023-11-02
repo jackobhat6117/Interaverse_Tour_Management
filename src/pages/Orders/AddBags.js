@@ -2,10 +2,10 @@ import React from 'react'
 import Modal1 from '../../components/DIsplay/Modal/Modal1';
 import { PassengerInputs } from './PassengersInput';
 import { RadioGroup } from '@mui/material';
-import RadioInput from '../../components/forms/RadioInput';
+import RadioInput from '../../components/form/RadioInput';
 import { Icon } from '@iconify/react';
 import { getCurrencySymbol } from '../../features/utils/countires';
-import Button1 from '../../components/forms/Button1';
+import Button1 from '../../components/form/Button1';
 
 export default function AddBags({open,setOpen}) {
   return (

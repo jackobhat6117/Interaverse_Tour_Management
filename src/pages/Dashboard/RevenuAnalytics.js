@@ -3,8 +3,8 @@ import { Button } from '@mui/material';
 import { BarElement, Chart, CategoryScale, Legend, LineElement, LinearScale, PointElement, Title, Tooltip, ArcElement } from 'chart.js';
 import { Bar, Doughnut, Line } from 'react-chartjs-2'
 import { WbIncandescent } from '@mui/icons-material';
-import Button1 from '../../components/forms/Button1';
-import FilterCalendar from '../../components/forms/FilterCalendar';
+import Button1 from '../../components/form/Button1';
+import FilterCalendar from '../../components/form/FilterCalendar';
 
 Chart.register(
   CategoryScale,

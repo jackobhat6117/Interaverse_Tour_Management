@@ -1,7 +1,7 @@
 import React, { memo, useState } from 'react'
 import { MenuItem } from '@mui/material'
-import SelectInput from '../forms/SelectInput'
-import TextInput from '../forms/TextInput'
+import SelectInput from '../form/SelectInput'
+import TextInput from '../form/TextInput'
 import { profileSurveyData } from '../../data/user/profileSurvey'
 
 

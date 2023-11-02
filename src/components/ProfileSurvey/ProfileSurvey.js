@@ -1,7 +1,7 @@
 import React, { cloneElement, useCallback, useState } from 'react'
 import ProductTypes from './ProductTypes';
 import { Box, Dialog } from '@mui/material';
-import Button1 from '../forms/Button1';
+import Button1 from '../form/Button1';
 import OrganizationSize from './OrganizationSize';
 import BusinessDetail from './BusinessDetail';
 import MilesGoal from './MilesGoal';

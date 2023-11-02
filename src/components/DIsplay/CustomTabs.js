@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 export default function CustomTabs({options,defaultValue}) {
   const [value,setValue] = useState(defaultValue);
   return (
-    <div className='flex'>
+    <div className='flex overflow-hidden overflow-x-auto'>
       {options.map((obj,i) => (
         <span key={i}
           className={` cursor-pointer

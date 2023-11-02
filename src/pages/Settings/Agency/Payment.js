@@ -1,5 +1,5 @@
 import React from 'react'
-import Button1 from '../../../components/forms/Button1'
+import Button1 from '../../../components/form/Button1'
 
 export default function PaymentSetting() {
   return (

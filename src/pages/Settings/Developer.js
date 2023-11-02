@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react'
 import {Visibility, VisibilityOff } from '@mui/icons-material'
 import CustomTable from '../../components/Table/CustomTable'
 import { Link, useLocation } from 'react-router-dom'
-import Button1 from '../../components/forms/Button1';
+import Button1 from '../../components/form/Button1';
 import Modal1 from '../../components/DIsplay/Modal/Modal1';
-import TextInput from '../../components/forms/TextInput';
-import RadioInput from '../../components/forms/RadioInput';
+import TextInput from '../../components/form/TextInput';
+import RadioInput from '../../components/form/RadioInput';
 import { Button, MenuItem, RadioGroup } from '@mui/material';
 import getAPIKeys from '../../controllers/settings/APIKeys/getAPIKeys';
 import createAPIKey from '../../controllers/settings/APIKeys/createAPIKey';
@@ -22,11 +22,13 @@ import deactivateWebhook from '../../controllers/webhook/deactivateWebhook';
 import removeWebhook from '../../controllers/webhook/removeWebhook';
 import suspendWebhook from '../../controllers/webhook/suspendWebhook';
 import { alertType } from '../../data/constants';
-import EditableInput from '../../components/forms/EditableInput';
+import EditableInput from '../../components/form/EditableInput';
 import getWebhookEvents from '../../controllers/webhook/getWebookEvent';
-import Checkbox from '../../components/forms/Checkbox';
+import Checkbox from '../../components/form/Checkbox';
 import CopyButton from '../../components/mini/CopyButton';
 import deleteAPIKey from '../../controllers/settings/APIKeys/deleteAPIKey';
+import pingWebhook from '../../controllers/webhook/pingWebhook';
+import SelectInput from '../../components/form/SelectInput';
 
 
 export default function DeveloperSetting() {
@@ -63,7 +65,9 @@ function WebHook() {
   },[selected])
 
   async function load() {
+    setLoading(true);
     const res = await getWebhooks();
+    setLoading(false);
     if(res.return) {
       if(res?.data?.data) {
         let data = res?.data?.data?.map(obj => ({...obj,id: obj._id})) || []
@@ -83,9 +87,9 @@ function WebHook() {
 
   let columns = [
     {field: 'status',headerName: 'Status',flex: 1},
-    {field: 'events',headerName: 'Event',flex: 1,
+    {field: 'events',headerName: 'Event',flex: 1,maxWidth: 300,minWidth: 300,
       renderCell: (params) => (
-        <div title={params.value?.join(', ')}>
+        <div title={params.value?.join(', ')} className='overflow-x-auto overflow-hidden'>
           {params.value?.join(', ')}
         </div>
       )
@@ -140,6 +144,13 @@ function WebHook() {
     }
     else enqueueSnackbar(res.msg,{variant: 'error'})
   }
+  async function handlePing(id) {
+    const res = await pingWebhook(id);
+    if(res.return) {
+      enqueueSnackbar(res.msg?.toString()+' ping returned',{variant: 'success'})
+    }
+    else enqueueSnackbar(res.msg,{variant: 'error'})
+  }
 
 
   let filterOptions = [
@@ -161,7 +172,7 @@ function WebHook() {
           </div>
         ):null}
       </div>
-      {!data.length ? (
+      {!data.length && !loading ? (
         <div className=' text-center flex flex-col items-center gap-8'>
           <h4>You don't have any test webooks</h4>
           <div className='flex gap-2'>
@@ -173,18 +184,23 @@ function WebHook() {
         <div className='max-w-[600px] flex flex-col gap-2'>            
           {webhook && !loading ?  // Single webhook view
             <div className='flex flex-col gap-2'>
-              <div className='flex gap-2 justify-between'>
+              <div className='flex flex-wrap gap-2 justify-between'>
                 <EditableInput value={webhook.name} className='h4' />
                 <div>
-                  <TextInput select size='small' noShrink={true} label='Options'>
+                  <SelectInput select size='small' noShrink={true} label='Options'>
                     {webhook.status !== 'Active' ? 
                     <MenuItem onClick={() => handleActivate(webhook._id)}>Activate</MenuItem>
                     :
                     <MenuItem onClick={() => handleDeactivate(webhook._id)}>Deactivate</MenuItem>
                     }
                     <MenuItem onClick={() => handleSuspend(webhook._id)}>Suspend</MenuItem>
-                    <MenuItem onClick={() => handleRemove(webhook._id)}>Remove</MenuItem>
-                  </TextInput>
+                    <MenuItem onClick={() => handlePing(webhook._id)}>Ping</MenuItem>
+                    <MenuItem className='!bt !text-white'>
+                      <Button1 onClick={() => handleRemove(webhook._id)} className='!btn !bg-red-500 !text-white'>
+                      Delete
+                      </Button1>
+                    </MenuItem>
+                  </SelectInput>
                 </div>
               </div>
               <hr />
@@ -210,7 +226,7 @@ function WebHook() {
 
           {/* Table view */}
           <h6>Delivery Log</h6>
-          <div className='flex gap-2 justify-between items-center self-start w-full'>
+          <div className='flex gap-2 flex-wrap justify-between items-center self-start w-full'>
             <CustomTabs defaultValue='All' options={filterOptions} />
             <div>
               <TextInput select size='small' label='Filter' noShrink></TextInput>
@@ -295,6 +311,7 @@ function CreateWebHook({reload}) {
             ))}
           </RadioGroup> */}
           <div className='flex flex-col gap-2'>
+            <h6 className='text-primary/40'>Events to listen to</h6>
             {events.map((val,i) => (
               <Checkbox key={i} onChange={() => handleCheckboxChange(val)}>{val}</Checkbox>
             ))}

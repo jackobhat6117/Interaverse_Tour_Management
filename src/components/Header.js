@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
 import logo from '../assets/icons/textlogo.png';
-import SearchInput from './forms/SearchInput';
+import SearchInput from './form/SearchInput';
 import { Drawer, FormControlLabel } from '@mui/material';
 import { Close, Home, Menu, Notifications, Person, Settings } from '@mui/icons-material';
 import CustomMenu from './utils/CustomMenu';
 import moment from 'moment/moment';
-import Button1 from './forms/Button1';
+import Button1 from './form/Button1';
 import { useDispatch } from 'react-redux';
 import { logout } from '../redux/reducers/userSlice';
 import { Link } from 'react-router-dom';
-import IOSSwitch from './forms/IOSSwitch';
+import IOSSwitch from './form/IOSSwitch';
 
 
 
@@ -37,7 +37,7 @@ export default function Header() {
         <img src={logo} alt='Miles' />
       </div>
       <div className='flex-1 z-[90]'>
-        <SearchInput exampleview searchView />
+        <SearchInput exampleview={true} searchview={true} />
       </div>
       <div className='flex gap-3 items-center text-primary/50'>
         <b>Test mode</b>
