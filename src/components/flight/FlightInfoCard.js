@@ -4,7 +4,7 @@ import getFlightDuration from '../../features/flight/getFlightDuration';
 import Icon from '../HOC/Icon';
 // import { offerDataTemp } from '../../data/flight/offerData';
 
-export default function FlightInfoCard({data,label}) {
+export default function FlightInfoCard({data,label='Depart'}) {
   // let tdata = offerDataTemp.segments[0];
   // const departureDateTime = moment(`${data?.departureDate} ${data?.departureTime}`, "YYYY-MM-DD HH:mm");
   // const arrivalDateTime = moment(`${data?.arrivalDate} ${data?.arrivalTime}`, "YYYY-MM-DD HH:mm");
@@ -13,17 +13,17 @@ export default function FlightInfoCard({data,label}) {
     <div className=' rounded-md w-full border-gray-300 bg-secondary'>
       <div className='flex gap-4 justify-between p-5'>
         <b className='flex gap-2'>
-          {label} <span>-</span> {moment(data.departureDate).format('ddd, DD MMM')}
-          {/* {label} - {tdata.booked_flights[0].origin.date} */}
+          {label} <span>-</span> {moment(data?.departureDate).format('ddd, DD MMM')}
+          {/* {label} - {tdata?.booked_flights[0].origin.date} */}
         </b>
         <b>
           {/* {getFlightDuration(departureDateTime,arrivalDateTime)} */}
-          {/* {data.duration} */}
-          {/* {tdata.booked_flights[0].duration} */}
+          {/* {data?.duration} */}
+          {/* {tdata?.booked_flights[0].duration} */}
         </b>
       </div>
       {
-        data.flights.map((flight,i) => (
+        data?.flights?.map((flight,i) => (
           <div key={i}>
 
             <div className=' '>
@@ -66,10 +66,10 @@ export default function FlightInfoCard({data,label}) {
                 </div>
               </div>
             </div>
-            {i < data.flights.length-1 ? (
+            {i < data?.flights.length-1 ? (
               <div className='border-y p-3 flex items-center gap-2 '>
                 <span className='min-w-[50px] px-2'>
-                  {getFlightDuration(moment(`${flight?.departureDate} ${flight?.departureTime}`, "YYYY-MM-DD HH:mm"),moment(`${data.flights[i+1]?.arrivalDate} ${data.flights[i+1]?.arrivalTime}`, "YYYY-MM-DD HH:mm"),'short')}
+                  {getFlightDuration(moment(`${flight?.departureDate} ${flight?.departureTime}`, "YYYY-MM-DD HH:mm"),moment(`${data?.flights[i+1]?.arrivalDate} ${data?.flights[i+1]?.arrivalTime}`, "YYYY-MM-DD HH:mm"),'short')}
                 </span>
                 Changes plane at {flight.arrivalAirportName} ({flight.arrivalLocation}) {flight.duration > 2 ? <b className='text-[#533218] bg-[#f48a3885] rounded-md px-2 p-1'>Long stopover</b>:''}
               </div>
@@ -77,10 +77,10 @@ export default function FlightInfoCard({data,label}) {
             {/* <div className='p-3 flex gap-6 items-center justify-end'>
               <small className='flex gap-1 items-center whitespace-nowrap'>
                 <FitnessCenter className='text-sm font-bold rotate-[-45deg]' />
-                {flight.weightUnit || data.weightUnit} {flight.weightType || data.weightType}
+                {flight.weightUnit || data?.weightUnit} {flight.weightType || data?.weightType}
               </small>
 
-              <h6 className='px-4 whitespace-nowrap'>{flight.cabin} {flight.bookingClass || data.bookingClass}</h6>
+              <h6 className='px-4 whitespace-nowrap'>{flight.cabin} {flight.bookingClass || data?.bookingClass}</h6>
             </div> */}
 
 

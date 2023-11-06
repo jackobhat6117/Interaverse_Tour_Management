@@ -17,7 +17,7 @@ export default function Modal1({open,setOpen,children,className}) {
             <div className='block sm:hidden bg-secondary text-primary p-2 rounded-md self-end cursor-pointer hover:scale-[.9] ' onClick={() => setOpen(false)}>
               <Clear />
             </div>
-            <div className='bg-secondary p-2 rounded-md overflow-hidden overflow-y-auto'>
+            <div className='bg-secondary rounded-md overflow-hidden overflow-y-auto'>
               {children}
             </div>
           </div>

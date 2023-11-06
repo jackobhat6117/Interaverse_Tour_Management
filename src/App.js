@@ -31,6 +31,9 @@ import Links from './pages/Links/Links';
 import CreateFlightOrder from './pages/Orders/Flight/CreateFlightOrder';
 import OffersList from './pages/Orders/Flight/FlightSearch/OffersList';
 import FlightBook from './pages/Orders/Flight/Book/FlightBook';
+import FlightBookDetails from './pages/Orders/Flight/Book/FlightBookDetails.js';
+import FlightAncillaries from './pages/Orders/Flight/Book/FlightAncillaries.js';
+import ProfileSurvey from './components/ProfileSurvey/New/ProfileSurvey.js';
 // import 'dotenv/config'
 
 
@@ -78,12 +81,15 @@ function App() {
           <SnackbarProvider autoHideDuration={3000} maxSnack={3} anchorOrigin={{vertical: 'top',horizontal: 'right'}} >
             <Routes>
               <Route path='/' element={<AuthValidate />}>
+                <Route path='profile' element={<ProfileSurvey />} />
                 <Route path='/' element={<Navbar />}>
                   <Route index element={<Dashboard />} />
                   <Route path='order' element={<Orders />} />
                   <Route path='order/new/:order' element={<CreateFlightOrder />} />
                   <Route path='order/new/flight/offers' element={<OffersList />} />
                   <Route path='order/new/flight/book/:id' element={<FlightBook />} />
+                  <Route path='order/new/flight/book/details/:id' element={<FlightBookDetails />} />
+                  <Route path='order/new/flight/book/ancillaries/:id' element={<FlightAncillaries />} />
                   <Route path='users' element={<UserManagement />} />
                   <Route path='link' element={<Links />} />
                   <Route path='*' element={<PageNotFound />} />

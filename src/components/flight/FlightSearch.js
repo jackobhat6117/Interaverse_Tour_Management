@@ -21,8 +21,8 @@ export default function FlightSearch() {
   const [type,setType] = useState('oneway');
   const {bookingData} = useSelector(state => state.flightBooking);
   const [passengers,setPassengers] = useState(offerSearchTemp.passengers);
-  const [flightType,setFlightType] = useState('INTERNATIONAL');
-  const [corporateUniFares,setCorporateUniFares] = useState("");
+  const [flightType] = useState('INTERNATIONAL');
+  const [corporateUniFares] = useState("");
   const [date,setDate] = useState([""]);
   const [destination,setDestination] = useState(offerSearchTemp.destinations);
 
@@ -31,7 +31,7 @@ export default function FlightSearch() {
   const [qObj,setQObj] = useState();
 
   const [noStops,setNoStops] = useState(qObj && qObj.noAirportChange)
-  const [airline,setAirline] = useState();
+  const [airline] = useState();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();

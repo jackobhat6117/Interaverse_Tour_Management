@@ -4,7 +4,7 @@ import FlightOfferDisplay from '../../../../components/flight/FlightOfferDisplay
 import { FlightOfferDetail } from '../../../../components/flight/FlightOfferDetail';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 // import getFlightOffers from '../../../controllers/search/getFlightOffers';
-import { decrypt, encrypt } from '../../../../features/utils/crypto';
+import { decrypt } from '../../../../features/utils/crypto';
 // import getFlightOfferPrice from '../../../controllers/flight/getOfferPrice';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBookingData } from '../../../../redux/reducers/flight/flightBookingSlice';
@@ -271,11 +271,10 @@ export default function OffersList() {
   }
 
   function handleSearchRoute(i) {
-                
-    let temp = clone(searchObj);
-    temp['destinations'] = [searchPath[i]];
+    // let temp = clone(searchObj);
+    // temp['destinations'] = [searchPath[i]];
 
-    navigate('?q='+encrypt(JSON.stringify(temp))+'&path='+i)
+    navigate('?q='+q+'&path='+i)
   }
 
   const departDate = searchObj?.destinations[0]?.date || 0;

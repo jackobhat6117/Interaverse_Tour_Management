@@ -60,8 +60,9 @@ export default function CalendarInput1({value,label,className,multiple,onChange}
 
   return (
     <div >
-      <fieldset className={'flex items-center justify-between gap-2 cursor-pointer relative '+className} onClick={handleClick}  aria-describedby={id}>
-        <legend className={`${label ? 'px-2':''} text-xs text-primary/70`}>{label || ''}</legend>
+      <fieldset className={'flex items-center justify-between gap-2 cursor-pointer bg-secondary relative '+(label?' border border-primary/30 rounded-sm p-[14px] ':'')+className} onClick={handleClick}  aria-describedby={id}>
+        <legend className={`${label ? 'px-2':''} text-xs absolute -top-2 bg-inherit text-primary/70 whitespace-nowrap max-w-[80%] overflow-hidden `}>{label || ''}</legend>
+        {/* <FormLabel component={'legend'}>{label || ''}</FormLabel> */}
         <span className='whitespace-nowrap'>
           {moment(selectedRange?.start || new Date()).format('Do MMM')}
           {multiple ? (

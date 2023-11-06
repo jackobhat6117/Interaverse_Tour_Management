@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SearchInput from '../../components/form/SearchInput'
 import Button1 from '../../components/form/Button1'
 import CustomTable from '../../components/Table/CustomTable'
@@ -11,9 +11,33 @@ import EmailInput from '../../components/form/EmailInput';
 import PhoneNumberInput from '../../components/form/PhoneNumberInput';
 import SelectInput from '../../components/form/SelectInput';
 import { MenuItem } from '@mui/material';
+import getAccounts from '../../controllers/user/getAccounts';
+import { enqueueSnackbar } from 'notistack';
 
+
+const temp = [
+  {status: 'OK',name: 'John Doe',email: 'johndoe@gmail.com',phoneNumber: '+234-940067965',gender: 'Male',dob: '23rd Feb,1999',nationality: 'Nigerian',orders: 5,userId: '123',date: '7:30pm 24/04/2023',active: true},
+  {status: 'SA',name: 'Doe John',email: 'doecho@gmail.com',phoneNumber: '+234-940067965',gender: 'Male',dob: '23rd Feb,1999',nationality: 'Nigerian',orders: 10,userId: '123',date: '7:30pm 24/04/2023',active: false},
+]
 export default function UserManagement() {
   const [selected,setSelected] = useState();
+  const [data,setData] = useState([]);
+  const [loading,setLoading] = useState(false);
+
+  useEffect(() => {
+    load();
+  },[])
+
+  async function load() {
+    setLoading(true);
+    const res = await getAccounts();
+    setLoading(false);
+    if(res.return) {
+      let dataMod = res.data?.data.map((data) => ({...data,name: `${data.firstName} ${data.lastName}`}))
+      setData(dataMod || [])
+      console.log(res?.data?.data)
+    } else enqueueSnackbar('Failed fetching users!',{variant: 'error'})
+  }
   const columns = [
     {field: 'status',headerName: '',
       renderCell: (params) => (
@@ -23,11 +47,7 @@ export default function UserManagement() {
     {field: 'name',headerName: 'Name'},
     {field: 'email',headerName: 'Email'},
     {field: 'userId',headerName: 'User Id'},
-    {field: 'date',headerName: 'Date Registered'},
-  ]
-  const data = [
-    {status: 'OK',name: 'John Doe',email: 'johndoe@gmail.com',phoneNumber: '+234-940067965',gender: 'Male',dob: '23rd Feb,1999',nationality: 'Nigerian',orders: 5,userId: '123',date: '7:30pm 24/04/2023',active: true},
-    {status: 'SA',name: 'Doe John',email: 'doecho@gmail.com',phoneNumber: '+234-940067965',gender: 'Male',dob: '23rd Feb,1999',nationality: 'Nigerian',orders: 10,userId: '123',date: '7:30pm 24/04/2023',active: false},
+    {field: 'createdAt',headerName: 'Date Registered'},
   ]
 
   function handleRowSelect(rows) {
@@ -45,7 +65,7 @@ export default function UserManagement() {
             <Button1 className='h-full !w-auto sm:!px-6'>Search</Button1>
           </div>
         </div>
-        <CustomTable columns={columns} rows={data} className='min-w-[555px]'
+        <CustomTable loading={loading} columns={columns} rows={data} className='min-w-[555px]'
           onRowSelectionModelChange={(val) => handleRowSelect(val)}
         />
       </div>

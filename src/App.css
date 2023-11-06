@@ -17,6 +17,11 @@ hr {
 }
 
 
+.shad-hover:hover {
+  box-shadow: 0 5px 10px 0 #aaa;
+  transition: all .3s;
+}
+
 .sqr1 {
   @apply !w-1 !h-1;
 }

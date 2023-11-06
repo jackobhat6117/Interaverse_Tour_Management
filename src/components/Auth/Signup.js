@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import textlogo from '../../assets/icons/textlogo.png'
+import logo from '../../assets/icons/logo.png'
 import EmailInput from '../form/EmailInput'
 import PasswordInput from '../form/PasswordInput'
 import Button1 from '../form/Button1'
@@ -42,7 +43,8 @@ export default function Signup() {
   return (
     <div className='flex min-h-screen '>
       <div className='w-full flex-1 hidden md:flex flex-col'>
-        <div className='lg:px-20 p-10'>
+        <div className='lg:px-20 p-10 flex gap-2'>
+          <img src={logo} alt='Miles' className='object-contain' />
           <img src={textlogo} alt='Miles' />
         </div>
         <div className='flex flex-col p-10 lg:px-20 flex-1 gap-6'>

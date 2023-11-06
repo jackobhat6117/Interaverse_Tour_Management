@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import textlogo from '../../assets/icons/textlogo.png'
+import logo from '../../assets/icons/logo.png'
 import EmailInput from '../form/EmailInput'
 import Button1 from '../form/Button1'
 import { Link, useNavigate } from 'react-router-dom'
@@ -9,6 +10,7 @@ import verifyEmail from '../../controllers/Auth/verifyEmail'
 import { useDispatch } from 'react-redux'
 import { setUserData } from '../../redux/reducers/userSlice'
 import resendVerifyEmail from '../../controllers/Auth/resendVerifyEmail'
+import OTPInput from './OTPInput'
 
 
 export default function VerifyEmail() {
@@ -51,35 +53,42 @@ export default function VerifyEmail() {
 
   return (
     <div className='flex flex-col min-h-screen font-bold'>
-      <div className='w-full p-3 px-5'>
+      <div className='w-full p-3 px-5 flex gap-2'>
+        <img src={logo} alt='Miles' className='object-contain' />
         <img src={textlogo} alt='Miles' />
       </div>
       <form onSubmit={handleSubmit} className='w-full flex flex-col items-center justify-center flex-1'>
-        <div className='card bg-[#00000007] flex flex-col gap-5 max-w-[600px]'>
+        <div className='card px-4 sm:px-10 bg-[#00000007] flex flex-col gap-5 max-w-[600px]'>
           <h3 className='pb-4 text-center'>Verify your email address</h3>
           <p className='text-center font-semibold text-primary/70 pb-4'>
             Please verify your email with the code we sent to {email} The code we send is only valid for 24 hours, click the RESEND button below to get a new code.
           </p>
 
-          <EmailInput required
-            value={data.email}
-            onChange={(ev) => setData({...data,email: ev.target.value})}
-          />
-          <TextInput required label={'OTP'}
+          {data.email ? null :
+            <EmailInput required
+              value={data.email}
+              onChange={(ev) => setData({...data,email: ev.target.value})}
+            />
+          }
+          <OTPInput required label={'OTP'}
             value={data.otp}
-            onChange={(ev) => setData({...data,otp: ev.target.value})}
+            onChange={(val) => setData({...data,otp: val})}
           />
-          <div className='self-start -my-3'>
-            <Button1 loading={loading} label={'Resend'} onClick={resSubmit} variant='text'></Button1>
-          </div>
           <Button1 loading={loading} type='submit' label={'Verify'}></Button1>
+          <div className='flex gap-2 justify-center items-center -my-3'>
+            <p>Did not get any email? </p>
+            <div>
+              <Button1 loading={loading} label={'Resend'} onClick={resSubmit} variant='text'></Button1>
+            </div>
+          </div>
           <div className='self-center text-center flex flex-col gap-3 w-full'>
-            <div className='flex gap-2 justify-between flex-wrap gap-4 flex-1'>
-              <div className=''>
+            <div className='flex gap-2 justify-center flex-wrap gap-4 flex-1'>
+              {/* <div className=''>
                 <Link className='text-theme1 font-bold' to="?view=login">Login</Link>
-              </div>
+              </div> */}
               <div className='flex gap-2 flex-wrap'>
-                <p className='text-primary/40'>Dont have an account?</p><Link className='text-theme1 font-bold' to="?view=register">Sign up</Link>
+                {/* <p className='text-primary/40'>Dont have an account?</p> */}
+                <Link className='text-theme1 font-bold' to="?view=register">Go back to Sign up</Link>
               </div>
             </div>
           </div>

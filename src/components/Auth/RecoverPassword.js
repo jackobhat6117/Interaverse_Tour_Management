@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import logo from '../../assets/icons/logo.png'
 import textlogo from '../../assets/icons/textlogo.png'
 import Button1 from '../form/Button1'
 import { Link, useNavigate } from 'react-router-dom'
@@ -9,6 +10,7 @@ import PasswordInput from '../form/PasswordInput'
 import { useDispatch } from 'react-redux'
 import { setUserData } from '../../redux/reducers/userSlice'
 import resendOTP from '../../controllers/Auth/resendOTP'
+import OTPInput from './OTPInput'
 
 
 export default function RecoverPassword() {
@@ -50,15 +52,19 @@ export default function RecoverPassword() {
   return (
     <div className='flex flex-col min-h-screen font-bold'>
       <div className='w-full p-3 px-5'>
+        <img src={logo} alt='Miles' />
         <img src={textlogo} alt='Miles' />
       </div>
       <form onSubmit={handleSubmit} className='w-full flex flex-col items-center justify-center flex-1'>
         <div className='p-6 sm:card sm:bg-[#00000007] flex flex-col gap-5'>
           <h2 className='pb-4'>Recover Password</h2>
-          <TextInput required label={'OTP'}
-            value={data.otp}
-            onChange={(ev) => setData({...data,otp: ev.target.value})}
-          />
+          <div className='flex flex-col gap-2'>
+            <p>OTP</p>
+            <OTPInput required label={'OTP'}
+              value={data.otp}
+              onChange={(val) => setData({...data,otp: val})}
+              />
+          </div>
           <PasswordInput required label='New Password'
             value={data.password}
             onChange={(ev) => setData({...data,password: ev.target.value})}

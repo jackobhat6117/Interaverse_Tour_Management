@@ -11,7 +11,7 @@ export default function RadioInput(props) {
   },[checked])
 
   return (
-    <label className={`flex items-start cursor-pointer rounded-md p-1 px-3 w-full ${check ? ' bg-[#A7D9D1] text-[#016726] ' : ' bg-primary bg-opacity-5 '} ${className}`}>
+    <label className={`flex items-center cursor-pointer rounded-lg p-1 px-3 w-full ${check ? ' bg-[#A7D9D1] text-[#016726] ' : ' bg-primary bg-opacity-[3%] '} ${className}`}>
       <Radio
         type="radio"
         {...radioProps}

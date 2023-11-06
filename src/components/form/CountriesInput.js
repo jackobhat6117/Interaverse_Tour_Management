@@ -22,7 +22,7 @@ export default function CountriesInput({value,onChange,label,icon,className,requ
     onChange={(ev,newVal) => handleChange(newVal)}
     onInputChange={(ev,newVal) => handleChange(newVal)}
     renderInput={(params) => (
-      <TextField {...params} required={required} value='test' label={label || "Nationality"} size='small'
+      <TextField {...params} required={required} value='test' label={label || "Nationality"} 
         InputProps={{
           ...params.InputProps,
           type: 'search',
