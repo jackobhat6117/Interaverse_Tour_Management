@@ -9,7 +9,8 @@ export default function LearnMoreButton(props) {
     <div>
       <Button1 variant='outlined' {...restProps} className={'!capitalize '+buttonClassName} onClick={() => setOpen(true)}>{label || "Learn more"}</Button1>
       <Modal1 open={open} setOpen={setOpen}>
-        <div className='p-4 max-w-[500px]'>
+        <div className='p-10 text-start max-w-[700px]'>
+          {!component && <h3 className='pb-4'>Header Title</h3>}
           {component || `
             Lorem ipsum dolor sit amet consectetur. Hendrerit enim tellus donec ac est sed sed habitant mauris. Id placerat sed mattis magna penatibus in lobortis. Bibendum nulla euismod velit sagittis id id porttitor vivamus. Consequat magnis pellentesque condimentum pellentesque non tellus semper consequat. Faucibus dolor at porttitor nibh nulla. Tempus lobortis vulputate eu elementum non at lorem. Diam ipsum vulputate lacinia mattis augue pellentesque.
             Integer donec id egestas velit amet et. Pharetra at purus nibh non volutpat. Commodo leo rhoncus facilisi ultricies vel dui euismod pellentesque ac. Lacus id ac vulputate commodo volutpat viverra. Netus posuere ornare odio arcu. Penatibus nullam ut pulvinar fringilla mauris. Tincidunt dignissim diam odio vitae. Dignissim amet nascetur nunc turpis mauris risus nulla. Euismod mattis sagittis dui condimentum libero quis nec non sit.

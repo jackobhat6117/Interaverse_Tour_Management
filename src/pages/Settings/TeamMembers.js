@@ -60,7 +60,7 @@ function ActionCol({params,reload}) {
         }
       >
         <Action.Consumer>
-          {({updateRole}) => (
+          {({updateRole,resendInvitation}) => (
 
             <div className='flex flex-col bg-secondary rounded-lg p-2'>
             {['Inactive','Deactivated'].includes(params?.row?.status) ? 
@@ -69,18 +69,28 @@ function ActionCol({params,reload}) {
                 >
                 <Icon icon={'mdi:user-check'} fontSize={20} className='w-6 h-6' />
                 Activate</Button1>
-            :
+            : ['Active'].includes(params?.row?.status) ?
               <Button1 className='flex btn-theme-light !justify-start !text-start items-center gap-2 p-2'
                 onClick={handleDeactivate}
                 >
                 <Icon icon={'basil:user-block-solid'} fontSize={20} className='w-6 h-6' />
                 {/* <Edit className='text-primary/50' fontSize='small' /> */}
                 Deactivate</Button1>
+            : null
             }
-            <Button1 variant='text' className='btn-theme-light' onClick={() => updateRole.open(params.row)}>
-              <Icon icon={'tabler:edit'} />
-              Update role
-            </Button1>
+            {['Pending'].includes(params?.row?.status) ? 
+              <Button1 className='flex btn-theme-light !justify-start !text-start items-center gap-2 p-2'
+                onClick={() => resendInvitation(params.row)}
+                >
+                <Icon icon={'mdi:email-resend'} fontSize={20} className='w-6 h-6' />
+                {/* <Edit className='text-primary/50' fontSize='small' /> */}
+                Resend Invitation</Button1>
+            : 
+              <Button1 variant='text' className='btn-theme-light flex !justify-start !text-start gap-2' onClick={() => updateRole.open(params.row)}>
+                <Icon icon={'tabler:edit'} className='w-6' />
+                Update role
+              </Button1>
+            }
             <Button1 className='!bg-red-500 !text-white flex !gap-2 !justify-start '
               onClick={handleDelete}
             >
@@ -96,8 +106,8 @@ function ActionCol({params,reload}) {
 }
 
 const filterItems = [
-  {items:[{id: 0,field: 'status',operator: '',value:''}]},
-  {items:[{id: 1,field: 'status', operatorValue: 'is', value: 'Pending'}]},
+  {i: 0,value: 'All'},
+  {i: 1,value: 'Invited'},
 ];
 
 export default function TeamMembers() {
@@ -105,35 +115,49 @@ export default function TeamMembers() {
   const [filter,setFilter] = useState(filterItems[0])
   const [loading,setLoading] = useState(false);
 
+  const {enqueueSnackbar} = useSnackbar();
+
   const [openUpdateRole,setOpenUpdateRole] = useState(false);
   
   useEffect(() => {
     load();    
     //eslint-disable-next-line
-  },[])
+  },[filter])
 
   async function load() {
-    let query = {
-      filterBy: 'status',
-      filterValue: filter
-    }
-    if(filter === 'All') query = "";
-
+    let res = {return:true,data: {data: []},msg: 'Failed fetching members. This error is from our end please notify customer support!'}
     setLoading(true);
-    const res = await getTeamMembers((new URLSearchParams(query)).toString())
-    setLoading(false);
+    if(filter.value === 'All') {
+      res = await getTeamMembers()
+    }
+    
     if(res.return) {
       let data = res?.data?.data || [];
+
       const res2 = await getSentInvitations();
+      setLoading(false);
+
       if(res2.return) {
         data = [...data,...(res2?.data?.data?.map((obj,i) => ({...obj,id: i+"Inv"})) || [])];
       }
+      
       // console.log('dat: ',data)
       data = data.map(obj => ({...obj,...obj?.member,id: obj._id,name: (obj?.member?.firstName||'')+' '+(obj?.member?.lastName||'')}))
       data = data.filter((cur,i,arr) => arr.findIndex((obj) => obj.email === cur.email) === i)
       setData(data);
-      // console.log(res.data?.data)
+      console.log(data)
     }
+    setLoading(false);
+  }
+
+  async function resendInvitation(data) {
+    setLoading(true);
+    const res = await addTeamMember(data);
+    setLoading(false);
+    if(res.return) {
+      enqueueSnackbar('Email have been resent to the user to join the app',{variant: 'success'})
+    } else 
+      enqueueSnackbar(res.msg || 'Invitation Error',{variant: 'error'})
   }
 
   console.log('data: ',data)
@@ -167,11 +191,14 @@ export default function TeamMembers() {
           <h5 className='text-primary/50'>Team Members</h5>
           <InviteTeam reload={load} />
         </div>
-        <Tabs className='bg-secondary px-2' value={filter.items[0].id} onChange={(ev,newVal) => setFilter(filterItems[newVal])}>
+        <Tabs className='bg-secondary px-2' value={filter.i} onChange={(ev,newVal) => setFilter(filterItems[newVal])}>
           <Tab label='All' />
           <Tab label='Invited' />
         </Tabs>
-        <Action.Provider value={{updateRole: {open: (val) => setOpenUpdateRole(val || true)}}}>
+        <Action.Provider value={{
+            updateRole: {open: (val) => setOpenUpdateRole(val || true)},
+            resendInvitation,
+          }}>
           <CustomTable loading={loading} rows={data} columns={columns}
             // filterModel={filter}
             // onFilterModelChange={(newFilter) => setFilter(newFilter)}

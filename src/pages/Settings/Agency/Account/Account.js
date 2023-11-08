@@ -8,11 +8,13 @@ import { useSnackbar } from 'notistack'
 import updatePassword from '../../../../controllers/user/updatePassword'
 import { useSelector } from 'react-redux'
 import updateProfile from '../../../../controllers/user/updateProfile'
+import resendVerifyEmail from '../../../../controllers/Auth/resendVerifyEmail'
 
 export default function AccountSettings() {
   const {user} = useSelector(state => state.user.userData);
   const [data,setData] = useState({firstName: '',lastName: '',email: ''});
   const [loading,setLoading] = useState(false);
+  const [resent,setResent] = useState(false);
   const {enqueueSnackbar} = useSnackbar();
 
   useEffect(() => {
@@ -37,6 +39,19 @@ export default function AccountSettings() {
     } else enqueueSnackbar(res.msg,{variant: 'error'})
   }
 
+  async function handleResendLink() {
+    setResent(true)
+    const res = await resendVerifyEmail(data);
+    if(res.return) {
+      enqueueSnackbar(res.msg || 'Verification code sent.',{variant: 'success'});
+      // setData({...data,otp: ''})
+    } else {
+      enqueueSnackbar(res.msg || 'Something went wrong!', {variant: 'error'})
+      setResent(false)
+    }
+
+  }
+
   return (
     <div className='content-max-w flex flex-col gap-4'>
       <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
@@ -50,17 +65,17 @@ export default function AccountSettings() {
           onChange={(ev) => setData({...data,email: ev.target.value})}
           tooltip={
             <div>
-              To complete your registration, please verify your email with the link we sent to <b>abcdefxyz@gmail.com.</b> 
-              Didn't receive an email? <b>Resend confirmation link</b>
+              To complete your registration, please verify your email with the link we sent to <b>{data.email}. </b> 
+              Didn't receive an email? <b className='cursor-pointer' onClick={handleResendLink}>{!resent ? 'Resend confirmation link' : 'Sent'}</b>
             </div>
           } 
         />
         <div className='flex justify-end'>
-          <Button1 type='submit' loading={loading} className='!w-auto'>Save Changes</Button1>
+          <Button1 type='submit' loading={loading} className='sm:!w-auto'>Save Changes</Button1>
         </div>
       </form>
       <ChangePassword />
-      <div className='bg-red-300 text-gray-600 flex flex-col gap-3 p-4 rounded-lg'>
+      <div className='bg-red-300/50 text-gray-600 flex flex-col gap-3 p-4 mt-10 rounded-lg'>
         <h5>Delete Account</h5>
         <p className='text-red-500 font-bold'>
           Once you delete your account, you will no longer have access to Miles Apps and API, all pending organization invitations will be revoked as well as organization memberships.
@@ -108,7 +123,7 @@ function ChangePassword() {
         />
       </div>
       <div className='flex justify-end'>
-        <Button1 type='submit' loading={loading} className='!w-auto'>Save Password</Button1>
+        <Button1 type='submit' loading={loading} className='sm:!w-auto'>Save Password</Button1>
       </div>
     </form>
   )

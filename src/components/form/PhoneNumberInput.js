@@ -51,7 +51,7 @@ export default function PhoneNumberInput({value,onChange,label,className,disable
         onChange={(ev) => {
           try {
             onChange(code+"-"+ev.target.value)
-          } catch(ex) {throw ex}
+          } catch(ex) {}
         }}
         size='small' label={label || 'Enter phone number'} 
         />

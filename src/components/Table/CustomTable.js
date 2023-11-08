@@ -1,5 +1,5 @@
 import { DataGrid } from '@mui/x-data-grid'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SearchInput from '../form/SearchInput';
 import Button1 from '../form/Button1';
 
@@ -14,6 +14,10 @@ export default function CustomTable(props) {
   
   let minWidths = {}
   const [modRows,setModRows] = useState(Array.isArray(rows) ? [...rows] : [rows]);
+
+  useEffect(() => {
+    setModRows(Array.isArray(rows) ? [...rows] : [rows])
+  },[rows])
 
   rows.map((obj,i) => {
     if(!obj.id)

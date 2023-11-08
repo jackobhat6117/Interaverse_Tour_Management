@@ -294,7 +294,7 @@ function CreateWebHook({reload}) {
     <div>
       <Button variant='contained' className='!capitalize' onClick={() => setOpen(true)}>Create test webhook</Button>
       <Modal1 open={open} setOpen={setOpen}>
-        <form onSubmit={handleSubmit} className='flex flex-col gap-4 p-4 px-6'>
+        <form onSubmit={handleSubmit} className='flex flex-col gap-4 p-10 max-w-[700px]'>
           <h4>Create a test webhook</h4>
           <TextInput 
             value={data.url} 

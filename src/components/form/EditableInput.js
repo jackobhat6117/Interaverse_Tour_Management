@@ -18,8 +18,9 @@ export default function EditableInput(props) {
       <div className='flex items-center gap-2 px-2 py-2 max-w-[92%]'>
         <div ref={inputRef} type='text' contentEditable={!disabled}
           style={{minWidth: 'unset'}}
-          className={" text-inherit !min-w-[none] max-w-full "+className}
+          className={" text-inherit !min-w-[none] max-w-full overflow-ellipsis overflow-hidden "+className}
           onChange={(ev) => setData(ev.target.value)}
+          title={inputRef?.current?.innerHTML}
           {...restProps}>
             {data}
         </div>
