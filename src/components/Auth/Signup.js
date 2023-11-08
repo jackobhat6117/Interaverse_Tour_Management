@@ -4,7 +4,7 @@ import logo from '../../assets/icons/logo.png'
 import EmailInput from '../form/EmailInput'
 import PasswordInput from '../form/PasswordInput'
 import Button1 from '../form/Button1'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import flightCheckedIcon from '../../assets/icons/Checkmark.png';
 import hotelCheckedIcon from '../../assets/icons/Layer 2.png';
 import packageCheckedIcon from '../../assets/icons/Checkmark (1).png';
@@ -12,16 +12,15 @@ import TextInput from '../form/TextInput'
 import { signupReqData } from '../../data/user/Auth/signupReq'
 import signup from '../../controllers/Auth/signup'
 import { useSnackbar } from 'notistack'
-import { Radio, RadioGroup } from '@mui/material'
 import Checkbox from '../form/Checkbox'
 import PhoneNumberInput from '../form/PhoneNumberInput'
 
 
 export default function Signup() {
-  const location = useLocation();
-  const searchParam = new URLSearchParams(location.search)
-  let type = searchParam.get('type')
-  const [data,setData] = useState({...signupReqData,userType: type || "",confirmPassword: ''});
+  // const location = useLocation();
+  // const searchParam = new URLSearchParams(location.search)
+  // let type = searchParam.get('type')
+  const [data,setData] = useState({...signupReqData,userType: "Agent",confirmPassword: ''});
   const navigate = useNavigate()
   const [loading,setLoading] = useState(false);
   const {enqueueSnackbar} = useSnackbar();
@@ -60,8 +59,8 @@ export default function Signup() {
           </Service>
         </div>
       </div>
-      {!type ? (
-        <div className='flex flex-col justify-center gap-5 p-10 py-5 flex-1 bg-[#CCE2FA]'>
+      {/* {!type ? ( */}
+        {/* <div className='flex flex-col justify-center gap-5 p-10 py-5 flex-1 bg-[#CCE2FA]'>
           <h5 className='px-4'>Select your business type</h5>
           <RadioGroup name='userType' className='flex flex-col gap-4' value={data.userType} onChange={((ev) => setData({...data,userType: ev.target.value}))}>
             <label className='card cursor-pointer p-4 py-2 flex items-center gap-4'>
@@ -99,13 +98,13 @@ export default function Signup() {
               <p className='text-primary/40'>Already have an account?</p><Link className='text-theme1 font-bold' to="?login">Login</Link>
             </div>
           </div>
-        </div>
-      ):(
+        </div> */}
+      {/* ):( */}
         <form onSubmit={handleSubmit} className='w-1/2 flex flex-col items-center flex-1 sm:bg-[#CCE2FA] sm:p-10'>
           <div className='lg:px-20 px-4 sm:hidden shadow-md w-full mb-2 bg-secondary'>
             <img src={textlogo} alt='Miles' className=' h-8 my-2' />
           </div>
-          <div className='bg-secondary rounded-lg px-4 !py-6 sm:card flex flex-col gap-5'>
+          <div className='bg-secondary rounded-lg px-4 !py-6 sm:card flex flex-col gap-5  sticky top-10'>
             <h5 className='pb-2 text-center sm:text-left'>Enter Sign up Details</h5>
             <div className='flex gap-4 flex-wrap sm:flex-nowrap'>
               <TextInput size='small' required label={'First Name'} placeholder={'e.g John'}
@@ -153,7 +152,7 @@ export default function Signup() {
             </div>
           </div>
         </form>
-      )}
+      {/* )} */}
     </div>
   )
 }

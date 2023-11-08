@@ -1,12 +1,13 @@
 import React, { memo, useState } from 'react'
-import { MenuItem } from '@mui/material'
-import SelectInput from '../../form/SelectInput'
 import TextInput from '../../form/TextInput'
 import { profileSurveyData } from '../../../data/user/profileSurvey'
 import RadioGroup from '../../form/RadioGroup'
 import Button1 from '../../form/Button1'
 import PhoneNumberInput from '../../form/PhoneNumberInput'
 import EmailInput from '../../form/EmailInput'
+import { useSelector } from 'react-redux'
+import mergeRecursive from '../../../features/utils/mergeRecursive'
+import { clone } from '../../../features/utils/objClone'
 
 
 const steps = [
@@ -17,16 +18,10 @@ const CurComp = (props) => {
   return React.cloneElement(props.component || <></>,props)
 }
 
-function BusinessDetail({data,returnData,user,next}) {
-  const [obj,setObj] = useState({...profileSurveyData,...data})
-  const [step,setStep] = useState(0);
-
-
-  function handleChange(obj) {
-    setObj(obj);
-    if(returnData)
-      returnData(obj)
-  }
+function BusinessDetail({updateProfile,next}) {
+  // const [obj,setObj] = useState({...profileSurveyData,...data})
+  const {user} = useSelector(state => state.user.userData);
+  const [step,setStep] = useState(user?.detail?.agencyType ? 1 : 0);
 
   const stepNext = () => {
     if(step < steps.length-1 )
@@ -40,19 +35,37 @@ function BusinessDetail({data,returnData,user,next}) {
     setStep(step => step > 0 ? step-1 : 0)
   }
 
-  function skip() {
+  // function skip() {
     // setOpen(false);
     // sessionStorage.setItem('profileSurvey','skip')
-  }
+  // }
 
   return (
-    <div className='flex flex-col gap-4'>
-      <CurComp key={'editor'} component={steps[step]} next={stepNext} back={stepBack} user={user} />
+    <div className='flex flex-col gap-4 slide'>
+      <CurComp key={'editor'} component={steps[step]} next={stepNext} back={stepBack} updateProfile={updateProfile} />
     </div>
   )
 }
 
-function BusinessType({user,next}) {
+function BusinessType({next,updateProfile}) {
+  const {user} = useSelector(state => state.user.userData);
+  const userDetails = mergeRecursive(clone(profileSurveyData),user?.detail || {})
+  const [data,setData] = useState({...profileSurveyData,...userDetails});
+  const [loading,setLoading] = useState(false);
+
+  async function handleSubmit() {
+    let {agencyType} = data;
+    if(agencyType === user?.detail?.agencyType)
+      return next && next();
+    
+    setLoading(true);
+    const res = await updateProfile({agencyType});
+    if(res)
+      next && next();
+    setLoading(false);
+  }
+  console.log(userDetails,data)
+
   return (
     <div>
       <div className='flex flex-col gap-2'>
@@ -69,14 +82,33 @@ function BusinessType({user,next}) {
             <h5>{label}</h5>
             <p className=''>{description}</p>
           </div>
-        )} />
+        )}
+          value={data?.agencyType}
+          onChange={(val) => setData({...data,agencyType: val})}
+        />
       </div>
-      <Button1 onClick={next}>Continue</Button1>
+      <Button1 onClick={handleSubmit} loading={loading}>Continue</Button1>
     </div>
   )
 }
 
-function DetailInfo({next,back,user}) {
+function DetailInfo({next,back,updateProfile}) {
+  const {user} = useSelector(state => state.user.userData);
+  const userDetails = mergeRecursive(clone(profileSurveyData),user?.detail || {},{createNew: true})
+  const [data,setData] = useState({...profileSurveyData,...userDetails});
+  const [loading,setLoading] = useState(false);
+
+  async function handleSubmit() {
+    let {tradingName,address,businessEmail,businessPhone} = data;
+    
+    setLoading(true);
+    const res = await updateProfile({tradingName,address,businessEmail,businessPhone});
+    if(res)
+      next && next();
+    setLoading(false);
+  }
+
+  console.log(user)
   return (
     <div className='flex flex-col gap-4'>
       <div className='flex flex-col gap-2 pb-2'>
@@ -85,25 +117,31 @@ function DetailInfo({next,back,user}) {
       </div>
       <div>
         <TextInput key={'tradeName'} label={'Trading name'} 
-          // value={obj.tradingName || ''}
-          // onChange={(ev) => handleChange({...obj,tradingName: ev.target.value})}          
+          value={data.tradingName || ''}
+          onChange={(ev) => setData({...data,tradingName: ev.target.value})}          
         />
       </div>
       <div>
         <TextInput key='regName' label={'Business Address'} placehodler='e.g 14b wole ariyo street, Lekki, Lagos'
-          // value={obj.registeredBusinessName || ''}
-          // onChange={(ev) => handleChange({...obj,registeredBusinessName: ev.target.value})}
+          value={data?.address?.location[0] || ''}
+          onChange={(ev) => setData({...data,address:{location: [Number(ev.target.value),Number(ev.target.value)]}})}
         />
       </div>
       <div>
-        <PhoneNumberInput label={'Business Phone number'} placeholder='e.g 08170000000' />
+        <PhoneNumberInput label={'Business Phone number'} placeholder='e.g 08170000000'
+          value={data?.businessEmail}
+          onChange={(value) => setData({...data,businessEmail: value})}
+        />
       </div>
       <div>
-        <EmailInput label='Business Email' placehodler='hello@gmail.com' />
+        <EmailInput label='Business Email' placehodler='hello@gmail.com'
+          value={data?.businessPhone}
+          onChange={(ev) => setData({...data,businessPhone: ev.target.value})}
+        />
       </div>
       <div className='flex justify-between gap-4'>
         <Button1 className='!w-auto' onClick={back} variant='text'>Go back</Button1>
-        <Button1 className='!w-auto' onClick={next}>Next</Button1>
+        <Button1 className='!w-auto' onClick={handleSubmit} loading={loading}>Next</Button1>
       </div>
     </div>
   )

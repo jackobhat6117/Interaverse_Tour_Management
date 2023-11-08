@@ -4,11 +4,16 @@ import SearchInput from '../form/SearchInput';
 import Button1 from '../form/Button1';
 
 export default function CustomTable(props) {
-  const {columns,rows,search,...restProps} = props;
-  const [searchVal,setSearchVal] = useState(search||'');
+  const {
+    columns,rows,
+    searchProps,
+    ...restProps
+  } = props;
+
+  const [searchVal,setSearchVal] = useState(searchProps?.q||'');
   
   let minWidths = {}
-  let modRows = Array.isArray(rows) ? [...rows] : [rows];
+  const [modRows,setModRows] = useState(Array.isArray(rows) ? [...rows] : [rows]);
 
   rows.map((obj,i) => {
     if(!obj.id)
@@ -35,15 +40,21 @@ export default function CustomTable(props) {
 
   function handleSearch(ev) {
     ev?.preventDefault();
-    rows.filter((row) => row.find())
-  } 
+    if(searchVal === '')
+      return setModRows(rows);
+    
+    let modRows = rows.filter((row) => Object.values(row).includes(searchVal))
+    setModRows(modRows);
+  }
 
   return (
     <div>
-      <form onSubmit={handleSearch} className='flex gap-2 items-center'>
-        <SearchInput />
-        <Button1 type='submit' className='h-full !w-auto sm:!px-6'>Search</Button1>
-      </form>
+      {searchProps?.searchable ? 
+        <form onSubmit={handleSearch} className='flex gap-2 items-center'>
+          <SearchInput value={searchVal} onChange={setSearchVal}  />
+          <Button1 type='submit' className='h-full !w-auto sm:!px-6'>Search</Button1>
+        </form>
+      :null}
 
       <DataGrid autoHeight columns={modCols} rows={modRows} {...restProps} />
     </div>

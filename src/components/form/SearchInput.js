@@ -10,14 +10,20 @@ SearchInput.propTypes = {
   placeHolder: PropTypes.string,
   exampleview: PropTypes.bool,
   searchview: PropTypes.bool,
+  value: PropTypes.any,
+  onChange: PropTypes.func,
 }
 export default function SearchInput(props) {
   const {exampleview,searchview} = props;
   const [exampleOpen,setExampleOpen] = useState(false);
   const [resultOpen,setResultOpen] = useState(false);
+  const [value,setValue] = useState(props.value || '');
 
   function handleChange(ev) {
     let val = ev.target.value;
+    setValue(val);
+    props.onChange && props.onChange(val);
+    
     if(val?.length === 0) {
       setResultOpen(false)
       setExampleOpen(true);
@@ -47,17 +53,20 @@ export default function SearchInput(props) {
         // label={<div className='font-bold' >
         //     {props.label || 'Search'}
         // </div>}
+        value={value}
         placeholder='Search'
         InputProps={{
           endAdornment: <Search />
         }}
+        
+        {...props}
+
         onFocus={handleExample}
         onChange={handleChange}
         onBlur={handleBlur}
         // InputLabelProps={{
           //   shrink: true,
           // }}
-        {...props}
       />
       {exampleview ? 
         <ExampleHandle open={exampleOpen} />

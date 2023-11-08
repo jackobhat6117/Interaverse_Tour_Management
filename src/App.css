@@ -55,10 +55,30 @@ hr {
 
 
 
+.slide {
+  animation: slide-in .2s;
+}
 
 
 
 /* Animations */
+
+@keyframes slide-in {
+  0% {
+    transform: translateX(50%);
+    opacity: 0;
+  }
+  50% {
+    opacity: .3;
+  }
+  90% {
+    opacity: .3;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
 
 @keyframes rotate {
   from {

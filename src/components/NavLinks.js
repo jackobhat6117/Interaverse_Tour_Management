@@ -2,6 +2,7 @@ import { HomeOutlined, Person, ShoppingCartOutlined, SupportAgentOutlined } from
 import { Tab, Tabs } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Icon from "./HOC/Icon";
 
 
 // const returnPage = (link) => link === 0 ? ''  
@@ -14,7 +15,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 // :
 // 0
 
-export default function NavLinks() {
+export default function NavLinks({profileCompleted}) {
   const location = useLocation();
   const locations = location.pathname?.split('/');
   const page = locations[1]||'';
@@ -50,7 +51,7 @@ export default function NavLinks() {
     // console.log(ev.target,val,third)
   }
 
-  return (
+  return profileCompleted ? (
     <div className="">
       <Tabs variant="scrollable" value={link} onChange={handleLink} className="font-bold" 
         TabIndicatorProps={{sx: {height: '4px'}}}>
@@ -58,6 +59,13 @@ export default function NavLinks() {
         <Tab label='Order' data-link="/order" icon={<ShoppingCartOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
         <Tab label='User Management' data-link="/users" icon={<Person />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
         <Tab label='Support' data-link="/support" icon={<SupportAgentOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
+      </Tabs>
+    </div>
+  ) : (
+    <div>
+      <Tabs variant="scrollable" value={link} onChange={handleLink} className="font-bold" 
+        TabIndicatorProps={{sx: {height: '4px'}}}>
+        <Tab label='Getting Started' data-link="/" icon={<Icon icon='heroicons:rocket-launch' className='text-theme1 -rotate-[43deg]' />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
       </Tabs>
     </div>
   )

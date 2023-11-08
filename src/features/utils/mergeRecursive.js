@@ -1,6 +1,11 @@
-export default function mergeRecursive(o1, o2) {
+export default function mergeRecursive(o1, o2,config) {
   let obj1 = o1;
   let obj2 = o2;
+
+  const options = {
+    createNew: true,
+    ...config
+  }
 
   for (var p in obj2) {
     try {
@@ -9,7 +14,10 @@ export default function mergeRecursive(o1, o2) {
         obj1[p] = mergeRecursive(obj1[p], obj2[p]);
 
       } else {
-        if(obj1[p] === null || obj1[p] === undefined)
+        if(!obj1.hasOwnProperty(p))
+          throw new Error(`Property '${p}' does not exist in obj1`)
+
+        if(obj1[p] === null || obj1[p] === '')
           if(obj2[p] !== null)
           obj1[p] = obj2[p];
 
@@ -17,8 +25,9 @@ export default function mergeRecursive(o1, o2) {
 
     } catch(e) {
       // Property in destination object not set; create it and set its value.
-      if(obj2[p] !== null)
-      obj1[p] = obj2[p];
+      // console.log(e)
+      if(obj2[p] !== null && options.createNew)
+        obj1[p] = obj2[p];
 
     }
   }

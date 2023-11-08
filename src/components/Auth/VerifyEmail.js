@@ -3,24 +3,26 @@ import textlogo from '../../assets/icons/textlogo.png'
 import logo from '../../assets/icons/logo.png'
 import EmailInput from '../form/EmailInput'
 import Button1 from '../form/Button1'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
-import TextInput from '../form/TextInput'
 import verifyEmail from '../../controllers/Auth/verifyEmail'
 import { useDispatch } from 'react-redux'
 import { setUserData } from '../../redux/reducers/userSlice'
 import resendVerifyEmail from '../../controllers/Auth/resendVerifyEmail'
 import OTPInput from './OTPInput'
+import MailVerified from '../animation/MailVerified'
+import MailSent from '../animation/MailSent'
 
 
 export default function VerifyEmail() {
   const searchParam = new URLSearchParams(window?.location?.search);
   const email = searchParam.get('email')
   const [data,setData] = useState({otp: '',email: email || ''});
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
   const [loading,setLoading] = useState(false);
   const {enqueueSnackbar} = useSnackbar();
   const dispatch = useDispatch();
+  const [verified,setVerified] = useState(false);
 
   async function handleSubmit(ev) {
     ev.preventDefault();
@@ -29,12 +31,13 @@ export default function VerifyEmail() {
     const res = await verifyEmail((new URLSearchParams(data)).toString());
     setLoading(false);
     if(res.return) {
-      enqueueSnackbar('Welcome, your email has been verified.',{variant: 'success'});
+      setVerified(true);
+      // enqueueSnackbar('Welcome, your email has been verified.',{variant: 'success'});
       let {token: accessToken,account: user} = res.data;
       dispatch(setUserData({accessToken,user,loggedIn: true}))
-      setTimeout(() => {
-        navigate('/')
-      },2000)
+      // setTimeout(() => {
+      //   navigate('/')
+      // },4000)
     } else enqueueSnackbar(res.msg, {variant: 'error'})
   }
 
@@ -57,43 +60,66 @@ export default function VerifyEmail() {
         <img src={logo} alt='Miles' className='object-contain' />
         <img src={textlogo} alt='Miles' />
       </div>
-      <form onSubmit={handleSubmit} className='w-full flex flex-col items-center justify-center flex-1'>
-        <div className='card px-4 sm:px-10 bg-[#00000007] flex flex-col gap-5 max-w-[600px]'>
-          <h3 className='pb-4 text-center'>Verify your email address</h3>
-          <p className='text-center font-semibold text-primary/70 pb-4'>
-            Please verify your email with the code we sent to {email} The code we send is only valid for 24 hours, click the RESEND button below to get a new code.
-          </p>
+      {!verified ? 
+        <form onSubmit={handleSubmit} className='w-full flex flex-col items-center justify-center flex-1'>
+          <div className='card px-4 sm:px-10 py-4 bg-[#00000007] flex flex-col gap-5 max-w-[600px]'>
+            <MailSent className={'!h-[100px]'} />
+            <h3 className='pb-4 text-center'>Verify your email address</h3>
+            <p className='text-center font-semibold text-primary/70 pb-4'>
+              Please verify your email with the code we sent to {email} The code we send is only valid for 24 hours, click the RESEND button below to get a new code.
+            </p>
 
-          {data.email ? null :
-            <EmailInput required
-              value={data.email}
-              onChange={(ev) => setData({...data,email: ev.target.value})}
+            {data.email ? null :
+              <EmailInput required
+                value={data.email}
+                onChange={(ev) => setData({...data,email: ev.target.value})}
+              />
+            }
+            <OTPInput required label={'OTP'}
+              value={data.otp}
+              onChange={(val) => setData({...data,otp: val})}
             />
-          }
-          <OTPInput required label={'OTP'}
-            value={data.otp}
-            onChange={(val) => setData({...data,otp: val})}
-          />
-          <Button1 loading={loading} type='submit' label={'Verify'}></Button1>
-          <div className='flex gap-2 justify-center items-center -my-3'>
-            <p>Did not get any email? </p>
-            <div>
-              <Button1 loading={loading} label={'Resend'} onClick={resSubmit} variant='text'></Button1>
+            <Button1 loading={loading} type='submit' label={'Verify'}></Button1>
+            <div className='flex gap-2 justify-center items-center -my-3'>
+              <p>Did not get any email? </p>
+              <div>
+                <Button1 loading={loading} label={'Resend'} onClick={resSubmit} variant='text'></Button1>
+              </div>
             </div>
-          </div>
-          <div className='self-center text-center flex flex-col gap-3 w-full'>
-            <div className='flex gap-2 justify-center flex-wrap gap-4 flex-1'>
-              {/* <div className=''>
-                <Link className='text-theme1 font-bold' to="?view=login">Login</Link>
-              </div> */}
-              <div className='flex gap-2 flex-wrap'>
-                {/* <p className='text-primary/40'>Dont have an account?</p> */}
-                <Link className='text-theme1 font-bold' to="?view=register">Go back to Sign up</Link>
+            <div className='self-center text-center flex flex-col gap-3 w-full'>
+              <div className='flex gap-2 justify-center flex-wrap flex-1'>
+                {/* <div className=''>
+                  <Link className='text-theme1 font-bold' to="?view=login">Login</Link>
+                </div> */}
+                <div className='flex gap-2 flex-wrap'>
+                  {/* <p className='text-primary/40'>Dont have an account?</p> */}
+                  <Link className='text-theme1 font-bold' to="?view=register">Go back to Sign up</Link>
+                </div>
               </div>
             </div>
           </div>
+        </form>
+      :
+        <Verified />
+      }
+    </div>
+  ) 
+}
+
+function Verified() {
+  return (
+    <div className='flex flex-col justify-center items-center'>
+      <div className='card flex flex-col items-center gap-4 text-center max-w-[500px] '>
+        <div className='flex-1 '>
+          <MailVerified />
+          {/* <img src='/gifs/successful-email-envelope.gif' alt='' className='h-[200px]' /> */}
         </div>
-      </form>
+        <h4>Your email was successfully verified.</h4>
+        <p>
+          Your email address has been successfully verified, and your account activated. Continue to activate your business on Intraverse.
+        </p>
+        <Link to='/profile' className='btn-theme rounded-md justify-center w-full'>Activate your business</Link>
+      </div>
     </div>
   )
 }
