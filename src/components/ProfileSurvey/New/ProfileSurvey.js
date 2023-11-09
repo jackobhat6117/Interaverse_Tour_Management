@@ -132,7 +132,7 @@ export default function ProfileSurvey() {
         </div>
       </div>
     </div>
-  ) : step >= steps.length ? (
+  ) : step >= steps.length || completed ? (
     <Congradulations />
   ) : null
 }

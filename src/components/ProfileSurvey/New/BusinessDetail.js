@@ -74,9 +74,9 @@ function BusinessType({next,updateProfile}) {
       </div>
       <div className='flex flex-col flex-wrap gap-4 justify-between self-stretch py-4'>
         <RadioGroup className='flex flex-col gap-4 py-4' options={[
-          {value: 'Non-registered',label: 'Starter Business',description: "I'm new to travel and preparing to register my business."},
-          {value: 'Private Limited',label: 'Registered business with IATA license',description: "My business has the approval (CAC), documentations and all licences required to operate legally and is IATA certified."},
-          {value: 'Sole proprietor',label: 'Registered business with out IATA license',description: "My business has the approval (CAC), documentations and all licences required to operate legally but is  not IATA certified."},
+          {value: 'starterBusiness',label: 'Starter Business',description: "I'm new to travel and preparing to register my business."},
+          {value: 'registeredBusinessWithIATALicense',label: 'Registered business with IATA license',description: "My business has the approval (CAC), documentations and all licences required to operate legally and is IATA certified."},
+          {value: 'registeredBusinessWithOutIATALicense',label: 'Registered business with out IATA license',description: "My business has the approval (CAC), documentations and all licences required to operate legally but is  not IATA certified."},
         ]} render={({label,description}) => (
           <div className='px-3'>
             <h5>{label}</h5>

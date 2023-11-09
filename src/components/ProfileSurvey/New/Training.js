@@ -1,18 +1,25 @@
 import React, { memo, useRef, useState } from 'react'
 import Button1 from '../../form/Button1'
 import { PopupButton, useCalendlyEventListener } from 'react-calendly'
+import { useSelector } from 'react-redux';
 
 
-function Training({back,next}) {
+function Training({updateProfile,back,next}) {
   const schedulerRef = useRef();
   const [complete,setComplete] = useState(false);
+  const {user} = useSelector(state => state.user.userData)
 
   useCalendlyEventListener({
-    // onDateAndTimeSelected: (e) => next && next(),
-    onEventScheduled: (e) => next && next()
+    // onDateAndTimeSelected: (e) => console.log(e),
+    onEventScheduled: async (e) => {
+      console.log(e)
+      const res = await updateProfile({haveScheduledTraining: true})
+      if(res)
+        next && next()
+    }
   })
 
-  return (
+  return !user?.detail?.haveScheduledTraining ? (
     <div className='flex flex-col gap-4 slide'>
       <div className='flex flex-col gap-2'>
         <h4 className=''>Schedule a training</h4>
@@ -41,6 +48,11 @@ function Training({back,next}) {
           }
         </div>
       </div>
+    </div>
+  ) : (
+    <div className='flex flex-col gap-10 slide items-center'>
+      <h4>Your Training has been scheduled</h4>
+      <Button1 className='!w-auto' onClick={next}>Continue</Button1>
     </div>
   )
 }

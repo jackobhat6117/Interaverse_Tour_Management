@@ -3,7 +3,8 @@ import rocket from '../../../assets/images/launching-a-rocket-over-gear.png'
 import Icon from '../../HOC/Icon'
 import { useSelector } from 'react-redux'
 import Button1 from '../../form/Button1'
-import { useNavigate } from 'react-router-dom'
+import Card from '../../DIsplay/Card'
+import StepsCheck from './StepsCheck'
 
 export default function ProfileStatusCheck({data}) {
   const {user} = useSelector(state => state.user.userData)
@@ -21,10 +22,13 @@ export default function ProfileStatusCheck({data}) {
 
   const cards = [
     {title: 'Support',description: 'Find answers to some of the most frequently asked questions about Intraverse.',
+      link: '/welcome/support',
       icon: <Icon icon='material-symbols-light:contact-support' />, footer: <Button1 variant='outlined'>Continue</Button1>},
     {title: 'Learn about Miles',description: 'Discover all the features of our flagship product and the tools to grow your business.',
+      link: '/welcome/learn',
       icon: <Icon icon='iconoir:learning' />, footer: <Button1 variant='outlined'>Continue</Button1>},
     {title: 'Pricing',description: 'We only make money when you are happy using our platform',
+      link: '/welcome/pricing',
       icon: <Icon icon='tabler:currency-naira' />, footer: <Button1 variant='outlined'>View Pricing</Button1>},
   ]
   return (
@@ -40,7 +44,7 @@ export default function ProfileStatusCheck({data}) {
         <div className='flex flex-col gap-4 max-w-[800px] text-start'>
           <h5 className='py-4'>Activate business on Intraverse</h5>
           {list.map((obj,i) => (
-            <StepsCheck i={i} key={i} obj={obj} complete={obj.complete} />
+            <StepsCheck i={i} key={i} obj={obj} complete={obj.complete} link={'/profile?step='+(i+1)} />
           ))}
         </div>
       </div>
@@ -55,39 +59,6 @@ export default function ProfileStatusCheck({data}) {
         {cards.map((card,i) => 
           <Card obj={card} key={i} />
         )}
-      </div>
-    </div>
-  )
-}
-
-function Card({obj}) {
-  return (
-    <div className='flex flex-1 flex-col gap-4 justify-end items-start text-start min-w-[200px] min-h-[250px] border bg-secondary rounded-md p-6'>
-      <div className='flex flex-col gap-2'>
-        <div>{obj.icon}</div>
-        <div>{obj.title}</div>
-      </div>
-      <p>{obj.description}</p>
-      <div>{obj.footer}</div>
-    </div>
-  )
-}
-
-function StepsCheck({i,obj,complete}) {
-  const navigate = useNavigate();
-
-  function handleNavigate() {
-    navigate('/profile?step='+(i+1))
-  }
-  return (
-    <div className='flex gap-4 p-4 rounded-md border items-center cursor-pointer' onClick={handleNavigate}>
-      <div className='bg-primary/[5%] rounded-md p-4 flex items-center justify-center'>{i+1}</div>
-      <div className='flex flex-col gap-2 flex-1 text-left'>
-        {obj.title}
-        <p>{obj.description}</p>
-      </div>
-      <div className='w-10 h-10 flex justify-center items-center rounded-full bg-primary/10'>
-        <Icon icon='game-icons:check-mark' className={`${complete?'text-theme1':'text-primary/20'}`} />
       </div>
     </div>
   )

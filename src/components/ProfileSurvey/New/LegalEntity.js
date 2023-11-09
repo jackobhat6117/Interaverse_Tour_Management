@@ -26,7 +26,7 @@ function LegalEntity({updateProfile,back,next}) {
     }
   }
 
-  return (
+  return !user?.detail?.agencyType === 'starterBusiness' ? (
     <div className='flex flex-col gap-4 slide'>
       <div className='flex flex-col gap-2'>
         <h4 className=''>Enter your business registration informaiton</h4>
@@ -61,6 +61,11 @@ function LegalEntity({updateProfile,back,next}) {
           <Button1 className='!w-auto' onClick={handleChange} loading={loading}>Next</Button1>
         </div>
       </div>
+    </div>
+  ) : (
+    <div className='flex flex-col max-w-[500px] slide items-center self-center gap-10 text-center flex-1 justify-center'>
+      <h3>This page is for registered business</h3>
+      <Button1>Skip</Button1>
     </div>
   )
 }

@@ -8,24 +8,46 @@ import { profileSurveyData } from "../../../data/user/profileSurvey";
 import updateProfile from "../../../controllers/user/updateProfile";
 import { useSnackbar } from "notistack";
 import CountriesInput from "../../../components/form/CountriesInput";
+import { useSelector } from "react-redux";
+import Map from "../../../components/form/Map";
+import mergeRecursive from "../../../features/utils/mergeRecursive";
 
 export default function AgencySetupSetting() {
+  const {user} = useSelector(state => state.user.userData);
   const [data,setData] = useState({
-    detail: profileSurveyData,
+    detail: mergeRecursive(profileSurveyData,user.detail,{createNew: false}),
   })
   const [loading,setLoading] = useState(false);
   const {enqueueSnackbar} = useSnackbar();
 
   async function handleSubmit(ev) {
     ev.preventDefault();
-
+    const {interestedIn,goalsWithMiles,agencyLogo,agencyURL,phone,...restData} = data.detail;
     setLoading(true);
-    const res = await updateProfile(data)
+    const res = await updateProfile(restData)
     setLoading(false);
     if(res.return) {
       enqueueSnackbar('Profile Updated.',{variant: 'success'})
     } else enqueueSnackbar(res.msg,{variant: 'error'})
   }
+
+  function handleLocation(place) {
+    setData({
+      ...data,
+      detail: {
+        ...data.detail,
+        address: {
+          ...data.detail.address,
+          location: [place.lat,place.lng],
+          businessLocation: place.formattedAddress,
+          lga: place.city,
+          addressOne: place.subcity,
+          addressTwo: place.route,
+        }
+      }
+    })
+  }
+
   return (
     <form onSubmit={handleSubmit} className='content-max-w flex flex-col gap-4'>
       <p>We would be delighted to enable you to sell genuine flights. Before we proceed, we kindly request some information about your business. This data is necessary to meet the requirements set by regulatory bodies and financial partners, as well as the provisions outlined in our Service Agreement.</p>
@@ -38,7 +60,7 @@ export default function AgencySetupSetting() {
           value={data.detail.typeOfBusiness}
           onChange={(ev) => setData({...data,detail: {...data.detail,typeOfBusiness: ev.target.value}})}
         >
-          <MenuItem value='Private limited'>Private limited</MenuItem>
+          <MenuItem value='Private Limited'>Private limited</MenuItem>
           <MenuItem value='Sole proprietor'>Sole proprietor</MenuItem>
           <MenuItem value='Non-registered'>Non-registered</MenuItem>
         </TextInput>
@@ -57,25 +79,24 @@ export default function AgencySetupSetting() {
       <div className='flex flex-col gap-3 py-3'>
         <h4>Address</h4>
         <div className="flex flex-wrap sm:flex-nowrap gap-4">
-          <TextInput label={'Registered business address'} 
-            value={data?.detail?.address.businessLocation}
+          <Map label='Registered business address' className={'w-full'} handleReturn={(obj) => handleLocation(obj)} />
+          {/* <TextInput label={'Registered business address'} 
+            value={data?.detail?.address?.businessLocation}
             onChange={(ev) => setData({...data,detail: {...data.detail,address: {...data?.detail?.address,businessLocation: ev.target.value}}})}
           />
-            {/* <MenuItem>Lagos</MenuItem>
-          </TextInput> */}
           <TextInput label='LGA' placeholder={'Local Government Area'} 
             value={data?.detail?.address.lga}
             onChange={(ev) => setData({...data,detail: {...data.detail,address: {...data?.detail?.address,lga: ev.target.value}}})}
-          />
+          /> */}
         </div>
-        <TextInput label={'Address one'} placeholder='Bus-stop/Street/Estate name' 
+        {/* <TextInput label={'Address one'} placeholder='Bus-stop/Street/Estate name' 
           value={data?.detail?.address.addressOne}
           onChange={(ev) => setData({...data,detail: {...data.detail,address: {...data?.detail?.address,addressOne: ev.target.value}}})}
         />
         <TextInput label={'Address two'} placeholder='Building/Block number/Office floor' 
           value={data?.detail?.address.addressTwo}
           onChange={(ev) => setData({...data,detail: {...data.detail,address: {...data?.detail?.address,addressTwo: ev.target.value}}})}
-        />
+        /> */}
         <TextInput label='Additional Info' placeholder={'Anything to best describe your address'}
           tooltip='This address will be saved as your billing address. If you need to change this later, please contact our support team.'
           value={data?.detail?.address.additionalInfo}

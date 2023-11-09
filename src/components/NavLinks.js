@@ -65,7 +65,11 @@ export default function NavLinks({profileCompleted}) {
     <div>
       <Tabs variant="scrollable" value={link} onChange={handleLink} className="font-bold" 
         TabIndicatorProps={{sx: {height: '4px'}}}>
-        <Tab label='Getting Started' data-link="/" icon={<Icon icon='heroicons:rocket-launch' className='text-theme1 -rotate-[43deg]' />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
+          {page === 'support' ? 
+            <Tab label='Support' data-link="/" icon={<Icon icon='heroicons:rocket-launch' className='text-theme1 -rotate-[43deg]' />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
+          :
+            <Tab label='Getting Started' data-link="/" icon={<Icon icon='heroicons:rocket-launch' className='text-theme1 -rotate-[43deg]' />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
+          }
       </Tabs>
     </div>
   )

@@ -34,6 +34,10 @@ import FlightBook from './pages/Orders/Flight/Book/FlightBook';
 import FlightBookDetails from './pages/Orders/Flight/Book/FlightBookDetails.js';
 import FlightAncillaries from './pages/Orders/Flight/Book/FlightAncillaries.js';
 import ProfileSurvey from './components/ProfileSurvey/New/ProfileSurvey.js';
+import WelcomeNavbar from './components/WelcomeNavbar.js';
+import LearnSupport from './pages/Welcome/LearnSupport.js';
+import LearnPricing from './pages/Welcome/LearnPricing.js';
+import LearnMiles from './pages/Welcome/LearnMiles/LearnMiles.js';
 // import 'dotenv/config'
 
 
@@ -82,6 +86,11 @@ function App() {
             <Routes>
               <Route path='/' element={<AuthValidate />}>
                 <Route path='profile' element={<ProfileSurvey />} />
+                <Route path='/welcome' element={<WelcomeNavbar />} >
+                  <Route path='support' element={<LearnSupport />} />
+                  <Route path='pricing' element={<LearnPricing />} />
+                  <Route path='learn' element={<LearnMiles />} />
+                </Route>
                 <Route path='/' element={<Navbar />}>
                   <Route index element={<Dashboard />} />
                   <Route path='order' element={<Orders />} />

@@ -11,7 +11,7 @@ export default function Navbar() {
   const {user} = useSelector(state => state.user.userData)
 
   const profileCompleteCheck = checkProfileComplete(user);
-  const completed = true || profileCompleteCheck?.every(obj => obj.complete);
+  const completed = profileCompleteCheck?.every(obj => obj.complete);
   return (
     <div className='flex flex-col min-h-screen '>
       <Header />
