@@ -4,6 +4,10 @@ import Icon from '../../../components/HOC/Icon'
 import { Tab, Tabs } from '@mui/material'
 import BreadCrumb from '../../../components/DIsplay/Nav/BreadCrumb'
 import MilesForFlights from './MilesForFlights'
+import MilesForStays from './MilesForStays'
+import MilesForTours from './MilesForTours'
+import MilesForLinks from './MilesForLinks'
+import BlogDisplay from '../../../components/DIsplay/BlogDisplay'
 
 
 export default function LearnMiles() {
@@ -41,13 +45,39 @@ export default function LearnMiles() {
             React.cloneElement(component,{className: `min-h-screen flex w-full pd-md ${i%2 ? '':'bg-primary/10 flex-row-reverse '}`})
           ))}
 
+          <div className='flex flex-col justify-center items-center text-center gap-5 py-10 min-h-screen pd-md'>
+            <h3>Our Blogs</h3>
+            <p>See our latest blog posts capturing our endeavours</p>
+            <div className='py-10 flex gap-4 justify-center'>
+              {blogs.map((obj,i) => (
+                <BlogDisplay obj={obj} key={i} />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
   )
 }
 
+const blogs = [
+  {title: 'Travel Wellness: How to Stay Healthy and Energized on the Road',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore. Ut enim ad minim veniam...',
+    user: {name: 'Rachel singh'}
+  },
+  {title: 'Travel Wellness: How to Stay Healthy and Energized on the Road',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore. Ut enim ad minim veniam...',
+    user: {name: 'Rachel singh'}
+  },
+  {title: 'Travel Wellness: How to Stay Healthy and Energized on the Road',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore. Ut enim ad minim veniam...',
+    user: {name: 'Rachel singh'}
+  },
+]
+
 const columns = [
   <MilesForFlights />,
-  <MilesForFlights />,
+  <MilesForStays />,
+  <MilesForTours />,
+  <MilesForLinks />,
 ]
