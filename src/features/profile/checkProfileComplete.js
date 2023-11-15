@@ -25,7 +25,7 @@ export default function checkProfileComplete(user) {
         break;
       
       case 'training':
-        if(detail.haveScheduledTraining)
+        if(detail?.haveScheduledTraining)
           temp.complete = true;
         break;
 

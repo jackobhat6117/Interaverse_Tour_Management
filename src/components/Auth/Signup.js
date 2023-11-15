@@ -14,6 +14,7 @@ import signup from '../../controllers/Auth/signup'
 import { useSnackbar } from 'notistack'
 import Checkbox from '../form/Checkbox'
 import PhoneNumberInput from '../form/PhoneNumberInput'
+import Icon from '../HOC/Icon'
 
 
 export default function Signup() {
@@ -21,9 +22,11 @@ export default function Signup() {
   // const searchParam = new URLSearchParams(location.search)
   // let type = searchParam.get('type')
   const [data,setData] = useState({...signupReqData,userType: "Agent",confirmPassword: ''});
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [loading,setLoading] = useState(false);
   const {enqueueSnackbar} = useSnackbar();
+  const [type,setType] = useState(false);
+
 
   async function handleSubmit(ev) {
     ev.preventDefault();
@@ -38,10 +41,21 @@ export default function Signup() {
       },2000)
     } else enqueueSnackbar(res.msg || 'Registration Failed.', {variant: 'error'})
   }
+  
+  async function handleGoogleAuth() {
+    // setLoading(true);
+    // const res = await googleSignup();
+    // setLoading(false);
+    // if(res.return)
+    //   enqueueSnackbar('Registered Successfully.',{variant: 'success'})
+    // else enqueueSnackbar(res.msg || 'Registration Failed.', {variant: 'error'})
+    let curUrl = new URLSearchParams({callbackUrl: window.location.href})
+    window.location.href = (process.env.REACT_APP_API+'/main/v1/auth/google?'+curUrl)
+  }
 
   return (
     <div className='flex min-h-screen '>
-      <div className='w-full flex-1 hidden md:flex flex-col'>
+      <div className='w-full flex-1 hidden md:flex flex-col bg-theme1/10'>
         <div className='lg:px-20 p-10 flex gap-2'>
           <img src={logo} alt='Miles' className='object-contain' />
           <img src={textlogo} alt='Miles' />
@@ -59,7 +73,6 @@ export default function Signup() {
           </Service>
         </div>
       </div>
-      {/* {!type ? ( */}
         {/* <div className='flex flex-col justify-center gap-5 p-10 py-5 flex-1 bg-[#CCE2FA]'>
           <h5 className='px-4'>Select your business type</h5>
           <RadioGroup name='userType' className='flex flex-col gap-4' value={data.userType} onChange={((ev) => setData({...data,userType: ev.target.value}))}>
@@ -99,7 +112,33 @@ export default function Signup() {
             </div>
           </div>
         </div> */}
-      {/* ):( */}
+      {!type ? (
+        <div className='flex flex-1 flex-col justify-center items-center bg-primary/[5%]'>
+          <div className='flex flex-col gap-4'>
+            <h4>Create your account on Intraverse</h4>
+            {/* <div id='signInDiv'></div> */}
+            <div className='btn flex gap-4 !bg-secondary !text-primary px-[8px]'
+              onClick={() => !loading && handleGoogleAuth()}
+            >
+              <Icon icon='devicon:google' className='p-[1px]' />
+              <span className='flex-1 '>
+                {loading?
+                'Please wait...'
+                :
+                'Sign in with google'}
+              </span>
+            </div>
+            <div className='btn flex gap-4 !bg-secondary !text-primary px-[8px] '
+              onClick={() => setType(true)}
+            >
+              <Icon icon='mdi:email' className='bg-theme1 rounded-full p-[6px] text-secondary' />
+              <span className='flex-1 '>Sign up with your email</span>
+            </div>
+            <Link to='/' className='text-xs'>already have an account? Login</Link>
+          </div>
+        </div>
+        
+      ):(
         <form onSubmit={handleSubmit} className='w-1/2 flex flex-col items-center flex-1 sm:bg-[#CCE2FA] sm:p-10'>
           <div className='lg:px-20 px-4 sm:hidden shadow-md w-full mb-2 bg-secondary'>
             <img src={textlogo} alt='Miles' className=' h-8 my-2' />
@@ -148,11 +187,11 @@ export default function Signup() {
               <div className='flex gap-2 items-center'>
                 <p className='text-primary/40'>Already have an account?</p><Link className='text-theme1 font-bold' to="?login">Login</Link>
               </div>
-              <Link to='?view=register' className='text-primary/50 font-bold'>Go back</Link>
+              <div onClick={() => setType(false)} to='?view=register' className='text-primary/50 font-bold'>Go back</div>
             </div>
           </div>
         </form>
-      {/* )} */}
+      )}
     </div>
   )
 }

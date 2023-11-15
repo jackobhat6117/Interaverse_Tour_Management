@@ -19,7 +19,7 @@ const temp = [
   {status: 'OK',name: 'John Doe',email: 'johndoe@gmail.com',phoneNumber: '+234-940067965',gender: 'Male',dob: '23rd Feb,1999',nationality: 'Nigerian',orders: 5,userId: '123',date: '7:30pm 24/04/2023',active: true},
   {status: 'SA',name: 'Doe John',email: 'doecho@gmail.com',phoneNumber: '+234-940067965',gender: 'Male',dob: '23rd Feb,1999',nationality: 'Nigerian',orders: 10,userId: '123',date: '7:30pm 24/04/2023',active: false},
 ]
-export default function UserManagement() {
+function UserManagement() {
   const [selected,setSelected] = useState();
   const [data,setData] = useState([]);
   const [loading,setLoading] = useState(false);
@@ -205,3 +205,5 @@ function EditForm({data,close}) {
     </div>
   )
 }
+
+export default React.memo(UserManagement)

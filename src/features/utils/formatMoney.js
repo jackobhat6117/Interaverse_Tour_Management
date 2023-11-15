@@ -1,3 +1,5 @@
+import { def } from "../../config";
+
 export function formatMoney(num) {
   if(!num) return num;
   let number = num;
@@ -25,7 +27,8 @@ export function formatMoney(num) {
   
   const [intPart, decimalPart] = number.toString().split(".");
   let formattedIntPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return decimalPart ? `${formattedIntPart}.${decimalPart}` : formattedIntPart;
+  return def.currency+formattedIntPart;
+  // return decimalPart ? `${formattedIntPart}.${decimalPart}` : formattedIntPart;
 }
 
 export function convertMoney(num) {

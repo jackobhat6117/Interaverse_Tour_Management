@@ -32,14 +32,14 @@ export default function ProfileStatusCheck({data}) {
       icon: <Icon icon='tabler:currency-naira' />, footer: <Button1 variant='outlined'>View Pricing</Button1>},
   ]
   return (
-    <div className='flex flex-col gap-10 py-6'>
-      <div className='flex gap-6 items-end justify-between w-full'>
+    <div className='flex flex-col gap-10 pd-md'>
+      <div className='flex flex-wrap md:flex-nowrap gap-6 items-end justify-between w-full'>
         <div className='flex flex-col justify-between gap-4'>
-          <h4 className='w-full p-4 text-start'>
+          <h4 className='w-full py-4 text-start slide-out duration-600'>
             Welcome back, {user.firstName} {user.lastName}
           </h4>
 
-          <img src={rocket} alt='rocket' className='translate-y-[120px]' />
+          <img src={rocket} alt='rocket' className='z-10 translate-y-[120px] hidden md:block' />
         </div>
         <div className='flex flex-col gap-4 max-w-[800px] text-start'>
           <h5 className='py-4'>Activate business on Intraverse</h5>
@@ -48,8 +48,9 @@ export default function ProfileStatusCheck({data}) {
           ))}
         </div>
       </div>
-      <div className='bg-black rounded-md'>
-        <div className='bg-theme1/50 p-4 flex justify-end'>
+      <div className='bg-black rounded-md relative '>
+        <div className='bg-theme1/50 p-4 rounded-md flex justify-end'>
+          <img src={rocket} alt='rocket' className='bottom-[0%] left-2 h-[100px] absolute md:hidden' />
           <div>
             <Button1>Continue</Button1>
           </div>
@@ -57,7 +58,7 @@ export default function ProfileStatusCheck({data}) {
       </div>
       <div className='flex gap-6 flex-wrap md:flex-nowrap'>
         {cards.map((card,i) => 
-          <Card obj={card} key={i} />
+          <Card obj={card} key={i} className={`duration-${(i+1)*2*100}`} />
         )}
       </div>
     </div>
