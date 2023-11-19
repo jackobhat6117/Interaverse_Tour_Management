@@ -30,7 +30,7 @@ export default function LearnSupport() {
             onScreenViewCallBack={() => setAnimStyle(s => ({...s,header: 'slide-down'}))}
             // offScreenViewCallBack={() => setAnimStyle(s => ({...s,header: ''}))}
           >
-            <h1 className={`font-black text-center ${animStyle.header}`}>How can we help you?</h1>
+            <h1 className={`font-black text-center slide-down`}>How can we help you?</h1>
             <SearchInput placeholder='Start typing your search' className='shadow-lg !rounded-full !p-2' 
               InputProps={{
                 classes: {

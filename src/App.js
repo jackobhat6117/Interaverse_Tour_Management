@@ -38,6 +38,7 @@ import WelcomeNavbar from './components/WelcomeNavbar.js';
 import LearnSupport from './pages/Welcome/LearnSupport.js';
 import LearnPricing from './pages/Welcome/LearnPricing.js';
 import LearnMiles from './pages/Welcome/LearnMiles/LearnMiles.js';
+import ProfileStatusCheck from './components/ProfileSurvey/New/ProfileStatusCheck.js';
 // import 'dotenv/config'
 
 
@@ -87,6 +88,7 @@ function App() {
               <Route path='/' element={<AuthValidate />}>
                 <Route path='profile' element={<ProfileSurvey />} />
                 <Route path='/welcome' element={<WelcomeNavbar />} >
+                  <Route index element={<ProfileStatusCheck />} />
                   <Route path='support' element={<LearnSupport />} />
                   <Route path='pricing' element={<LearnPricing />} />
                   <Route path='learn' element={<LearnMiles />} />

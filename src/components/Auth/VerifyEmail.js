@@ -56,17 +56,20 @@ export default function VerifyEmail() {
 
   return (
     <div className='flex flex-col min-h-screen font-bold'>
-      <div className='w-full p-3 px-5 flex gap-2'>
-        <img src={logo} alt='Miles' className='object-contain' />
-        <img src={textlogo} alt='Miles' />
+      <div className='w-full p-3 px-5 flex gap-2 bg-secondary justify-center sm:justify-start'>
+        <img src={logo} alt='Miles' className='h-[35px] object-contain' />
+        <img src={textlogo} alt='Miles' className='h-[35px]' />
       </div>
       {!verified ? 
         <form onSubmit={handleSubmit} className='w-full flex flex-col items-center justify-center flex-1'>
-          <div className='card px-4 sm:px-10 py-4 bg-[#00000007] flex flex-col gap-5 max-w-[600px]'>
-            <MailSent className={'!h-[100px]'} />
-            <h3 className='pb-4 text-center'>Verify your email address</h3>
-            <p className='text-center font-semibold text-primary/70 pb-4'>
-              Please verify your email with the code we sent to {email} The code we send is only valid for 24 hours, click the RESEND button below to get a new code.
+          <div className='card px-4 sm:px-10 py-4 bg-secondary flex flex-col gap-3 max-w-[600px]'>
+            <MailSent className={'!h-[80px]'} />
+            <h4 className=' text-center'>Verify your email address</h4>
+            <p className='text-center text-primary/70 pb-4'>
+              A verification code has been sent to your email
+              <b className='block font-bold'>{email}.</b>
+              Please enter the code to verify your account
+              {/* The code we send is only valid for 24 hours,<br /> click the RESEND button below to get a new code. */}
             </p>
 
             {data.email ? null :
@@ -108,13 +111,13 @@ export default function VerifyEmail() {
 
 function Verified() {
   return (
-    <div className='flex flex-col justify-center items-center'>
+    <div className='flex-1 flex flex-col justify-center items-center'>
       <div className='card flex flex-col items-center gap-4 text-center max-w-[500px] '>
         <div className='flex-1 '>
-          <MailVerified />
+          <MailVerified className={'h-[80px] scale-[200%]'} />
           {/* <img src='/gifs/successful-email-envelope.gif' alt='' className='h-[200px]' /> */}
         </div>
-        <h4>Your email was successfully verified.</h4>
+        <h5>Your email was successfully verified.</h5>
         <p>
           Your email address has been successfully verified, and your account activated. Continue to activate your business on Intraverse.
         </p>

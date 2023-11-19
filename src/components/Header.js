@@ -33,9 +33,9 @@ export default function Header() {
   return (
     <div>
       <div className='hidden md:flex items-center gap-10 px-md py-2'>
-      <div>
+      <Link to='/'>
         <img src={logo} alt='Miles' />
-      </div>
+      </Link>
       <div className='flex-1 z-[90]'>
         <SearchInput exampleview={true} searchview={true} />
       </div>

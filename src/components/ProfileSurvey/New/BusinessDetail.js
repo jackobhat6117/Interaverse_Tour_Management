@@ -8,6 +8,7 @@ import EmailInput from '../../form/EmailInput'
 import { useSelector } from 'react-redux'
 import mergeRecursive from '../../../features/utils/mergeRecursive'
 import { clone } from '../../../features/utils/objClone'
+import MapAutoComplete from '../../form/MapAutoComplete'
 
 
 const steps = [
@@ -18,10 +19,11 @@ const CurComp = (props) => {
   return React.cloneElement(props.component || <></>,props)
 }
 
-function BusinessDetail({updateProfile,next}) {
+function BusinessDetail({updateProfile,next,review}) {
   // const [obj,setObj] = useState({...profileSurveyData,...data})
   const {user} = useSelector(state => state.user.userData);
   const [step,setStep] = useState(user?.detail?.agencyType ? 1 : 0);
+  const [edit,setEdit] = useState(false);
 
   const stepNext = () => {
     if(step < steps.length-1 )
@@ -40,12 +42,15 @@ function BusinessDetail({updateProfile,next}) {
     // sessionStorage.setItem('profileSurvey','skip')
   // }
 
-  return (
+  return !review || (review && edit) ? (
     <div className='flex flex-col gap-4 slide'>
       <CurComp key={'editor'} component={steps[step]} next={stepNext} back={stepBack} updateProfile={updateProfile} />
     </div>
+  ) : (
+    <ReviewDisplay data={user?.detail} setEdit={(val) => setEdit(val)} review={review} />
   )
 }
+
 
 function BusinessType({next,updateProfile}) {
   const {user} = useSelector(state => state.user.userData);
@@ -92,6 +97,27 @@ function BusinessType({next,updateProfile}) {
   )
 }
 
+function ReviewDisplay({data,review}) {
+  const Col = ({name,value}) => (
+    <div className='flex flex-col gap-2'>
+      <p>{name}</p>
+      <b>{value}</b>
+    </div>
+  )
+  return (
+    <div className='relative flex flex-col gap-6 '>
+      <div className='absolute right-0 top-0 px-2'>
+        {review ? review : null}
+      </div>
+      <Col name='Business Type' value={data?.agencyType} />
+      <Col name='Trading Name' value={data?.tradingName} />
+      <Col name='Business Address' value={data?.address?.businessLocation} />
+      <Col name='Business Email' value={data?.businessEmail} />
+      <Col name='Business Phone' value={data?.businessPhone} />
+    </div>
+  )
+}
+
 function DetailInfo({next,back,updateProfile}) {
   const {user} = useSelector(state => state.user.userData);
   const userDetails = mergeRecursive(clone(profileSurveyData),user?.detail || {},{createNew: true})
@@ -108,7 +134,20 @@ function DetailInfo({next,back,updateProfile}) {
     setLoading(false);
   }
 
-  console.log(user)
+  function handleLocation(place) {
+    setData({
+      ...data,
+      address: {
+        location: [place.lat,place.lng],
+        businessLocation: place.formattedAddress,
+        lga: place.city,
+        addressOne: place.subcity,
+        addressTwo: place.route,
+      }
+    })
+  }
+
+  // console.log(user,data)
   return (
     <div className='flex flex-col gap-4'>
       <div className='flex flex-col gap-2 pb-2'>
@@ -122,21 +161,23 @@ function DetailInfo({next,back,updateProfile}) {
         />
       </div>
       <div>
-        <TextInput key='regName' label={'Business Address'} placehodler='e.g 14b wole ariyo street, Lekki, Lagos'
-          value={data?.address?.location[0] || ''}
-          onChange={(ev) => setData({...data,address:{location: [Number(ev.target.value),Number(ev.target.value)]}})}
-        />
+        <MapAutoComplete handleReturn={handleLocation}>
+          <TextInput key='regName' label={'Business Address'} placeholder={data?.address?.businessLocation || 'e.g 14b wole ariyo street, Lekki, Lagos'}
+            // value={data?.address?.location[0] || ''}
+            // onChange={(ev) => setData({...data,address:{location: [Number(ev.target.value),Number(ev.target.value)]}})}
+            />
+        </MapAutoComplete>
       </div>
       <div>
         <PhoneNumberInput label={'Business Phone number'} placeholder='e.g 08170000000'
-          value={data?.businessEmail}
-          onChange={(value) => setData({...data,businessEmail: value})}
+          value={data?.businessPhone}
+          onChange={(value) => setData({...data,businessPhone: value})}
         />
       </div>
       <div>
         <EmailInput label='Business Email' placehodler='hello@gmail.com'
-          value={data?.businessPhone}
-          onChange={(ev) => setData({...data,businessPhone: ev.target.value})}
+          value={data?.businessEmail}
+          onChange={(ev) => setData({...data,businessEmail: ev.target.value})}
         />
       </div>
       <div className='flex justify-between gap-4'>

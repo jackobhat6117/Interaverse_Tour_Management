@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Login from './Login'
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Signup from './Signup';
 import ResetPassword from './ResetPassword';
 import VerifyEmail from './VerifyEmail';
@@ -8,21 +8,30 @@ import RecoverPassword from './RecoverPassword';
 import { useDispatch } from 'react-redux';
 import { setUserData } from '../../redux/reducers/userSlice';
 // import getAccount from '../../controllers/user/getAccount';
+import textlogo from '../../assets/icons/textlogo.svg'
+import logo from '../../assets/icons/logo.svg'
+
 
 
 export default function Auth() {
   const location = useLocation();
+  const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
   const id = searchParams.get('id')
   const accessToken = searchParams.get('accessToken')
   const dispatch = useDispatch();
-
+  const [loading,setLoading] = useState(false);
 
   const view = searchParams.get('view')
-
+    
   async function validateGoogleToken() {
-    dispatch(setUserData({loggedIn: false,accessToken,id: id,user: {}}))
+    // const newUrl = `${window.location.protocol}//${window.location.host}`;
+    // window.history.replaceState({}, document.title, newUrl);
+    navigate('/')
 
+    setLoading(true);
+    setTimeout(() => setLoading(false),4000)
+    dispatch(setUserData({loggedIn: false,accessToken,id: id,user: {}}))
   }
 
   useEffect(() => {
@@ -33,8 +42,8 @@ export default function Auth() {
   },[accessToken])
 
   // console.log(view)
-  return (
-    <div>
+  return !loading ? (
+    <div className='bg-secondary sm:bg-inherit'>
       {view === 'register' ? 
         <Signup />
       :
@@ -49,6 +58,14 @@ export default function Auth() {
       :
         <Login />
       }
+    </div>
+  ) : (
+    <div className='flex flex-col flex-1 min-h-screen justify-center items-center '>
+      <div className='w-full  px-5 flex gap-2 justify-center '>
+        <img src={logo} alt='Miles' className='h-[35px] object-contain' />
+        <img src={textlogo} alt='Miles' className='h-[35px]' />
+      </div>
+      <img src={'/gifs/loading-bar.gif'} alt='Preloader' className='h-[150px] -translate-y-10' />
     </div>
   )
 }

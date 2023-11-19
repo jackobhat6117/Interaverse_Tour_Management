@@ -6,6 +6,10 @@
   font-family: 'BRFirma';
   src: url('./assets/fonts/BR\ Firma\ Font\ Family/BRFirma-Regular.ttf');
 }
+@font-face {
+  font-family: 'BRFirmaBold';
+  src: url('./assets/fonts/BR\ Firma\ Font\ Family/BRFirma-Bold.ttf');
+}
 
 body {
   margin: 0;
@@ -30,27 +34,28 @@ code {
     background-color: rgba(var(--primary-color), 0.03);
   }
 
+
   h1,.h1 {
-    @apply text-4xl sm:text-6xl font-bold;
+    @apply text-4xl sm:text-6xl font-['BRFirmaBold'];
   }
   h2,.h2 {
-    @apply text-3xl sm:text-5xl font-bold;
+    @apply text-3xl sm:text-5xl font-['BRFirmaBold'];
   }
   h3,.h3 {
-    @apply text-xl sm:text-4xl font-bold;
+    @apply text-xl sm:text-4xl font-['BRFirmaBold'];
   }
   h4,.h4 {
-    @apply text-base sm:text-2xl font-bold;
+    @apply text-base sm:text-2xl font-['BRFirmaBold'];
   }
   h5,.h5 {
-    @apply text-sm sm:text-xl font-bold;
+    @apply text-sm sm:text-xl font-['BRFirmaBold'];
   }
   h6,.h6 {
-    @apply text-xs sm:text-base font-bold;
+    @apply text-xs sm:text-base font-['BRFirmaBold'];
   }
 
   p {
-    @apply !text-primary/60;
+    @apply !text-primary/60 font-thin;
   }
 
   .bg-emptypage {
@@ -60,7 +65,7 @@ code {
   }
 
   .btn {
-    @apply rounded-md border bg-primary/80 text-white p-2 px-4 cursor-pointer;
+    @apply rounded-md border bg-primary/80 text-white p-2 px-4 cursor-pointer font-normal;
   }
   .btn.disabled {
     @apply text-primary/30 font-bold cursor-not-allowed;
@@ -70,10 +75,10 @@ code {
   }
     
   .btn-theme {
-    @apply !bg-theme1 !text-secondary !capitalize flex gap-2 p-2 !px-4 cursor-pointer;
+    @apply !bg-theme1 !text-secondary !capitalize flex gap-2 p-2 !px-4 cursor-pointer font-normal;
   }
   .btn-theme-light {
-    @apply !bg-secondary !text-primary/60 p-2 !px-4 flex gap-2 !shadow-none hover:shadow !capitalize cursor-pointer;
+    @apply !bg-secondary !text-primary/60 p-2 !px-4 flex gap-2 !shadow-none hover:shadow !capitalize cursor-pointer font-normal;
   }
 
 
@@ -123,7 +128,7 @@ code {
 
 @layer components {
   .card {
-    @apply bg-secondary p-16 rounded-3xl 
+    @apply bg-secondary p-10 sm:p-16 rounded-3xl 
   }
 
   .tooltip {

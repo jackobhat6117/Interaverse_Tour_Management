@@ -9,11 +9,12 @@ import mergeRecursive from '../../../features/utils/mergeRecursive'
 import { clone } from '../../../features/utils/objClone'
 
 
-function LegalEntity({updateProfile,back,next}) {
+function LegalEntity({updateProfile,back,next,review}) {
   const {user} = useSelector(state => state.user.userData);
   const userDetails = mergeRecursive(clone(profileSurveyData),user?.detail || {},{createNew: false})
   const [data,setData] = useState({...profileSurveyData,...userDetails});
   const [loading,setLoading] = useState(false);
+  const [edit,setEdit] = useState(false);
 
   async function handleChange() {
     const {registeredBusinessName,typeOfBusiness,legalInfo: {taxIdentification,companyNumber}} = {...data};
@@ -26,7 +27,10 @@ function LegalEntity({updateProfile,back,next}) {
     }
   }
 
-  return !user?.detail?.agencyType === 'starterBusiness' ? (
+  if(review && !edit)
+    return <ReviewDisplay data={user?.detail} review={review} setEdit={setEdit} />
+
+  return user?.detail?.agencyType === 'starterBusiness' ? (
     <div className='flex flex-col gap-4 slide'>
       <div className='flex flex-col gap-2'>
         <h4 className=''>Enter your business registration informaiton</h4>
@@ -66,6 +70,26 @@ function LegalEntity({updateProfile,back,next}) {
     <div className='flex flex-col max-w-[500px] slide items-center self-center gap-10 text-center flex-1 justify-center'>
       <h3>This page is for registered business</h3>
       <Button1>Skip</Button1>
+    </div>
+  )
+}
+
+function ReviewDisplay({data,review}) {
+  const Col = ({name,value}) => (
+    <div className='flex flex-col gap-2'>
+      <p>{name}</p>
+      <b>{value}</b>
+    </div>
+  )
+  return (
+    <div className='relative flex flex-col gap-6 '>
+      <div className='absolute right-0 top-0 px-2'>
+        {review ? review : null}
+      </div>
+      <Col name='Regsitered Business Name' value={data.registeredBusinessName} />
+      <Col name='Type of Regsitered business' value={data.typeOfBusiness} />
+      <Col name='Company Number' value={data?.legalInfo?.companyNumber} />
+      <Col name='Tax Identification No' value={data?.legalInfo?.taxIdentification} />
     </div>
   )
 }

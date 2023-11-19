@@ -34,7 +34,7 @@ export default function OTPInput(props) {
     } 
   }
   return (
-    <div className='flex gap-2 w-full max-w-[500px]'>
+    <div className='flex gap-2 w-full max-w-[400px]'>
       {value.map((val,i) => (
         <div className='flex-1'>
           <input type='text' 
@@ -43,7 +43,7 @@ export default function OTPInput(props) {
             ref={(el) => inputRefs.current[i] = el} 
             onKeyUp={(ev) => handleBackspace(ev,i)}
             onChange={(ev) => handleValue(ev,i)}
-            className='border border-primary/20 rounded-lg w-full p-1 sm:p-4 text-[20px] text-center'
+            className='border border-primary/20 rounded-lg w-full h-[50px] p-1 sm:p-3 text-[20px] text-center'
           />
         </div>
       ))}

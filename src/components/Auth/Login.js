@@ -10,6 +10,7 @@ import { loginReqData } from '../../data/user/Auth/loginReq'
 import login from '../../controllers/Auth/login'
 import { useDispatch } from 'react-redux'
 import { setUserData } from '../../redux/reducers/userSlice'
+import Icon from '../HOC/Icon'
 
 
 export default function Login() {
@@ -34,11 +35,17 @@ export default function Login() {
     } else enqueueSnackbar(res?.msg || 'Invalid Credentials.', {variant: 'error'})
   }
 
+  async function handleGoogleAuth() {
+    let curUrl = new URLSearchParams({callbackUrl: window.location.href})
+    window.location.href = (process.env.REACT_APP_API+'/main/v1/auth/google?'+curUrl)
+  }
+
+
   return (
-    <div className='flex flex-col min-h-screen font-bold'>
-      <div className='w-full p-3 px-5 flex gap-2'>
-        <img src={logo} alt='Miles' className='object-contain' />
-        <img src={textlogo} alt='Miles' />
+    <div className='flex flex-col min-h-screen font-bold gap-4'>
+      <div className='w-full p-3 px-5 flex gap-2 bg-secondary justify-center sm:justify-start'>
+        <img src={logo} alt='Miles' className='h-[35px] object-contain' />
+        <img src={textlogo} alt='Miles' className='h-[35px]' />
       </div>
       <form onSubmit={handleSubmit} className='w-full flex flex-col items-center justify-center flex-1'>
         <div className='card bg-[#00000007] flex flex-col gap-5'>
@@ -54,6 +61,18 @@ export default function Login() {
           <Button1 loading={loading} type='submit' label={'Login'}></Button1>
           <div className='self-center text-center flex flex-col gap-3'>
             <Link to="?view=reset" className='self-center text-primary/60'>I have forgoten my password</Link>
+            <div className='btn flex gap-4 !bg-secondary !text-primary px-[8px]'
+              onClick={() => !loading && handleGoogleAuth()}
+            >
+              <Icon icon='devicon:google' className='p-[1px]' />
+              <span className='flex-1 '>
+                {loading?
+                'Please wait...'
+                :
+                'Sign in with google'}
+              </span>
+            </div>
+
             <div className='flex gap-2 items-center'>
               <p className='text-primary/40'>Dont have an account?</p><Link className='text-theme1 font-bold' to="?view=register">Sign up</Link>
             </div>

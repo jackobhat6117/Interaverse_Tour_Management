@@ -11,11 +11,12 @@ import mergeRecursive from '../../../features/utils/mergeRecursive'
 import { clone } from '../../../features/utils/objClone'
 
 
-function KeyContact({updateProfile,back,next}) {
+function KeyContact({updateProfile,back,next,review}) {
   const {user} = useSelector(state => state.user.userData);
   const userDetails = mergeRecursive(clone(profileSurveyData),user?.detail || {},{createNew: false})
   const [data,setData] = useState({...profileSurveyData,...userDetails});
   const [loading,setLoading] = useState(false);
+  const [edit,setEdit] = useState(false);
 
   async function handleChange() {
     if(updateProfile) {
@@ -27,6 +28,10 @@ function KeyContact({updateProfile,back,next}) {
         next();
     }
   }
+
+  if(review && !edit)
+    return <ReviewDisplay data={user?.detail} review={review} setEdit={setEdit} />
+
 
   return (
     <div className='flex flex-col gap-4 slide'>
@@ -72,5 +77,27 @@ function KeyContact({updateProfile,back,next}) {
     </div>
   )
 }
+
+function ReviewDisplay({data,review}) {
+  const Col = ({name,value}) => (
+    <div className='flex flex-col gap-2'>
+      <p>{name}</p>
+      <b>{value}</b>
+    </div>
+  )
+  return (
+    <div className='relative flex flex-col gap-6 '>
+      <div className='absolute right-0 top-0 px-2'>
+        {review ? review : null}
+      </div>
+      <Col name='First name' value={data?.contact?.firstName} />
+      <Col name='Last name' value={data?.contact?.lastName} />
+      <Col name='Position / Job title' value={data?.contact?.position} />
+      <Col name='Email' value={data?.contact?.email} />
+      <Col name='Phone number' value={data?.contact?.phoneNumber} />
+    </div>
+  )
+}
+
 
 export default memo(KeyContact)

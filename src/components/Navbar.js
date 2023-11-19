@@ -7,12 +7,16 @@ import ProfileStatusCheck from './ProfileSurvey/New/ProfileStatusCheck';
 import { useSelector } from 'react-redux';
 import checkProfileComplete from '../features/profile/checkProfileComplete';
 import WelcomeNavbar from './WelcomeNavbar';
+import GettingStarted from '../pages/Welcome/GettingStarted';
+
 
 function Navbar() {
-  const {user} = useSelector(state => state.user.userData)
+  const {user} = useSelector(state => state.user.userData);
 
   const profileCompleteCheck = checkProfileComplete(user);
   const completed = profileCompleteCheck?.every(obj => obj.complete);
+
+  // enqueueSnackbar('your welcom',{variant: 'success'})
 
   return (
     <div className='flex flex-col min-h-screen '>
@@ -26,7 +30,8 @@ function Navbar() {
           <Outlet />
         ):(
           <WelcomeNavbar>
-            <ProfileStatusCheck data={profileCompleteCheck} />
+            <GettingStarted />
+            {/* <ProfileStatusCheck data={profileCompleteCheck} /> */}
           </WelcomeNavbar>
         )}
       </div>
