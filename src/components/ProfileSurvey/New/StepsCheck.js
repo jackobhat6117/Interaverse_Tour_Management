@@ -24,7 +24,7 @@ export default function StepsCheck({i,obj,complete,link}) {
         </div>
       </div>
       <div className='flex flex-col gap-2 flex-1 text-left min-w-[200px]'>
-        {obj.title}
+        <h6>{obj.title}</h6>
         <p>{obj.description}</p>
       </div>
       <button className="border rounded-md  px-6 bg-theme1/10 text-theme1">Edit</button>

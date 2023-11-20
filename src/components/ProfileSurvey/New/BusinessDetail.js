@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux'
 import mergeRecursive from '../../../features/utils/mergeRecursive'
 import { clone } from '../../../features/utils/objClone'
 import MapAutoComplete from '../../form/MapAutoComplete'
+import { useLocation } from 'react-router-dom'
 
 
 const steps = [
@@ -19,7 +20,7 @@ const CurComp = (props) => {
   return React.cloneElement(props.component || <></>,props)
 }
 
-function BusinessDetail({updateProfile,next,review}) {
+function BusinessDetail({updateProfile,back,next,review}) {
   // const [obj,setObj] = useState({...profileSurveyData,...data})
   const {user} = useSelector(state => state.user.userData);
   const [step,setStep] = useState(user?.detail?.agencyType ? 1 : 0);
@@ -33,8 +34,11 @@ function BusinessDetail({updateProfile,next,review}) {
       // sendProfile(data);
   }
 
-  const stepBack = () => {
-    setStep(step => step > 0 ? step-1 : 0)
+  const stepBack = (edit) => {
+    if(edit)
+      back();
+    else
+      setStep(step => step > 0 ? step-1 : 0)
   }
 
   // function skip() {
@@ -123,6 +127,9 @@ function DetailInfo({next,back,updateProfile}) {
   const userDetails = mergeRecursive(clone(profileSurveyData),user?.detail || {},{createNew: true})
   const [data,setData] = useState({...profileSurveyData,...userDetails});
   const [loading,setLoading] = useState(false);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const edit = searchParams.get('edit')
 
   async function handleSubmit() {
     let {tradingName,address,businessEmail,businessPhone} = data;
@@ -150,10 +157,14 @@ function DetailInfo({next,back,updateProfile}) {
   // console.log(user,data)
   return (
     <div className='flex flex-col gap-4'>
-      <div className='flex flex-col gap-2 pb-2'>
-        <h4 className=''>{user.firstName} {user.lastName}, Welcome to Miles!</h4>
-        <p className=''>Please tell us a little about your travel business to serve you better.</p>
-      </div>
+      {!edit ? 
+        <div className='flex flex-col gap-2 py-4'>
+          <h4 className=''>Hey {user.firstName}, let's get you started!</h4>
+          <p className=''>Please tell us a little about your travel business to serve you better.</p>
+        </div>
+      :
+        <h4 className='py-4'>Edit business detail</h4>
+      }
       <div>
         <TextInput key={'tradeName'} label={'Trading name'} 
           value={data.tradingName || ''}
@@ -181,10 +192,17 @@ function DetailInfo({next,back,updateProfile}) {
           onChange={(ev) => setData({...data,businessEmail: ev.target.value})}
         />
       </div>
-      <div className='flex justify-between gap-4'>
-        <Button1 className='!w-auto' onClick={back} variant='text'>Go back</Button1>
-        <Button1 className='!w-auto' onClick={handleSubmit} loading={loading}>Next</Button1>
-      </div>
+        <div className='flex justify-between gap-4'>
+          <Button1 className='!w-auto' onClick={() => back(edit)} variant='text'>Go back</Button1>
+          <Button1 className='!w-auto' onClick={handleSubmit} loading={loading}>{!edit ? 'Next':'Update'}</Button1>
+        </div>
+      {/* {!edit ? 
+      :null
+        // <div className='flex justify-between gap-4'>
+        //   <Button1 className='!w-auto'>Go back</Button1>
+        //   <Button1 className='!w-auto'>Update</Button1>
+        // </div>
+      } */}
     </div>
   )
 }

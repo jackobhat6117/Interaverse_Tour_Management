@@ -15,6 +15,10 @@
   src: url('./assets/fonts/Helvetica-Neue-Font/Helvetica Neue Medium Extended/Helvetica\ Neue\ Medium\ Extended.otf');
 }
 
+* {
+  border-color: #EEEFF1;
+}
+
 body {
   margin: 0;
   font-family: 'DM Sans';
@@ -46,26 +50,26 @@ code {
   [9:48 AM, 11/20/2023] +234 817 000 0560: <h5></h5>	Bold 1.125rem (18px)
   [9:48 AM, 11/20/2023] +234 817 000 0560: <h6></h6>	Bold 1rem (16px) */
   h1,.h1 {
-    @apply text-4xl sm:text-6xl font-['Rubik'] font-bold leading-[101%];
+    @apply text-4xl sm:text-6xl font-['Rubik'] font-bold leading-[101%] text-[#1C2A4B];
   }
   h2,.h2 {
-    @apply text-3xl sm:text-5xl font-['Rubik'] font-bold leading-[101%];
+    @apply text-3xl sm:text-5xl font-['Rubik'] font-bold leading-[101%] text-[#1C2A4B];
   }
   h3,.h3 {
-    @apply text-xl sm:text-4xl font-['Rubik'] font-bold leading-[101%];
+    @apply text-xl sm:text-4xl font-['Rubik'] font-bold leading-[101%] text-[#1C2A4B];
   }
   h4,.h4 {
-    @apply text-base sm:text-[30px] font-['Rubik'] font-bold leading-[101%];
+    @apply text-base sm:text-[30px] font-['Rubik'] font-bold leading-[101%] text-[#1C2A4B];
   }
   h5,.h5 {
-    @apply text-sm sm:text-xl font-['Rubik'] font-bold leading-[101%];
+    @apply text-sm sm:text-xl font-['Rubik'] font-bold leading-[101%] text-[#1C2A4B];
   }
   h6,.h6 {
-    @apply text-xs sm:text-base font-['Rubik'] font-bold leading-[101%];
+    @apply text-xs sm:text-base font-['Rubik'] font-bold leading-[101%] text-[#1C2A4B];
   }
 
   p {
-    @apply !text-primary/60 font-thin;
+    @apply font-thin text-[#7546D];
   }
 
   .bg-emptypage {
@@ -77,6 +81,10 @@ code {
     background: url('./assets/icons/green\ bubbles.svg') no-repeat;
     background-position: left 0 bottom 0;
     background-size: contain 50%;
+  }
+  .bg-frame {
+    background: url('./assets/images/Frame\ 2609999.svg') no-repeat;
+    background-size: cover;
   }
 
   .btn {

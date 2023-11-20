@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Tab, Tabs } from '@mui/material';
 import Icon from './HOC/Icon';
 import {ReactComponent as LearnIcon} from '../assets/icons/learnMore.svg'
@@ -10,12 +10,20 @@ export default function WelcomeNavbar(props) {
   const navigate = useNavigate();
   const location = useLocation();
   const locations = location.pathname?.split('/');
-  const page = locations[2]||'';
+  let page = locations[2];
+  if(page === '')
+    page = 'welcome';
+  else if(page === undefined || !page) page = '';
   const links = ['','pricing','learn','support']
   
+  console.log(page,locations," 000")
   const [tabIndex,setTabIndex] = useState(
-    links.indexOf(page) || 0
+    links.indexOf(page)
   );
+
+  useEffect(() => {
+    window.scrollTo(0,0)
+  },[location])
 
 
   function handleChange(ev,val) {

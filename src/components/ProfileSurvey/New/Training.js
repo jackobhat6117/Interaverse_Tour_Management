@@ -4,7 +4,7 @@ import { PopupButton, useCalendlyEventListener } from 'react-calendly'
 import { useSelector } from 'react-redux';
 
 
-function Training({updateProfile,back,next}) {
+function Training({updateProfile,back,next,type}) {
   const schedulerRef = useRef();
   const [complete,setComplete] = useState(false);
   const {user} = useSelector(state => state.user.userData)
@@ -19,7 +19,7 @@ function Training({updateProfile,back,next}) {
     }
   })
 
-  return !user?.detail?.haveScheduledTraining ? (
+  return !user?.detail?.haveScheduledTraining || type === 'new' ? (
     <div className='flex flex-col gap-4 slide'>
       <div className='flex flex-col gap-2'>
         <h4 className=''>Schedule a training</h4>

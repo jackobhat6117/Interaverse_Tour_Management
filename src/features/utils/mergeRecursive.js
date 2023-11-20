@@ -17,7 +17,7 @@ export default function mergeRecursive(o1, o2,config) {
         if(!obj1.hasOwnProperty(p))
           throw new Error(`Property '${p}' does not exist in obj1`)
 
-        if(obj1[p] === null || obj1[p] === '')
+        if(obj1[p] === null || obj1[p] === '' || (obj1[p]?.length < 1))
           if(obj2[p] !== null)
           obj1[p] = obj2[p];
 

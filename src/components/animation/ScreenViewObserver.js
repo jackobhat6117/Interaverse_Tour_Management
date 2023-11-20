@@ -18,13 +18,13 @@ const ScreenViewObserver = (props) => {
             // The component is in the viewport
             handleComponentInView();
             setInView(true)
-            console.log('in',entry);
+            // console.log('in',entry);
           } 
           else if(top > 0) {
             setInView(false)
             console.log('out',entry,innerHeight);
             // console.log('in');
-            handleComponentOffView();  
+            // handleComponentOffView();  
           }
         });
       },

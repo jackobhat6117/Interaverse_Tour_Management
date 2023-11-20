@@ -7,6 +7,7 @@ import Button1 from '../../form/Button1'
 import { useSelector } from 'react-redux'
 import mergeRecursive from '../../../features/utils/mergeRecursive'
 import { clone } from '../../../features/utils/objClone'
+import { useLocation } from 'react-router-dom'
 
 
 function LegalEntity({updateProfile,back,next,review}) {
@@ -14,6 +15,10 @@ function LegalEntity({updateProfile,back,next,review}) {
   const userDetails = mergeRecursive(clone(profileSurveyData),user?.detail || {},{createNew: false})
   const [data,setData] = useState({...profileSurveyData,...userDetails});
   const [loading,setLoading] = useState(false);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const qedit = searchParams.get('edit')
+
   const [edit,setEdit] = useState(false);
 
   async function handleChange() {
@@ -32,10 +37,14 @@ function LegalEntity({updateProfile,back,next,review}) {
 
   return user?.detail?.agencyType === 'starterBusiness' ? (
     <div className='flex flex-col gap-4 slide'>
-      <div className='flex flex-col gap-2'>
-        <h4 className=''>Enter your business registration informaiton</h4>
-        <p className=''>As a regulated travel technology company, we would need  your business registration information.</p>
-      </div>
+      {!qedit ? 
+        <div className='flex flex-col gap-2 py-4'>
+          <h4 className=''>Enter your business registration informaiton</h4>
+          <p className=''>As a regulated travel technology company, we would need  your business registration information.</p>
+        </div>
+      :
+        <h4 className='py-4'>Edit business registration information</h4>
+      }
       <div className='flex flex-col flex-wrap gap-4 justify-between self-stretch py-4'>
         <div>
           <TextInput key='regName' label={'Registered business name'}
@@ -62,7 +71,7 @@ function LegalEntity({updateProfile,back,next,review}) {
         </div>
         <div className='flex justify-between gap-4'>
           <Button1 className='!w-auto' onClick={back} variant='text'>Go back</Button1>
-          <Button1 className='!w-auto' onClick={handleChange} loading={loading}>Next</Button1>
+          <Button1 className='!w-auto' onClick={handleChange} loading={loading}>{!qedit ? 'Next': 'Update'}</Button1>
         </div>
       </div>
     </div>

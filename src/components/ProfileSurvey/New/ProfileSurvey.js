@@ -12,7 +12,7 @@ import LegalEntity from './LegalEntity';
 import KeyContact from './KeyContact';
 import { Step, Stepper } from '@mui/material';
 import Icon from '../../HOC/Icon';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import checkProfileComplete from '../../../features/profile/checkProfileComplete';
 import Button1 from '../../form/Button1';
 import verifyBusiness from '../../../controllers/user/verifyBusiness';
@@ -35,9 +35,11 @@ export default function ProfileSurvey() {
   const {enqueueSnackbar} = useSnackbar();
   const [loading,setLoading] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const location = useLocation();
   const query = new URLSearchParams(location.search);
-  const stepq = query.get('step')
+  const stepq = query.get('step');
+  const edit = query.get('edit');
   const completedSteps = checkProfileComplete(user);
   const completed = completedSteps.every(obj => obj.complete);
   const [activated,setActivated] = useState(false);
@@ -91,13 +93,23 @@ export default function ProfileSurvey() {
 
   const stepNext = () => {
     // if(step < steps.length-1 )
+    if(edit) {
+      navigate('/profile?step=5&edit='+edit)
+      setStep(5)
+    }
+    else
       setStep(step => step+1)
     // else 
     //   sendProfile(data);
   }
 
   const stepBack = () => {
-    setStep(step => step > 0 ? step-1 : 0)
+    if(edit) {
+      navigate('/profile?step=5&edit='+edit)
+      setStep(5)
+    }
+    else
+      setStep(step => step > 0 ? step-1 : 0)
   }
 
   // function skip() {
@@ -122,15 +134,17 @@ export default function ProfileSurvey() {
       </div>
       <div className='overflow-y-auto max-h-full flex-1 max-w-full'>
         <div className='flex flex-col items-center justify-center flex-1 p-4 max-w-full'>
-          <Link to='/welcome/' className='flex items-center justify-end gap-1 w-[600px] my-2 py-2 text-gray-500 font-bold'><Icon icon='lucide:home' className='!h-4' /> Home</Link>
+          <Link to='/welcome/' className='flex items-center justify-end gap-1 w-full px-6 my-2 py-2 text-gray-500 font-bold'><Icon icon='lucide:home' className='!h-4' /> Home</Link>
           {!completed || step < steps.length ? 
             <div className='flex flex-col gap-5 w-[600px] min-h-[85%] max-w-full'>
-              <div>
-                <ProfileStepperNav activeStep={step} steps={steps} setStep={setStep} />
-              </div>
+              {!edit ? 
+                <div>
+                  <ProfileStepperNav activeStep={step} steps={steps} setStep={setStep} />
+                </div>
+              :null}
 
               <div className='flex-1 flex flex-col justify-center'>
-                <CurComp data={data} setData={setData} key={'editor'} user={user} 
+                <CurComp data={data} setData={setData} key={'editor'} user={user}
                   component={steps[step]?.elem} 
                   updateProfile={sendProfile}
                   back={stepBack} next={stepNext} loading={loading} />
@@ -147,13 +161,22 @@ export default function ProfileSurvey() {
 
 function ReviewBusinessProfile({userId,setStep,activate}) {
   const [loading,setLoading] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const edit = searchParams.get('edit');
   const {enqueueSnackbar} = useSnackbar();
+  const dispatch = useDispatch();
 
+  function handleContinue() {
+    navigate('/profile?step=5&edit='+(Number(edit)+1))
+  }
   async function activateBusiness() {
     setLoading(true);
-    const res = await activateAccount(userId);
+    const res = await updateProfile({requestedVerification: true});
     if(res.return) {
       activate && activate()
+      dispatch(setUser(res?.data))
     } else enqueueSnackbar('Failed requesting activation. Please contact support',{variant: 'error'})
     setLoading(false);
   }
@@ -167,27 +190,52 @@ function ReviewBusinessProfile({userId,setStep,activate}) {
         <img src={logo} alt='Miles' className='h-[35px] object-contain' />
         <img src={textlogo} alt='Miles' className='h-[35px]' />
       </div>
-      <div className='p-4 bg-primary/10'>
-        Business Detail
-      </div>
-      <div>
-        <BusinessDetail review={<EditDetail n={0} />} />
-      </div>
-      <div className='p-4 bg-primary/10'>
-        Legal Entity
-      </div>
-      <div>
-        <LegalEntity review={<EditDetail n={1} />} />
-      </div>
-      <div className='p-4 bg-primary/10'>
-        Key Contact
-      </div>
-      <div>
-        <KeyContact review={<EditDetail n={2} />} />
-      </div>
-      <div>
-        <Button1 onClick={activateBusiness} loading={loading}>Activate my business</Button1>
-      </div>
+      {
+        !edit || (Number(edit) === 1 || Number(edit) > 3) ? 
+          <div className='flex flex-col gap-5'>
+            <div className='p-4 bg-primary/10'>
+              Business Detail
+            </div>
+            <div>
+              <BusinessDetail review={<EditDetail n={0} />} />
+            </div>
+          </div>
+        :null
+      }
+      {
+        !edit || (Number(edit) === 2 || Number(edit) > 3) ?  
+          <div className='flex flex-col gap-5'>
+            <div className='p-4 bg-primary/10'>
+              Legal Entity
+            </div>
+            <div>
+              <LegalEntity review={<EditDetail n={1} />} />
+            </div>
+          </div>
+        :null
+      }
+      {
+        !edit || (Number(edit) === 3 || Number(edit) > 3) ?  
+          <div className='flex flex-col gap-5'>
+            <div className='p-4 bg-primary/10'>
+              Key Contact
+            </div>
+            <div>
+              <KeyContact review={<EditDetail n={2} />} />
+            </div>
+          </div>
+        :null
+      }
+
+      {edit && Number(edit) <= 3 ? 
+        <div>
+          <Button1 onClick={() => handleContinue()}>Continue</Button1>
+        </div>
+      :
+        <div>
+          <Button1 onClick={activateBusiness} loading={loading}>{!edit ? 'Submit for review': 'Resubmit for review'}</Button1>
+        </div>
+      }
     </div>
   )
 }
@@ -210,12 +258,12 @@ function Congradulations() {
         </div>
       :
         <div className='flex flex-1 flex-col items-center justify-center text-center w-full gap-10 p-4'>
-          <h2>Congradulations</h2>
+          <h4>We have received your activation request</h4>
           <div className='flex flex-col items-center gap-4'>
-            <h4 className='max-w-[500px]'>Your business has been registered with us</h4>
-            <div className='max-w-[700px]'>
+            {/* <h4 className='max-w-[500px]'>Your business has been registered with us</h4> */}
+            <div className='max-w-[500px]'>
               <p>
-                Our team will process your account activation and setup your selling platform. 
+                Our team will process your request and setup your selling platform. 
               </p>
               <p>
                 Once your platform is ready, we will notify you via email.
@@ -240,16 +288,16 @@ function ProfileStepperNav({activeStep,steps,setStep}) {
     </div>
   )
   return (
-    <div className='p-4 bg-primary/[5%] rounded-md max-w-full overflow-x-auto'>
+    <div className='p-4 bg-[#eef4fd] rounded-md max-w-full overflow-x-auto'>
       <Stepper activeStep={activeStep} connector={<CustomConnector />}>
         {steps.map((obj,i) => {
           return (
             <Step key={i} onClick={() => setStep(i)}>
               <div className='flex flex-col gap-1 items-center justify-between cursor-pointer'>
-                <div className={`flex justify-center  items-center p-2 w-7 h-7 rounded-full text-secondary ${activeStep === i ? 'bg-theme1':'bg-primary/20'}`}>{i+1}</div>
-                <b className={`cursor-pointer text-center flex-1 ${activeStep === i ? 'text-theme1':'text-primary/50'}`}>
+                <div className={`flex justify-center  items-center p-2 w-7 h-7 rounded-full text-secondary ${activeStep === i ? 'bg-theme1':'bg-primary/40'}`}>{i+1}</div>
+                <span className={`cursor-pointer text-center flex-1 ${activeStep === i ? 'text-theme1':'text-primary/50'}`}>
                   {obj.label}
-                </b>
+                </span>
               </div>
             </Step>
           )
