@@ -25,7 +25,10 @@ export default function VerifyEmail() {
   const [verified,setVerified] = useState(false);
 
   async function handleSubmit(ev) {
-    ev.preventDefault();
+    ev?.preventDefault();
+    ev?.stopPropagation();
+    if(loading)
+      return false;
 
     setLoading(true);
     const res = await verifyEmail((new URLSearchParams(data)).toString());
@@ -66,9 +69,9 @@ export default function VerifyEmail() {
             <MailSent className={'!h-[80px]'} />
             <h4 className=' text-center'>Verify your email address</h4>
             <p className='text-center text-primary/70 pb-4'>
-              A verification code has been sent to your email
+              Please enter the verification code sent to your email
               <b className='block font-bold'>{email}.</b>
-              Please enter the code to verify your account
+              {/* Please enter the code to verify your account */}
               {/* The code we send is only valid for 24 hours,<br /> click the RESEND button below to get a new code. */}
             </p>
 
@@ -80,10 +83,11 @@ export default function VerifyEmail() {
             }
             <OTPInput required label={'OTP'}
               value={data.otp}
-              onChange={(val) => setData({...data,otp: val})}
+              onChange={(val) => {setData({...data,otp: val})}}
+              callback={() => handleSubmit()}
             />
             <Button1 loading={loading} type='submit' label={'Verify'}></Button1>
-            <div className='flex gap-2 justify-center items-center -my-3'>
+            <div className='flex gap-2 justify-center items-center -my-3 pt-4'>
               <p>Did not get any email? </p>
               <div>
                 <Button1 loading={loading} label={'Resend'} onClick={resSubmit} variant='text'></Button1>

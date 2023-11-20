@@ -10,10 +10,14 @@
   font-family: 'BRFirmaBold';
   src: url('./assets/fonts/BR\ Firma\ Font\ Family/BRFirma-Bold.ttf');
 }
+@font-face {
+  font-family: 'Helvetica_Neue';
+  src: url('./assets/fonts/Helvetica-Neue-Font/Helvetica Neue Medium Extended/Helvetica\ Neue\ Medium\ Extended.otf');
+}
 
 body {
   margin: 0;
-  font-family: 'BRFirma';
+  font-family: 'DM Sans';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   @apply light-bg;
@@ -35,23 +39,29 @@ code {
   }
 
 
+  /* [9:47 AM, 11/20/2023] +234 817 000 0560: <h1></h1>	Bold 2.125rem (34px)
+  [9:47 AM, 11/20/2023] +234 817 000 0560: <h2></h2>	Bold 1.875rem (30px)
+  [9:47 AM, 11/20/2023] +234 817 000 0560: <h3></h3>	Bold 1.5rem (24px)
+  [9:47 AM, 11/20/2023] +234 817 000 0560: <h4></h4>	Bold 1.25rem (20px)
+  [9:48 AM, 11/20/2023] +234 817 000 0560: <h5></h5>	Bold 1.125rem (18px)
+  [9:48 AM, 11/20/2023] +234 817 000 0560: <h6></h6>	Bold 1rem (16px) */
   h1,.h1 {
-    @apply text-4xl sm:text-6xl font-['BRFirmaBold'];
+    @apply text-4xl sm:text-6xl font-['Rubik'] font-bold leading-[101%];
   }
   h2,.h2 {
-    @apply text-3xl sm:text-5xl font-['BRFirmaBold'];
+    @apply text-3xl sm:text-5xl font-['Rubik'] font-bold leading-[101%];
   }
   h3,.h3 {
-    @apply text-xl sm:text-4xl font-['BRFirmaBold'];
+    @apply text-xl sm:text-4xl font-['Rubik'] font-bold leading-[101%];
   }
   h4,.h4 {
-    @apply text-base sm:text-2xl font-['BRFirmaBold'];
+    @apply text-base sm:text-[30px] font-['Rubik'] font-bold leading-[101%];
   }
   h5,.h5 {
-    @apply text-sm sm:text-xl font-['BRFirmaBold'];
+    @apply text-sm sm:text-xl font-['Rubik'] font-bold leading-[101%];
   }
   h6,.h6 {
-    @apply text-xs sm:text-base font-['BRFirmaBold'];
+    @apply text-xs sm:text-base font-['Rubik'] font-bold leading-[101%];
   }
 
   p {
@@ -62,6 +72,11 @@ code {
     background: url('./assets/images/cancelled-ticket\ 1.png') no-repeat;
     background-position: right -10% bottom 0;
     background-size: contain;
+  }
+  .bg-bubble {
+    background: url('./assets/icons/green\ bubbles.svg') no-repeat;
+    background-position: left 0 bottom 0;
+    background-size: contain 50%;
   }
 
   .btn {

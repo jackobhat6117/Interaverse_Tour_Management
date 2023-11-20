@@ -162,7 +162,8 @@ function DetailInfo({next,back,updateProfile}) {
       </div>
       <div>
         <MapAutoComplete handleReturn={handleLocation}>
-          <TextInput key='regName' label={'Business Address'} placeholder={data?.address?.businessLocation || 'e.g 14b wole ariyo street, Lekki, Lagos'}
+          <TextInput key='regName' label={'Business Address'} 
+            placeholder={data?.address?.businessLocation || 'e.g 14b wole ariyo street, Lekki, Lagos'}
             // value={data?.address?.location[0] || ''}
             // onChange={(ev) => setData({...data,address:{location: [Number(ev.target.value),Number(ev.target.value)]}})}
             />

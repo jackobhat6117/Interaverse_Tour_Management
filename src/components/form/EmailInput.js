@@ -26,7 +26,7 @@ export default function EmailInput(props) {
         label={<div className='font-bold inline' >
             Your email Address
         </div>}
-        placeholder={'e.g. xyzabc@gmail.com'}
+        placeholder={'e.g. youremail@email.com'}
         InputLabelProps={{
           shrink: true,
         }}

@@ -15,14 +15,19 @@ export default function StepsCheck({i,obj,complete,link}) {
       onScreenViewCallBack={() => setAnimStyle('slide')}
       offScreenViewCallBack={() => setAnimStyle('invisible')}
     >
-      <div className='bg-primary/[5%] rounded-md p-4 hidden sm:flex items-center justify-center'>{i+1}</div>
+      <div 
+        // className='bg-primary/[5%] rounded-md p-4 hidden sm:flex items-center justify-center'
+        >
+        {/* {i+1} */}
+        <div className='w-10 h-10 flex justify-center items-center rounded-full bg-primary/10'>
+          <Icon icon='game-icons:check-mark' className={`${complete?'text-green-600':'text-primary/20'}`} />
+        </div>
+      </div>
       <div className='flex flex-col gap-2 flex-1 text-left min-w-[200px]'>
         {obj.title}
         <p>{obj.description}</p>
       </div>
-      <div className='w-10 h-10 flex justify-center items-center rounded-full bg-primary/10'>
-        <Icon icon='game-icons:check-mark' className={`${complete?'text-theme1':'text-primary/20'}`} />
-      </div>
+      <button className="border rounded-md  px-6 bg-theme1/10 text-theme1">Edit</button>
     </ScreenViewObserver>
   )
 }

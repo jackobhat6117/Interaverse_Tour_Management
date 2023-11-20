@@ -4,7 +4,7 @@ import logo from '../../assets/icons/logo.png'
 import EmailInput from '../form/EmailInput'
 import PasswordInput from '../form/PasswordInput'
 import Button1 from '../form/Button1'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import { loginReqData } from '../../data/user/Auth/loginReq'
 import login from '../../controllers/Auth/login'
@@ -18,6 +18,7 @@ export default function Login() {
   const [loading,setLoading] = useState(false);
   const {enqueueSnackbar} = useSnackbar();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   async function handleSubmit(ev) {
     ev.preventDefault();
@@ -32,7 +33,11 @@ export default function Login() {
         accessToken: res?.data?.token,
         user: res?.data?.account
       }))
-    } else enqueueSnackbar(res?.msg || 'Invalid Credentials.', {variant: 'error'})
+    } else {
+      enqueueSnackbar(res?.msg || 'Invalid Credentials.', {variant: 'error'})
+      if(res?.msg === 'Account not active')
+        navigate('/?view=verify&email='+data.email)
+    }
   }
 
   async function handleGoogleAuth() {
@@ -48,24 +53,27 @@ export default function Login() {
         <img src={textlogo} alt='Miles' className='h-[35px]' />
       </div>
       <form onSubmit={handleSubmit} className='w-full flex flex-col items-center justify-center flex-1'>
-        <div className='card bg-[#00000007] flex flex-col gap-5'>
-          <h3 className='pb-4'>Sign in to your account</h3>
+        <div className='card flex flex-col gap-5 text-center'>
+          <h4 className='pb-4'>Sign in to your account</h4>
           <EmailInput required
+            className='!w-full sm:!w-[400px] max-w-full'
             value={data.email}
+            placeholder=""
             onChange={(ev) => setData({...data,email: ev.target.value})}
           />
-          <PasswordInput required
+          <PasswordInput required noValidation placeholder=''
+            className='!w-full sm:!w-[400px] max-w-full'
             value={data.password}
             onChange={(ev) => setData({...data,password: ev.target.value})}
           />
           <Button1 loading={loading} type='submit' label={'Login'}></Button1>
-          <div className='self-center text-center flex flex-col gap-3'>
-            <Link to="?view=reset" className='self-center text-primary/60'>I have forgoten my password</Link>
-            <div className='btn flex gap-4 !bg-secondary !text-primary px-[8px]'
+          <div className='self-center text-center flex flex-col gap-1 '>
+            <Link to="?view=reset" className='self-center text-primary/60'>Forgot your password? <span className='text-theme1'>Recover now</span></Link>
+            <div className='btn flex gap-4 !bg-transparent border-none !justify-center !text-primary px-[8px]'
               onClick={() => !loading && handleGoogleAuth()}
             >
               <Icon icon='devicon:google' className='p-[1px]' />
-              <span className='flex-1 '>
+              <span className=''>
                 {loading?
                 'Please wait...'
                 :
@@ -73,7 +81,7 @@ export default function Login() {
               </span>
             </div>
 
-            <div className='flex gap-2 items-center'>
+            <div className='flex gap-2 items-center justify-center'>
               <p className='text-primary/40'>Dont have an account?</p><Link className='text-theme1 font-bold' to="?view=register">Sign up</Link>
             </div>
           </div>

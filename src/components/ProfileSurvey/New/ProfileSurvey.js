@@ -121,8 +121,9 @@ export default function ProfileSurvey() {
         </div>
       </div>
       <div className='overflow-y-auto max-h-full flex-1 max-w-full'>
-        <div className='flex items-center justify-center flex-1 p-4 max-w-full'>
-          {!completed && step < steps.length ? 
+        <div className='flex flex-col items-center justify-center flex-1 p-4 max-w-full'>
+          <Link to='/welcome/' className='flex items-center justify-end gap-1 w-[600px] my-2 py-2 text-gray-500 font-bold'><Icon icon='lucide:home' className='!h-4' /> Home</Link>
+          {!completed || step < steps.length ? 
             <div className='flex flex-col gap-5 w-[600px] min-h-[85%] max-w-full'>
               <div>
                 <ProfileStepperNav activeStep={step} steps={steps} setStep={setStep} />

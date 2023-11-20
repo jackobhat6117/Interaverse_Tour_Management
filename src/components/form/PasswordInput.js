@@ -5,7 +5,7 @@ import TextInput from './TextInput';
 
 
 export default function PasswordInput(props) {
-  const {label,className,value:defValue,onChange,show,...restProps} = props;
+  const {label,className,noValidation,value:defValue,onChange,show,...restProps} = props;
   const [showPassword, setShowPassword] = useState(show || false);
   const validationPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   const [error,setError] = useState('');
@@ -13,7 +13,7 @@ export default function PasswordInput(props) {
   const [value,setValue] = useState(defValue || '');
   function handleChange(ev) {
     let val = ev.target.value;
-    if(val !== '' && !validationPattern.test(val))
+    if(!noValidation && val !== '' && !validationPattern.test(val))
       setError('Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be 8 characters or longer')
     else setError('')
 
@@ -31,7 +31,7 @@ export default function PasswordInput(props) {
         }
         value={value}
         onChange={handleChange}
-        placeholder={'e.g. PassW07d!!'}
+        placeholder={'e.g. !@Password1122'}
         InputLabelProps={{
           shrink: true,
         }}

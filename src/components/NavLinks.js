@@ -3,6 +3,7 @@ import { Tab, Tabs } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Icon from "./HOC/Icon";
+import { useSelector } from "react-redux";
 
 
 // const returnPage = (link) => link === 0 ? ''  
@@ -16,11 +17,14 @@ import Icon from "./HOC/Icon";
 // 0
 
 export default function NavLinks({profileCompleted}) {
+  const {user} = useSelector(state => state.user.userData);
   const location = useLocation();
   const locations = location.pathname?.split('/');
   const page = locations[1]||'';
   const navigate = useNavigate();
   const [link,setLink] = useState(0)
+  const verified = user?.detail?.isVerified;
+
   // const [initialPage,setInitialPage] = useState(link);
 
 
@@ -52,7 +56,7 @@ export default function NavLinks({profileCompleted}) {
   }
   console.log(page)
 
-  return profileCompleted ? (
+  return profileCompleted && verified ? (
     <div className="">
       <Tabs variant="scrollable" value={link} onChange={handleLink} className="font-bold" 
         TabIndicatorProps={{sx: {height: '4px'}}}>

@@ -15,6 +15,7 @@ function Navbar() {
 
   const profileCompleteCheck = checkProfileComplete(user);
   const completed = profileCompleteCheck?.every(obj => obj.complete);
+  const verified = user?.detail?.isVerified;
 
   // enqueueSnackbar('your welcom',{variant: 'success'})
 
@@ -26,7 +27,7 @@ function Navbar() {
       </div>
       {/* <ProfileSurvey /> */}
       <div className='bg-secondary flex flex-col h-full flex-1'>
-        {completed ? (
+        {completed && verified ? (
           <Outlet />
         ):(
           <WelcomeNavbar>

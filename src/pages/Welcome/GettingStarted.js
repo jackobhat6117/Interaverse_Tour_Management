@@ -31,14 +31,14 @@ export default function GettingStarted() {
       active: user?.detail?.isProfileComplete,
       render: () => (
         <Button1 onClick={() => navigate('/welcome/')} 
-          className={`${user?.detail?.isProfileComplete ? '!bg-primary/60':''}`}
-        >{user?.detail?.isProfileComplete ? 'Update business' : 'Activate business'}</Button1>
+          className={`${user?.detail?.requestVerification ? '!bg-primary/60':''}`}
+        >{user?.detail?.requestVerification ? 'Update business' : 'Activate business'}</Button1>
       )
     },
     {title: 'Schedule training',description: 'Learn what you can do with our platform  and APIs.',
       link: '/welcome',
       icon: <ScheduleIcon />,
-      active: user?.detail?.haveScheduledTraining,
+      active: user?.detail?.requestVerification,
     },
     {title: 'Start free trial',description: 'Start your 30-days free trial with all features enabled.',
       link: '/welcome',

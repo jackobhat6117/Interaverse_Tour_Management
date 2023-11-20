@@ -1,5 +1,5 @@
 import React from 'react'
-import rocket from '../../../assets/images/launching-a-rocket-over-gear.png'
+import rocket from '../../../assets/images/launching-a-rocket-over-gear.svg'
 import Icon from '../../HOC/Icon'
 import { useSelector } from 'react-redux'
 import Button1 from '../../form/Button1'
@@ -7,6 +7,7 @@ import Card from '../../DIsplay/Card'
 import StepsCheck from './StepsCheck'
 import checkProfileComplete from '../../../features/profile/checkProfileComplete'
 import { useNavigate } from 'react-router-dom'
+import success from '../../../assets/icons/success.svg'
 
 export default function ProfileStatusCheck() {
   const {user} = useSelector(state => state.user.userData)  
@@ -39,20 +40,33 @@ export default function ProfileStatusCheck() {
   return (
     <div className='flex flex-col gap-10 pd-md'>
       <div className='flex flex-wrap md:flex-nowrap gap-6 items-end justify-between w-full'>
-        <div className='flex flex-col justify-between gap-4'>
-          <h4 className='w-full py-4 text-start slide-out duration-600'>
+        <div className='flex w-1/2 flex-col justify-between self-start gap-4 '>
+          <h4 className='w-full py-4 text-start slide-out duration-600 '>
             Welcome back, {user.firstName} {user.lastName}
           </h4>
-          <img src={rocket} alt='rocket' className='z-10 translate-y-[120px] hidden md:block' />
+          <div className=' flex justify-center max-h-[400px] relative'>
+            <img src={rocket} alt='rocket' className='z-10 h-[550px] xtranslate-y-[120px]  hidden md:block' />
+          </div>
         </div>
-        <div className='flex flex-col gap-4 max-w-[800px] text-start'>
+        <div className='flex flex-col gap-4 max-w-[800px] text-start overflow-x-clip'>
+          {complete ? 
+            <div className='border flex gap-3 rounded-md bg-theme1/20'>
+              <div className='w-[100px] flex-0 bg-bubble rounded-md'>
+                <img src={success} alt='' className='px-5 -translate-y-1/2' />
+              </div>
+              <div className='flex-1 flex flex-col gap-4 p-4'>
+                <h4 className=''>Under Review</h4>
+                <small>We're reviewing your business activation request! Please expect feedback at your email address within 24 hours.</small>
+              </div>
+            </div>
+          :null}
           <h5 className='py-4'>Activate business on Intraverse</h5>
           {list.map((obj,i) => (
             <StepsCheck i={i} key={i} obj={obj} complete={obj.complete} link={'/profile?step='+(i+1)} />
           ))}
         </div>
       </div>
-      <div className='bg-black rounded-md relative '>
+      <div className='bg-black rounded-md relative'>
         <div className='bg-theme1/50 p-4 rounded-md flex justify-end'>
           <img src={rocket} alt='rocket' className='bottom-[0%] left-2 h-[100px] absolute md:hidden' />
           <div>

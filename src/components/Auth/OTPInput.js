@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { clone } from '../../features/utils/objClone';
 
 export default function OTPInput(props) {
-  const {n=6,onChange,...restProps} = props;
+  const {n=6,onChange,callback,...restProps} = props;
   const [value,setValue] = useState([...Array(n)]);
   const inputRefs = useRef([...Array(n)])
 
@@ -32,6 +32,9 @@ export default function OTPInput(props) {
 
       setValue(temp);
     } 
+
+    if(value?.every(val => val && val !==''))
+      callback && callback(value.join(''))
   }
   return (
     <div className='flex gap-2 w-full max-w-[400px]'>
