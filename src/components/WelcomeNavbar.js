@@ -14,6 +14,7 @@ export default function WelcomeNavbar(props) {
   if(page === '')
     page = 'welcome';
   else if(page === undefined || !page) page = '';
+  
   const links = ['','pricing','learn','support']
   
   console.log(page,locations," 000")

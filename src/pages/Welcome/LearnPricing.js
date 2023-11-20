@@ -4,6 +4,7 @@ import Button1 from '../../components/form/Button1'
 import Icon from '../../components/HOC/Icon'
 import { formatMoney } from '../../features/utils/formatMoney'
 import ScreenViewObserver from '../../components/animation/ScreenViewObserver'
+import { def } from '../../config'
 
 
 const prices = [
@@ -39,8 +40,11 @@ export default function LearnPricing() {
 
         <div className='flex flex-col gap-6 items-center'>
           <div className='flex flex-col gap-5 py-10 my-10 text-center items-center animate-fade-in'>
-            <h1 className='font-black slide-down'>Pay for what matters</h1>
-            <p className='max-w-[600px] text-lg'>Create your ideal travel itinerary by selecting and paying for the specific services and features that suit your preferences.</p>
+            <h1 className='font-black slide-down'>Explore our plans</h1>
+            <p className='max-w-[600px] text-lg'>
+              Discover the best pricing plan for your travel business. All plans include our  selling platform, 
+              Booking  Management Dashboard, Order confirmations, Automatic Ticketing and Email Messaging features.
+            </p>
           </div>
 
           <div className='flex gap-4 sm:w-[500px] w-full max-w-full justify-center flex-wrap'>
@@ -105,11 +109,14 @@ function PricePlanCard({obj}) {
     <div className={`border-t-8 flex flex-col border snap-center min-w-[300px]`} style={{borderColor: obj.color}}>
       <div className='p-3 flex flex-col gap-2'>
         <h4>{obj.title}</h4>
-        <p>{obj.description}</p>
+        <p className='min-h-[5rem]'>{obj.description}</p>
       </div>
       <div className={`flex flex-col gap-2 p-3 text-primary/50`}  style={{backgroundColor: obj.color+"44"}}>
         Fee
-        <h3>{obj.fee}</h3>
+        <div className='flex gap-2 items-end'>
+          <h3>{obj.fee}</h3>
+          / Month
+        </div>
       </div>
       <div className='flex flex-col gap-4 flex-1 p-3'>
         <b>Key Features</b>
@@ -217,23 +224,19 @@ const PriceBreakdown = React.memo(({obj}) => {
   return JSON.stringify(p) === JSON.stringify(n)})
 
 const pricePlans = [
-  {title: 'Pay as you go',description: 'APIs to components - everything you need to build your travel experience.',
-    fee: 'Zero Upfront',
-    features: ['Start selling instantly','No upfront payment','Email based technical support'],
+  {title: 'Starter',description: 'APIs to components - everything you need to build your travel experience.',
+    fee: def.currency+'0',
+    features: ['Start selling instantly','Earn airline commissions','Issue tickets with our authority','Issue tickets with our authority','Change name, date and re-issue ','No upfront payment','$3 ticketing fee','$2 Ancillaries fee'],
     color: '#2DA771',
     footer: <Button1>Start your 30 day free trial</Button1>},
-  {title: 'Pay as you go',description: 'APIs to components - everything you need to build your travel experience.',
-    fee: 'Zero Upfront',
-    features: ['Start selling instantly','No upfront payment','Email based technical support'],
+  {title: 'Growth',description: 'APIs to components - everything you need to build your travel experience.',
+    fee: def.currency+' 50,000',
+    features: ['All starter features','Use own PCC / Office ID','Use your own IATA accreditation','Accept payment directly','Get your own selling website','$500 one-time setup fee applies*'],
     color: '#1E61DC',
     footer: <Button1>Start your 30 day free trial</Button1>},
-  {title: 'Contact us',description: 'APIs to components - everything you need to build your travel experience.',
+  {title: 'Enterprise',description: 'Get a full custom implementation done by our dedicate team.',
     fee: 'Contact us',
-    features: ['Eerything in pay as you go plan','Enterprice level pricing','Volume discount',
-      'Tailored monetisation strategy support',
-      'Dedicated technical support',
-      'Use your own IATA accreditation'
-    ],
+    features: ['Eerything in pay as you go plan','Enterprice level pricing','Volume discount','Tailored monetisation strategy support','Dedicated technical support','Use your own IATA accreditation'],
     color: '#6A59D1',
     footer: <Button1>Contact our sales team</Button1>},
 ]

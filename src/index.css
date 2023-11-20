@@ -69,7 +69,7 @@ code {
   }
 
   p {
-    @apply font-thin text-[#7546D];
+    @apply font-thin !text-[#7546D];
   }
 
   .bg-emptypage {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SearchInput from '../../components/form/SearchInput'
 import Card from '../../components/DIsplay/Card'
 import Icon from '../../components/HOC/Icon'
@@ -6,11 +6,28 @@ import Button1 from '../../components/form/Button1'
 import socialMediaIcon from '../../assets/icons/socialMediaMobile.png'
 import Collapsible from '../../components/DIsplay/Collapsible'
 import ScreenViewObserver from '../../components/animation/ScreenViewObserver'
+import getFAQs from '../../controllers/FAQ/getFAQs'
+import { Link } from 'react-router-dom'
 
 
 export default function LearnSupport() {
   const [animStyle,setAnimStyle] = useState({header: 'invisible'})
   const [openedQ,setOpenedQ] = useState();
+  const [FAQloading,setFAQLoading] = useState(false);
+  const [questions,setQuestions] = useState([])
+
+  useEffect(() => {
+    loadFAQS();
+  },[])
+
+  async function loadFAQS() {
+    setFAQLoading(true);
+    const res = await getFAQs();
+    if(res.return) {
+      setQuestions(res.data?.data?.data || [])
+    } 
+    setFAQLoading(false); 
+  }
 
   return (
     <div>
@@ -48,18 +65,27 @@ export default function LearnSupport() {
 
           <div className='flex flex-col gap-4'>
             <h4 className='py-2'>Frequently asked questions</h4>
+            {FAQloading ? 
+              <div className='border-theme1 flex justify-center'>
+                <div className='load'></div>
+              </div>
+            : !questions.length ? 
+              <div className='flex justify-center'>
+                No questions
+              </div>
+            :null}
             {questions.map((obj,i) => (
               <div className='flex flex-wrap gap-4 p-4 rounded-md border items-center cursor-pointer' key={i}>
                 <Collapsible value={openedQ === i} callback={(opened) => opened && setOpenedQ(i)}
                   header={
                     <div className='flex gap-4'>
                       <div className='bg-primary/[5%] rounded-md p-4 hidden sm:flex items-center justify-center'>{i+1}</div>
-                      <div className='flex flex-col gap-2 flex-1 text-left min-w-[200px]'>
-                        {obj.title}
+                      <div className='flex flex-col justify-center gap-2 flex-1 text-left min-w-[200px]'>
+                        {obj.question}
                       </div>
                     </div>
                   }>
-                  <p className='py-4'>{obj.description}</p>
+                  <p className='py-4 sm:pl-[53px] pr-[30px] leading-[1.7rem]'>{obj.answer}</p>
                 </Collapsible>
               </div>
             ))}
@@ -104,10 +130,10 @@ const cards = [
     icon: <div className='min-h-[50px]'><img alt='' src={socialMediaIcon} className='w-10 h-10' /></div>,title: 'Social Media',
     description: 'Need help with a purchase, or just want to chat with a friendly representative, our live chat is here to provide instant support.',
     footer: <div className='flex gap-3 justify-between text-primary/50'>
-      <div className='bg-primary/[5%] rounded-md p-3'><Icon icon='mdi:instagram' /></div>
-      <div className='bg-primary/[5%] rounded-md p-3'><Icon icon='mdi:facebook' /></div>
-      <div className='bg-primary/[5%] rounded-md p-3'><Icon icon='mdi:twitter' /></div>
-      <div className='bg-primary/[5%] rounded-md p-3'><Icon icon='mdi:linkedin' /></div>
+      <Link to='https://instagram.com/IntraverseHQ' className='bg-primary/[5%] rounded-md p-3'><Icon icon='mdi:instagram' /></Link>
+      <Link to='https://facebook.com/IntraverseHQ' className='bg-primary/[5%] rounded-md p-3'><Icon icon='mdi:facebook' /></Link>
+      <Link to='https://twitter.com/IntraverseHQ' className='bg-primary/[5%] rounded-md p-3'><Icon icon='fa6-brands:square-x-twitter' /></Link>
+      <Link to='https://linkedin/IntraverseHQ' className='bg-primary/[5%] rounded-md p-3'><Icon icon='mdi:linkedin' /></Link>
     </div>
   },
 ]
