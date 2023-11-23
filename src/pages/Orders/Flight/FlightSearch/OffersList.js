@@ -22,6 +22,8 @@ import Modal1 from '../../../../components/DIsplay/Modal/Modal1';
 import FlightSearch from '../../../../components/flight/FlightSearch';
 import Paginate from '../../../../components/DIsplay/Paginate';
 import Button1 from '../../../../components/form/Button1';
+import getFlightOffers from '../../../../controllers/Flight/getFlightOffers';
+import convertFlightObject, { newFlightObj } from '../../../../features/utils/flightOfferObj';
 // import getCalendarSearch from '../../../controllers/search/getCalendarSearch';
 
 
@@ -73,6 +75,16 @@ export default function OffersList() {
   
   const dispatch = useDispatch();
 
+
+  useEffect(() => {
+    let path = [];
+    for(let i = 0;i<=qIndex||0;i++) {
+      path.push(searchObj?.destinations[i])
+    }
+    setSearchPath(path)
+    //eslint-disable-next-line
+  },[qIndex])
+
   const fetchData = useCallback(async (req) => {
     if(!q && !test) return {return: false};
     let obj = req || clone(JSON.parse(decrypt(q)));
@@ -83,7 +95,10 @@ export default function OffersList() {
     // let userId = null;
     // if(bookingData.as)
     //   userId = bookingData.as.id;
-
+    await getFlightOffers(obj);
+    // const oldObj = convertFlightObject(newFlightObj)
+    // console.log(oldObj)
+    
     if(test) {
       const {success,data,...cat} = offerResponseSample;
       console.log('searching: ',obj)
@@ -91,20 +106,10 @@ export default function OffersList() {
       return {return: 1,msg: "Successfull",data,cat};
     }
     
-    // return await getFlightOffers(obj,userId);
     return {return: 1,data: [{},{}],msg: 'success'}
     //eslint-disable-next-line
   },[q,qIndex,bookingData])
 
-
-  useEffect(() => {
-    let path = [];
-    for(let i = 0;i<=qIndex||0;i++) {
-      path.push(searchObj?.destinations[i])
-    }
-    setSearchPath(path)
-    //eslint-disable-next-line
-  },[qIndex])
 
   const handleSetCat = useCallback((cat) => {
     if(q || test)
@@ -454,7 +459,7 @@ function FlightOfferSort({cat,getCatInfo,sortByCat}) {
                   <h6>{splitCapitals(obj[0])}</h6>
                   <div className='flex gap-1 relative items-center'>
                     <span>{catInfo && def.currency}{catInfo.amount}</span>
-                    <div className='-translate-y-[1px] px-1 '>|</div>
+                    <div className='-translate-y-[1px] px-1 '>{catInfo.time ? '|' : ''}</div>
                     <div>{catInfo.time}</div>
                   </div>
                 </div>

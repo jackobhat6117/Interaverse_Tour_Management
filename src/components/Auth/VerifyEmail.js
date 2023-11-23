@@ -36,7 +36,8 @@ export default function VerifyEmail() {
     if(res.return) {
       setVerified(true);
       // enqueueSnackbar('Welcome, your email has been verified.',{variant: 'success'});
-      let {token: accessToken,account: user} = res.data;
+      // console.log(res?.data)
+      let {token: accessToken,account: user} = res.data?.data;
       dispatch(setUserData({accessToken,user,loggedIn: true}))
       // setTimeout(() => {
       //   navigate('/')

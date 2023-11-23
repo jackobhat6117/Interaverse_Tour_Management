@@ -58,8 +58,8 @@ export default function Signup() {
             {/* <img src={textlogo} alt='Miles' className='' /> */}
             <TextLogo className='text-secondary' />
           </div>
-          <div className='flex flex-col p-10 lg:px-20 flex-1 gap-6 text-white'>
-            <h4 className='pb-4 '>Sell travel online seamlessly</h4>
+          <div className='flex flex-col p-10 lg:px-20 flex-1 gap-6 text-secondary'>
+            <h4 className='pb-4 text-secondary'>Sell travel online seamlessly</h4>
             <Service title={'Get instant connection to top flight GDS'} icon={flightCheckedIcon}>
               Search, book and issue tickets - without the need for accreditation or industry expertise.
             </Service>

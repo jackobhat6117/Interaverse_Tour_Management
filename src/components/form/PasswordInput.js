@@ -3,11 +3,11 @@ import { IconButton } from '@mui/material'
 import React, { useState } from 'react'
 import TextInput from './TextInput';
 
+const validationPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[ -/:-@\[-`{-~]).{8,64}$/;
 
 export default function PasswordInput(props) {
   const {label,className,noValidation,value:defValue,onChange,show,...restProps} = props;
   const [showPassword, setShowPassword] = useState(show || false);
-  const validationPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   const [error,setError] = useState('');
 
   const [value,setValue] = useState(defValue || '');

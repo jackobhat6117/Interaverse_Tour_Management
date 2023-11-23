@@ -19,7 +19,7 @@ export default function StepsCheck({i,obj,complete,link}) {
         // className='bg-primary/[5%] rounded-md p-4 hidden sm:flex items-center justify-center'
         >
         {/* {i+1} */}
-        <div className='w-10 h-10 flex justify-center items-center rounded-full bg-primary/10'>
+        <div className='w-10 h-10 flex justify-center relative items-center rounded-full bg-primary/10'>
           <Icon icon='game-icons:check-mark' className={`${complete?'text-green-600':'text-primary/20'}`} />
         </div>
       </div>
@@ -27,7 +27,7 @@ export default function StepsCheck({i,obj,complete,link}) {
         <h6>{obj.title}</h6>
         <p>{obj.description}</p>
       </div>
-      <button className="border rounded-md  px-6 bg-theme1/10 text-theme1">Edit</button>
+      <button className="border rounded-md  px-6 bg-theme1/10 text-theme1">{complete?'Edit':'Add'}</button>
     </ScreenViewObserver>
   )
 }

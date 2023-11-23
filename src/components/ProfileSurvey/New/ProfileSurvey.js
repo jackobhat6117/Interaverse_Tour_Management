@@ -43,7 +43,7 @@ export default function ProfileSurvey() {
   const completedSteps = checkProfileComplete(user);
   const completed = completedSteps.every(obj => obj.complete);
   const [activated,setActivated] = useState(false);
-
+  console.log(completedSteps)
   const [step,setStep] = useState(() => {
     let cur = 0;
     let stop = false;
@@ -65,6 +65,20 @@ export default function ProfileSurvey() {
     
     return cur
   });
+
+  useEffect(() => {
+    let cur = 0;
+    if(!completed && !completedSteps[step]?.complete) {
+      completedSteps.map((obj,i) => {
+        if(obj.complete)
+          cur = i
+        return true;
+      })
+      if(step > cur+1)
+        setStep(cur+1)
+    }
+    //eslint-disable-next-linex
+  },[step,completedSteps,completed])
 
   async function sendProfile(data) {
     let modData = {...data};

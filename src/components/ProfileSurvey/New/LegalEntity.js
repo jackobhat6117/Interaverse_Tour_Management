@@ -22,8 +22,14 @@ function LegalEntity({updateProfile,back,next,review}) {
   const [edit,setEdit] = useState(false);
 
   async function handleChange() {
-    const {registeredBusinessName,typeOfBusiness,legalInfo: {taxIdentification,companyNumber}} = {...data};
+    let {registeredBusinessName,typeOfBusiness,legalInfo: {taxIdentification,companyNumber}} = {...data};
     if(updateProfile) {
+      if(user?.detail?.agencyType === 'starterBusiness') {
+        registeredBusinessName = '---'
+        typeOfBusiness = '---'
+        taxIdentification = '---'
+        companyNumber = '---'
+      }
       setLoading(true);
       const res = await updateProfile({registeredBusinessName,typeOfBusiness,legalInfo: {taxIdentification,companyNumber}})
       setLoading(false);
@@ -35,7 +41,8 @@ function LegalEntity({updateProfile,back,next,review}) {
   if(review && !edit)
     return <ReviewDisplay data={user?.detail} review={review} setEdit={setEdit} />
 
-  return user?.detail?.agencyType === 'starterBusiness' ? (
+  
+  return !(user?.detail?.agencyType === 'starterBusiness') ? (
     <div className='flex flex-col gap-4 slide'>
       {!qedit ? 
         <div className='flex flex-col gap-2 py-4'>
@@ -76,9 +83,9 @@ function LegalEntity({updateProfile,back,next,review}) {
       </div>
     </div>
   ) : (
-    <div className='flex flex-col max-w-[500px] slide items-center self-center gap-10 text-center flex-1 justify-center'>
-      <h3>This page is for registered business</h3>
-      <Button1>Skip</Button1>
+    <div className='flex flex-col max-w-[500px] slide items-center py-10 self-center gap-10 text-center flex-1 justify-center'>
+      <p>As a regulated company, we will need you to complete this step when you have registered your business.</p>
+      <Button1 loading={loading} onClick={() => handleChange()}>Continue</Button1>
     </div>
   )
 }

@@ -24,7 +24,7 @@ const ScreenViewObserver = (props) => {
             setInView(false)
             console.log('out',entry,innerHeight);
             // console.log('in');
-            // handleComponentOffView();  
+            handleComponentOffView();  
           }
         });
       },

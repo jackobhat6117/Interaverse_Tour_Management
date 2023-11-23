@@ -15,6 +15,7 @@ import { setBookingData } from '../../../redux/reducers/flight/flightBookingSlic
 import { offerSearchTemp } from '../../../data/flight/offerSearchData'
 import { clone } from '../../../features/utils/objClone'
 import Icon from '../../../components/HOC/Icon'
+import moment from 'moment'
 
 export default function CreateFlightOrder() {
   const [travelClass,setTravelClass] = useState('All');
@@ -24,7 +25,7 @@ export default function CreateFlightOrder() {
   const [flightType] = useState('INTERNATIONAL');
   const [corporateUniFares] = useState("");
   const [date,setDate] = useState([""]);
-  const [destination,setDestination] = useState(offerSearchTemp.destinations);
+  const [destination,setDestination] = useState(offerSearchTemp.originDestinations);
 
   const [searchParam] = useSearchParams();
   const q = useMemo(() => searchParam.get('q'),[searchParam]);
@@ -52,8 +53,8 @@ export default function CreateFlightOrder() {
         let tempDestination = clone(destination);
 
         let reversed = clone(tempDestination[0]);
-        reversed.arrivalLocation = reversed.departureLocation;
-        reversed.departureLocation = tempDestination[0]?.arrivalLocation
+        reversed.to = reversed.from;
+        reversed.from = tempDestination[0]?.to
         tempDestination.push(reversed);
 
         setDestination(tempDestination);
@@ -72,24 +73,24 @@ export default function CreateFlightOrder() {
   function handleSearch(ev) {
     ev?.preventDefault();
 
-    let searchObj = {};
-    searchObj['destinations'] = clone(destination);
+    let searchObj = {...offerSearchTemp};
+    searchObj['originDestinations'] = clone(destination);
     date.map((d,i) => {
-      if(i !== 0 && (!searchObj['destinations'][i] || !searchObj['destinations'][i]?.departureLocation)) {
-        let reversed = clone(searchObj['destinations'][i-1]);
-        reversed.arrivalLocation = reversed.departureLocation;
-        reversed.departureLocation = clone(searchObj['destinations'][i-1])?.arrivalLocation;
-        searchObj['destinations'][i] = reversed;
+      if(i !== 0 && (!searchObj['originDestinations'][i] || !searchObj['originDestinations'][i]?.from)) {
+        let reversed = clone(searchObj['originDestinations'][i-1]);
+        reversed.to = reversed.from;
+        reversed.from = clone(searchObj['originDestinations'][i-1])?.to;
+        searchObj['originDestinations'][i] = reversed;
       }
-      searchObj['destinations'][i]['date'] = d;
+      searchObj['originDestinations'][i]['date'] = d;
       return true;
     })
-    // searchObj['destinations'].map((obj,i) => obj.date = date[i]);
+    // searchObj['originDestinations'].map((obj,i) => obj.date = date[i]);
 
     if(type === 'oneway')
-      searchObj['destinations'] = searchObj['destinations'].slice(0,1);
+      searchObj['originDestinations'] = searchObj['originDestinations'].slice(0,1);
     else if(type === 'return')
-      searchObj['destinations'] = searchObj['destinations'].slice(0,2);
+      searchObj['originDestinations'] = searchObj['originDestinations'].slice(0,2);
 
     searchObj['passengers'] = passengers;
     searchObj['travelClass'] = travelClass;
@@ -102,7 +103,21 @@ export default function CreateFlightOrder() {
     if(corporateUniFares) {
       searchObj['corporateUniFares'] = corporateUniFares.split(",")
     }
-      
+
+    // Backward Compatability
+    searchObj['originDestinations']?.map(obj => {
+      obj.departure.date = moment(obj.date).format('YYYY-MM-DD');
+      return true
+    })
+    searchObj['destinations'] = searchObj.originDestinations.map(obj => {
+      return {
+        departureLocation: obj.from,
+        arrivalLocation: obj.to,
+        date: obj.date
+      };
+    })
+
+    
     // searchObj['currencyOverride'] = def.currencyCode;
     console.log("Search Request - ",searchObj);
     // setData(newData);
@@ -140,8 +155,8 @@ export default function CreateFlightOrder() {
     setDate([...date,""]);
     let lastDestination = clone(destination[destination.length-1]);
     let newDestination = clone(lastDestination);
-    newDestination.departureLocation = lastDestination.arrivalLocation;
-    newDestination.arrivalLocation = '';
+    newDestination.from = lastDestination.to;
+    newDestination.to = '';
     setDestination([...destination,newDestination]);
   }
 
@@ -178,12 +193,12 @@ export default function CreateFlightOrder() {
           </div>
           <div className='flex gap-4'>
             <CountriesInput label={'Origin'} placeholder='Origin'
-              value={destination[0]?.departureLocation || ''}
-              onChange={(val) => handleSetDestination({...destination[0],departureLocation: val?.alpha2 || val})}
+              value={destination[0]?.from || ''}
+              onChange={(val) => handleSetDestination({...destination[0],from: val?.alpha2 || val})}
             />
             <CountriesInput label={'Destination'} placeholder='Destination' 
-              value={destination[0]?.arrivalLocation || ''}
-              onChange={(val) => handleSetDestination({...destination[0],arrivalLocation: val?.alpha2 || val})}            
+              value={destination[0]?.to || ''}
+              onChange={(val) => handleSetDestination({...destination[0],to: val?.alpha2 || val})}            
             />
           </div>
           <div className='flex justify-stretch gap-4'>
@@ -208,12 +223,12 @@ export default function CreateFlightOrder() {
                   <div className='flex flex-col gap-4'>
                     <div className='flex gap-4'>
                       <CountriesInput label={'Origin'} placeholder='Origin'
-                        value={destination[i+1]?.departureLocation || ''}
-                        onChange={(val) => handleSetDestination({...destination[i+1],departureLocation: val?.alpha2 || val},i+1)}
+                        value={destination[i+1]?.from || ''}
+                        onChange={(val) => handleSetDestination({...destination[i+1],from: val?.alpha2 || val},i+1)}
                       />
                       <CountriesInput label={'Destination'} placeholder='Destination' 
-                        value={destination[i+1]?.arrivalLocation || ''}
-                        onChange={(val) => handleSetDestination({...destination[i+1],arrivalLocation: val?.alpha2 || val},i+1)}         
+                        value={destination[i+1]?.to || ''}
+                        onChange={(val) => handleSetDestination({...destination[i+1],to: val?.alpha2 || val},i+1)}         
                       />
                     </div>
                     <CalendarInput1 label='Departure Date' className='w-full border border-primary/20 rounded-md p-2'

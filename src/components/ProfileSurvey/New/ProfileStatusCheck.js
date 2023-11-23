@@ -66,7 +66,7 @@ export default function ProfileStatusCheck() {
           :null}
           <h5 className='py-4'>Activate business on Intraverse</h5>
           {list.map((obj,i) => (
-            <StepsCheck i={i} key={i} obj={obj} complete={obj.complete} link={'/profile?step=5&edit='+(i+1)} />
+            <StepsCheck i={i} key={i} obj={obj} complete={obj.complete} link={`/profile?${obj.complete?'step=5&edit='+(i+1):'step='+(i+1)}`} />
           ))}
         </div>
       </div>
@@ -75,7 +75,7 @@ export default function ProfileStatusCheck() {
           <img src={rocket} alt='rocket' className='bottom-[10%] left-2 h-[90px] absolute md:hidden' />
           {!user?.detail?.requestedVerification ? 
             <div>
-              <Button1 title={!complete && 'Complete your profile to activate your account'} 
+              <Button1 tooltip={!complete && 'Complete your profile to activate your account'} 
                 onClick={() => navigate('/profile?step=5')}
                 className={`flex ${complete ? '!bg-secondary' : '!bg-secondary/20 !cursor-not-allowed'} !px-6 !text-primary`} 
                 disabled={!complete}>Activate my business</Button1>

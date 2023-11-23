@@ -181,7 +181,7 @@ function DetailInfo({next,back,updateProfile}) {
         </MapAutoComplete>
       </div>
       <div>
-        <PhoneNumberInput label={'Business Phone number'} placeholder='e.g 08170000000'
+        <PhoneNumberInput label={'Business Phone number'} placeholder='e.g 8170000000'
           value={data?.businessPhone}
           onChange={(value) => setData({...data,businessPhone: value})}
         />

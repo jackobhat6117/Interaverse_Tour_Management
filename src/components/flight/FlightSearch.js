@@ -24,7 +24,7 @@ export default function FlightSearch() {
   const [flightType] = useState('INTERNATIONAL');
   const [corporateUniFares] = useState("");
   const [date,setDate] = useState([""]);
-  const [destination,setDestination] = useState(offerSearchTemp.destinations);
+  const [destination,setDestination] = useState(offerSearchTemp.originDestinations);
 
   const [searchParam] = useSearchParams();
   const q = useMemo(() => searchParam.get('q'),[searchParam]);

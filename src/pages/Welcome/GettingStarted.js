@@ -62,7 +62,7 @@ export default function GettingStarted() {
   return (
     <div className='flex flex-col gap-10 pd-md bg-theme1/5'>
       <div className='flex flex-col gap-6 items-center'>
-        <h4 className='slide-down'>Hey {user?.firstName} {user?.lastName}, Welcome to Intraverse</h4>
+        <h4 className='slide-down'>Hey {user?.firstName}, Welcome to Intraverse</h4>
         <p>Your business has not been activated</p>
       </div>
       <div className='flex justify-center gap-6 flex-wrap md:flex-nowrap'>

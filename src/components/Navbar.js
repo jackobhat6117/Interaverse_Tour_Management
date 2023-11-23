@@ -3,7 +3,6 @@ import { Outlet } from 'react-router-dom';
 // import ProfileSurvey from './ProfileSurvey/ProfileSurvey';
 import Header from './Header';
 import NavLinks from './NavLinks';
-import ProfileStatusCheck from './ProfileSurvey/New/ProfileStatusCheck';
 import { useSelector } from 'react-redux';
 import checkProfileComplete from '../features/profile/checkProfileComplete';
 import WelcomeNavbar from './WelcomeNavbar';
