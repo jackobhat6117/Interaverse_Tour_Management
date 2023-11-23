@@ -39,6 +39,7 @@ import LearnSupport from './pages/Welcome/LearnSupport.js';
 import LearnPricing from './pages/Welcome/LearnPricing.js';
 import LearnMiles from './pages/Welcome/LearnMiles/LearnMiles.js';
 import ProfileStatusCheck from './components/ProfileSurvey/New/ProfileStatusCheck.js';
+import Test from './pages/test.js';
 // import 'dotenv/config'
 
 
@@ -86,6 +87,7 @@ function App() {
           <SnackbarProvider autoHideDuration={3000} maxSnack={3} anchorOrigin={{vertical: 'top',horizontal: 'right'}} >
             <Routes>
               <Route path='/' element={<AuthValidate />}>
+                <Route path='test' element={<Test />} />
                 <Route path='profile' element={<ProfileSurvey />} />
                 <Route path='/welcome' element={<WelcomeNavbar />} >
                   <Route index element={<ProfileStatusCheck />} />

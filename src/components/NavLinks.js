@@ -56,7 +56,7 @@ export default function NavLinks({profileCompleted}) {
   }
   console.log(page)
 
-  return profileCompleted && verified ? (
+  return profileCompleted && !verified ? (
     <div className="">
       <Tabs variant="scrollable" value={link} onChange={handleLink} className="font-bold" 
         TabIndicatorProps={{sx: {height: '4px'}}}>

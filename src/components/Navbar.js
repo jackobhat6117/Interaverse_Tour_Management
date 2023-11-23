@@ -26,7 +26,7 @@ function Navbar() {
       </div>
       {/* <ProfileSurvey /> */}
       <div className='bg-secondary flex flex-col h-full flex-1'>
-        {completed && verified ? (
+        {completed && !verified ? (
           <Outlet />
         ):(
           <WelcomeNavbar>

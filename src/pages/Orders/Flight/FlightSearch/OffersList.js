@@ -23,7 +23,8 @@ import FlightSearch from '../../../../components/flight/FlightSearch';
 import Paginate from '../../../../components/DIsplay/Paginate';
 import Button1 from '../../../../components/form/Button1';
 import getFlightOffers from '../../../../controllers/Flight/getFlightOffers';
-import convertFlightObject, { newFlightObj } from '../../../../features/utils/flightOfferObj';
+import convertFlightObject, { createFlightCat } from '../../../../features/utils/flight/flightOfferObj';
+import getFlightOfferPrice from '../../../../controllers/Flight/getOfferPrice';
 // import getCalendarSearch from '../../../controllers/search/getCalendarSearch';
 
 
@@ -89,24 +90,38 @@ export default function OffersList() {
     if(!q && !test) return {return: false};
     let obj = req || clone(JSON.parse(decrypt(q)));
 
-    if(qIndex)
+    if(qIndex) {
+      console.log(' -------------- ',searchPath)
       obj.destinations = searchPath[qIndex];
+      obj.originDestinations = searchPath.slice(qIndex,parseInt(qIndex)+1).map((obj) => {
+        return {
+          from: obj.departureLocation,
+          to: obj.arrivalLocation,
+          departure: {date: moment(obj.date).format('YYYY-MM-DD')}
+        }
+      });
+    }
 
     // let userId = null;
     // if(bookingData.as)
     //   userId = bookingData.as.id;
-    await getFlightOffers(obj);
+    const newRes = await getFlightOffers(obj);
+    if(newRes.return) {
+      let data = newRes?.data?.data?.map(obj => convertFlightObject(obj))
+      return {return: 1,msg: 'Successfull',data,cat: createFlightCat(data)}
+    } else return {return: 0, msg: newRes.msg || 'Error',data: []}
+    
     // const oldObj = convertFlightObject(newFlightObj)
     // console.log(oldObj)
     
-    if(test) {
-      const {success,data,...cat} = offerResponseSample;
-      console.log('searching: ',obj)
-      await new Promise(resolve => setTimeout(resolve,3000))
-      return {return: 1,msg: "Successfull",data,cat};
-    }
+    // if(test) {
+    //   const {success,data,...cat} = offerResponseSample;
+    //   console.log('searching: ',obj)
+    //   await new Promise(resolve => setTimeout(resolve,3000))
+    //   return {return: 1,msg: "Successfull",data,cat};
+    // }
     
-    return {return: 1,data: [{},{}],msg: 'success'}
+    // return {return: 1,data: [{},{}],msg: 'success'}
     //eslint-disable-next-line
   },[q,qIndex,bookingData])
 
@@ -214,6 +229,8 @@ export default function OffersList() {
     let sortedData = [];
     arr.map(i => sortedData.push(temp[i]))
 
+    console.log("sorted: ",sortedData)
+
     setData(sortedData);
   }
 
@@ -228,8 +245,8 @@ export default function OffersList() {
     // if(bookingData.as)
     //   userId = bookingData.as.id;
 
-    const res = {return: 1,msg: 'success',data: obj};
-    // const res = await getFlightOfferPrice({offer: obj},userId);
+    // const res = {return: 1,msg: 'success',data: obj};
+    const res = await getFlightOfferPrice({offer: obj});
     if(res.return) {
       // console.log(' ---- ',res.data)
       dispatch(setBookingData({...bookingData,offer: res.data,beforePrice: obj}))
@@ -249,6 +266,12 @@ export default function OffersList() {
 
       // setSearchPath([...searchPath,searchObj?.destinations[searchPath.length]])
     } else if(searchPath.length === searchObj?.destinations.length) {
+      // let offer = bookingData.offer || []
+      // if(!Array.isArray(offer))
+      //   offer = [offer];
+
+      // offer.push()
+
       dispatch(setBookingData({...bookingData,offer: obj,orderData: null,beforePrice: obj}))
 
       navigate(`/order/new/flight/book/${q}`);
@@ -262,8 +285,9 @@ export default function OffersList() {
       let amount = fetchedData.current[ind].totalAmount;
       // amount = (amount.replace(",",""))
       amount = formatMoney(amount)
-      let time = fetchedData.current[ind].segments[0].departureTime;
-      time = time.split(":")
+      let time = fetchedData.current[ind].segments[0]?.departureTime;
+      // time = [0,0]
+      time = time?.split(":")
       let h = parseInt(time[0]);
       let m = parseInt(time[1]);
       time = h+"h ";
@@ -271,6 +295,7 @@ export default function OffersList() {
       
       return {amount,time};
     } catch(ex) {
+      // console.log(ex)
       return "";
     }
   }
@@ -441,7 +466,7 @@ export default function OffersList() {
 
 
 function FlightOfferSort({cat,getCatInfo,sortByCat}) {
-  const [value,setValue] = useState(0);
+  const [value,setValue] = useState();
 
   return (
     <Tabs indicatorColor='inherit' textColor='inherit' scrollButtons allowScrollButtonsMobile variant='scrollable' className='div_mid'
@@ -458,7 +483,7 @@ function FlightOfferSort({cat,getCatInfo,sortByCat}) {
                 <div className='text-start flex flex-col gap-1'>
                   <h6>{splitCapitals(obj[0])}</h6>
                   <div className='flex gap-1 relative items-center'>
-                    <span>{catInfo && def.currency}{catInfo.amount}</span>
+                    <span>{catInfo.amount}</span>
                     <div className='-translate-y-[1px] px-1 '>{catInfo.time ? '|' : ''}</div>
                     <div>{catInfo.time}</div>
                   </div>

@@ -51,8 +51,8 @@ export default function FlightOfferDisplay({data,showDetail,select}) {
   }
 
   return (
-      <div className='bg-secondary rounded-2xl overflow-clip border border-primary/10 hover:shadow-xl shadow-primary cursor-pointer transition-all' data-container={true} onClick={handleOpenDetail}>
-        <div className='flex'>
+    <div className='bg-secondary rounded-2xl overflow-clip border border-primary/10 hover:shadow-xl shadow-primary cursor-pointer transition-all' data-container={true} onClick={handleOpenDetail}>
+      <div className='flex'>
         <div className='flex flex-col justify-stretch grow '>
           {
             (data?.segments || []).slice(0,1).map((obj,i) => {
@@ -67,7 +67,7 @@ export default function FlightOfferDisplay({data,showDetail,select}) {
         </div>
         <div className='flex flex-col p-2 gap-2 justify-center items-center w-[35%] border-l border-b border-primary/10 py-4'>
           <div className='flex flex-col items-center justify-center'>
-            <h5>{totalPrice && def.currency}{totalPrice}</h5>
+            <h5>{totalPrice}</h5>
             {data?.segments?.length > 1 ? 
               <small>Round trip per traveller</small>
             :null}
@@ -101,8 +101,13 @@ export default function FlightOfferDisplay({data,showDetail,select}) {
             From 
           </p>
           <div className='flex-1 flex flex-col '>
-            <h5>{totalPrice && def.currency}{totalPrice}</h5>
-            <p>1 Adult - {def.currency}50,000, 1 Child - {def.currency}10,000, 1 Infant - {def.currency}5,000 </p>
+            <h5>{totalPrice}</h5>
+            <p>{Object.entries(data?.passengers).map(([label,obj],ind) => (
+              <span key={ind} className='capitalize'>
+                {obj.total} {label} - {formatMoney(obj.totalAmount)}
+              </span>
+            ))}</p>
+            {/* <p>1 Adult - {def.currency}50,000, 1 Child - {def.currency}10,000, 1 Infant - {def.currency}5,000 </p> */}
           </div>
           <Button1 loading={loading} className='btn1 !w-auto flex items-center gap-2 sm:!min-w-[140px]' onClick={(ev) => loadDetail(ev,data)}>
             Select

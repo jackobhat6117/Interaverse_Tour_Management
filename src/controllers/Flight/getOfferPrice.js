@@ -14,7 +14,7 @@ export default async function getFlightOfferPrice(obj,userId) {
   if(userId)
     headers['user-id'] = userId;
 
-  await fetchServer({method: "POST",url: `/flights/price/`,
+  await fetchServer({method: "POST",url: `/product/v1/flight/pricing/`,
     data: obj,
     headers
   })

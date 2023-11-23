@@ -3,9 +3,9 @@ import SkullLoad from "../DIsplay/SkullLoad";
 import FlightInfoCard from "./FlightInfoCard";
 
 export default function FlightSegmentDisplay({data: og}) {
-  const [data,setData] = useState();
+  const [data,setData] = useState(og);
   useEffect(() => {
-    setTimeout(() => setData(og),3000)
+    setTimeout(() => setData(og),2000)
   },[og])
   const [viewMore,setViewMore] = useState(false);
   return (

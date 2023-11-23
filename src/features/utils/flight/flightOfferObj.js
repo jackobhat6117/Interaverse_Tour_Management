@@ -1,26 +1,41 @@
+import moment from "moment";
+
+function convertPriceToNumber(price) {
+  if(typeof price !== 'string') return price
+  
+  var regex = /^[A-Z]{3}\s/;
+  var numericPrice = parseFloat(price.replace(regex, '').replace(',',''));
+  return numericPrice;
+}
 export default function convertFlightObject(newObj) {
+
   var oldObj = {
     farePrice: {
-      fareTotal: parseFloat(newObj.pricingInformation.price.basePrice.split(' ')[1]),
-      convertedTotal: parseFloat(newObj.pricingInformation.price.totalPrice.split(' ')[1])
+      fareTotal: convertPriceToNumber(newObj.pricingInformation.price.totalPrice),
+      convertedTotal: convertPriceToNumber(newObj.pricingInformation.price.totalPrice)
     },
     passengers: {
       adult: {
-        totalAmountWithoutTax: parseFloat(newObj.pricingInformation.passengerFares.adult.totalPrice.split(' ')[1]),
-        totalAmount: parseFloat(newObj.pricingInformation.passengerFares.adult.basePrice.split(' ')[1]),
+        totalAmountWithoutTax: convertPriceToNumber(newObj.pricingInformation.passengerFares.adult.totalPrice),
+        totalAmount: convertPriceToNumber(newObj.pricingInformation.passengerFares.adult.basePrice),
         total: newObj.pricingInformation.passengerFares.adult.passengerCount
       }
     },
+    totalAmount: convertPriceToNumber(newObj.pricingInformation.price.totalPrice),
     segments: []
   };
 
   newObj.directions.forEach(function(direction) {
+    let departureDate = moment(direction[0].departure.date);
+    let arrivalDate = moment(direction[direction.length - 1].arrival.date);
     var segment = {
       flights: [],
       departureLocation: direction[0].departure.location,
       arrivalLocation: direction[direction.length - 1].arrival.location,
-      departureDate: direction[0].departure.date,
-      arrivalDate: direction[direction.length - 1].arrival.date
+      departureDate: departureDate.format('YYYY-MM-DD'),
+      departureTime: direction[0].departure.time,
+      arrivalDate: arrivalDate.format('YYYY-MM-DD'),
+      arrivalTime: direction[direction.length - 1].arrival.time,
     };
 
     direction.forEach(function(flight) {
@@ -31,11 +46,13 @@ export default function convertFlightObject(newObj) {
         flightNumber: flight.flightNumber,
         cabin: flight.cabinClass,
         bookingClass: flight.bookingClass,
-        departureTime: flight.departure.time,
+        // departureTime: flight.departure.time,
+        departureTime: direction[0].departure.time,
         departureDate: flight.departure.date,
         departureTerminal: flight.departure.terminal,
         departureLocation: flight.departure.location,
-        arrivalTime: flight.arrival.time,
+        // arrivalTime: flight.arrival.time,
+        arrivalTime: direction[direction.length - 1].arrival.time,
         arrivalDate: flight.arrival.date,
         arrivalTerminal: flight.arrival.terminal,
         arrivalLocation: flight.arrival.location,
@@ -221,4 +238,107 @@ export const newFlightObj = {
     }
   ],
   "supplier": "Amadeus"
+}
+
+export function createFlightCat(oldObjects) {
+  var cat = {
+    cheapest: [],
+    quickest: [],
+    best: [],
+    earliestTakeoff: [],
+    earliestLanding: [],
+    earliestReturnTakeoff: [],
+    earliestReturnLanding: []
+  };
+
+  var cheapestPrices = [];
+  var quickestDurations = [];
+  var bestScores = [];
+  var earliestTakeoffTimes = [];
+  var earliestLandingTimes = [];
+  var earliestReturnTakeoffTimes = [];
+  var earliestReturnLandingTimes = [];
+
+  oldObjects.forEach(function(oldObj, index) {
+    var currentPrice = 0;
+    var currentDuration = 0;
+    var currentTakeoffTime = Number.MAX_VALUE;
+    var currentLandingTime = Number.MAX_VALUE;
+    var currentReturnTakeoffTime = Number.MAX_VALUE;
+    var currentReturnLandingTime = Number.MAX_VALUE;
+
+    oldObj.segments.forEach(function(segment) {
+      segment.flights.forEach(function(flight) {
+        // Calculate total price
+        var price = convertPriceToNumber(oldObj.totalAmount);
+        if (typeof price === 'number') {
+          currentPrice += price;
+        } 
+        // else if (typeof price === 'string') {
+        //   var numericPrice = parseFloat(price.replace(/^[A-Z]{3}\s/, ''));
+        //   currentPrice += numericPrice;
+        // }
+
+        // Calculate total duration
+        currentDuration += flight.duration;
+
+        // Calculate earliest takeoff time
+        var takeoffTime = new Date(flight.departureDate).getTime();
+        if (takeoffTime < currentTakeoffTime) {
+          currentTakeoffTime = takeoffTime;
+        }
+
+        // Calculate earliest landing time
+        var landingTime = new Date(flight.arrivalDate).getTime();
+        if (landingTime < currentLandingTime) {
+          currentLandingTime = landingTime;
+        }
+      });
+    });
+
+    // Cheapest
+    cheapestPrices.push(oldObj.totalAmount);
+
+    // Quickest
+    quickestDurations.push(currentDuration);
+
+    // Best (Combination of Price and Duration)
+    var currentScore = oldObj.totalAmount + currentDuration;
+    bestScores.push(currentScore);
+
+    // Earliest Takeoff
+    earliestTakeoffTimes.push(currentTakeoffTime);
+
+    // Earliest Landing
+    earliestLandingTimes.push(currentLandingTime);
+
+    // Earliest Return Takeoff
+    var returnTakeoffTime = new Date(oldObj.segments[oldObj.segments.length - 1].flights[0].departureDate).getTime();
+    earliestReturnTakeoffTimes.push(returnTakeoffTime);
+
+    // Earliest Return Landing
+    var returnLandingTime = new Date(oldObj.segments[oldObj.segments.length - 1].flights[oldObj.segments[oldObj.segments.length - 1].flights.length - 1].arrivalDate).getTime();
+    earliestReturnLandingTimes.push(returnLandingTime);
+  });
+
+  // Sort indices based on categories
+  cat.cheapest = sortIndices(cheapestPrices);
+  cat.quickest = sortIndices(quickestDurations);
+  cat.best = sortIndices(bestScores);
+  cat.earliestTakeoff = sortIndices(earliestTakeoffTimes);
+  cat.earliestLanding = sortIndices(earliestLandingTimes);
+  cat.earliestReturnTakeoff = sortIndices(earliestReturnTakeoffTimes);
+  cat.earliestReturnLanding = sortIndices(earliestReturnLandingTimes);
+
+  return cat;
+}
+
+function sortIndices(arr) {
+  return arr
+    .map(function(_, index) {
+      return index;
+    })
+    .sort(function(a, b) {
+      return arr[a] - arr[b];
+    });
 }

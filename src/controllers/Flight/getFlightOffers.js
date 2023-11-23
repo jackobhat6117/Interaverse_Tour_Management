@@ -21,7 +21,7 @@ export default async function getFlightOffers(obj,userId) {
   .then((res) => {
     console.log(" => ",{...res})
     if(res) {
-      if(res.data.success) {
+      if(res.status === 200) {
         result = {return: 1,msg: "Successfull",data: res.data.data};
       }
     } 

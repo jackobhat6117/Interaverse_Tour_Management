@@ -51,7 +51,7 @@ export default function FilterCabin({returnData,cats,orgi}) {
             <input name='cabin' type='radio' value={data.name} checked={selectedValue === data.name} onChange={(ev) => handleChange(ev.target.value)} />
             <span>{data.label}</span>
           </span>
-          {def.currency}{formatMoney(data.value)}
+          {formatMoney(data.value)}
         </label>
       ))}
     </Collapse>

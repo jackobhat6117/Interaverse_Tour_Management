@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import BreadCrumb from '../../../../components/DIsplay/Nav/BreadCrumb'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { decrypt } from '../../../../features/utils/crypto';
 import { useSelector } from 'react-redux';
 import FlightPriceSummary from '../../../../components/flight/FlightPriceSummary';
 import FlightSegmentDisplay from '../../../../components/flight/FlightSegmentDisplay';
+import getFlightOfferPrice from '../../../../controllers/Flight/getOfferPrice';
 
 
 export default function FlightBook() {
@@ -12,6 +13,15 @@ export default function FlightBook() {
   const qObj = JSON.parse(decrypt(id));
   const {bookingData} = useSelector(state => state.flightBooking);
   const offer = bookingData?.offer
+
+  useEffect(() => {
+    getPrice();
+  },[])
+
+  async function getPrice() {
+    const res = await getFlightOfferPrice(offer);
+    console.log(res)
+  }
 
   const navigate = useNavigate();
   
