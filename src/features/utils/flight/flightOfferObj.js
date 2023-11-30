@@ -22,7 +22,8 @@ export default function convertFlightObject(newObj) {
       }
     },
     totalAmount: convertPriceToNumber(newObj.pricingInformation.price.totalPrice),
-    segments: []
+    segments: [],
+    ...newObj
   };
 
   newObj.directions.forEach(function(direction) {

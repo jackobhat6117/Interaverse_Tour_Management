@@ -2,8 +2,8 @@ import { store } from "../../redux/store";
 import fetchServer from "../fetchServer";
 
 
-export default async function getFlightOffers(obj,userId) {
-  var result = {return: 0,msg: 'Error',data: []}
+export default async function getBrandedFares(obj,userId) {
+  var result = {return: 0,msg: 'Error',data: {}}
 
   let token = store.getState().user.userData.accessToken;
   
@@ -14,24 +14,22 @@ export default async function getFlightOffers(obj,userId) {
   if(userId)
     headers['user-id'] = userId;
 
-  await fetchServer({method: "POST",url: `/product/v1/flight/search/`,
+  await fetchServer({method: "POST",url: `/product/v1/flight/brandedFares`,
     data: obj,
     headers
   })
   .then((res) => {
     console.log(" => ",{...res})
     if(res) {
-      if(res.status === 200) {
+      if(res.data.success) {
         result = {return: 1,msg: "Successfull",data: res.data.data};
       }
     } 
   })
   .catch((err) => {
-    console.log(err.message,err);
-    if(err.message === 'Network Error!') {
-      result['msg'] = 'Network Error!';
-      result['error'] = 'Please check your connection.';
-    }
+    console.log("Network Error: ",err);
+    
+    // result = {return: 1,msg: 'Successfull',data:[]}
   })
 
   return result;

@@ -31,13 +31,13 @@ export const offerSearchTemp = {
   "cabinClass": [
       "Economy"
   ],
-  "flightFilters": {
+//   "flightFilters": {
       // "allowedCarriers": [],
       // "excludedCarriers": [
       //     "AA"
       // ],
       // "preferredCarriers": []
-  }
+//   }
 }
 
 // export const old = {

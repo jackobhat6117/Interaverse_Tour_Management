@@ -1,16 +1,31 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { def } from '../../config'
 import Button1 from '../form/Button1'
+import getBrandedFares from '../../controllers/Flight/getBrandedFares';
 
 
-export default function FareOptions({handleReturn}) {
+export default function FareOptions({data,handleReturn}) {
   const [options] = useState([...Array(6)])
   const [selected,setSelected] = useState();
+  const [loading,setLoading] = useState(false);
+
+  useEffect(() => {
+    if(data)
+      load();
+    //eslint-disable-next-line
+  },[data])
+
+  async function load() {
+    setLoading(true);
+    const res = await getBrandedFares(data);
+    console.log(res)
+    setLoading(false);
+  }
 
   function handleSelect(i) {
     handleReturn && handleReturn(options[i])
   }
-  return (
+  return !loading ? (
     <div className='flex flex-col gap-2 p-4 max-w-[1000px]'>
       <h4>Select your prefered fare options</h4>
       <div className='flex gap-4 flex-wrap'>
@@ -18,6 +33,10 @@ export default function FareOptions({handleReturn}) {
           <FareOption key={i} activate={() => setSelected(i)} selected={selected===i} select={() => handleSelect(i)} />
         ))}
       </div>
+    </div>
+  ) : (
+    <div className='flex flex-col gap-2 p-4 max-w-[1000px]'>
+      <h4>Please wait...</h4>
     </div>
   )
 }

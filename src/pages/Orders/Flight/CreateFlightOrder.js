@@ -125,7 +125,7 @@ export default function CreateFlightOrder() {
     let enc = encrypt(JSON.stringify(searchObj));
 
             // SET TIME ------
-    dispatch(setBookingData({...bookingData}))
+    dispatch(setBookingData({...bookingData,offer: null,time: null}))
 
     // setTimeout(() => {
     //   dispatch(setModal(true))

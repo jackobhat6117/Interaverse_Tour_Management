@@ -6,12 +6,14 @@ import { def } from '../../config';
 import Button1 from '../form/Button1';
 import Modal1 from '../DIsplay/Modal/Modal1';
 import FareOptions from './FareOptions';
+import { useSelector } from 'react-redux';
 // import { offerDataTemp } from '../../data/flight/offerData';
 
-export default function FlightOfferDisplay({data,showDetail,select}) {
+export default function FlightOfferDisplay({data,path,showDetail,select}) {
   const [loading,setLoading] = useState(false);
   const [openDetail,setOpenDetail] = useState(false);
   const [openFareOptions,setOpenFareOptions] = useState(false);
+  const {bookingData} = useSelector(state => state.flightBooking);
   // const data = offerDataTemp;
   // data.flightData.booked_flights[1] = (flightDataTemp.flightData.booked_flights[0])
   async function loadDetail(ev,data) {
@@ -35,6 +37,11 @@ export default function FlightOfferDisplay({data,showDetail,select}) {
     return true;
   }
 
+  async function handleBrandedFare(ev) {
+    ev?.stopPropagation();
+    setOpenFareOptions(true)
+  }
+
   let initLoc = "";
   try {
     initLoc = data?.segments[0].departureLocation || "";
@@ -43,6 +50,7 @@ export default function FlightOfferDisplay({data,showDetail,select}) {
   }
 
   let totalPrice = (data?.farePrice && formatMoney(data?.farePrice.fareTotal)) || data?.formatedTotalAmount;
+  // bookingData?.offer?.at(path)?.farePrice?.fareTotal
 
   function handleFareSelect(obj) {
     setOpenDetail(false);
@@ -90,11 +98,14 @@ export default function FlightOfferDisplay({data,showDetail,select}) {
           {/* <ViewFareRule data={data} /> */}
 
         {/* </Collapse> */}
-        <div className='border-t p-4 flex justify-between items-center gap-4'>
-          <b className='min-w-[50px]'>Travel Smart</b>
-          <div className='flex-1'>This ariline is offering additional flexibility & other fare options</div>
-          <Button1 className='!w-auto !bg-primary !text-secondary' onClick={(ev) => {ev.stopPropagation();setOpenFareOptions(true)}}>View Fare Options</Button1>
-        </div>
+        {/* {data?.supplier} */}
+        {data?.supplier === 'Amadeus' ? 
+          <div className='border-t p-4 flex justify-between items-center gap-4'>
+            <b className='min-w-[50px]'>Travel Smart</b>
+            <div className='flex-1'>This ariline is offering additional flexibility & other fare options</div>
+            <Button1 className='!w-auto !bg-primary !text-secondary' onClick={handleBrandedFare}>View Fare Options</Button1>
+          </div>
+        :null}
 
         <div className='p-4 flex border-t justify-between items-center gap-4'>
           <p className='self-start'>
@@ -116,7 +127,7 @@ export default function FlightOfferDisplay({data,showDetail,select}) {
       </div>
 
       <Modal1 open={openFareOptions} setOpen={setOpenFareOptions}>
-        <FareOptions handleReturn={handleFareSelect}/>
+        <FareOptions data={openFareOptions && data} handleReturn={handleFareSelect}/>
       </Modal1>
     </div>
   )

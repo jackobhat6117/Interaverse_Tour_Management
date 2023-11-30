@@ -97,7 +97,7 @@ export default function Header() {
       {/* Mobile View */}
       <div className='bg-black'>
         <div className='flex md:hidden justify-between items-center bg-opacity-40 gap-6 bg-theme1 text-white py-4 px-md'>
-          <h4>Miles</h4>
+          <h4 className='text-secondary'>Miles</h4>
           <div className='rounded-md bg-primary/10 w-7 h-7 text-center flex-center justify-center' onClick={() => setOpen(true)}>
             <Menu className='cursor-pointer' />
           </div>

@@ -27,10 +27,11 @@ export default async function fetchServer({
     headers
   })
   .catch(err => {
-    if(err.response.status === 401) {
+    if(err?.response?.status === 401) {
       store.dispatch(logout())
     }
-    return err?.response?.data;
+    throw new Error(err?.response?.status || "Network Error!")
+    // return err?.response?.data;
   })
 
   return res;

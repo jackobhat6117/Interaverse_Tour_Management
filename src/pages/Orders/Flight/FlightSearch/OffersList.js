@@ -56,7 +56,7 @@ export default function OffersList() {
   const [flightDate,setFlightDate] = useState(tempFlightDate);
   const [curDetail,setCurDetail] = useState();
   const [loading,setLoading] = useState(false);
-  const [resMsg] = useState("No Result");
+  const [resMsg,setResMsg] = useState("No Result");
   const [searchParam] = useSearchParams();
   const q = useMemo(() => searchParam.get('q'),[searchParam]);
   const qIndex = useMemo(() => searchParam.get('path'),[searchParam]);
@@ -85,19 +85,33 @@ export default function OffersList() {
     setSearchPath(path)
     //eslint-disable-next-line
   },[qIndex])
+  console.log(searchObj,searchPath)
 
   const fetchData = useCallback(async (req) => {
     if(!q && !test) return {return: false};
     let obj = req || clone(JSON.parse(decrypt(q)));
 
-    if(qIndex) {
+    console.log(obj, ' ========= ')
+
+    let path = parseInt(qIndex || 0)
+    if(path) {
+
+      let prevOffer = bookingData?.offer?.at(0);
+      if(prevOffer) {
+        obj['supplier'] = [prevOffer.supplier];
+        obj['flightFilters'] = {
+          ...(obj.flightFilters || {}),
+          allowedCarriers: [prevOffer?.directions?.at(0)?.at(0)?.airline?.marketing]
+        }
+      }
+
       console.log(' -------------- ',searchPath)
-      obj.destinations = searchPath[qIndex];
-      obj.originDestinations = searchPath.slice(qIndex,parseInt(qIndex)+1).map((obj) => {
+      obj.destinations = searchPath[path];
+      obj.originDestinations = searchObj?.destinations.slice(path,path+1).map((obj) => {
         return {
           from: obj.departureLocation,
           to: obj.arrivalLocation,
-          departure: {date: moment(obj.date).format('YYYY-MM-DD')}
+          departure: {date: moment(obj.date).format('YYYY-MM-DD')},
         }
       });
     }
@@ -109,7 +123,7 @@ export default function OffersList() {
     if(newRes.return) {
       let data = newRes?.data?.data?.map(obj => convertFlightObject(obj))
       return {return: 1,msg: 'Successfull',data,cat: createFlightCat(data)}
-    } else return {return: 0, msg: newRes.msg || 'Error',data: []}
+    } else return newRes;
     
     // const oldObj = convertFlightObject(newFlightObj)
     // console.log(oldObj)
@@ -134,36 +148,6 @@ export default function OffersList() {
   useEffect(() => {
     let t = null;
 
-    async function load() {
-      setLoading(true);
-      // let obj = JSON.parse(decrypt(q));
-      // const res = await getFlightOffers(obj);
-      dispatch(setBookingData({...bookingData,time: null}))
-      
-      let {as} = bookingData;
-      
-      const res = await fetchData();
-
-      dispatch(setBookingData({as,time: new Date().getTime()}))
-
-      console.log('[p] res : ',res)
-      setLoading(false);
-  
-      if(res.return) {
-
-        fetchedData.current = res.data;
-        // console.log(res.cat)
-        if(res.cat)
-          handleSetCat(clone(res.cat))
-
-        setData(res.data)
-
-        // callDates(res);
-
-      }
-      // setResMsg(res.msg);
-      // console.log(res);
-    }  
     load();
     searchCalendars();
 
@@ -171,6 +155,39 @@ export default function OffersList() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[dispatch,handleSetCat,q,qIndex])
+
+  async function load() {
+    setLoading(true);
+    // let obj = JSON.parse(decrypt(q));
+    // const res = await getFlightOffers(obj);
+    dispatch(setBookingData({...bookingData,time: null}))
+    
+    let {offer} = bookingData;
+    
+    const res = await fetchData();
+
+    dispatch(setBookingData({offer: parseInt(qIndex)?offer:[],time: new Date().getTime()}))
+
+    console.log('[p] res : ',res)
+    setLoading(false);
+
+    if(res.return) {
+
+      fetchedData.current = res.data;
+      // console.log(res.cat)
+      if(res.cat)
+        handleSetCat(clone(res.cat))
+
+      
+      // callDates(res);
+      
+    }
+    if(res?.error) {
+      setResMsg({msg: res?.msg,sub: res?.error});
+    }
+    setData(res.data || [])
+    // console.log(res);
+  }  
 
   async function searchCalendars() {
     let req = JSON.parse(decrypt(q));
@@ -236,26 +253,34 @@ export default function OffersList() {
 
 
   async function showDetail(obj) {
-    if(obj)
-      setCurDetail(obj)
+    // if(obj)
+    //   setCurDetail(obj)
 
-    dispatch(setBookingData({...bookingData,offer: null,orderData: null,beforePrice: obj}))
+    // dispatch(setBookingData({...bookingData,offer: null,orderData: null,beforePrice: obj}))
 
-    // let userId = null;
-    // if(bookingData.as)
-    //   userId = bookingData.as.id;
+    // // let userId = null;
+    // // if(bookingData.as)
+    // //   userId = bookingData.as.id;
 
-    // const res = {return: 1,msg: 'success',data: obj};
-    const res = await getFlightOfferPrice({offer: obj});
-    if(res.return) {
-      // console.log(' ---- ',res.data)
-      dispatch(setBookingData({...bookingData,offer: res.data,beforePrice: obj}))
+    // // const res = {return: 1,msg: 'success',data: obj};
+    // const res = await getFlightOfferPrice({offer: obj});
+    // if(res.return) {
+    //   // console.log(' ---- ',res.data)
+    //   dispatch(setBookingData({...bookingData,offer: res.data,beforePrice: obj}))
 
-      setCurDetail(res.data)
-    }
+    //   setCurDetail(res.data)
+    // }
   }
 
   function handleOfferSelect(obj) {
+    let offer = clone(bookingData.offer) || []
+    if(!Array.isArray(offer))
+      offer = [offer];
+
+    offer.push(obj)
+    
+    dispatch(setBookingData({...bookingData,offer,orderData: null,beforePrice: obj}))
+
     if(searchPath.length < searchObj?.destinations.length) {
       const currentPath = location.pathname;
       const searchParams = new URLSearchParams(location.search);
@@ -266,14 +291,6 @@ export default function OffersList() {
 
       // setSearchPath([...searchPath,searchObj?.destinations[searchPath.length]])
     } else if(searchPath.length === searchObj?.destinations.length) {
-      // let offer = bookingData.offer || []
-      // if(!Array.isArray(offer))
-      //   offer = [offer];
-
-      // offer.push()
-
-      dispatch(setBookingData({...bookingData,offer: obj,orderData: null,beforePrice: obj}))
-
       navigate(`/order/new/flight/book/${q}`);
     }
   }
@@ -307,12 +324,13 @@ export default function OffersList() {
     navigate('?q='+q+'&path='+i)
   }
 
+  console.log(searchObj)
   const departDate = searchObj?.destinations[0]?.date || 0;
   const arrivalDate = searchObj?.destinations[1]?.date || 0;
   const passengersCount = Object.values(searchObj?.passengers || {})?.reduce((p,c) => Number(p)+Number(c),0);
 
   return (
-    <div className='w-full flex flex-col gap-2 py-4  '>
+    <div className='w-full flex flex-col gap-2 py-4 flex-1'>
       <div className='pd-md py-2'>
         <BreadCrumb>
           <Link to={'/order'}>Orders</Link>
@@ -361,7 +379,7 @@ export default function OffersList() {
       </div> */}
       
 
-      <div className='flex gap-4 '>
+      <div className='flex gap-4 flex-1'>
         <div className='hidden md:block self-end sticky bottom-0 rounded-2xl '>
           <div className='pt-4 px-6 flex flex-col gap-1'>
             <div className='flex gap-4 justify-between'>
@@ -373,8 +391,8 @@ export default function OffersList() {
               <Icon icon='ri:plane-fill' className='self-end' />
             </div>
             <div>
-              {moment(departDate).format('MM MMM')} -
-              {arrivalDate ? moment(arrivalDate).format('MM MMM')+ ' - ' : ' '}
+              {moment(departDate).format('DD MMM')} - {' '}
+              {arrivalDate ? moment(arrivalDate).format('DD MMM')+ ' - ' : ' '}
               {passengersCount} passenger{passengersCount>1?'s':''}
             </div>
             <div>
@@ -389,8 +407,8 @@ export default function OffersList() {
               <h5 className='bg-secondary p-5 rounded-md flex items-center justify-center text-primary/30 '>Loading...</h5>
             : data?.length < 1 ?
               <div className='bg-secondary p-5 rounded-md flex items-center justify-center flex-col gap-2'>
-                <h5 className=' text-primary/30 uppercase'>{resMsg}</h5>
-                <p>Please search for another flight.</p>
+                <h5 className=' text-primary/30 uppercase'>{resMsg?.msg || resMsg}</h5>
+                <p>{resMsg?.sub || 'Please search for another flight.'} <button className='text-blue-600' onClick={() => load()}>Refresh</button></p>
               </div>
             : !data ? <div className='flex flex-col items-center justify-center capitalize'>
                 <h5 className='bg-secondaryx p-5 rounded-md flex text-center items-center justify-center text-primary/30 uppercase'>Sorry something went wrong from our end! Please try again.</h5>
@@ -398,7 +416,7 @@ export default function OffersList() {
               </div>
             : 
             <Paginate className='flex flex-col gap-4' data={data} limit={10} render={(obj,i) => (
-              <FlightOfferDisplay key={i} data={obj} showDetail={async () => await showDetail(obj)} select={handleOfferSelect} />
+              <FlightOfferDisplay key={i} path={qIndex} data={obj} showDetail={async () => await showDetail(obj)} select={handleOfferSelect} />
             )} />
           }
           {/* <FlightOfferDisplay showDetail={(obj) => setCurDetail(obj)} /> */}
@@ -446,7 +464,7 @@ export default function OffersList() {
         </div>
       </SwipeableDrawer>
 
-      <div className='block lg:hidden'>
+      <div className='block lg:hidden absolute'>
         <Modal1 open={curDetail} setOpen={() => setCurDetail()} >
           <div className='max-h-screen'>
             <FlightOfferDetail data={data} setData={setData} obj={curDetail} />
