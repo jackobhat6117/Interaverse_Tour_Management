@@ -1,12 +1,14 @@
 import fetchServer from "../../fetchServer";
 
-export default async function setLowBalanceThreshold(data) {
-  let result = { return: 0, msg: "Something went wrong setting threshold!" };
+export default async function getWalletTransactions() {
+  let result = {
+    return: 0,
+    msg: "Something went wrong fetching wallet transactions!",
+  };
 
   await fetchServer({
-    method: "POST",
-    url: "/payment/v1/wallet/lowbalance",
-    data,
+    method: "GET",
+    url: "/payment/v1/payment/transactions?filterBy=reason&filterValue=Wallet",
   })
     .then((res) => {
       if (res?.data && !res?.data?.error) {
