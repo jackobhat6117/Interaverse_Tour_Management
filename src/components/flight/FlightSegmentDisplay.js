@@ -8,13 +8,15 @@ export default function FlightSegmentDisplay({data: og}) {
     setTimeout(() => setData(og),2000)
   },[og])
   const [viewMore,setViewMore] = useState(false);
+
+  console.log(data," <-----")
   return (
     <div className='border rounded-md cursor-pointer shad-hover'>
       <div className={`flex gap-4 p-4 shadow-primary ${viewMore?'bg-theme1/10':''}`} onClick={() => setViewMore(!viewMore)}>
         <div>
           <div className='w-10 h-10 relative'>
-            <SkullLoad value={data?.flights[0]?.carrierIcon} render={(val) => 
-              <img src={data?.flights[0]?.carrierIcon} alt='Airline' />
+            <SkullLoad value={data?.flights?.at(0)?.carrierIcon} render={(val) => 
+              <img src={data?.flights?.at(0)?.carrierIcon} alt='Airline' />
             } className='!w-10 !h-10' variant='rectangular' />
           </div>
         </div>
@@ -24,14 +26,14 @@ export default function FlightSegmentDisplay({data: og}) {
               <h5>
                 <SkullLoad value={data?.departureLocation} label={'From'} /> - <SkullLoad value={data?.arrivalLocation} label='To' />
               </h5>
-              <p><SkullLoad value={data?.flights[0]?.departureAirportName} label='Airline' /></p>
+              <p><SkullLoad value={data?.flights?.at(0)?.departureAirportName || data?.flights?.at(0)?.marketingCarrier} label='Airline' /></p>
             </div>
-            <p>{data?.numberOfStops?data?.numberOfStops+'stopover':''} </p>
+            <p>{data?.numberOfStops || data?.numberOfStops === 0 ? data?.numberOfStops+'stopover':''} </p>
           </div>
 
           <div>
-            <h5><SkullLoad value={data?.duration} label={'Duration'} /></h5>
-            <p>{data?.duration?'Change':''}</p>
+            <h6><SkullLoad value={data?.duration} label={'Duration'} /></h6>
+            <small>{data?.duration?'Change':''}</small>
           </div>
         </div>
       </div>

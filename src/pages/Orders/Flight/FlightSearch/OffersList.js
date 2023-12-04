@@ -25,6 +25,7 @@ import Button1 from '../../../../components/form/Button1';
 import getFlightOffers from '../../../../controllers/Flight/getFlightOffers';
 import convertFlightObject, { createFlightCat } from '../../../../features/utils/flight/flightOfferObj';
 import getFlightOfferPrice from '../../../../controllers/Flight/getOfferPrice';
+import { offerSearchTemp } from '../../../../data/flight/offerSearchData';
 // import getCalendarSearch from '../../../controllers/search/getCalendarSearch';
 
 
@@ -105,15 +106,21 @@ export default function OffersList() {
         }
       }
 
-      console.log(' -------------- ',searchPath)
-      obj.destinations = searchPath[path];
-      obj.originDestinations = searchObj?.destinations.slice(path,path+1).map((obj) => {
-        return {
-          from: obj.departureLocation,
-          to: obj.arrivalLocation,
-          departure: {date: moment(obj.date).format('YYYY-MM-DD')},
-        }
-      });
+    //   console.log(' -------------- ',searchPath)
+    //   obj.destinations = searchPath[path];
+    //   obj.originDestinations = searchObj?.destinations.slice(path,path+1).map((obj) => {
+    //     return {
+    //       from: obj.departureLocation,
+    //       to: obj.arrivalLocation,
+    //       departure: {date: moment(obj.date).format('YYYY-MM-DD')},
+    //     }
+    //   });
+    } else {
+      obj['supplier'] = offerSearchTemp.supplier;
+      obj['flightFilters'] = {
+        ...(obj.flightFilters || {}),
+        allowedCarriers: null
+      }
     }
 
     // let userId = null;
@@ -122,6 +129,7 @@ export default function OffersList() {
     const newRes = await getFlightOffers(obj);
     if(newRes.return) {
       let data = newRes?.data?.data?.map(obj => convertFlightObject(obj))
+      console.log('data: ',data)
       return {return: 1,msg: 'Successfull',data,cat: createFlightCat(data)}
     } else return newRes;
     
@@ -277,7 +285,10 @@ export default function OffersList() {
     if(!Array.isArray(offer))
       offer = [offer];
 
-    offer.push(obj)
+    // if(obj.fareDetailsBySegment)
+    //   offer[offer.length-1] = obj;
+    // else
+      offer.push(obj)
     
     dispatch(setBookingData({...bookingData,offer,orderData: null,beforePrice: obj}))
 

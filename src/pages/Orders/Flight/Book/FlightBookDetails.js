@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import BreadCrumb from '../../../../components/DIsplay/Nav/BreadCrumb'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { decrypt } from '../../../../features/utils/crypto';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import FlightPriceSummary from '../../../../components/flight/FlightPriceSummary';
 import FlightSegmentDisplay from '../../../../components/flight/FlightSegmentDisplay';
 import RadioGroup from '../../../../components/form/RadioGroup';
@@ -12,20 +12,27 @@ import PhoneNumberInput from '../../../../components/form/PhoneNumberInput';
 import PrimaryPassenger from '../../../../components/flight/PrimaryPassenger';
 import Button1 from '../../../../components/form/Button1';
 import Modal1 from '../../../../components/DIsplay/Modal/Modal1';
+import { travelersInfo } from '../../../../data/flight/travelersInfo';
+import bookFlightOffer from '../../../../controllers/Flight/bookFlightOffer';
+import { setBookingData } from '../../../../redux/reducers/flight/flightBookingSlice';
+import { useSnackbar } from 'notistack';
+import { countries } from 'country-data';
+import { clone } from '../../../../features/utils/objClone';
+import moment from 'moment';
 
 
 export default function FlightBookDetails() {
   const {id} = useParams();
   const qObj = JSON.parse(decrypt(id));
   const {bookingData} = useSelector(state => state.flightBooking);
-  const offer = bookingData?.offer
+  const offer = bookingData?.offer && bookingData?.offer?.at(-1)
 
   const navigate = useNavigate();
   
   function handleSearchRoute(i) {
     navigate('/order/new/flight/offers?q='+id+'&path='+i)
   }
-
+  console.log(" -> ",offer)
   return (
     <div className='pd-md py-4 flex flex-col gap-4'>
       <BreadCrumb>
@@ -48,7 +55,7 @@ export default function FlightBookDetails() {
             <Icon icon={'ic:sharp-lock'} className='w-8 h-8' />
             We take privacy issues seriously. You can be sure that your personal data is securely protected.
           </div>
-          <PassengerDetails />
+          <PassengerDetails offer={offer} />
         </div>
         <div className='flex flex-col gap-4'>
           {offer?.segments.map((obj,i) => (
@@ -56,14 +63,14 @@ export default function FlightBookDetails() {
               <FlightSegmentDisplay data={obj} />
             </div>
           ))}
-          <FlightPriceSummary onBook />
+          <FlightPriceSummary onBook data={offer} />
         </div>
       </div>
     </div>
   )
 }
 
-function PassengerDetails() {
+function PassengerDetails({offer}) {
   const {id} = useParams();
   const {bookingData} = useSelector(state => state.flightBooking);
   const segments = bookingData?.offer?.segments || [];
@@ -73,12 +80,46 @@ function PassengerDetails() {
   const [open,setOpen] = useState(false);
   const [bookingDone,setBookingDone] = useState(false);
   const [loading,setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const {enqueueSnackbar} = useSnackbar();
+
+  const [data,setData] = useState(clone(travelersInfo));
+  console.log(' data --> ',data)
+
 
   async function book() {
+    // await new Promise(resolve => setTimeout(resolve,3000))
+    let req = {
+      supplier: offer?.supplier,
+      offers: [offer],
+      travelersInfo: [clone(data)]
+    }
+    // console.log(' --> ',data)
+    let pn = data?.phone?.split('-')
+    let countryObj = (Object.values(countries)?.find(obj => obj?.countryCallingCodes?.includes('+'+pn?.at(0))))
+    let phone = {
+      countryCode: pn?.at(0),
+      number: pn?.at(1),
+      location: countryObj.alpha2,
+    }
+    req.travelersInfo.at(0).birthData = moment(data?.birthDate).format('YYYY-MM-DD')
+    req.travelersInfo.at(0).document.issuanceCountry = data?.document?.nationality
+    req.travelersInfo.at(0).document.validityCountry = data?.document?.nationality
+    req.travelersInfo.at(0).document.birthPlace = data?.document?.nationality
+    req.travelersInfo.at(0).document.issuanceLocation = data?.document?.nationality
+    req.travelersInfo.at(0).document.issuanceDate = moment().format('YYYY-MM-DD')
+    req.travelersInfo.at(0).document.expiryDate = moment(data?.document?.expiryDate).format('YYYY-MM-DD')
+    req.travelersInfo.at(0)['phone'] = [phone];
+
+    // console.log(req)
+    
     setLoading(true);
-    await new Promise(resolve => setTimeout(resolve,3000))
+    const res = await bookFlightOffer(req);
     setLoading(false);
-    setBookingDone(true);
+    if(res.return) {
+      setBookingDone(true);
+      dispatch(setBookingData({...bookingData,orderData: res?.data}))
+    } else enqueueSnackbar(res.msg,{variant: 'error'})
     setOpen(false);
   }
   return (
@@ -86,13 +127,19 @@ function PassengerDetails() {
       <h5>Contact Details</h5>
       <div className='flex gap-4'>
         <div className='flex-1'>
-          <EmailInput label='Enter your email' />
+          <EmailInput label='Enter your email'
+            value={data.email}
+            onChange={(ev) => setData({...data,email: ev.target.value})}          
+          />
         </div>
         <div className='flex-1'>
-          <PhoneNumberInput label='Enter your phone number' />
+          <PhoneNumberInput label='Enter your phone number'
+            value={data.phone}
+            onChange={(val) => setData({...data,phone: val})}
+          />
         </div>
       </div>
-      <PrimaryPassenger label={<div className='flex flex-1 items-center justify-between gap-4'><h5>Primary Passenger</h5><p>Adult (over 12 years)</p></div>} />
+      <PrimaryPassenger handleReturn={(obj) => setData({...data,...obj})} label={<div className='flex flex-1 items-center justify-between gap-4'><h5>Primary Passenger</h5><p>Adult (over 12 years)</p></div>} />
       <div className='flex justify-end self-end'>
         <Button1 variant='text' className='!font-bold'>+ Add another passenger</Button1>
       </div>

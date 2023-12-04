@@ -7,37 +7,45 @@ import FlightPriceSummary from '../../../../components/flight/FlightPriceSummary
 import FlightSegmentDisplay from '../../../../components/flight/FlightSegmentDisplay';
 import getFlightOfferPrice from '../../../../controllers/Flight/getOfferPrice';
 import { clone } from '../../../../features/utils/objClone';
+import convertFlightObject from '../../../../features/utils/flight/flightOfferObj';
 
 
 export default function FlightBook() {
   const {id} = useParams();
   const qObj = JSON.parse(decrypt(id));
   const {bookingData} = useSelector(state => state.flightBooking);
-  const [offer,setOffer] = useState({segments: [...Array(2)]})
+  const [offer,setOffer] = useState([...Array(2)])
+  const [loading,setLoading] = useState(false);
 
   console.log(qObj)
 
   useEffect(() => {
     getPrice();
+    //eslint-disable-next-line
   },[])
 
   async function getPrice() {
-    let flightOffers = bookingData.offer?.map(obj => {
-      let temp = clone(obj);
-      // temp.directions = [temp.directions[0]]
-      return temp
-    })
+    setOffer([{segments: [{},{}]}])
+    let flightOffers = bookingData.offer?.at(-1)
+    // .map(obj => {
+    //   let temp = clone(obj);
+    //   // temp.directions = [temp.directions[0]]
+    //   return temp
+    // })
     const req = {
-      supplier: flightOffers?.at(0)?.supplier,
-      flightOffers
+      supplier: flightOffers?.supplier,
+      offers: [flightOffers]
     }
+    setLoading(true);
     const res = await getFlightOfferPrice(req);
+    setLoading(false);
     if(res.return) {
-
+      console.log(res.data.data)
+      let data = (res.data.data?.map(obj => convertFlightObject(obj)) || [])
+      setOffer(data)
     } else setOffer(null)
-    console.log(res)
-    setOffer()
   }
+  console.log(' -----> ',offer)
 
   const navigate = useNavigate();
   
@@ -61,11 +69,11 @@ export default function FlightBook() {
       </BreadCrumb>
       <div className='flex gap-4'>
         <div className='flex flex-col gap-2 flex-1'>
-          {offer ? offer?.segments?.map((obj,i) => (
+          {offer ? offer?.at(0)?.segments?.map((obj,i) => (
             <div key={i}>
               <FlightSegmentDisplay data={obj} />
             </div>
-          )):(
+          )): !loading && (
             <div className='flex flex-col justify-center items-center p-4'>
               <p>Failed getting offers price!</p>
               <button className='text-theme1' onClick={getPrice}>Reload</button>
@@ -73,7 +81,7 @@ export default function FlightBook() {
           )}
         </div>
         <div>
-          <FlightPriceSummary />
+          <FlightPriceSummary data={offer?.at(0) || bookingData?.offer?.at(-1)} />
         </div>
       </div>
     </div>

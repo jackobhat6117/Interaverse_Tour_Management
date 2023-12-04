@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import TextInput from "../../../components/form/TextInput";
 import { FormControlLabel, MenuItem } from "@mui/material";
 import Button1 from "../../../components/form/Button1";
@@ -15,6 +15,9 @@ export default function Finance() {
   const { enqueueSnackbar } = useSnackbar();
   const [banks, setBanks] = useState([]);
   const [accountName, setAccountName] = useState();
+  const location = useLocation();
+  const searchParam = new URLSearchParams(location.search);
+  const page = searchParam.get('page');
   const [loading, setLoading] = useState(true);
   const [bankForm, setBankForm] = useState({
     bankCode: undefined,
@@ -79,15 +82,15 @@ export default function Finance() {
       } h-full flex-1`}
     >
       <div className="flex gap-2 flex-wrap">
-        <Link to="?page=payout" className="btn">
+        <Link to="?page=payout" className={`${page === 'payout' || !page ? 'btn':'btn-theme-light'}`}>
           Payout
         </Link>
-        <Link to="?page=payout" className="btn-theme-light">
+        <Link to="?page=methods" className={`${page === 'methods' ? 'btn':'btn-theme-light'}`}>
           Payout Methods
         </Link>
       </div>
       <hr />
-      {ownBankAccounts.length ? (
+      {page === 'methods' ? (
         <div className="flex flex-col gap-4 content-max-w">
           <form
             onSubmit={handleSubmit}

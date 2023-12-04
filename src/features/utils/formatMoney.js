@@ -1,7 +1,7 @@
 import { def } from "../../config";
 
 export function formatMoney(num) {
-  if(!num) return num;
+  if(!num && num !== 0) return num;
   let number = num;
   let rate = 1;
   let cr = window.localStorage.getItem("currencyRate");
@@ -22,6 +22,7 @@ export function formatMoney(num) {
     // Perform operations on the extracted number if needed
     const modifiedNumber = (number/rate).toFixed(2);
     number = num.replace(number, modifiedNumber);
+    number = number.replace(/[a-zA-Z\s]+/,'')
 
   }
   
@@ -29,6 +30,13 @@ export function formatMoney(num) {
   let formattedIntPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return def.currency+formattedIntPart;
   // return decimalPart ? `${formattedIntPart}.${decimalPart}` : formattedIntPart;
+}
+
+export function getNumber(num) {
+  // if(typeof(num) === 'number') return num;
+  if(typeof(num) === 'string')
+    return Number(num?.replace(/[^0-9.]/g,''))
+  return num;
 }
 
 export function convertMoney(num) {

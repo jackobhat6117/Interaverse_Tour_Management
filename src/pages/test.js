@@ -1,24 +1,28 @@
 import React from 'react'
 import convertFlightObject, { createFlightCat } from '../features/utils/flight/flightOfferObj'
 import { clone } from '../features/utils/objClone'
+import { formatMoney } from '../features/utils/formatMoney'
 
 export default function Test() {
-  const res = flightOfferRes.map(obj => convertFlightObject(obj))
-  console.log(res)
-  let cat = (createFlightCat(res))
-  sortByCat(cat.cheapest)
+//   const res = flightOfferRes.map(obj => convertFlightObject(obj))
+//   console.log(res)
+//   let cat = (createFlightCat(res))
+//   sortByCat(cat.cheapest)
 
-  function sortByCat(arr) {
-    let temp = clone(res);
-    let sortedData = [];
-    arr.map(i => sortedData.push(temp[i]))
+//   function sortByCat(arr) {
+//     let temp = clone(res);
+//     let sortedData = [];
+//     arr.map(i => sortedData.push(temp[i]))
 
-    console.log("sorted: ",sortedData)
+//     console.log("sorted: ",sortedData)
 
-  }
+//   }
+    // let price = 'NGN 123122,323'
+    // let regex = /^[A-Za-z\s]+/;
+    // var numericPrice = parseFloat(price.replace(regex, '').replaceAll(',',''));
 
   return (
-    <div>test</div>
+    <div>{formatMoney('NGN 123,123,123')}</div>
   )
 }
 

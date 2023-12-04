@@ -1,10 +1,11 @@
 import moment from "moment";
+import { formatMoney } from "../formatMoney";
 
 function convertPriceToNumber(price) {
   if(typeof price !== 'string') return price
   
-  var regex = /^[A-Z]{3}\s/;
-  var numericPrice = parseFloat(price.replace(regex, '').replace(',',''));
+  var regex = /^[A-Za-z\s]+/;
+  var numericPrice = parseFloat(price.replace(regex, '').replaceAll(',',''));
   return numericPrice;
 }
 export default function convertFlightObject(newObj) {
@@ -14,17 +15,20 @@ export default function convertFlightObject(newObj) {
       fareTotal: convertPriceToNumber(newObj.pricingInformation.price.totalPrice),
       convertedTotal: convertPriceToNumber(newObj.pricingInformation.price.totalPrice)
     },
-    passengers: {
-      adult: {
-        totalAmountWithoutTax: convertPriceToNumber(newObj.pricingInformation.passengerFares.adult.totalPrice),
-        totalAmount: convertPriceToNumber(newObj.pricingInformation.passengerFares.adult.basePrice),
-        total: newObj.pricingInformation.passengerFares.adult.passengerCount
-      }
-    },
+    passengers:newObj?.pricingInformation.passengerFares,
     totalAmount: convertPriceToNumber(newObj.pricingInformation.price.totalPrice),
     segments: [],
     ...newObj
   };
+  for (const key in oldObj.passengers) {
+    if (Object.hasOwnProperty.call(oldObj.passengers, key)) {
+      const obj = oldObj.passengers[key];
+      obj.total = obj.passengerCount;
+      obj.totalAmountWithoutTax = convertPriceToNumber(obj.basePrice);
+      obj.totalAmount = convertPriceToNumber(obj.totalPrice);
+      // delete obj.totalPrice;
+    }
+  }
 
   newObj.directions.forEach(function(direction) {
     let departureDate = moment(direction[0].departure.date);
@@ -62,6 +66,7 @@ export default function convertFlightObject(newObj) {
         baggage: flight.baggage
       };
 
+      segment['duration'] = flight.duration
       segment.flights.push(oldFlight);
     });
 
@@ -342,4 +347,32 @@ function sortIndices(arr) {
     .sort(function(a, b) {
       return arr[a] - arr[b];
     });
+}
+
+
+
+export function convertBrandedFareObject(obj) {
+  console.log('reading: ',obj)
+  const segment = obj?.fareDetailsBySegment?.at(0);
+  let data = {
+    title: segment?.cabin,
+    subTitle: segment?.brandedFare,
+    flexibility: [
+      // {label: 'No data on change',value: false},
+    ],
+    bags: [
+      // {label: 'No carry-on bags',value: false},
+    ],
+    totalAmount: formatMoney(obj?.pricingInformation?.price?.totalPrice),
+    ...obj,
+  }
+  segment?.amenities?.map(obj => {
+    if(obj?.amenityType === 'BAGGAGE')
+      data.bags.push({label: obj?.description,value: true,...obj})
+    else if(obj?.amenityType === 'BRANDED_FARES')
+      data.flexibility.push({label: obj?.description,value: true,...obj})
+    return true;
+  })
+
+  return data;
 }

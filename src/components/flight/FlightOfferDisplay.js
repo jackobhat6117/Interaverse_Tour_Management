@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import FlightDisplay from './FlightDisplay';
 import FlightInfoCard from './FlightInfoCard';
 import { formatMoney } from '../../features/utils/formatMoney';
@@ -7,6 +7,7 @@ import Button1 from '../form/Button1';
 import Modal1 from '../DIsplay/Modal/Modal1';
 import FareOptions from './FareOptions';
 import { useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
 // import { offerDataTemp } from '../../data/flight/offerData';
 
 export default function FlightOfferDisplay({data,path,showDetail,select}) {
@@ -14,6 +15,12 @@ export default function FlightOfferDisplay({data,path,showDetail,select}) {
   const [openDetail,setOpenDetail] = useState(false);
   const [openFareOptions,setOpenFareOptions] = useState(false);
   const {bookingData} = useSelector(state => state.flightBooking);
+
+  const [searchParam] = useSearchParams();
+  let qIndex = useMemo(() => searchParam.get('path'),[searchParam]) || 0;
+  qIndex = Number(qIndex)
+
+  const lastPath = bookingData?.offer?.at((bookingData?.offer?.length || 1) - 1)
   // const data = offerDataTemp;
   // data.flightData.booked_flights[1] = (flightDataTemp.flightData.booked_flights[0])
   async function loadDetail(ev,data) {
@@ -49,7 +56,8 @@ export default function FlightOfferDisplay({data,path,showDetail,select}) {
     
   }
 
-  let totalPrice = (data?.farePrice && formatMoney(data?.farePrice.fareTotal)) || data?.formatedTotalAmount;
+  let totalPrice = data?.farePrice?.fareTotal;
+  // let totalPrice = (data?.farePrice && formatMoney(data?.farePrice.fareTotal)) || data?.formatedTotalAmount;
   // bookingData?.offer?.at(path)?.farePrice?.fareTotal
 
   function handleFareSelect(obj) {
@@ -58,12 +66,14 @@ export default function FlightOfferDisplay({data,path,showDetail,select}) {
     select && select(obj)
   }
 
+  console.log('lastPath: ',lastPath,qIndex)
+
   return (
     <div className='bg-secondary rounded-2xl overflow-clip border border-primary/10 hover:shadow-xl shadow-primary cursor-pointer transition-all' data-container={true} onClick={handleOpenDetail}>
       <div className='flex'>
         <div className='flex flex-col justify-stretch grow '>
           {
-            (data?.segments || []).slice(0,1).map((obj,i) => {
+            (data?.segments || []).slice(qIndex,qIndex+1).map((obj,i) => {
               // let flight = obj.flights[0];
               return (
                 <div key={i} className={`flex flex-col justify-stretch grow border-b border-[#e7e7e7] ${i===0?'border-t-0':''} `}>
@@ -75,7 +85,7 @@ export default function FlightOfferDisplay({data,path,showDetail,select}) {
         </div>
         <div className='flex flex-col p-2 gap-2 justify-center items-center w-[35%] border-l border-b border-primary/10 py-4'>
           <div className='flex flex-col items-center justify-center'>
-            <h5>{totalPrice}</h5>
+            <h5>{lastPath ? '+':''} {formatMoney((totalPrice) - (lastPath?.totalAmount || 0))}</h5>
             {data?.segments?.length > 1 ? 
               <small>Round trip per traveller</small>
             :null}
@@ -92,7 +102,7 @@ export default function FlightOfferDisplay({data,path,showDetail,select}) {
       </div>
       <div className={` border-[#e7e7e7] ${openDetail?'block':'hidden'}`} onClick={(ev) => ev.stopPropagation()}>
         {/* <Collapse className='test'> */}
-          {(data?.segments || []).slice(0,1).map((flights,i) => (
+          {(data?.segments || []).slice(qIndex,qIndex+1).map((flights,i) => (
             <FlightInfoCard key={i} data={flights} label={initLoc === flights.arrivalLocation ? 'Return' : 'Depart'} />
           ))}
           {/* <ViewFareRule data={data} /> */}
@@ -112,7 +122,7 @@ export default function FlightOfferDisplay({data,path,showDetail,select}) {
             From 
           </p>
           <div className='flex-1 flex flex-col '>
-            <h5>{totalPrice}</h5>
+            <h5>{formatMoney(totalPrice)}</h5>
             <p>{Object.entries(data?.passengers).map(([label,obj],ind) => (
               <span key={ind} className='capitalize'>
                 {obj.total} {label} - {formatMoney(obj.totalAmount)}
