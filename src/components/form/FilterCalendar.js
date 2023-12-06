@@ -10,13 +10,14 @@ export default function FilterCalendar({ dateFilter, setDateFilter }) {
         size="small"
         label={""}
         className="bg-secondary"
-        value={dateFilter?.range || "Weekly"}
+        value={dateFilter?.range || "week"}
         onChange={(event) => {
-          if (setDateFilter)
+          if (setDateFilter) {
             setDateFilter({
               ...dateFilter,
               range: event.target.value,
             });
+          }
         }}
       >
         <MenuItem value="week">Weekly</MenuItem>

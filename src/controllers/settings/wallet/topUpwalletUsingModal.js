@@ -1,16 +1,19 @@
 import fetchServer from "../../fetchServer";
 
-export default async function getWalletTransactions(range) {
-  let result = {
-    return: 0,
-    msg: "Something went wrong fetching wallet transactions!",
-  };
+/**
+ *
+ * @param {string} reference
+ * @returns
+ */
+export default async function topUpWalletUsingModal(reference) {
+  let result = { return: 0, msg: "Something went wrong removing member!" };
 
   await fetchServer({
-    method: "GET",
-    url: `/payment/v1/payment/transactions?filterBy=reason&filterValue=Wallet${
-      range ? `&range=${range}` : ""
-    }`,
+    method: "POST",
+    url: "/payment/v1/wallet/topUpUsingModal",
+    data: {
+      reference,
+    },
   })
     .then((res) => {
       if (res?.data && !res?.data?.error) {
