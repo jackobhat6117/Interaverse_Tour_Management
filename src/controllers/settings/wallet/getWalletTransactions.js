@@ -1,6 +1,6 @@
 import fetchServer from "../../fetchServer";
 
-export default async function getWalletTransactions() {
+export default async function getWalletTransactions(range) {
   let result = {
     return: 0,
     msg: "Something went wrong fetching wallet transactions!",
@@ -8,7 +8,9 @@ export default async function getWalletTransactions() {
 
   await fetchServer({
     method: "GET",
-    url: "/payment/v1/payment/transactions?filterBy=reason&filterValue=Wallet",
+    url: `/payment/v1/payment/transactions?filterBy=reason&filterValue=Wallet${
+      range ? `&range=${range}` : ""
+    }`,
   })
     .then((res) => {
       if (res?.data && !res?.data?.error) {

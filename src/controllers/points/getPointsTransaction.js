@@ -1,28 +1,22 @@
-import fetchServer from "../../fetchServer";
+import fetchServer from "../fetchServer";
 
 /**
  *
- * @param {"FlightCommission"|"HotelCommission"} commissionType
  * @param {"Pending"|"Success"|"Failed"} status
  * @returns
  */
-export default async function getCommissionTransactions(
-  commissionType = "FlightCommission",
-  status,
-  range,
-  keyword,
-) {
+export default async function getPointTransactions(status, keyword) {
   let result = {
     return: 0,
-    msg: "Something went wrong fetching flight commissions!",
+    msg: "Something went wrong fetching miles points!",
   };
 
   await fetchServer({
     method: "GET",
     url: `/payment/v1/payment/transactions?filterBy=reason${
-      status ? ",status" : ""
-    }&filterValue=${commissionType}${status ? "," + status : ""}${
-      range ? `&range=${range}` : ""
+      typeof status !== "undefined" ? ",isCredit" : ""
+    }&filterValue=Point${
+      typeof status !== "undefined" ? "," + status : ""
     }&searchBy=transactionRef&keyword=${keyword ? keyword : ""}`,
   })
     .then((res) => {

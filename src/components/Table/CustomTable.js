@@ -4,7 +4,7 @@ import SearchInput from "../form/SearchInput";
 import Button1 from "../form/Button1";
 
 export default function CustomTable(props) {
-  const { columns, rows, searchProps, ...restProps } = props;
+  const { columns, rows, searchProps, loading, ...restProps } = props;
 
   const [searchVal, setSearchVal] = useState(searchProps?.q || "");
 
@@ -64,7 +64,13 @@ export default function CustomTable(props) {
         </form>
       ) : null}
 
-      <DataGrid autoHeight columns={modCols} rows={modRows} {...restProps} />
+      <DataGrid
+        autoHeight
+        columns={modCols}
+        rows={modRows}
+        loading={loading}
+        {...restProps}
+      />
     </div>
   );
 }

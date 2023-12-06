@@ -21,8 +21,6 @@ export default function Settings() {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
-  console.log(user);
-
   async function handleSubmit(ev) {
     ev.preventDefault();
 

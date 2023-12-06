@@ -8,7 +8,7 @@ export default async function addBankAccount(data) {
 
   await fetchServer({
     method: "POST",
-    url: "/payment/v1/payment/addBankAccount",
+    url: "/payment/v1/personalAccount/addBankAccount",
     data,
   })
     .then((res) => {

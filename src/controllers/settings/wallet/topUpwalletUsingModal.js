@@ -1,15 +1,19 @@
 import fetchServer from "../../fetchServer";
 
-export default async function checkBankInfo(data) {
-  let result = {
-    return: 0,
-    msg: "Something went wrong checking bank info!",
-  };
+/**
+ *
+ * @param {string} reference
+ * @returns
+ */
+export default async function topUpWalletUsingModal(reference) {
+  let result = { return: 0, msg: "Something went wrong removing member!" };
 
   await fetchServer({
     method: "POST",
-    url: "/payment/v1/personalAccount/checkBankAccount",
-    data,
+    url: "/payment/v1/wallet/topUpUsingModal",
+    data: {
+      reference,
+    },
   })
     .then((res) => {
       if (res?.data && !res?.data?.error) {
