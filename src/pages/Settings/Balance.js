@@ -7,10 +7,14 @@ import Modal1 from "../../components/DIsplay/Modal/Modal1";
 import TextInput from "../../components/form/TextInput";
 import FilterCalendar from "../../components/form/FilterCalendar";
 import getWallet from "../../controllers/settings/wallet/getWallet";
-import topupWallet from "../../controllers/settings/wallet/topupWallet";
 import { useSnackbar } from "notistack";
 import setLowBalanceThreshold from "../../controllers/settings/wallet/setLowBalanceThreshold";
 import getWalletTransactions from "../../controllers/settings/wallet/getWalletTransactions";
+import moment from "moment";
+import PaystackButton from "../../components/Paystack/PaystackButton";
+import { generateRef } from "../../utils/generateRef";
+import { useSelector } from "react-redux";
+import topUpWalletUsingModal from "../../controllers/settings/wallet/topUpwalletUsingModal";
 
 export default function BalanceSetting() {
   const columns = [
@@ -44,19 +48,39 @@ export default function BalanceSetting() {
 
   const [balanceData, setBalanceData] = useState({ balance: 0 });
   const [walletTransactions, setWalletTransactions] = useState([]);
+  const [dateFilter, setDateFilter] = useState({
+    range: "week",
+    date: new Date().toLocaleDateString(),
+  });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    async function loadTransaction() {
+      let range = undefined;
+      const date =
+        dateFilter?.range !== "All"
+          ? moment(dateFilter?.date)
+              .subtract(1, dateFilter?.range)
+              .format("MM/D/YYYY")
+          : undefined;
+      if (date) {
+        range = date + "," + dateFilter?.date;
+      }
+      setLoading(true);
+      const transactions = await getWalletTransactions(range);
+      setLoading(false);
+      if (transactions.return) {
+        setWalletTransactions(transactions.data?.data);
+      }
+    }
+    loadTransaction();
     load();
-  }, []);
+  }, [dateFilter?.date, dateFilter?.range]);
 
   async function load() {
     const res = await getWallet();
     if (res.return) {
       setBalanceData(res?.data);
-    }
-    const transactions = await getWalletTransactions();
-    if (transactions.return) {
-      setWalletTransactions(transactions.data?.data);
     }
   }
   return (
@@ -67,7 +91,10 @@ export default function BalanceSetting() {
         </div>
         <div className="w-full sm:w-auto flex justify-end">
           <div className="flex gap-5 items-center">
-            <FilterCalendar />
+            <FilterCalendar
+              dateFilter={dateFilter}
+              setDateFilter={setDateFilter}
+            />
             <FileDownloadOutlined color="primary" className="cursor-pointer" />
           </div>
         </div>
@@ -76,7 +103,7 @@ export default function BalanceSetting() {
       <div className="flex justify-between flex-wrap">
         <div className="flex flex-col gap-3 mb-4">
           <div className="inline-block self-start">
-            <TopupBalance reload={load} />
+            <TopUpBalance reload={load} />
           </div>
           <div className="tooltip">
             In test mode your balance is unlimited. It is topped-off
@@ -98,42 +125,24 @@ export default function BalanceSetting() {
           </div>
         </div>
       </div>
-      <CustomTable rows={walletTransactions} columns={columns} />
+      <CustomTable
+        rows={walletTransactions}
+        columns={columns}
+        loading={loading}
+      />
     </div>
   );
 }
 
-function TopupBalance({ reload }) {
+function TopUpBalance({ reload }) {
   const [open, setOpen] = useState(false);
   const [data, setData] = useState({ amount: 0 });
-  const [loading, setLoading] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
+  const { user } = useSelector((state) => state.user.userData);
 
-  async function handleTopup() {
-    setLoading(true);
-    const res = await topupWallet(data);
-    setLoading(false);
-    if (res.return) {
-      const newWindow = window.open(
-        res?.data?.data?.authorization_url,
-        "_blank",
-      );
+  const handleTopUp = async (reference) => {
+    await topUpWalletUsingModal(reference);
+  };
 
-      //FIXME:
-      const intervalId = setInterval(() => {
-        if (newWindow.closed) {
-          clearInterval(intervalId); // Stop checking
-          handleClose(); // Call your close handler function
-        }
-      }, 1000);
-
-      function handleClose() {
-        setOpen(false);
-        enqueueSnackbar("Successful", { variant: "success" });
-        reload && reload();
-      }
-    } else enqueueSnackbar(res.msg, { variant: "error" });
-  }
   return (
     <div>
       <Button1 onClick={() => setOpen(true)}>Top-up Balance</Button1>
@@ -142,7 +151,8 @@ function TopupBalance({ reload }) {
           <h4>Top-up balance</h4>
           <TextInput
             label="Amount"
-            value={data.amount}
+            type="number"
+            value={data.amount || 0}
             onChange={(ev) => setData({ ...data, amount: ev.target.value })}
             InputProps={{
               endAdornment: "NGN",
@@ -153,9 +163,20 @@ function TopupBalance({ reload }) {
           <Button1 className="btn-theme-light" onClick={() => setOpen(false)}>
             Cancel
           </Button1>
-          <Button1 loading={loading} onClick={handleTopup}>
-            Save Changes
-          </Button1>
+          <PaystackButton
+            config={{
+              amount: data.amount * 100,
+              reference: generateRef("WTR-"),
+              email: user?.email,
+            }}
+            onSuccess={(reference) => {
+              handleTopUp(reference?.reference);
+              setOpen(false);
+              reload();
+            }}
+          >
+            <Button1>Save Changes</Button1>
+          </PaystackButton>
         </div>
       </Modal1>
     </div>
