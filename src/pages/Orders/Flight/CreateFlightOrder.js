@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import BreadCrumb from '../../../components/DIsplay/Nav/BreadCrumb'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Box, MenuItem, Popover, RadioGroup } from '@mui/material'
@@ -139,10 +139,17 @@ export default function CreateFlightOrder() {
 
   }
 
+  const calendarRef = useRef([...Array(10)]);
+
   function handleSetDate(val,i=0) {
     let tempDate = clone(date);
     tempDate[i] = val;
     setDate(tempDate);
+
+    if(calendarRef.current?.at(i+1))
+      calendarRef.current[i+1]?.focus();
+
+    // console.log('ad: ',calendarRef.current)
   } 
 
   function handleSetDestination(obj,i=0) {
@@ -172,6 +179,7 @@ export default function CreateFlightOrder() {
       return newArray;
     });
   }
+
 
   return (
     <div className='self-center flex flex-col gap-5 flex-1 pd-md w-full py-5'>
@@ -203,13 +211,13 @@ export default function CreateFlightOrder() {
           </div>
           <div className='flex justify-stretch gap-4'>
             <div className='flex-1'>
-              <CalendarInput1 label='Departure Date' className='w-full border border-primary/20 rounded-md p-2'
+              <CalendarInput1 ref={(el) => calendarRef.current[0] = el} label='Departure Date' className='w-full border border-primary/20 rounded-md p-2'
                 value={date[0] || ''}
                 onChange={(value) => handleSetDate(value?.start || value)}
               />
             </div>
             {type === 'return' ? 
-              <CalendarInput1 label='Return Date' className='w-full border border-primary/20 rounded-md p-2'
+              <CalendarInput1 ref={(el) => calendarRef.current[1] = el} label='Return Date' className='w-full border border-primary/20 rounded-md p-2'
                 value={date[1] || ''}
                 onChange={(value) => handleSetDate(value?.start || value,1)}
               />

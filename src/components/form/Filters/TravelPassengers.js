@@ -6,19 +6,19 @@ import { def } from "../../../config";
 export default function FilterTravelPassengers({returnData,q,oneLine,value}) {
   const init = [
     {
-      name: 'adults',
+      name: 'adult',
       label: <div className='flex flex-wrap gap-2'><b> Adult</b> <small className='whitespace-nowrap'>(Over 11)</small> </div>,
       icon: <Person className='sqr4' />,
       value: parseInt(q && q.adults) || 1
     },
     {
-      name: 'children',
+      name: 'child',
       label: <div className='flex flex-wrap gap-2'><b> Child</b> <small className='whitespace-nowrap'>(2 - 11)</small></div>,
       icon: <ChildCareOutlined className='sqr4' />,
       value: parseInt(q && q.children) || 0
     },
     {
-      name: 'infants',
+      name: 'infant',
       label: <div className='flex flex-wrap gap-2'><b> Infant</b> <small className='whitespace-nowrap'>(Under 2)</small></div>,
       icon: <ChildFriendlyOutlined className='sqr4' />,
       value: parseInt(q && q.infants) || 0

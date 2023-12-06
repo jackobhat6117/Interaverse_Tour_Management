@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react'
 import BreadCrumb from '../../../../components/DIsplay/Nav/BreadCrumb'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { decrypt } from '../../../../features/utils/crypto';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import FlightPriceSummary from '../../../../components/flight/FlightPriceSummary';
 import FlightSegmentDisplay from '../../../../components/flight/FlightSegmentDisplay';
 import getFlightOfferPrice from '../../../../controllers/Flight/getOfferPrice';
 import { clone } from '../../../../features/utils/objClone';
 import convertFlightObject from '../../../../features/utils/flight/flightOfferObj';
+import { setBookingData } from '../../../../redux/reducers/flight/flightBookingSlice';
 
 
 export default function FlightBook() {
@@ -16,6 +17,7 @@ export default function FlightBook() {
   const {bookingData} = useSelector(state => state.flightBooking);
   const [offer,setOffer] = useState([...Array(2)])
   const [loading,setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   console.log(qObj)
 
@@ -43,6 +45,7 @@ export default function FlightBook() {
       console.log(res.data.data)
       let data = (res.data.data?.map(obj => convertFlightObject(obj)) || [])
       setOffer(data)
+      dispatch(setBookingData({...bookingData,offersPrice: data}))
     } else setOffer(null)
   }
   console.log(' -----> ',offer)

@@ -40,6 +40,7 @@ import LearnPricing from './pages/Welcome/LearnPricing.js';
 import LearnMiles from './pages/Welcome/LearnMiles/LearnMiles.js';
 import ProfileStatusCheck from './components/ProfileSurvey/New/ProfileStatusCheck.js';
 import Test from './pages/test.js';
+import FlightPayment from './pages/Orders/Flight/Book/FlightPayment.js';
 // import 'dotenv/config'
 
 
@@ -103,6 +104,8 @@ function App() {
                   <Route path='order/new/flight/book/:id' element={<FlightBook />} />
                   <Route path='order/new/flight/book/details/:id' element={<FlightBookDetails />} />
                   <Route path='order/new/flight/book/ancillaries/:id' element={<FlightAncillaries />} />
+                  <Route path='order/new/flight/book/payment/:id' element={<FlightPayment />} />
+                  <Route path='orders/flight/:id' element={<>Order</>} />
                   <Route path='users' element={<UserManagement />} />
                   <Route path='link' element={<Links />} />
                   <Route path='*' element={<PageNotFound />} />

@@ -25,8 +25,7 @@ export const offerSearchTemp = {
       }
   ],
   "passengers": {
-      "adult": 1,
-      "child": 1
+      "adult": 1
   },
   "cabinClass": [
       "Economy"

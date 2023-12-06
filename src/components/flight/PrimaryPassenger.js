@@ -8,20 +8,23 @@ import CalendarInput1 from '../form/CalendarInput1'
 import { Contrast } from '@mui/icons-material'
 import { travelersInfo } from '../../data/flight/travelersInfo'
 import { clone } from '../../features/utils/objClone'
+import moment from 'moment'
 
-export default function PrimaryPassenger({label,handleReturn}) {
+export default function PrimaryPassenger({label,handleReturn,count=0,collapse=false}) {
 
   const [data,setData] = useState(clone(travelersInfo))
   useEffect(() => {
-    let {email,phone,...rest} = data
-    handleReturn && handleReturn(rest)
+    let {email,phone,birthDate,expiryDate,...rest} = data
+    birthDate = moment(birthDate).format('YYYY-MM-DD')
+    expiryDate = moment(expiryDate).format('YYYY-MM-DD')
+    handleReturn && handleReturn({...rest,birthDate,expiryDate},count)
     //eslint-disable-next-line
   },[data])
 
 
   return (
     <div>
-      <Collapse label={label || 'Primary Passenger'} show>
+      <Collapse label={label || 'Primary Passenger'} show={!collapse}>
         <div className='flex flex-col gap-4'>
           <div className='flex gap-4 flex-wrap md:flex-nowrap'>
             <TextInput label={'Given name'} placeholder={'e.g John Doe'}
