@@ -1,110 +1,216 @@
-import React, { useEffect, useState } from 'react'
-import FilterCalendar from '../../../components/form/FilterCalendar'
-import TableFilter from '../../../components/Table/TableFilter';
-import SearchInput from '../../../components/form/SearchInput';
-import Button1 from '../../../components/form/Button1';
-import CustomTable from '../../../components/Table/CustomTable';
-import getCommissionTransactions from '../../../controllers/Flight/Commission/getTransactions';
-// import { commissionTransactionData } from '../../../data/transaction/commissionTransaction';
+import React, { useEffect, useState } from "react";
+import FilterCalendar from "../../../components/form/FilterCalendar";
+import TableFilter from "../../../components/Table/TableFilter";
+import SearchInput from "../../../components/form/SearchInput";
+import Button1 from "../../../components/form/Button1";
+import CustomTable from "../../../components/Table/CustomTable";
+import getCommissionTransactions from "../../../controllers/Flight/Commission/getTransactions";
+import moment from "moment";
 
 export default function CommissionSettings() {
-  const [commissionFor,setCommissionFor] = useState('Flights');
+  const [commissionFor, setCommissionFor] = useState("FlightCommission");
+  const [commissionData, setCommissionData] = useState();
+  const [status, setStatus] = useState();
+  const [dateFilter, setDateFilter] = useState({
+    range: "week",
+    date: new Date().toLocaleDateString(),
+  });
+  const [keyword, setKeyword] = useState("");
 
   useEffect(() => {
-    load();
-  },[])
-
-  async function load() {
-    const res = await getCommissionTransactions();
-    if(res.return) {
-      console.log(res.data)
+    async function load() {
+      let range = undefined;
+      const date =
+        dateFilter?.range !== "All"
+          ? moment(dateFilter?.date)
+              .subtract(1, dateFilter?.range)
+              .format("MM/D/YYYY")
+          : undefined;
+      if (date) {
+        range = date + "," + dateFilter?.date;
+      }
+      const res = await getCommissionTransactions(
+        commissionFor,
+        status,
+        range,
+        keyword,
+      );
+      if (res.return) {
+        setCommissionData(res.data?.data);
+      }
     }
-  }
+    load();
+  }, [commissionFor, dateFilter, keyword, status]);
 
-  let objs = [
-    {label: "Today's earnings",inc: 5,price: '10,000'},
-    {label: "Last 7 days",inc: 15,price: '23,450'},
-    {label: "Last 30 days",inc: 15,price: '23,450'},
-    {label: "Overall",inc: 15,price: '12,345,000'},
-  ];
+  /**
+   * @param {number} current
+   * @param {number} previous
+   */
+  const calculatePercentage = (current, previous) => {
+    const parsedCurrent =
+      !isNaN(Number(current)) && isFinite(Number(current))
+        ? Number(current)
+        : 0;
+    const parsedPrevious =
+      !isNaN(Number(previous)) && isFinite(Number(previous))
+        ? Number(previous)
+        : 0;
+    return parsedPrevious !== 0
+      ? (((parsedCurrent - parsedPrevious) / parsedPrevious) * 100).toFixed(1)
+      : parsedCurrent !== 0
+      ? 100
+      : 0;
+  };
+
+  const getStats = () => {
+    return [
+      {
+        label: "Today's earnings",
+        inc: calculatePercentage(
+          commissionData?.meta?.todaysEarning,
+          commissionData?.meta?.yesterdaysEarning,
+        ),
+        price: commissionData?.meta?.todaysEarning,
+      },
+      {
+        label: "Last 7 days",
+        inc: calculatePercentage(
+          commissionData?.meta?.last7Days,
+          commissionData?.meta?.last7DaysPast,
+        ),
+        price: commissionData?.meta?.last7Days,
+      },
+      {
+        label: "Last 30 days",
+        inc: calculatePercentage(
+          commissionData?.meta?.last30Days,
+          commissionData?.meta?.last30DaysPast,
+        ),
+        price: commissionData?.meta?.last30DaysPast,
+      },
+      {
+        label: "Overall",
+        inc: calculatePercentage(
+          commissionData?.meta?.totalCreditTransaction,
+          commissionData?.meta?.totalDebitTransaction,
+        ),
+        price: commissionData?.meta?.totalCreditTransaction,
+      },
+    ];
+  };
+
   const filterOptions = [
-    {value: 'All',count: 293},
-    {value: 'Flights',count: 10},
-    {value: 'Stays',count: 10},
-    {value: 'Tours',count: 10},
-  ]
+    { value: "All", count: commissionData?.meta?.total },
+    { value: "Pending", count: commissionData?.meta?.pending },
+    { value: "Success", count: commissionData?.meta?.success },
+    { value: "Failed", count: commissionData?.meta?.failed },
+  ];
   const columns = [
-    {field: 'sn',headerName: 'SN',flex: 1},
-    {field: 'provider',headerName: 'Provider',flex: 1},
-    {field: 'type',headerName: 'Type',flex: 1},
-    {field: 'id',headerName: 'ID',flex: 1},
-    {field: 'amount',headerName: 'Amount',flex: 1},
-    {field: 'commission',headerName: 'Commission',flex: 1},
-    {field: 'date',headerName: 'Date Created',flex: 1},
-  ]
-  let data = [
-    {sn: '1',provider: 'gb Travels',type: 'tour',id: 'ord_000A9123FW3aCqq6c',amount: '234,234',commission: '4,900',date: '22/12/99'},
-    {sn: '2',provider: 'Carry Go',type: 'tour',id: 'ord_000A9123FW3aCqq6d',amount: '234,234',commission: '4,900',date: '22/12/99'},
-    {sn: '3',provider: 'Master Goals',type: 'tour',id: 'ord_000A9123FW3aCqq5c',amount: '234,234',commission: '4,900',date: '22/12/99'},
-    {sn: '4',provider: 'gb Travels',type: 'tour',id: 'ord_000A9123FW3aCq446c',amount: '234,234',commission: '4,900',date: '22/12/99'},
-    {sn: '5',provider: 'gb Travels',type: 'tour',id: 'ord_000A9123FW3aCGq6c',amount: '234,234',commission: '4,900',date: '22/12/99'},
-    {sn: '6',provider: 'gb Travels',type: 'tour',id: 'ord_000A9123FW3aqBq6c',amount: '234,234',commission: '4,900',date: '22/12/99'},
-  ]
-  // let tempData = commissionTransactionData.map(obj => ({...obj,id: obj._id}));
+    { field: "transactionRef", headerName: "Reference", flex: 1 },
+    {
+      field: "createdAt",
+      headerName: "Date Created",
+      flex: 1,
+      renderCell: (params) => new Date(params.value).toDateString(),
+    },
+    { field: "amount", headerName: "Amount", flex: 1 },
+    {
+      field: "flightCommissions",
+      headerName: "Applied Commissions",
+      flex: 1,
+      renderCell: (params) => (
+        <div>{Array.isArray(params?.value) ? params.value?.length : 0}</div>
+      ),
+    },
+    { field: "status", headerName: "Status", flex: 1 },
+  ];
+
   return (
-    <div className='content-max-w flex flex-col gap-5'>
-      <div className='flex gap-3 flex-wrap'>
-        <button onClick={() => setCommissionFor('Flights')}
-          className={`flex p-3 px-5 items-center min-w-[120px] justify-center gap-2 ${commissionFor === 'Flights' ? '!btn':'!btn-theme-light'} `}
+    <div className="content-max-w flex flex-col gap-5">
+      <div className="flex gap-3 flex-wrap">
+        <button
+          onClick={() => setCommissionFor("FlightCommission")}
+          className={`flex p-3 px-5 items-center min-w-[120px] justify-center gap-2 ${
+            commissionFor === "FlightCommission" ? "!btn" : "!btn-theme-light"
+          } `}
         >
           Flights
         </button>
-        <button onClick={() => setCommissionFor('Stays')}
-          className={`flex p-3 px-5 items-center min-w-[120px] justify-center gap-2 ${commissionFor === 'Stays' ? '!btn':'!btn-theme-light'} `}
+        <button
+          onClick={() => setCommissionFor("HotelCommission")}
+          className={`flex p-3 px-5 items-center min-w-[120px] justify-center gap-2 ${
+            commissionFor === "HotelCommission" ? "!btn" : "!btn-theme-light"
+          } `}
         >
           Stays
         </button>
-        <button onClick={() => setCommissionFor('Tours')}
-          className={`flex p-3 px-5 items-center min-w-[120px] justify-center gap-2 ${commissionFor === 'Tours' ? '!btn':'!btn-theme-light'} `}
+        <button
+          onClick={() => setCommissionFor("TourCommission")}
+          className={`flex p-3 px-5 items-center min-w-[120px] justify-center gap-2 ${
+            commissionFor === "TourCommission" ? "!btn" : "!btn-theme-light"
+          } `}
         >
           Tours
         </button>
       </div>
 
-      <div className='flex items-center justify-between gap-4'>
-        <h4 className='text-primary/40'>Commission Overview</h4>
+      <div className="flex items-center justify-between gap-4">
+        <h4 className="text-primary/40">Commission Overview</h4>
         <div>
-          <FilterCalendar />
+          <FilterCalendar
+            dateFilter={dateFilter}
+            setDateFilter={setDateFilter}
+          />
         </div>
       </div>
-      <div className='flex gap-2 overflow-hidden overflow-x-auto'>
-        {objs.map((obj,i) => (
+      <div className="flex gap-2 overflow-hidden overflow-x-auto">
+        {getStats()?.map((obj, i) => (
           <Stats key={i} data={obj} />
         ))}
       </div>
-      <TableFilter value={'All'} options={filterOptions} />
-      <div className='flex flex-wrap gap-4 items-center justify-between'>
-        <div className='text-primary/40'>Filter</div>
-        <div className='min-w-[70%]'>
-          <SearchInput />
+      <TableFilter
+        value={"All"}
+        options={filterOptions}
+        onChange={(value) => {
+          if (value === "All") {
+            setStatus(undefined);
+          } else {
+            setStatus(value);
+          }
+        }}
+      />
+      <div className="flex flex-wrap gap-4 items-center justify-between">
+        <div className="text-primary/40">Filter</div>
+        <div className="min-w-[70%]">
+          <SearchInput
+            handleClick={(value) => {
+              setKeyword(value);
+            }}
+          />
         </div>
-        <div className=''>
-          <Button1 variant='text'>EXPORT</Button1>
+        <div className="">
+          <Button1 variant="text">EXPORT</Button1>
         </div>
       </div>
-      <CustomTable columns={columns} rows={data} />
+      <CustomTable columns={columns} rows={commissionData?.data || []} />
     </div>
-  )
+  );
 }
 
-function Stats({data}) {
+function Stats({ data }) {
   return (
-    <div className='p-4 flex flex-col items-end bg-[#2DA771]/10 rounded-lg flex-1'>
-      <div className='flex gap-3 whitespace-nowrap'>
+    <div className="p-4 flex flex-col items-end bg-[#2DA771]/10 rounded-lg flex-1">
+      <div className="flex gap-3 whitespace-nowrap">
         <p>{data.label}</p>
-        <p className='!text-green-500'>+{data.inc}%</p>
+        {data.inc > 0 ? (
+          <p className="!text-green-500">+{data.inc}%</p>
+        ) : data.inc < 0 ? (
+          <p className="!text-red-500">-{data.inc}%</p>
+        ) : (
+          <></>
+        )}
       </div>
       <h4>{data.price}</h4>
     </div>
-  )
+  );
 }

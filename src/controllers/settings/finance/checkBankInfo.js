@@ -8,7 +8,7 @@ export default async function checkBankInfo(data) {
 
   await fetchServer({
     method: "POST",
-    url: "/payment/v1/payment/checkBankAccount",
+    url: "/payment/v1/personalAccount/checkBankAccount",
     data,
   })
     .then((res) => {
