@@ -57,6 +57,9 @@ export default function SecuritySettings() {
           <MenuItem value={60}>After 60 minutes</MenuItem>
           <MenuItem value={90}>After 90 minutes</MenuItem>
           <MenuItem value={120}>After 120 minutes</MenuItem>
+          <MenuItem value={1440}>After a day</MenuItem>
+          <MenuItem value={10080}>After a week</MenuItem>
+          <MenuItem value={43829}>After a month</MenuItem>
         </SelectInput>
         </div>
       </div>

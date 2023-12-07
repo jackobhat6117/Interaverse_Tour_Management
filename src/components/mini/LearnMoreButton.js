@@ -7,7 +7,7 @@ export default function LearnMoreButton(props) {
   const [open,setOpen] = useState(false)
   return (
     <div>
-      <Button1 variant='outlined' {...restProps} className={'!capitalize '+buttonClassName} onClick={() => setOpen(true)}>{label || "Learn more"}</Button1>
+      <Button1 variant='outlined' {...restProps} className={' '+buttonClassName} onClick={() => setOpen(true)}>{label || "Learn more"}</Button1>
       <Modal1 open={open} setOpen={setOpen}>
         <div className='p-10 text-start max-w-[700px]'>
           {!component && <h3 className='pb-4'>Header Title</h3>}

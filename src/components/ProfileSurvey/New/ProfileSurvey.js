@@ -139,8 +139,8 @@ export default function ProfileSurvey() {
     <div className='flex min-h-screen h-screen max-w-full overflow-hidden'>
       <div className='hidden md:flex flex-col justify-between w-[30%] max-w-[300px] bg-[#B3DBFF]'>
         <div className='w-full p-3 px-5 flex gap-2 justify-center sm:justify-start'>
-          <img src={logo} alt='Miles' className='h-[35px] object-contain' />
-          <img src={textlogo} alt='Miles' className='h-[35px]' />
+          <img src={logo} alt='' className='h-[35px] object-contain' />
+          <img src={textlogo} alt='' className='h-[35px]' />
         </div>
         <div className='relative h-[400px] '>
           <Astraunant className=' w-full h-auto bottom-0 translate-x-8 absolute ' />
@@ -201,8 +201,8 @@ function ReviewBusinessProfile({userId,setStep,activate}) {
   return (
     <div className='flex flex-col gap-5 w-[600px] min-h-[85%] max-w-full py-10'>
       <div className='w-full p-3 px-5 flex md:hidden gap-2 justify-center md:justify-start'>
-        <img src={logo} alt='Miles' className='h-[35px] object-contain' />
-        <img src={textlogo} alt='Miles' className='h-[35px]' />
+        <img src={logo} alt='' className='h-[35px] object-contain' />
+        <img src={textlogo} alt='' className='h-[35px]' />
       </div>
       {
         !edit || (Number(edit) === 1 || Number(edit) > 3) ? 
@@ -265,8 +265,8 @@ function Congradulations() {
       {loading ? 
         <div className='flex flex-col flex-1 justify-center items-center '>
           <div className='w-full  px-5 flex gap-2 justify-center '>
-            <img src={logo} alt='Miles' className='h-[35px] object-contain' />
-            <img src={textlogo} alt='Miles' className='h-[35px]' />
+            <img src={logo} alt='' className='h-[35px] object-contain' />
+            <img src={textlogo} alt='' className='h-[35px]' />
           </div>
           <img src={'/gifs/loading-bar.gif'} alt='Preloader' className='h-[150px] -translate-y-10' />
         </div>

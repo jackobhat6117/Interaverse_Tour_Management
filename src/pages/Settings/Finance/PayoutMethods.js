@@ -147,7 +147,8 @@ export default function PayoutMethods() {
           </div>
         </div>
         <BankAccounts banks={banks} data={ownBankAccounts} loading={loading} />
-        <div>
+        <br />
+        <div className="flex flex-col gap-2">
           <h5>Payout settings</h5>
           <p>Set how you want to recieve your payouts</p>
         </div>

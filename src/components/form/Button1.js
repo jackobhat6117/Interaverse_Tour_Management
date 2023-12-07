@@ -9,7 +9,7 @@ function Button1(props) {
     <Button variant='contained' type='button' {...buttonProps} sx={{textTransform: 'none'}} disabled={disabled || loading} 
       onMouseEnter={() => setShowtip(true)}
       onMouseOut={() => setShowtip(false)}
-      className={'w-full relative !shadow-none !font-bold !rounded-lg !min-w-[80px] !px-2 !py-[7px] '+props.className+' '+(props.size === 'small' ? ' !px-3 !rounded-sm !py-0 sm:!py-0 ':'')}
+      className={'w-full relative !shadow-none  !rounded-lg !min-w-[80px] !px-4 !py-[7px] '+props.className+' '+(props.size === 'small' ? ' !px-3 !rounded-sm !py-0 sm:!py-0 ':'')}
     >
       {loading ? 'Please Wait...' :
         label || children

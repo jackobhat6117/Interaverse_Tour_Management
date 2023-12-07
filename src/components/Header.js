@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
-import logo from '../assets/icons/textlogo.png';
+import logo from '../assets/icons/textlogo.svg';
 import SearchInput from './form/SearchInput';
 import { Drawer, FormControlLabel } from '@mui/material';
-import { Close, Home, Menu, Notifications, Person, Settings } from '@mui/icons-material';
+import { Close, Home, Menu, Notifications, Person, Settings, SupportAgentOutlined } from '@mui/icons-material';
 import CustomMenu from './utils/CustomMenu';
 import moment from 'moment/moment';
 import Button1 from './form/Button1';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../redux/reducers/userSlice';
 import { Link } from 'react-router-dom';
 import IOSSwitch from './form/IOSSwitch';
+import Icon from './HOC/Icon';
 
 
 
@@ -18,13 +19,14 @@ const colors = [
 ]
 
 export default function Header() {
+  const {user} = useSelector(state => state.user.userData)
   const dispatch = useDispatch();
   const [open,setOpen] = useState(false);
   const notifications = [
-    {date: '9/19/2023',title: 'Complete the quick start tutorial',description: 'This tutorial shows you how easy and fast it is to start selling flights with Miles'},
-    {date: '9/10/2023',title: 'View our guides',description: 'Visit our guide section to learn more about the Miles API, and start building your integration'},
-    {date: '9/10/2023',title: 'View our guides',description: 'Visit our guide section to learn more about the Miles API, and start building your integration'},
-    {date: '9/10/2023',title: 'View our guides',description: 'Visit our guide section to learn more about the Miles API, and start building your integration'},
+    {date: '9/19/2023',title: 'Complete the quick start tutorial',description: 'This tutorial shows you how easy and fast it is to start selling flights with Intraverse'},
+    {date: '9/10/2023',title: 'View our guides',description: 'Visit our guide section to learn more about the Intraverse API, and start building your integration'},
+    {date: '9/10/2023',title: 'View our guides',description: 'Visit our guide section to learn more about the Intraverse API, and start building your integration'},
+    {date: '9/10/2023',title: 'View our guides',description: 'Visit our guide section to learn more about the Intraverse API, and start building your integration'},
   ]
 
   function handleLogout() {
@@ -33,22 +35,25 @@ export default function Header() {
   return (
     <div>
       <div className='hidden md:flex items-center gap-10 px-md py-2'>
-      <Link to='/'>
-        <img src={logo} alt='Miles' />
+      <Link to='/' className='flex gap-2 items-center'>
+        <img src='/logo.svg' alt='' className='w-[25px] h-[25px]' />
+        <img src={logo} alt='' className='w-[100px]' />
       </Link>
       <div className='flex-1 z-[90]'>
         <SearchInput exampleview={true} searchview={true} />
       </div>
       <div className='flex gap-3 items-center text-primary/50'>
-        <b>Test mode</b>
-        <FormControlLabel
-          control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
-        />
+        <div className=''>
+          <small>Go Live</small>
+          <FormControlLabel
+            control={<IOSSwitch sx={{ m: 1 }} defaultCheckedx />}
+            />
+        </div>
 
         {/* Account Menu */}
         <CustomMenu element={
-          <div className='rounded-md bg-primary/10 w-7 h-7 text-center flex-center justify-center'>
-            <Notifications className='!text-base'/>
+          <div className='rounded-md xbg-primary/10 w-7 h-7 px-4 flex items-center flex-center justify-center'>
+            <Notifications className='!text-[20px]'/>
           </div>
         }>
           <div className='min-w-[40vw] max-w-[800px] shadow-md border'>
@@ -81,13 +86,23 @@ export default function Header() {
           </div>
         </CustomMenu>
 
+        <SupportAgentOutlined />
+
+        <Link className='' variant='text' to='/settings/'>
+          <Icon icon='ant-design:setting-filled' />
+        </Link>
+
+        <Icon icon='subway:menu' />
+
+
         <CustomMenu element={
-          <div className='rounded-md bg-primary/10 w-7 h-7 text-center flex-center justify-center'>
-            <Person className='!text-base' />
+          <div className='rounded-full overflow-hidden bg-theme1/10 w-10 h-10 text-lg flex items-center justify-center font-extrabold'>
+            {user?.detail?.agencyLogo ? 
+              <img src={user?.detail?.agencyLogo} alt='' className='object-contain w-full h-full' />
+            : user?.firstName?.at(0) || <Person className='!text-base' />}
           </div>
         }>
           <div className='shadow-md border bg-secondary flex flex-col gap-1'>
-            <Link className='btn-theme-light text-end' variant='text' to='/settings/'>Settings</Link>
             <Button1 onClick={handleLogout} variant={'text'} className='text-primary'>Logout</Button1>
           </div>
         </CustomMenu>
@@ -97,7 +112,7 @@ export default function Header() {
       {/* Mobile View */}
       <div className='bg-black'>
         <div className='flex md:hidden justify-between items-center bg-opacity-40 gap-6 bg-theme1 text-white py-4 px-md'>
-          <h4 className='text-secondary'>Miles</h4>
+          <h4 className='text-secondary'>Intraverse</h4>
           <div className='rounded-md bg-primary/10 w-7 h-7 text-center flex-center justify-center' onClick={() => setOpen(true)}>
             <Menu className='cursor-pointer' />
           </div>

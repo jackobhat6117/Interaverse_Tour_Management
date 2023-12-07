@@ -52,8 +52,8 @@ export default function RecoverPassword() {
   return (
     <div className='flex flex-col min-h-screen font-bold'>
       <div className='w-full p-3 px-5'>
-        <img src={logo} alt='Miles' />
-        <img src={textlogo} alt='Miles' />
+        <img src={logo} alt='' />
+        <img src={textlogo} alt='' />
       </div>
       <form onSubmit={handleSubmit} className='w-full flex flex-col items-center justify-center flex-1'>
         <div className='p-6 sm:card sm:bg-[#00000007] flex flex-col gap-5'>

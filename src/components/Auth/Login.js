@@ -49,8 +49,8 @@ export default function Login() {
   return (
     <div className='flex flex-col min-h-screen font-bold gap-4'>
       <div className='w-full p-3 px-5 flex gap-2 bg-secondary justify-center sm:justify-start'>
-        <img src={logo} alt='Miles' className='h-[35px] object-contain' />
-        <img src={textlogo} alt='Miles' className='h-[35px]' />
+        <img src={logo} alt='' className='h-[35px] object-contain' />
+        <img src={textlogo} alt='' className='h-[35px]' />
       </div>
       <form onSubmit={handleSubmit} className='w-full flex flex-col items-center justify-center flex-1'>
         <div className='card flex flex-col gap-5 text-center'>
