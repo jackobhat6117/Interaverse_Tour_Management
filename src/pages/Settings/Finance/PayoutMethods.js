@@ -146,7 +146,7 @@ export default function PayoutMethods() {
             : null}
           </div>
         </div>
-        <BankAccounts data={ownBankAccounts} loading={loading} />
+        <BankAccounts banks={banks} data={ownBankAccounts} loading={loading} />
         <div>
           <h5>Payout settings</h5>
           <p>Set how you want to recieve your payouts</p>

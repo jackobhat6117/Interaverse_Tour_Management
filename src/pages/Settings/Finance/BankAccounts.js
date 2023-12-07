@@ -20,15 +20,29 @@ function ActionCol({params,reload}) {
     </div>
   )
 }
-export default function BankAccounts({data,loading}) {
+export default function BankAccounts({data,loading,banks}) {
   // let data = [
   //   {bank: 'UBA',account: '12341234',accountName: 'Okafor Chiemena Derick',status: 'default'},
   //   {bank: 'Access Bank',account: '12341234',accountName: 'Okafor Chiemena Derick',status: ''},
   //   {bank: 'Access Bank',account: '12341234',accountName: 'Okafor Chiemena Derick',status: ''},
   // ]
+  let modData = data?.map(obj => ({...obj,bankName: getBankName(obj.bankCode)}));
+
+  function getBankName(code) {
+    console.log(code,banks)
+    let bank = banks?.find(obj => obj.value === code)
+    return bank?.label;
+  }
+
   let columns = [
-    {field: 'bankCode',headerName: 'Bank'},
-    {field: 'account',headerName: 'Account Number'},
+    {field: 'bankName',headerName: 'Bank',
+      // renderCell: (params) => (
+      //   <div>
+      //     {getBankName(params.value)}
+      //   </div>
+      // )
+    },
+    {field: 'accountNumber',headerName: 'Account Number'},
     {field: 'accountName',headerName: 'Account Name'},
     {field: 'status',headerName: 'Action', flex: 1, minWidth: 300,
       renderCell: (params) => (
@@ -38,7 +52,7 @@ export default function BankAccounts({data,loading}) {
   ]
   return (
     <div className=' text-primary'>
-      <CustomTable rows={data} columns={columns} loading={loading} />
+      <CustomTable rows={modData} columns={columns} loading={loading} />
     </div>
   )
 }
