@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import textlogo from '../../assets/icons/textlogo.png'
+import textlogo from '../../assets/icons/textlogo.svg'
 import EmailInput from '../form/EmailInput'
 import Button1 from '../form/Button1'
 import { Link, useNavigate } from 'react-router-dom'
