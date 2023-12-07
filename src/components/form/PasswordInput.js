@@ -1,6 +1,6 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { IconButton } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import TextInput from './TextInput';
 
 const validationPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[ -/:-@\[-`{-~]).{8,64}$/;
@@ -11,6 +11,10 @@ export default function PasswordInput(props) {
   const [error,setError] = useState('');
 
   const [value,setValue] = useState(defValue || '');
+
+  useEffect(() => {
+    setValue(defValue)
+  },[defValue])
   function handleChange(ev) {
     let val = ev.target.value;
     if(!noValidation && val !== '' && !validationPattern.test(val))

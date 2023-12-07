@@ -155,7 +155,7 @@ export default function CommissionSettings() {
       </div>
 
       <div className="flex items-center justify-between gap-4">
-        <h4 className="text-primary/40">Commission Overview</h4>
+        <h5 className="text-primary/40">Commission Overview</h5>
         <div>
           <FilterCalendar
             dateFilter={dateFilter}

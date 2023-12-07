@@ -26,11 +26,16 @@ export default function FlightBookDetails() {
   const qObj = JSON.parse(decrypt(id));
   const {bookingData} = useSelector(state => state.flightBooking);
   const offer = bookingData?.offer && bookingData?.offer?.at(-1)
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
   
   function handleSearchRoute(i) {
     navigate('/order/new/flight/offers?q='+id+'&path='+i)
+  }
+
+  function handlePayTime(val) {
+    dispatch(setBookingData({...bookingData,payTime: val}));
   }
   console.log(" -> ",offer)
   return (
@@ -50,7 +55,7 @@ export default function FlightBookDetails() {
       </BreadCrumb>
       <div className='flex gap-10 flex-wrap-reverse md:flex-nowrap'>
         <div className='flex flex-col gap-6 md:w-[80%]'>
-          <PayTime />
+          <PayTime callback={(val) => handlePayTime(val)} />
           <div className='bg-theme1/10 flex items-center gap-2 p-2'>
             <Icon icon={'ic:sharp-lock'} className='w-8 h-8' />
             We take privacy issues seriously. You can be sure that your personal data is securely protected.
@@ -73,7 +78,7 @@ export default function FlightBookDetails() {
 function PassengerDetails({offer}) {
   const {id} = useParams();
   const {bookingData} = useSelector(state => state.flightBooking);
-  const segments = bookingData?.offer?.segments || [];
+  const segments = bookingData?.offer?.at(-1)?.segments || [];
   const departure = segments[0]?.departureLocation;
   let arrival = segments[segments.length-1]?.arrivalLocation || segments[0]?.arrivalLocation;
 
@@ -83,45 +88,64 @@ function PassengerDetails({offer}) {
   const dispatch = useDispatch();
   const {enqueueSnackbar} = useSnackbar();
 
-  const [data,setData] = useState(clone(travelersInfo));
-  console.log(' data --> ',data)
+  const [data,setData] = useState({...clone(travelersInfo),passengers: []});
+  console.log(' data --> ',offer)
 
 
   async function book() {
     // await new Promise(resolve => setTimeout(resolve,3000))
+    let passengerCount = Object.values(offer?.passengers)?.reduce((c,p) => parseInt(c.total) + parseInt(p.total),{total: 0})
+    // console.log(' ----------------- ',passengerCount)
     let req = {
       supplier: offer?.supplier,
       offers: [offer],
-      travelersInfo: [clone(data)]
+      travelersInfo: clone(data?.passengers)?.slice(0,passengerCount || 1)
     }
     // console.log(' --> ',data)
-    let pn = data?.phone?.split('-')
+    let pn = data?.phone?.toString()?.split('-')
     let countryObj = (Object.values(countries)?.find(obj => obj?.countryCallingCodes?.includes('+'+pn?.at(0))))
     let phone = {
       countryCode: pn?.at(0),
       number: pn?.at(1),
-      location: countryObj.alpha2,
+      location: countryObj?.alpha2,
     }
-    req.travelersInfo.at(0).birthData = moment(data?.birthDate).format('YYYY-MM-DD')
-    req.travelersInfo.at(0).document.issuanceCountry = data?.document?.nationality
-    req.travelersInfo.at(0).document.validityCountry = data?.document?.nationality
-    req.travelersInfo.at(0).document.birthPlace = data?.document?.nationality
-    req.travelersInfo.at(0).document.issuanceLocation = data?.document?.nationality
-    req.travelersInfo.at(0).document.issuanceDate = moment().format('YYYY-MM-DD')
-    req.travelersInfo.at(0).document.expiryDate = moment(data?.document?.expiryDate).format('YYYY-MM-DD')
-    req.travelersInfo.at(0)['phone'] = [phone];
+
+    req.travelersInfo?.map(obj => {
+      // req.travelersInfo.at(0).birthDate = moment(data?.birthDate).format('YYYY-MM-DD')
+      obj.document.issuanceCountry = obj?.document?.nationality
+      obj.document.issuanceDate = moment().format('YYYY-MM-DD')
+      obj.document.validityCountry = obj?.document?.nationality
+      obj.document.birthPlace = obj?.document?.nationality
+      obj.document.issuanceLocation = obj?.document?.nationality
+      // obj.document.expiryDate = moment(data?.document?.expiryDate).format('YYYY-MM-DD')
+      obj['email'] = data?.email;
+      obj['phone'] = [phone];
+      return obj;
+    })
 
     // console.log(req)
-    
     setLoading(true);
-    const res = await bookFlightOffer(req);
-    setLoading(false);
-    if(res.return) {
+    dispatch(setBookingData({...bookingData,travelersInfo: req.travelersInfo}))
+    // const res = await bookFlightOffer(req);
+    await new Promise((resolve) => setTimeout(resolve,3000))
+    setLoading(false)
+
+    // if(res.return) {
       setBookingDone(true);
-      dispatch(setBookingData({...bookingData,orderData: res?.data}))
-    } else enqueueSnackbar(res.msg,{variant: 'error'})
+    //   dispatch(setBookingData({...bookingData,orderData: res?.data}))
+    // } else enqueueSnackbar(res.msg,{variant: 'error'})
     setOpen(false);
   }
+
+  function handlePassengers(obj,i=0) {
+    let temp = data;
+    temp.passengers[i] = obj;
+    setData(temp);
+    // console.log(' => ',data,i)
+  }
+
+  // console.log(" -> ",data)
+  let count = 0
   return (
     <div className='flex flex-col gap-6 pb-10'>
       <h5>Contact Details</h5>
@@ -139,10 +163,21 @@ function PassengerDetails({offer}) {
           />
         </div>
       </div>
-      <PrimaryPassenger handleReturn={(obj) => setData({...data,...obj})} label={<div className='flex flex-1 items-center justify-between gap-4'><h5>Primary Passenger</h5><p>Adult (over 12 years)</p></div>} />
-      <div className='flex justify-end self-end'>
+
+      {
+        Object.entries(offer?.passengers)?.map(([type,obj],i) => 
+          [...Array(obj.total || obj.passengerCount)]?.map((val,j) => {
+            return (
+              <PrimaryPassenger type={type} collapse={i+j !== 0} key={count++} count={count}
+              handleReturn={(obj,count) => {handlePassengers(obj,count)}} 
+              label={<div className='flex flex-1 items-center justify-between gap-4'><h5>{i+j === 0 ? 'Primary Passenger':'Another Passenger '+count}</h5><p className='capitalize'>{type} {type === 'adult' ? '(over 12 years)':''}</p></div>} />
+            )
+          })
+        )
+      }
+      {/* <div className='flex justify-end self-end'>
         <Button1 variant='text' className='!font-bold'>+ Add another passenger</Button1>
-      </div>
+      </div> */}
       <div className='flex justify-between gap-4'>
         <div className='flex-1'>
           <Button1 className='!w-auto !bg-primary !text-secondary'>Go back</Button1>
@@ -183,7 +218,7 @@ function PassengerDetails({offer}) {
   )
 }
 
-function PayTime() {
+function PayTime({callback}) {
   const options = [
     {value: 'paynow',label: 'Pay now','description': 'Pay now and confirm seat and baggage selection.'},
     {value: 'hold',label: 'Book on hold','description': 'Hold price and pay at a later date.'},
@@ -197,7 +232,9 @@ function PayTime() {
         Be aware that you cannot currently select seats or baggage when holding an order.
       </p>
 
-      <RadioGroup value='paynow' className='flex gap-4' options={options} render={(obj) => (
+      <RadioGroup value='paynow' className='flex gap-4' options={options}
+      onChange={(val) => callback && callback(val)}
+      render={(obj) => (
         <div className='flex flex-col gap-1'>
           <b>{obj.label}</b>
           <p>{obj.description}</p>

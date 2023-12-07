@@ -8,7 +8,7 @@ export default function FlightInfoCard({data,label='Depart'}) {
   // let tdata = offerDataTemp.segments[0];
   // const departureDateTime = moment(`${data?.departureDate} ${data?.departureTime}`, "YYYY-MM-DD HH:mm");
   // const arrivalDateTime = moment(`${data?.arrivalDate} ${data?.arrivalTime}`, "YYYY-MM-DD HH:mm");
-
+  console.log(data && data)
   return (
     <div className=' rounded-md w-full border-gray-300 bg-secondary'>
       <div className='flex gap-4 justify-between p-5'>
@@ -69,7 +69,7 @@ export default function FlightInfoCard({data,label='Depart'}) {
             {i < data?.flights.length-1 ? (
               <div className='border-y p-3 flex items-center gap-2 '>
                 <span className='min-w-[50px] px-2'>
-                  {getFlightDuration(moment(`${flight?.departureDate} ${flight?.departureTime}`, "YYYY-MM-DD HH:mm"),moment(`${data?.flights[i+1]?.arrivalDate} ${data?.flights[i+1]?.arrivalTime}`, "YYYY-MM-DD HH:mm"),'short')}
+                  {getFlightDuration(moment(`${flight?.departureDate} ${flight?.departureTime}`),moment(`${data?.flights[i+1]?.arrivalDate} ${data?.flights[i+1]?.arrivalTime}`),'short')}
                 </span>
                 Changes plane at {flight.arrivalAirportName} ({flight.arrivalLocation}) {flight.duration > 2 ? <b className='text-[#533218] bg-[#f48a3885] rounded-md px-2 p-1'>Long stopover</b>:''}
               </div>

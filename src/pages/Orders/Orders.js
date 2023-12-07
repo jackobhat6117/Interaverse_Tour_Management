@@ -18,8 +18,8 @@ export default function Orders() {
   return !data?.length ? (
     <div className={`pd-md flex-1 flex flex-col ${!data?.length ? 'bg-emptypage':''}`}>
       <h5>Orders</h5>
-      <div className='w-full h-full sm:flex-1 py-10 sm:py-2 flex flex-col gap-4 h-full justify-center items-center'>
-        <h4>You don't have any orders</h4>
+      <div className='w-full sm:flex-1 py-10 sm:py-2 flex flex-col gap-4 h-full justify-center items-center'>
+        <div>You don't have any orders</div>
         <div className='flex flex-col sm:flex-row gap-2 w-full sm:w-auto'>
           <LearnMoreButton label='Learn how to create order' />
           <CreateOrder handleReturn={() => setData([...data,tempObj])} />

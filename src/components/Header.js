@@ -21,6 +21,7 @@ import Logo from "./Logo/Logo";
 const colors = ["#1E61DC", "#D9A513", "#1EA994", "#1E61DC", "#B52026"];
 
 export default function Header() {
+  const {user} = useSelector(state => state.user.userData)
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const notifications = [
@@ -55,99 +56,87 @@ export default function Header() {
   }
   return (
     <div>
-      <div className="hidden md:flex items-center gap-10 px-md py-2">
-        <Logo />
-        <div className="flex-1 z-[90]">
-          <SearchInput exampleview={true} searchview={true} />
-        </div>
-        <div className="flex gap-3 items-center text-primary/50">
-          <b>Test mode</b>
+      <div className='hidden md:flex items-center gap-10 px-md py-2'>
+      <Link to='/' className='flex gap-2 items-center'>
+        <img src='/logo.svg' alt='' className='w-[25px] h-[25px]' />
+        <img src={logo} alt='' className='w-[100px]' />
+      </Link>
+      <div className='flex-1 z-[90]'>
+        <SearchInput exampleview={true} searchview={true} />
+      </div>
+      <div className='flex gap-3 items-center text-primary/50'>
+        <div className=''>
+          <small>Go Live</small>
           <FormControlLabel
-            control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
-          />
-
-          {/* Account Menu */}
-          <CustomMenu
-            element={
-              <div className="rounded-md bg-primary/10 w-7 h-7 text-center flex-center justify-center">
-                <Notifications className="!text-base" />
-              </div>
-            }
-          >
-            <div className="min-w-[40vw] max-w-[800px] shadow-md border">
-              <div
-                className="flex justify-between items-center gap-4 p-2 px-4 bg-secondary/70 "
-                style={{ backdropFilter: "blur(8px)" }}
-              >
-                Notifications
-                <small>Last updated: 2hrs ago</small>
-              </div>
-              <div className="p-4 bg-secondary flex flex-col gap-2 overflow-y-auto max-h-[80vh]">
-                {notifications.map((obj, i) => {
-                  const currentDate = moment();
-                  const objDate = moment(new Date(obj.date));
-                  const formattedDate = objDate.isSame(currentDate, "day")
-                    ? "Today"
-                    : objDate.isSame(
-                        currentDate.clone().subtract(1, "day"),
-                        "day",
-                      )
-                    ? "Yesterday"
-                    : objDate.format("DD/MM/YYYY");
-
-                  return (
-                    <div
-                      className={`relative bg-primary/10 p-4 rounded-r-lg border-l-[15px] `}
-                      style={{ borderColor: colors[i % (colors.length - 1)] }}
-                      key={i}
-                    >
-                      <Close className="absolute top-0 right-0 m-3 cursor-pointer" />
-                      <b className="text-primary/50">{formattedDate}</b>
-                      <h5>{obj.title}</h5>
-                      <p>{obj.description}</p>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </CustomMenu>
-
-          <CustomMenu
-            element={
-              <div className="rounded-md bg-primary/10 w-7 h-7 text-center flex-center justify-center">
-                <Person className="!text-base" />
-              </div>
-            }
-          >
-            <div className="shadow-md border bg-secondary flex flex-col gap-1">
-              <Link
-                className="btn-theme-light text-end"
-                variant="text"
-                to="/settings/"
-              >
-                Settings
-              </Link>
-              <Button1
-                onClick={handleLogout}
-                variant={"text"}
-                className="text-primary"
-              >
-                Logout
-              </Button1>
-            </div>
-          </CustomMenu>
+            control={<IOSSwitch sx={{ m: 1 }} defaultCheckedx />}
+            />
         </div>
+
+        {/* Account Menu */}
+        <CustomMenu element={
+          <div className='rounded-md xbg-primary/10 w-7 h-7 px-4 flex items-center flex-center justify-center'>
+            <Notifications className='!text-[20px]'/>
+          </div>
+        }>
+          <div className='min-w-[40vw] max-w-[800px] shadow-md border'>
+            <div className='flex justify-between items-center gap-4 p-2 px-4 bg-secondary/70 ' style={{backdropFilter: 'blur(8px)'}}>
+              Notifications
+              <small>Last updated: 2hrs ago</small>
+            </div>
+            <div className='p-4 bg-secondary flex flex-col gap-2 overflow-y-auto max-h-[80vh]'>
+              {notifications.map((obj,i) => {
+                const currentDate = moment();
+                const objDate = moment(new Date(obj.date));
+                const formattedDate = objDate.isSame(currentDate, 'day')
+                  ? 'Today'
+                  : objDate.isSame(currentDate.clone().subtract(1, 'day'), 'day')
+                  ? 'Yesterday'
+                  : objDate.format('DD/MM/YYYY');
+
+                return (
+                <div className={`relative bg-primary/10 p-4 rounded-r-lg border-l-[15px] `} style={{borderColor: colors[i%(colors.length-1)]}} key={i}>
+                  <Close className='absolute top-0 right-0 m-3 cursor-pointer' />
+                  <b className='text-primary/50'>
+                    {formattedDate}
+                  </b>
+                  <h5>{obj.title}</h5>
+                  <p>{obj.description}</p>
+                </div>
+               )
+              })}
+            </div>
+          </div>
+        </CustomMenu>
+
+        <SupportAgentOutlined />
+
+        <Link className='' variant='text' to='/settings/'>
+          <Icon icon='ant-design:setting-filled' />
+        </Link>
+
+        <Icon icon='subway:menu' />
+
+
+        <CustomMenu element={
+          <div className='rounded-full overflow-hidden bg-theme1/10 w-10 h-10 text-lg flex items-center justify-center font-extrabold'>
+            {user?.detail?.agencyLogo ? 
+              <img src={user?.detail?.agencyLogo} alt='' className='object-contain w-full h-full' />
+            : user?.firstName?.at(0) || <Person className='!text-base' />}
+          </div>
+        }>
+          <div className='shadow-md border bg-secondary flex flex-col gap-1'>
+            <Button1 onClick={handleLogout} variant={'text'} className='text-primary'>Logout</Button1>
+          </div>
+        </CustomMenu>
+      </div>
       </div>
 
       {/* Mobile View */}
-      <div className="bg-black">
-        <div className="flex md:hidden justify-between items-center bg-opacity-40 gap-6 bg-theme1 text-white py-4 px-md">
-          <h4 className="text-secondary">Miles</h4>
-          <div
-            className="rounded-md bg-primary/10 w-7 h-7 text-center flex-center justify-center"
-            onClick={() => setOpen(true)}
-          >
-            <Menu className="cursor-pointer" />
+      <div className='bg-black'>
+        <div className='flex md:hidden justify-between items-center bg-opacity-40 gap-6 bg-theme1 text-white py-4 px-md'>
+          <h4 className='text-secondary'>Intraverse</h4>
+          <div className='rounded-md bg-primary/10 w-7 h-7 text-center flex-center justify-center' onClick={() => setOpen(true)}>
+            <Menu className='cursor-pointer' />
           </div>
           <Drawer
             open={open}

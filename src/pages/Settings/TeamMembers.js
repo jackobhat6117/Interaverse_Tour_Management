@@ -188,7 +188,7 @@ export default function TeamMembers() {
 
       <div className='xmax-w-[500px] flex flex-col gap-4'>
         <div className='flex justify-between items-center gap-4'>
-          <h5 className='text-primary/50'>Team Members</h5>
+          <h5 >Team Members</h5>
           <InviteTeam reload={load} />
         </div>
         <Tabs className='bg-secondary px-2' value={filter.i} onChange={(ev,newVal) => setFilter(filterItems[newVal])}>

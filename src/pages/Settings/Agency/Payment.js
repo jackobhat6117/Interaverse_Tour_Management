@@ -15,7 +15,7 @@ export default function PaymentSetting() {
         We offer automatic volume discounts, ensuring you receive the most competitive prices available.
         If you have any inquiries or would like to explore enterprise pricing options, please don't hesitate to contact our Sales team.
       </p>
-      <h4>Payment Method</h4>
+      <h5>Payment Method</h5>
       <p>You can make your initial wallet top-up using a credit/debit card, and subsequent tops-ups by bank transfer.</p>
       <span className='self-start'>
         <Button1>Add Card</Button1>

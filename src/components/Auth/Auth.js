@@ -62,8 +62,8 @@ export default function Auth() {
   ) : (
     <div className='flex flex-col flex-1 min-h-screen justify-center items-center '>
       <div className='w-full  px-5 flex gap-2 justify-center '>
-        <img src={logo} alt='Miles' className='h-[35px] object-contain' />
-        <img src={textlogo} alt='Miles' className='h-[35px]' />
+        <img src={logo} alt='' className='h-[35px] object-contain' />
+        <img src={textlogo} alt='' className='h-[35px]' />
       </div>
       <img src={'/gifs/loading-bar.gif'} alt='Preloader' className='h-[150px] -translate-y-10' />
     </div>

@@ -61,9 +61,9 @@ export default function NavLinks({profileCompleted}) {
       <Tabs variant="scrollable" value={link} onChange={handleLink} className="font-bold" 
         TabIndicatorProps={{sx: {height: '4px'}}}>
         <Tab label='Home' data-link="/" icon={<HomeOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
-        <Tab label='Order' data-link="/order" icon={<ShoppingCartOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
-        <Tab label='User Management' data-link="/users" icon={<Person />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
-        <Tab label='Support' data-link="/support" icon={<SupportAgentOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
+        <Tab label='Orders' data-link="/order" icon={<ShoppingCartOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
+        <Tab label='Customers' data-link="/users" icon={<Person />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
+        {/* <Tab label='Support' data-link="/support" icon={<SupportAgentOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' /> */}
       </Tabs>
     </div>
   ) : (

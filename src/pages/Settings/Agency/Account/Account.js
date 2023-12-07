@@ -55,7 +55,7 @@ export default function AccountSettings() {
   return (
     <div className='content-max-w flex flex-col gap-4'>
       <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
-        <h4>Information</h4>
+        <h5>Information</h5>
         <TextInput label={'Full name'} placeholder={'Okafor Chiemena'} 
           value={data.firstName+' '+data.lastName}
           onChange={(ev) => handleFullName(ev.target.value)}
@@ -107,7 +107,7 @@ function ChangePassword() {
   }
   return (
     <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
-      <h4>Password</h4>
+      <h5>Password</h5>
       <PasswordInput label='Old Password'required
         value={data.oldPassword}
         onChange={(ev) => setData({...data,oldPassword: ev.target.value})}

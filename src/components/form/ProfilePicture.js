@@ -92,7 +92,7 @@ export function ProfilePicture({value,onChange,sizeLimit=1024*1024,readOnly}) {
   }
   return (
     <div>
-      <span className='w-[100px] h-[100px] flex items-center justify-center light-bg relative rounded-md'>
+      <span className='w-[100px] h-[100px] flex items-center overflow-hidden justify-center light-bg relative rounded-md'>
         {value ? 
           <div className="absolute">
               <img src={preview || previewOrig || value} alt='Logo' className="w-full h-full object-cover" />

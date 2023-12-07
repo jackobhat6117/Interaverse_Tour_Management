@@ -50,12 +50,12 @@ export default function AgencySetupSetting() {
 
   return (
     <form onSubmit={handleSubmit} className='content-max-w flex flex-col gap-4'>
-      <p>We would be delighted to enable you to sell genuine flights. Before we proceed, we kindly request some information about your business. This data is necessary to meet the requirements set by regulatory bodies and financial partners, as well as the provisions outlined in our Service Agreement.</p>
-      <div className="inline-block self-start">
+      {/* <div className="inline-block self-start">
         <Button1 className='btn-theme-light !font-extrabold'>Request to change data</Button1>
-      </div>
+      </div> */}
       <div className='flex flex-col gap-3 py-3'>
-        <h4>Business Details</h4>
+        <h5>Business Details</h5>
+        <p className="pb-3">We would be delighted to enable you to sell genuine flights. Before we proceed, we kindly request some information about your business. This data is necessary to meet the requirements set by regulatory bodies and financial partners, as well as the provisions outlined in our Service Agreement.</p>
         <TextInput select label='Type of registered business'
           value={data.detail.typeOfBusiness}
           onChange={(ev) => setData({...data,detail: {...data.detail,typeOfBusiness: ev.target.value}})}
@@ -77,7 +77,7 @@ export default function AgencySetupSetting() {
         />
       </div>
       <div className='flex flex-col gap-3 py-3'>
-        <h4>Address</h4>
+        <h5>Address</h5>
         <div className="flex flex-wrap sm:flex-nowrap gap-4">
           <Map label='Registered business address' className={'w-full'} handleReturn={(obj) => handleLocation(obj)} />
           {/* <TextInput label={'Registered business address'} 
@@ -104,7 +104,7 @@ export default function AgencySetupSetting() {
         />
       </div>
       <div className='flex flex-col gap-3 py-3'>
-        <h4>Legal Entity</h4>
+        <h5>Legal Entity</h5>
         <CountriesInput select label='country'
           value={data?.detail?.legalInfo?.country}
           onChange={(val) => setData({...data,detail: {...data.detail,legalInfo: {...data?.detail?.legalInfo,country: val?.name || val}}})}
@@ -121,7 +121,7 @@ export default function AgencySetupSetting() {
         />
       </div>
       <div className="flex flex-col gap-3 py-3">
-        <h4>Key contact</h4>
+        <h5>Key contact</h5>
         <TextInput label={'First name'} placeholder={'e.g Chiemena'} 
             value={data?.detail?.contact.firstName}
             onChange={(ev) => setData({...data,detail: {...data.detail,contact: {...data?.detail?.contact,firstName: ev.target.value}}})}

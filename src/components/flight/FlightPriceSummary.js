@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { formatMoney } from "../../features/utils/formatMoney";
 
-export default function FlightPriceSummary({data,onBook}) {
+export default function FlightPriceSummary({data,onBook,footer}) {
   const {id} = useParams();
 
   let tripType = data?.segments?.length > 1 ? '' : 'One way'
@@ -36,6 +36,7 @@ export default function FlightPriceSummary({data,onBook}) {
       {!onBook ? 
         <Link className='btn-theme rounded-md flex justify-center' to={`/order/new/flight/book/details/${id}`}>Proceed to checkout</Link>
       :null}
+      {footer}
     </div>
   )
 }

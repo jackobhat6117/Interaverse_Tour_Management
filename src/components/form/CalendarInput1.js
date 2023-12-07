@@ -7,7 +7,7 @@ import 'react-day-picker/dist/style.css';
 import { clone } from '../../features/utils/objClone';
 import Button1 from './Button1';
 
-export default function CalendarInput1({value,label,className,multiple,onChange}) {
+export default function CalendarInput1({value,label,className,multiple,onChange,...restProps}) {
   // const [date,setDate] = useState();
   const [anchorEl,setAnchorEl] = useState();
 
@@ -81,7 +81,7 @@ export default function CalendarInput1({value,label,className,multiple,onChange}
         vertical: 'top',
         horizontal: 'right',
        }}>
-        <DayPicker mode='single' numberOfMonths={multiple ? 2 : 1}
+        <DayPicker mode='single' numberOfMonths={multiple ? 2 : 1} {...restProps}
           selected={selectedRange.start} modifiers={modifiers} onDayClick={handleDayClick} 
           // onSelect={(val) => setDate(val)}
            />

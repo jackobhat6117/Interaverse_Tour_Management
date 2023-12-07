@@ -19,7 +19,7 @@ export default function CreateOrder({label,handleReturn}) {
 
   return (
     <div>
-      <Button1 onClick={() => setOpen(true)}>{label ? label : "Create First Order"}</Button1>
+      <Button1 onClick={() => setOpen(true)}>{label ? label : "Create first order"}</Button1>
       <Modal1 open={open} setOpen={setOpen}>
         <div className='card flex flex-col items-center gap-4'>
           <h4>Create new order</h4>

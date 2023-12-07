@@ -1,16 +1,19 @@
-import { Code, EmailOutlined, GroupsOutlined, LayersOutlined, LockOutlined, SettingsOutlined } from '@mui/icons-material';
-import { Button } from '@mui/material';
+import { Code, EmailOutlined } from '@mui/icons-material';
 import React from 'react'
-import { Link, Outlet, useLocation } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
+import { CustomLink } from './CustomLink';
 
 
 export const accountSetupLinks = [
-  {to: "/settings/agency/", title: '', icon: SettingsOutlined, label: "Account"},
-  {to: "/settings/agency/setup", title: 'setup', icon: GroupsOutlined,label:"Agency Setup"},
-  {to: "/settings/agency/markup", title: 'markup', icon: EmailOutlined,label: "Mark Up"},
-  {to: "/settings/agency/commission", title: 'commission', icon: LockOutlined,label: "Commision"},
-  {to: "/settings/agency/points", title: 'points', icon: LayersOutlined, label: "Miles Points"},
-  {to: "/settings/agency/payment", title: 'payment', icon: Code, label: "Payment"},
+  {to: "/settings/agency/", title: '', icon: 'teenyicons:briefcase-solid',label:"Information"},
+  {to: "/settings/agency/brand", title: 'brand', icon: 'material-symbols:branding-watermark', label: "Brand"},
+  {to: "/settings/agency/contact", title: 'contact', icon: EmailOutlined,label: "Contact Emails"},
+  {to: "/settings/agency/developer", title: 'developer', icon: Code, label: "Developers"},
+
+  // {to: "/settings/agency/markup", title: 'markup', icon: EmailOutlined,label: "Mark Up"},
+  // {to: "/settings/agency/commission", title: 'commission', icon: LockOutlined,label: "Commision"},
+  // {to: "/settings/agency/points", title: 'points', icon: LayersOutlined, label: "Miles Points"},
+  // {to: "/settings/agency/payment", title: 'payment', icon: Code, label: "Payment"},
 ]
 
 export default function AccountSetupNav() {
@@ -27,18 +30,11 @@ export default function AccountSetupNav() {
         ))}
       </div>
       <div className='sm:hidden vector-bg text-white p-2'>
-        <h3 className='capitalize'>{page || 'Account'}</h3>
+        <h3 className='capitalize text-white'>{page || 'Information'}</h3>
       </div>
 
-      <hr className='hidden sm:block' />
+      <hr className='hidden sm:block mb-2' />
       <Outlet />
     </div>
-  )
-}
-
-
-function CustomLink({to,active,Icon,label}) {
-  return (
-    <Link to={to}> <Button className={`${active ? 'btn-theme' : 'btn-theme-light'}  whitespace-nowrap`}><Icon className={`${active ? 'text-secondary/80' : ''} `} fontSize='small' />{label}</Button></Link>
   )
 }

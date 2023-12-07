@@ -54,8 +54,8 @@ export default function Signup() {
       <div className='bg-black hidden md:block flex-0'>
         <div className='w-full h-full hidden md:flex flex-col bg-theme1/40'>
           <div className='lg:px-20 p-10 py-5 flex gap-2'>
-            {/* <img src={logo} alt='Miles' className='object-contain' /> */}
-            {/* <img src={textlogo} alt='Miles' className='' /> */}
+            {/* <img src={logo} alt='' className='object-contain' /> */}
+            {/* <img src={textlogo} alt='' className='' /> */}
             <TextLogo className='text-secondary' />
           </div>
           <div className='flex flex-col p-10 lg:px-20 flex-1 gap-6 text-secondary'>
@@ -114,9 +114,9 @@ export default function Signup() {
       {!type ? (
         <div className='flex-1 bg-secondary flex flex-col '>
           <div className='lg:px-20 px-4 self-center md:hidden p-4 flex gap-2 w-[80%]'>
-            <img src={logo} alt='Miles' className='object-contain' />
+            <img src={logo} alt='' className='object-contain' />
             <TextLogo className='text-primary' />
-            {/* <img src={textlogo} alt='Miles' className=' h-8 my-2' /> */}
+            {/* <img src={textlogo} alt='' className=' h-8 my-2' /> */}
           </div>
           <div className='flex flex-1 flex-col justify-center items-center '>
 
@@ -151,13 +151,13 @@ export default function Signup() {
 
         <div className='flex-1 flex flex-col sm:bg-theme1/10'>
           <div className='lg:px-20 px-10 self-center md:hidden p-4 hidden sm:flex gap-2 w-full'>
-            <img src={logo} alt='Miles' className='object-contain' />
+            <img src={logo} alt='' className='object-contain' />
             <TextLogo className='text-primary' />
-            {/* <img src={textlogo} alt='Miles' className=' h-8 my-2' /> */}
+            {/* <img src={textlogo} alt='' className=' h-8 my-2' /> */}
           </div>
           <form onSubmit={handleSubmit} className='flex flex-col items-center flex-1 sm:p-4'>
             <div className='lg:px-20 px-4 sm:hidden shadow-md w-full mb-2 bg-secondary'>
-              <img src={textlogo} alt='Miles' className=' h-8 my-2' />
+              <img src={textlogo} alt='' className=' h-8 my-2' />
             </div>
             <div className='bg-secondary rounded-lg px-4 !py-6 sm:card flex flex-col gap-5  sticky top-10'>
               <h5 className='pb-2 text-center sm:text-left'>Create an account on intraverse</h5>

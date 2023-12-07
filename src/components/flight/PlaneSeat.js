@@ -1,8 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { planeSeatsTemp } from '../../data/flight/planeSeatsTemp';
-import getFlightSeats from '../../controllers/Flight/getFlightSeats';
-import { def } from '../../config';
-
+import React, { memo, useCallback, useState } from 'react';
 
 export const colorCode = {
   additional: '#aaa',
@@ -11,49 +7,17 @@ export const colorCode = {
   NA: '#333'
 };
 
-const test = def.devStatus === 'test';
+// const test = def.devStatus === 'test';
 
-function PlaneSeat({flightData,returnData}) {
-  // const [data,setData] = useState(planeSeatsTemp);
-  const [data,setData] = useState(test ? planeSeatsTemp : null);
+function PlaneSeat({seatMapData,loading,returnData}) {
   const [selected,setSelected] = useState({});
-  const [loading,setLoading] = useState(false);
+  let deck = seatMapData[0]?.decks?.at(0);
+	let seats = deck?.seats
 
-  const [gotResp,setGotResp] = useState(false);
+	let width = deck?.deckConfiguration?.width;
+	let length = deck?.deckConfiguration?.length;
 
-  const returnDataCall = useCallback((req) => {
-    if(returnData && (gotResp || test))
-      returnData(req)
-  },[returnData,gotResp])
-
-  const fetchFlightSeats = useCallback(async() => {
-    if(flightData) {
-      const res = await getFlightSeats(flightData);
-      return res;
-    }
-    return {return: false}
-  },[flightData])
-
-
-  useEffect(() => {
-    async function load() {
-      setLoading(true);
-      const res = await fetchFlightSeats();
-      setLoading(false);
-      if(res.return) {
-        setData(res.data)
-        setGotResp(true)
-      }
-    }
-    if(flightData)
-      load();
-  },[flightData])
-
-
-  // useEffect(() => {
-  //   let req = Object.entries(selected).map(([key,obj]) => ({...obj,seatNumber: key}))
-  //   console.log(req)
-  // },[selected])
+  console.log('seats: ',width,length,seats,seatMapData)
 
   function handleReturn(newObj) {
     let pricingDetail = {
@@ -64,26 +28,17 @@ function PlaneSeat({flightData,returnData}) {
     }
 
     let req = Object.entries(newObj).map(([key,obj]) => ({pricingDetail,...obj,seatNumber: key}))
-    if(returnDataCall)
-      returnDataCall(req)
+    returnData && returnData(req)
 
-    // console.log('selected Seat: ',req)
+    // console.log('req: ',req)
+
   } 
 
-  let rows = []
-
-  try {
-    rows = data.seatmapInformation.row
-  } catch(ex) {}
-
   function toggleSeat(obj,loc) {
-    // console.log(' toggle seat : ',obj)
     if(selected[loc]) removeFromSeat(loc)
     else placeSeat(obj,loc)
   }
   function placeSeat(row,key) {
-    // let newObj = clone(selected);
-    // newObj[key] = row;
     setSelected({[key]:row})
 
     handleReturn({[key]:row})
@@ -97,16 +52,43 @@ function PlaneSeat({flightData,returnData}) {
 
   // console.log('seatRow: ',planeSeatsTemp.seatmapInformation.row)
   return (
-    <div className='flex justify-center gap-2 p-2 flex-wrap'>
+    <div className='flex flex-col justify-center gap-2 p-2 flex-wrap'>
       {loading ? (
         <div className='w-full h-full flex border-primary/40 py-2 items-center justify-center'>
           <div className='load'></div>
         </div>
       ):null}
 
+      {[...Array(length)]?.map((_,i) => 
+				<div className='flex gap-2 justify-center'> {
+					[...Array(width)]?.map((_,j) => {
+            // if(width*i+j < seats?.length) return null;
+
+            let seat = seats?.at(width*i+j);
+            if(!seat) return null;
+
+            return (
+              <span 
+                // className='bg-black text-white p-2 m-2 w-10 h-10 flex flex-col items-center justify-center '
+                onClick={() => toggleSeat(seat,seat?.number)}
+                className={`w-10 h-10 bg-primary/10 flex flex-col items-center justify-center cursor-pointer
+                hover:shadow-md shadow-primary hover:border-theme1 border
+                ${selected[seat?.number] ? ' bg-theme1 ':''}
+              `}>
+                {seat?.number}
+                {/* {width*i+j} */}
+                <sub className='text-[8px]'>
+                  {seat?.characteristicsCodes?.includes('W') ? 'window':''}
+                </sub>
+              </span>
+            )
+          })
+				}</div>
+			)}
+
       {/* {flightData.flightNumber} */}
 
-      {rows.map((obj,i) => (
+      {/* {rows.map((obj,i) => (
         <div className='flex gap-2' key={i}>
           {obj.rowDetails.seatOccupationDetails && obj.rowDetails.seatOccupationDetails.map((col,i) => {
             let loc = obj.rowDetails.seatRowNumber+""+col.seatColumn
@@ -117,12 +99,13 @@ function PlaneSeat({flightData,returnData}) {
               ${selected[loc] ? ' bg-theme1 ':''}
             `}>
               {loc}
-              {/* <small className='w-full !text-[8px] text-center'>{col.seatCharacteristic['3'] === 'W' && "window"}</small> */}
+              <small className='w-full !text-[8px] text-center'>{col.seatCharacteristic['3'] === 'W' && "window"}</small>
             </label>
           )})}
         </div>
-      ))}
-      {!rows.length && !loading && "---"}
+      ))} */}
+      
+      {!seats?.length && !loading && "---"}
     </div>
   )
 }
