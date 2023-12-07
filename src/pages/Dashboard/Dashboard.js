@@ -1,5 +1,5 @@
 import React from "react";
-import RevenuAnalytics from "./RevenuAnalytics";
+import RevenueAnalytics from "./RevenuAnalytics";
 import { useSelector } from "react-redux";
 import Button1 from "../../components/form/Button1";
 import { Link } from "react-router-dom";
@@ -38,14 +38,14 @@ export default function Dashboard() {
           <div className="flex items-center">
             <Button1
               className="btn-theme1 whitespace-nowrap flex-1 md:flex-none !w-auto "
-              to="/"
+              href="/order"
             >
               Create a new order
             </Button1>
           </div>
         </div>
       </div>
-      <RevenuAnalytics />
+      <RevenueAnalytics />
     </div>
   );
 }
