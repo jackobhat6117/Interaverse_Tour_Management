@@ -7,6 +7,7 @@ export default function getFlightDuration(departureDateTime,arrivalDateTime,disp
   const days = Math.floor(durationInMinutes / (24 * 60));
   const hours = Math.floor((durationInMinutes % (24 * 60)) / 60);
   const minutes = durationInMinutes % 60;
+  console.log('durations: ',duration,days,hours)
 
   let formattedDuration = '';
   if(display === 'short')

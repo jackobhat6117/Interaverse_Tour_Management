@@ -43,7 +43,7 @@ export default function SecuritySettings() {
   return (
     <form onSubmit={handleSubmit} className='flex flex-col gap-4 max-w-[600px]'>
       <div className='flex flex-col gap-1'>
-        <h4>Logout User</h4>
+        <h5>Logout User</h5>
         <p>Set users to be automatically logged out after a given time period.</p>
       </div>
       <div className='flex gap-4 justify-between  max-w-[450px]'>
@@ -61,7 +61,7 @@ export default function SecuritySettings() {
         </div>
       </div>
       <div className='flex flex-col gap-1'>
-        <h4>Password Expiry</h4>
+        <h5>Password Expiry</h5>
         <p>Make users change their password after a given time period.</p>
       </div>
       <div className='flex gap-4 justify-between  max-w-[450px]'>

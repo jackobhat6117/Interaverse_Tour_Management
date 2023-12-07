@@ -102,12 +102,12 @@ function PassengerDetails({offer}) {
       travelersInfo: clone(data?.passengers)?.slice(0,passengerCount || 1)
     }
     // console.log(' --> ',data)
-    let pn = data?.phone?.split('-')
+    let pn = data?.phone?.toString()?.split('-')
     let countryObj = (Object.values(countries)?.find(obj => obj?.countryCallingCodes?.includes('+'+pn?.at(0))))
     let phone = {
       countryCode: pn?.at(0),
       number: pn?.at(1),
-      location: countryObj.alpha2,
+      location: countryObj?.alpha2,
     }
 
     req.travelersInfo?.map(obj => {
@@ -124,10 +124,12 @@ function PassengerDetails({offer}) {
     })
 
     // console.log(req)
+    setLoading(true);
     dispatch(setBookingData({...bookingData,travelersInfo: req.travelersInfo}))
-    // setLoading(true);
     // const res = await bookFlightOffer(req);
-    // setLoading(false);
+    await new Promise((resolve) => setTimeout(resolve,3000))
+    setLoading(false)
+
     // if(res.return) {
       setBookingDone(true);
     //   dispatch(setBookingData({...bookingData,orderData: res?.data}))

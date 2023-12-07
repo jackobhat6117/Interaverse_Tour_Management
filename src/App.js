@@ -41,6 +41,10 @@ import LearnMiles from './pages/Welcome/LearnMiles/LearnMiles.js';
 import ProfileStatusCheck from './components/ProfileSurvey/New/ProfileStatusCheck.js';
 import Test from './pages/test.js';
 import FlightPayment from './pages/Orders/Flight/Book/FlightPayment.js';
+import FlightOrder from './pages/Orders/Flight/Booked/FlightOrder.js';
+import OrderNav from './components/Settings/OrderNav.js';
+import PayoutMethods from './pages/Settings/Finance/PayoutMethods.js';
+import PaymentGateway from './pages/Settings/Agency/PaymentGateway.js';
 // import 'dotenv/config'
 
 
@@ -105,32 +109,38 @@ function App() {
                   <Route path='order/new/flight/book/details/:id' element={<FlightBookDetails />} />
                   <Route path='order/new/flight/book/ancillaries/:id' element={<FlightAncillaries />} />
                   <Route path='order/new/flight/book/payment/:id' element={<FlightPayment />} />
-                  <Route path='orders/flight/:id' element={<>Order</>} />
+                  <Route path='orders/flight/:id' element={<FlightOrder />} />
                   <Route path='users' element={<UserManagement />} />
                   <Route path='link' element={<Links />} />
                   <Route path='*' element={<PageNotFound />} />
                 </Route>
                 <Route path='settings' element={<SettingSideBar />}>
                   <Route path='' element={<AccountNav />}>
-                    <Route index element={<Settings />} />
+                    <Route index element={<AccountSettings />} />
                     <Route path='team' element={<TeamMembers />} />
-                    <Route path='contact' element={<ContactEmails />} />
                     <Route path='security' element={<SecuritySettings />} />
-                    <Route path='balance' element={<BalanceSetting />} />
-                    <Route path='developer' element={<DeveloperSetting />} />
                     <Route path='*' element={<PageNotFound />} />
                   </Route>
                   <Route path='agency' element={<AccountSetupNav />}>
-                    <Route index element={<AccountSettings />} />
-                    <Route path='setup' element={<AgencySetupSetting />} />
-                    <Route path='markup' element={<MarkupSetting />} />
+                    <Route index element={<AgencySetupSetting />} />
+                    <Route path='brand' element={<Settings />} />
+                    <Route path='contact' element={<ContactEmails />} />
+                    <Route path='developer' element={<DeveloperSetting />} />
+                    <Route path='*' element={<PageNotFound />} />
+                  </Route>
+                  <Route path='order' element={<OrderNav />}>
+                    <Route index element={<MarkupSetting />} />
                     <Route path='commission' element={<CommissionSettings />} />
                     <Route path='points' element={<PointsSettings />} />
-                    <Route path='payment' element={<PaymentSetting />} />
                     <Route path='*' element={<PageNotFound />} />
                   </Route>
                   <Route path='finance' element={<FinanceContainer />}>
                     <Route index element={<Finance />} />
+                    <Route path='method' element={<PayoutMethods />} />
+                    <Route path='balance' element={<BalanceSetting />} />
+                    <Route path='payment' element={<PaymentSetting />} />
+                    <Route path='gateway' element={<PaymentGateway />} />
+                    <Route path='*' element={<PageNotFound />} />
                   </Route>
                 </Route>
               </Route>

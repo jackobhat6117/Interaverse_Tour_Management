@@ -4,12 +4,12 @@ import React from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 
 export const accountLinks = [
-  {to: "/settings/", title: '', icon: SettingsOutlined, label: "Preference"},
-  {to: "/settings/team", title: 'team', icon: GroupsOutlined,label:"Team Members"},
-  {to: "/settings/contact", title: 'contact', icon: EmailOutlined,label: "Contact Emails"},
+  {to: "/settings/", title: '', icon: SettingsOutlined, label: "Account"},
   {to: "/settings/security", title: 'security', icon: LockOutlined,label: "Security"},
-  {to: "/settings/balance", title: 'balance', icon: LayersOutlined, label: "Balance"},
-  {to: "/settings/developer", title: 'developer', icon: Code, label: "Developers"},
+  {to: "/settings/team", title: 'team', icon: GroupsOutlined,label:"Team Members"},
+  // {to: "/settings/contact", title: 'contact', icon: EmailOutlined,label: "Contact Emails"},
+  // {to: "/settings/balance", title: 'balance', icon: LayersOutlined, label: "Balance"},
+  // {to: "/settings/developer", title: 'developer', icon: Code, label: "Developers"},
 ]
 export default function AccountNav() {
   const location = useLocation();
@@ -32,9 +32,9 @@ export default function AccountNav() {
         <Link to="/settings/developer"> <Button className={`${page === 'developer' ? 'btn-theme':'btn-theme-light'} whitespace-nowrap`}><Code className={`${page === 'developer' ? 'text-secondary/80' : ''} `} fontSize='small' /> Developers</Button></Link> */}
       </div>
       <div className='sm:hidden vector-bg text-white p-2'>
-        <h3 className='capitalize'>{page || 'Preference'}</h3>
+        <h3 className='capitalize text-white'>{page || 'Account'}</h3>
       </div>
-      <hr className='hidden sm:block' />
+      <hr className='hidden sm:block mb-2' />
 
       <Outlet />
     </div>

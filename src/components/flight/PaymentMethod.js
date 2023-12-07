@@ -8,9 +8,10 @@ import { useState } from "react";
 
 export default function PaymentMethod({data}) {
   const {id} = useParams();
+  // Bank, Card, USSD, QR, MobileMoney, BankTransfer
   const options = [
-    {icon: <Icon icon='' />,name: 'Pay with stored card',description: 'Pay with sotred card',value: 'stored'},
-    {icon: <Icon icon='' />,name: 'Pay instantly with a new card',description: 'Pay with a debit or credit card',value: 'card'},
+    {icon: <Icon icon='' />,name: 'Pay with stored card',description: 'Pay with stored card',value: 'stored'},
+    {icon: <Icon icon='' />,name: 'Pay instantly with a new card',description: 'Pay with a debit or credit card',value: 'Card'},
     {icon: <Icon icon='' />,name: 'Pay with miles balance',description: 'Pay with a debit or credit card',value: 'balance'},
   ]
   const [method,setMethod] = useState(options[1].value);
@@ -20,15 +21,15 @@ export default function PaymentMethod({data}) {
 
   async function handlePay() {
     let obj = {
-      ...data,
-      paymentMode: 'Card',
+      ...data.paymentData,
+      paymentMode: method,
       callback: window.location.href
     }
     setLoading(true);
     const res = await payForTicket(obj)
     setLoading(false);
     if(res.return) {
-      navigate('/orders/1')
+      navigate(data.link)
     } else enqueueSnackbar(res?.msg,{variant: 'error'})
   }
   return (

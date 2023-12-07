@@ -45,7 +45,7 @@ export default function MarkupSetting() {
   return (
     <div className='flex flex-col gap-4 content-max-w'>
       <div className='flex justify-between items-center gap-4'>
-        <h4 className='text-primary/70'>Created Mark ups</h4>
+        <h5 className='text-primary/70'>Created Mark ups</h5>
         <div>
           <CreateMarkup reload={load} />
         </div>

@@ -15,8 +15,14 @@ export default function FlightPayment() {
   const offer = bookingData?.offer && bookingData?.offer?.at(-1)
 
   const paymentData = {
-    flightBookingId: bookingData?.orderData?.booking?._id,
+    flightBookingId: bookingData?.orderData?.booking?.flightBooking?.at(0),
     amount: bookingData?.orderData?.params?.offers?.at(0)?.totalAmount,
+  }
+
+  const data = {
+    ...bookingData?.orderData?.booking,
+    paymentData,
+    link: `/orders/flight/${bookingData?.orderData?.booking?._id}`,
   }
 
   const navigate = useNavigate();
@@ -49,7 +55,7 @@ export default function FlightPayment() {
           //   <Link className='btn-theme rounded-md flex justify-center' to={`/order/new/flight/book/payment/${id}`}>Proceed to checkout</Link>
           // } 
         />
-        <PaymentMethod data={paymentData} />
+        <PaymentMethod data={data} />
       </div>
     </div>
   )
