@@ -18,6 +18,6 @@ export const def = {
     return cur;
   },
   devStatus: 'test',
-  siteName: 'JourneyEasy',
-  logo: require('./assets/icons/textlogo.png')
+  siteName: 'miles',
+  logo: require('./assets/icons/textlogo.svg')
 }
