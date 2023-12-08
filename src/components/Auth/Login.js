@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import textlogo from '../../assets/icons/textlogo.png'
-import logo from '../../assets/icons/logo.png'
+import textlogo from '../../assets/icons/textlogo.svg'
+import logo from '../../assets/icons/logo.svg'
 import EmailInput from '../form/EmailInput'
 import PasswordInput from '../form/PasswordInput'
 import Button1 from '../form/Button1'

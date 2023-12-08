@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import logo from '../../assets/icons/logo.png'
-import textlogo from '../../assets/icons/textlogo.png'
+import logo from '../../assets/icons/logo.svg'
+import textlogo from '../../assets/icons/textlogo.svg'
 import Button1 from '../form/Button1'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
