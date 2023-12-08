@@ -13,7 +13,7 @@ import BankAccounts from "./BankAccounts";
 export default function PayoutMethods() {
   const [ownBankAccounts, setOwnBankAccounts] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
-  const [showAdd,setShowAdd] = useState(false);
+  const [showAdd, setShowAdd] = useState(false);
   const [banks, setBanks] = useState([]);
   const [accountName, setAccountName] = useState();
   const [loading, setLoading] = useState(true);
@@ -72,10 +72,9 @@ export default function PayoutMethods() {
     setLoading(false);
     if (res.return) {
       enqueueSnackbar("Successful", { variant: "success" });
+      load();
     } else enqueueSnackbar(res.msg, { variant: "error" });
   }
-
-  console.log(ownBankAccounts)
 
   return (
     <div
@@ -93,7 +92,7 @@ export default function PayoutMethods() {
       </div>
       <hr /> */}
       <div className="flex flex-col gap-4 content-max-w">
-        {showAdd ? 
+        {showAdd ? (
           <form
             onSubmit={handleSubmit}
             className="flex flex-col gap-4 content-max-w"
@@ -134,19 +133,24 @@ export default function PayoutMethods() {
               </Button1>
             </span>
           </form>
-        :null}
+        ) : null}
         <hr />
         <div className="flex gap-4 justify-between items-center">
           <h5>Saved Accounts</h5>
           <div>
-            {!showAdd ? 
+            {!showAdd ? (
               <Button1 onClick={() => setShowAdd(!showAdd)}>
                 Add Account
               </Button1>
-            : null}
+            ) : null}
           </div>
         </div>
-        <BankAccounts banks={banks} data={ownBankAccounts} loading={loading} />
+        <BankAccounts
+          banks={banks}
+          data={ownBankAccounts}
+          loading={loading}
+          reload={load}
+        />
         <br />
         <div className="flex flex-col gap-2">
           <h5>Payout settings</h5>
