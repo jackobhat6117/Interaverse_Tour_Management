@@ -4,23 +4,15 @@ import { FormControlLabel, MenuItem } from "@mui/material";
 import Button1 from "../../../components/form/Button1";
 import IOSSwitch from "../../../components/form/IOSSwitch";
 import getBanks from "../../../controllers/settings/finance/getBanks";
-import checkBankInfo from "../../../controllers/settings/finance/checkBankInfo";
-import addBankAccount from "../../../controllers/settings/finance/addBankAccount";
-import { useSnackbar } from "notistack";
 import getBankAccounts from "../../../controllers/settings/finance/getBankAccounts";
 import BankAccounts from "./BankAccounts";
+import { AddBankForm } from "./AddBankForm";
 
 export default function PayoutMethods() {
   const [ownBankAccounts, setOwnBankAccounts] = useState([]);
-  const { enqueueSnackbar } = useSnackbar();
-  const [showAdd, setShowAdd] = useState(false);
+  const [showAdd,setShowAdd] = useState(false);
   const [banks, setBanks] = useState([]);
-  const [accountName, setAccountName] = useState();
   const [loading, setLoading] = useState(true);
-  const [bankForm, setBankForm] = useState({
-    bankCode: undefined,
-    accountNumber: undefined,
-  });
 
   useEffect(() => {
     load();
@@ -52,29 +44,8 @@ export default function PayoutMethods() {
     setLoading(false);
   }
 
-  const checkBankAccountName = async (accountNumber) => {
-    const bankInfo = await checkBankInfo({
-      accountNumber,
-      bankCode: String(bankForm.bankCode),
-    });
-    if (bankInfo.return) {
-      setAccountName(bankInfo.data?.account_name);
-    } else {
-      setAccountName("No Account Found!");
-    }
-  };
 
-  async function handleSubmit(ev) {
-    ev.preventDefault();
-
-    setLoading(true);
-    const res = await addBankAccount(bankForm);
-    setLoading(false);
-    if (res.return) {
-      enqueueSnackbar("Successful", { variant: "success" });
-      load();
-    } else enqueueSnackbar(res.msg, { variant: "error" });
-  }
+  console.log(ownBankAccounts)
 
   return (
     <div
@@ -92,48 +63,9 @@ export default function PayoutMethods() {
       </div>
       <hr /> */}
       <div className="flex flex-col gap-4 content-max-w">
-        {showAdd ? (
-          <form
-            onSubmit={handleSubmit}
-            className="flex flex-col gap-4 content-max-w"
-          >
-            <h5>Bank Information</h5>
-            <TextInput
-              select
-              label={"Select bank"}
-              onChange={(e) => {
-                setBankForm({
-                  ...bankForm,
-                  bankCode: e.target.value,
-                });
-              }}
-            >
-              {Array.isArray(banks) &&
-                banks?.map((bank) => (
-                  <MenuItem value={bank.value}>{bank.label}</MenuItem>
-                ))}
-            </TextInput>
-            <TextInput
-              label={"Enter account number"}
-              placeholder={"e.g 0047159973"}
-              value={bankForm.accountNumber}
-              onChange={(e) => {
-                setBankForm({ ...bankForm, accountNumber: e.target.value });
-                setAccountName();
-                if (e.target.value && e?.target?.value?.length > 9) {
-                  setAccountName("Checking...");
-                  checkBankAccountName(e.target.value);
-                }
-              }}
-              tooltip={accountName}
-            />
-            <span className="self-start">
-              <Button1 type="submit" loading={loading}>
-                Save bank details
-              </Button1>
-            </span>
-          </form>
-        ) : null}
+        {showAdd ? 
+          <AddBankForm banks={banks} reload={load} />
+        :null}
         <hr />
         <div className="flex gap-4 justify-between items-center">
           <h5>Saved Accounts</h5>
@@ -145,12 +77,7 @@ export default function PayoutMethods() {
             ) : null}
           </div>
         </div>
-        <BankAccounts
-          banks={banks}
-          data={ownBankAccounts}
-          loading={loading}
-          reload={load}
-        />
+        <BankAccounts reload={load} banks={banks} data={ownBankAccounts} loading={loading} />
         <br />
         <div className="flex flex-col gap-2">
           <h5>Payout settings</h5>

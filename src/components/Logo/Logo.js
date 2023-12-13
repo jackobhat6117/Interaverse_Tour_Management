@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const Logo = () => {
   return (
-    <Link to="/" className="flex items-center justify-center">
+    <Link to="/" className="flex gap-2 items-center justify-center">
       <img src={logo} alt="Miles" className="h-[35px] object-contain" />
       <img src={textlogo} alt="Miles" className="h-[35px] w-40" />
     </Link>
