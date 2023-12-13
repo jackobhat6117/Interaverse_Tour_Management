@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Button1 from "../../components/form/Button1";
 import { FileDownloadOutlined } from "@mui/icons-material";
 import CustomTable from "../../components/Table/CustomTable";
@@ -54,28 +54,34 @@ export default function BalanceSetting() {
   });
   const [loading, setLoading] = useState(false);
 
+  const getTransactions = useCallback(loadTransaction, [
+    dateFilter?.date,
+    dateFilter?.range,
+  ]);
+
   useEffect(() => {
-    async function loadTransaction() {
-      let range = undefined;
-      const date =
-        dateFilter?.range !== "All"
-          ? moment(dateFilter?.date)
-              .subtract(1, dateFilter?.range)
-              .format("MM/D/YYYY")
-          : undefined;
-      if (date) {
-        range = date + "," + dateFilter?.date;
-      }
-      setLoading(true);
-      const transactions = await getWalletTransactions(range);
-      setLoading(false);
-      if (transactions.return) {
-        setWalletTransactions(transactions.data?.data);
-      }
-    }
-    loadTransaction();
+    getTransactions();
     load();
-  }, [dateFilter?.date, dateFilter?.range]);
+  }, [getTransactions]);
+
+  async function loadTransaction() {
+    let range = undefined;
+    const date =
+      dateFilter?.range !== "All"
+        ? moment(dateFilter?.date)
+            .subtract(1, dateFilter?.range)
+            .format("MM/D/YYYY")
+        : undefined;
+    if (date) {
+      range = date + "," + dateFilter?.date;
+    }
+    setLoading(true);
+    const transactions = await getWalletTransactions(range);
+    setLoading(false);
+    if (transactions.return) {
+      setWalletTransactions(transactions.data?.data);
+    }
+  }
 
   async function load() {
     const res = await getWallet();
@@ -83,11 +89,12 @@ export default function BalanceSetting() {
       setBalanceData(res?.data);
     }
   }
+
   return (
     <div className="flex flex-col gap-4 !text-primary/60 ">
       <div className="flex justify-between items-center gap-4 flex-wrap">
         <div className="w-full sm:w-auto">
-          <SetupThreshold reload={load} />
+          <SetupThreshold reload={loadTransaction} />
         </div>
         <div className="w-full sm:w-auto flex justify-end">
           <div className="flex gap-5 items-center">
@@ -103,7 +110,7 @@ export default function BalanceSetting() {
       <div className="flex justify-between flex-wrap">
         <div className="flex flex-col gap-3 mb-4">
           <div className="inline-block self-start">
-            <TopUpBalance reload={load} />
+            <TopUpBalance reload={loadTransaction} />
           </div>
           <div className="tooltip">
             In test mode your balance is unlimited. It is topped-off
@@ -136,11 +143,13 @@ export default function BalanceSetting() {
 
 function TopUpBalance({ reload }) {
   const [open, setOpen] = useState(false);
-  const [data, setData] = useState({ amount: 0 });
+  const [data, setData] = useState({ amount: undefined });
   const { user } = useSelector((state) => state.user.userData);
 
   const handleTopUp = async (reference) => {
     await topUpWalletUsingModal(reference);
+    setOpen(false);
+    reload();
   };
 
   return (
@@ -152,7 +161,7 @@ function TopUpBalance({ reload }) {
           <TextInput
             label="Amount"
             type="number"
-            value={data.amount || 0}
+            value={data.amount}
             onChange={(ev) => setData({ ...data, amount: ev.target.value })}
             InputProps={{
               endAdornment: "NGN",
@@ -171,11 +180,9 @@ function TopUpBalance({ reload }) {
             }}
             onSuccess={(reference) => {
               handleTopUp(reference?.reference);
-              setOpen(false);
-              reload();
             }}
           >
-            <Button1>Save Changes</Button1>
+            <Button1 className={"whitespace-nowrap"}>Save Changes</Button1>
           </PaystackButton>
         </div>
       </Modal1>

@@ -6,23 +6,22 @@ import TextInput from "../../../components/form/TextInput";
 import { MenuItem } from "@mui/material";
 import Button1 from "../../../components/form/Button1";
 
-
-export function AddBankForm({banks,reload,updateCallback,data}) {
+export function AddBankForm({ banks, reload, updateCallback, data }) {
   const { enqueueSnackbar } = useSnackbar();
   const [accountName, setAccountName] = useState();
   const [bankForm, setBankForm] = useState({
     bankCode: data?.bankCode,
     accountNumber: data?.accountNumber,
   });
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if(data)
+    if (data)
       setBankForm({
         bankCode: data?.bankCode,
         accountNumber: data?.accountNumber,
       });
-  },[data])
+  }, [data]);
 
   const checkBankAccountName = async (accountNumber) => {
     const bankInfo = await checkBankInfo({
@@ -39,7 +38,7 @@ export function AddBankForm({banks,reload,updateCallback,data}) {
   async function handleSubmit(ev) {
     ev.preventDefault();
 
-    if(updateCallback) return updateCallback(bankForm)
+    if (updateCallback) return updateCallback(data?._id, bankForm);
 
     setLoading(true);
     const res = await addBankAccount(bankForm);
@@ -50,48 +49,44 @@ export function AddBankForm({banks,reload,updateCallback,data}) {
     } else enqueueSnackbar(res.msg, { variant: "error" });
   }
 
-  console.log(banks)
   return (
-    <form
-    onSubmit={handleSubmit}
-    className="flex flex-col gap-4 content-max-w"
-  >
-    <h5>{updateCallback ? 'Edit':''} Bank Information</h5>
-    <TextInput
-      select
-      label={"Select bank"}
-      value={bankForm.bankCode || ''}
-      onChange={(e) => {
-        setBankForm({
-          ...bankForm,
-          bankCode: e.target.value,
-        });
-      }}
-    >
-      {Array.isArray(banks) &&
-        banks?.map((bank) => (
-          <MenuItem value={bank.value}>{bank.label}</MenuItem>
-        ))}
-    </TextInput>
-    <TextInput
-      label={"Enter account number"}
-      placeholder={"e.g 0047159973"}
-      value={bankForm.accountNumber}
-      onChange={(e) => {
-        setBankForm({ ...bankForm, accountNumber: e.target.value });
-        setAccountName();
-        if (e.target.value && e?.target?.value?.length > 9) {
-          setAccountName("Checking...");
-          checkBankAccountName(e.target.value);
-        }
-      }}
-      tooltip={accountName}
-    />
-    <span className="self-start">
-      <Button1 type="submit" loading={loading}>
-        Save bank details
-      </Button1>
-    </span>
-  </form>
-  )
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4 content-max-w">
+      <h5>{updateCallback ? "Edit" : ""} Bank Information</h5>
+      <TextInput
+        select
+        label={"Select bank"}
+        value={bankForm.bankCode || ""}
+        onChange={(e) => {
+          setBankForm({
+            ...bankForm,
+            bankCode: e.target.value,
+          });
+        }}
+      >
+        {Array.isArray(banks) &&
+          banks?.map((bank) => (
+            <MenuItem value={bank.value}>{bank.label}</MenuItem>
+          ))}
+      </TextInput>
+      <TextInput
+        label={"Enter account number"}
+        placeholder={"e.g 0047159973"}
+        value={bankForm.accountNumber}
+        onChange={(e) => {
+          setBankForm({ ...bankForm, accountNumber: e.target.value });
+          setAccountName();
+          if (e.target.value && e?.target?.value?.length > 9) {
+            setAccountName("Checking...");
+            checkBankAccountName(e.target.value);
+          }
+        }}
+        tooltip={accountName}
+      />
+      <span className="self-start">
+        <Button1 type="submit" loading={loading}>
+          Save bank details
+        </Button1>
+      </span>
+    </form>
+  );
 }

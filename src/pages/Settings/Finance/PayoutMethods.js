@@ -70,11 +70,11 @@ export default function PayoutMethods() {
         <div className="flex gap-4 justify-between items-center">
           <h5>Saved Accounts</h5>
           <div>
-            {!showAdd ? 
+            {!showAdd ? (
               <Button1 onClick={() => setShowAdd(!showAdd)}>
                 Add Account
               </Button1>
-            : null}
+            ) : null}
           </div>
         </div>
         <BankAccounts reload={load} banks={banks} data={ownBankAccounts} loading={loading} />
