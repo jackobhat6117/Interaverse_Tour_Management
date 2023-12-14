@@ -38,10 +38,13 @@ export function AddBankForm({ banks, reload, updateCallback, data }) {
   async function handleSubmit(ev) {
     ev.preventDefault();
 
-    if (updateCallback) return updateCallback(data?._id, bankForm);
-
+    
     setLoading(true);
-    const res = await addBankAccount(bankForm);
+    let res = {return:false,msg: 'Error'};
+    if (updateCallback) 
+      res = await updateCallback(data?._id, bankForm);
+    else
+      res = await addBankAccount(bankForm);
     setLoading(false);
     if (res.return) {
       enqueueSnackbar("Successful", { variant: "success" });

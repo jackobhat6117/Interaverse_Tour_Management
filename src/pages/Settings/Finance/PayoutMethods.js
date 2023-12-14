@@ -7,6 +7,7 @@ import getBanks from "../../../controllers/settings/finance/getBanks";
 import getBankAccounts from "../../../controllers/settings/finance/getBankAccounts";
 import BankAccounts from "./BankAccounts";
 import { AddBankForm } from "./AddBankForm";
+import Modal1 from "../../../components/DIsplay/Modal/Modal1";
 
 export default function PayoutMethods() {
   const [ownBankAccounts, setOwnBankAccounts] = useState([]);
@@ -63,18 +64,17 @@ export default function PayoutMethods() {
       </div>
       <hr /> */}
       <div className="flex flex-col gap-4 content-max-w">
-        {showAdd ? 
-          <AddBankForm banks={banks} reload={load} />
-        :null}
-        <hr />
+        <Modal1 open={showAdd} setOpen={setShowAdd}>
+          <div className="p-6">
+            <AddBankForm banks={banks} reload={load} />
+          </div>
+        </Modal1>
         <div className="flex gap-4 justify-between items-center">
           <h5>Saved Accounts</h5>
           <div>
-            {!showAdd ? (
-              <Button1 onClick={() => setShowAdd(!showAdd)}>
-                Add Account
-              </Button1>
-            ) : null}
+            <Button1 onClick={() => setShowAdd(!showAdd)}>
+              Add Account
+            </Button1>
           </div>
         </div>
         <BankAccounts reload={load} banks={banks} data={ownBankAccounts} loading={loading} />

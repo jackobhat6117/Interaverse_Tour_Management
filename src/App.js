@@ -18,7 +18,7 @@ import AccountNav from './components/Settings/AccountNav';
 import AccountSetupNav from './components/Settings/AccountSetupNav';
 import AccountSettings from './pages/Settings/Agency/Account/Account';
 import AgencySetupSetting from './pages/Settings/Agency/AgencySetup.js.js';
-import MarkupSetting from './pages/Settings/Agency/Markup';
+import MarkupSetting from './pages/Settings/Order/Markup/Markup.js';
 import CommissionSettings from './pages/Settings/Agency/Commision';
 import PointsSettings from './pages/Settings/Agency/Points';
 import PageNotFound from './pages/PageNotFound';

@@ -18,20 +18,21 @@ export default function BankAccounts({ data, loading, banks, reload }) {
   const [editObj, setEditObj] = useState();
   const [deleteObj, setDeleteObj] = useState();
 
+  const [deleteLoading,setDeleteLoading] = useState(false);
+
   function getBankName(code) {
     let bank = banks?.find((obj) => obj.value === code);
     return bank?.label;
   }
 
   async function updateData(id, data) {
-    const resp = await updateBankAccount(id, data);
-    if (resp.return) {
-      reload && reload();
-    }
+    return await updateBankAccount(id, data);
   }
 
   async function deleteData(id) {
+    setDeleteLoading(true);
     const resp = await deleteBankAccount(id);
+    setDeleteLoading(false);
     if (resp.return) {
       reload && reload();
     }
@@ -113,7 +114,7 @@ export default function BankAccounts({ data, loading, banks, reload }) {
             >
               Cancel
             </Button1>
-            <Button1
+            <Button1 loading={deleteLoading}
               className="!bg-red-500 !text-white"
               onClick={() => deleteData(deleteObj._id)}
             >

@@ -27,7 +27,7 @@ export default function RadioGroup(props) {
     // <RadioGroup options={[{label: 'asf',value: 'asdf'}]} render={({label,value}) => <div>{value}</div>}
     <MuiRadioGroup onChange={(ev) => handleChange(ev.target.value)} value={selected}>
       <div className={` ${className}`}>
-        {options.map((obj,i) => (
+        {options?.map((obj,i) => (
           <RadioInput key={i} value={obj?.value} checked={selected === obj?.value}>
             {render && !obj.render ? 
               render(obj) 
