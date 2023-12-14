@@ -51,6 +51,7 @@ export default function FlightSupplier() {
             using: 'My own'},
     ]
 
+    const [addNew,setAddNew] = useState(false);
     const [editObj,setEditObj] = useState();
     const [deleteObj,setDeleteObj] = useState();
 
@@ -98,7 +99,17 @@ export default function FlightSupplier() {
             <div className='flex justify-between gap-4'>
                 <h5>Flight</h5>
                 <div>
-                    <Button1>+ Add</Button1>
+                    <Button1 onClick={() => setAddNew(true)}>+ Add</Button1>
+                    <Modal1 open={addNew} setOpen={() => setAddNew()}>
+                        <div className="card p-10">
+                            <SupplierForm name='flight' footer={(obj) => (
+                                <div className="flex gap-4">
+                                    <label className="btn-theme-light" onClick={() => setAddNew()}>Cancel</label>
+                                    <Button1 onClick={() => handleUpdate(obj)}>Save Supplier</Button1>
+                                </div>
+                            )} />
+                        </div>
+                    </Modal1>
                 </div>
             </div>
             <CustomTable rows={data} columns={columns} />
