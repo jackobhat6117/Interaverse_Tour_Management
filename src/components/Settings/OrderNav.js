@@ -8,6 +8,7 @@ export const orderLinks = [
   {to: "/settings/order/", title: '', icon: EmailOutlined,label: "Mark Up"},
   {to: "/settings/order/commission", title: 'commission', icon: LockOutlined,label: "Commision"},
   {to: "/settings/order/points", title: 'points', icon: LayersOutlined, label: "Miles Points"},
+  {to: "/settings/order/suppliers", title: 'suppliers', icon: 'carbon:scis-transparent-supply', label: "Suppliers"},
 ]
 
 export default function OrderNav() {

@@ -10,8 +10,13 @@ RadioGroup.protoTypes = {
   onChange: func,
 }
 export default function RadioGroup(props) {
-  const {className,options,onChange,value,render} = props;
+  const {className,options:gotOpt,onChange,value,render} = props;
   const [selected,setSelected] = useState(value||'');
+  const [options,setOptions] = useState(gotOpt)
+
+  useEffect(() => {
+    gotOpt && setOptions(gotOpt)
+  },[gotOpt])
 
   useEffect(() => {
     if(value)
@@ -22,7 +27,7 @@ export default function RadioGroup(props) {
     onChange && onChange(val);
     setSelected(val);
   }
-  console.log(value,options,selected)
+  // console.log(value,'-',options,'-',selected)
   return (
     // <RadioGroup options={[{label: 'asf',value: 'asdf'}]} render={({label,value}) => <div>{value}</div>}
     <MuiRadioGroup onChange={(ev) => handleChange(ev.target.value)} value={selected}>

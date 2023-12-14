@@ -45,6 +45,7 @@ import FlightOrder from './pages/Orders/Flight/Booked/FlightOrder.js';
 import OrderNav from './components/Settings/OrderNav.js';
 import PayoutMethods from './pages/Settings/Finance/PayoutMethods.js';
 import PaymentGateway from './pages/Settings/Agency/PaymentGateway.js';
+import SupplierSettings from './pages/Settings/Order/Suppliers/Suppliers.js';
 // import 'dotenv/config'
 
 
@@ -132,6 +133,7 @@ function App() {
                     <Route index element={<MarkupSetting />} />
                     <Route path='commission' element={<CommissionSettings />} />
                     <Route path='points' element={<PointsSettings />} />
+                    <Route path='suppliers' element={<SupplierSettings />} />
                     <Route path='*' element={<PageNotFound />} />
                   </Route>
                   <Route path='finance' element={<FinanceContainer />}>
