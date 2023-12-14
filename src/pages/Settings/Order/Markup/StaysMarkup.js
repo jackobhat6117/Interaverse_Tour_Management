@@ -3,7 +3,6 @@ import CustomTable from '../../../../components/Table/CustomTable'
 import TextInput from '../../../../components/form/TextInput'
 import { MenuItem } from '@mui/material'
 import Modal1 from '../../../../components/DIsplay/Modal/Modal1'
-import getMarkups from '../../../../controllers/markup/getMarkups'
 import Icon from '../../../../components/HOC/Icon'
 import CreateMarkup from './CreateMarkup'
 import { Link } from 'react-router-dom'
@@ -26,10 +25,10 @@ export default function StaysMarkup() {
 
   async function load() {
     setEditObj();
-    const res = await getMarkups();
-    if(res.return) {
-      console.log(res.data)
-    }
+    // const res = await getMarkups();
+    // if(res.return) {
+    //   console.log(res.data)
+    // }
   }
 
   async function changeStatus() {
