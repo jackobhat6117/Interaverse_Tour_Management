@@ -1,7 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import LearnMoreButton from '../../components/mini/LearnMoreButton'
 import CreateOrder from './CreateOrder'
 import OrdersData from './OrdersData'
+import { CircularProgress } from '@mui/material'
+import getBookings from '../../controllers/booking/getBookings'
+import { templateFlightOrderData, templateOrdersData } from '../../data/order/ordersData'
 
 
 const tempObj = {
@@ -14,8 +17,35 @@ const tempObj = {
 
 export default function Orders() {
   const [data,setData] = useState([]);
+  const [loading,setLoading] = useState(false);
 
-  return !data?.length ? (
+  useEffect(() => {
+    load();
+  },[])
+
+  async function load() {
+    setLoading(true);
+    const res = await getBookings();
+    setLoading(false);
+    if(res.return) {
+      let data = [];
+      res.data?.data?.map(obj => {
+        obj?.flightBooking?.map(flightObj => 
+          data.push({...obj,flightObj,type: 'Flight'})
+        )
+        return true;
+      })
+      data = data?.map(obj => templateFlightOrderData(obj))
+      setData(data)
+    }
+  }
+  
+
+  return loading ? (
+    <div className='p-6 flex-1 flex justify-center items-center'>
+      <CircularProgress />
+    </div>
+  ): !data?.length ? (
     <div className={`pd-md flex-1 flex flex-col ${!data?.length ? 'bg-emptypage':''}`}>
       <h5>Orders</h5>
       <div className='w-full sm:flex-1 py-10 sm:py-2 flex flex-col gap-4 h-full justify-center items-center'>

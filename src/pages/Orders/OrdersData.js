@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 import TableFilter from '../../components/Table/TableFilter'
 import CreateOrder from './CreateOrder'
 import Button1 from '../../components/form/Button1'
@@ -12,6 +12,7 @@ import { Icon } from '@iconify/react'
 import AddBags from './AddBags'
 import AddSeats from './AddSeats'
 import CancelOrder from './cancelOrder'
+import { formatMoney } from '../../features/utils/formatMoney'
 
 
 const ActionContext = createContext();
@@ -59,7 +60,7 @@ function StatusCol({params}) {
 }
 
 
-export default function OrdersData({data,setData}) {
+export default function OrdersData({data:gotData,setData: setOrig}) {
   const tempObj = {
     date: '22, Jan',name: 'John Doe',provider: 'gb Travels',type: ['Flight','Tour','Stay'][parseInt(Math.random()*3)],amount: 234900,
     commission: '4900',
@@ -71,20 +72,68 @@ export default function OrdersData({data,setData}) {
   const [openAddSeats,setOpenAddSeats] = useState(false);
   const [openCancelOrder,setOpenCancelOrder] = useState(false);
 
+  const [data,setData] = useState(gotData || [])
+  let countObj = {
+    all: data?.length,
+    flights: 0,
+    tours: 0,
+    stays: 0
+  }
+  data?.filter(obj => {
+    let type = obj?.type?.toLowerCase();
+    if(type === 'flight')
+      countObj.flights++;
+    else if(type === 'tour')
+      countObj.tours++;
+    else if(type === 'stay')
+      countObj.stays++;
+
+    return true;
+  })
+
+
+  const [filter,setFilter] = useState('ALL')
+
+  useEffect(() => {
+    if(!filter || filter === 'ALL') return setData(gotData)
+
+    setData(gotData.filter(obj => 
+      obj.type?.toLowerCase() === filter?.toLowerCase()
+    ))
+  },[filter,gotData])
+
   const filterOptions = [
-    {label: 'All',value: 'ALL',count: 293},
-    {label: 'Flights',value: 'FLIGHTS',count: 190},
-    {label: 'Stays',value: 'Stays',count: 90},
-    {label: 'Tours',value: 'Tours',count: 30},
+    {label: 'All',value: 'ALL',count: countObj.all},
+    {label: 'Flights',value: 'FLIGHT',count: countObj.flights},
+    {label: 'Stays',value: 'Stay',count: countObj.stays},
+    {label: 'Tours',value: 'Tour',count: countObj.tours},
   ]
 
   const columns = [
     {field: 'date',headerName: 'Created Date'},
     {field: 'id',headerName: 'ID'},
     {field: 'name',headerName: 'Name'},
-    {field: 'provider',headerName: 'Provider'},
+    {field: 'provider',headerName: 'Provider',
+      renderCell: (params) => {
+        let type = params.row?.type?.toLowerCase();
+        return (
+          <div className='flex flex-col '>
+            {params.value}
+            <small className={`text-xs px-2 p-1 rounded-md ${type}`}>
+              {params.row?.type}
+            </small>
+          </div>
+        )
+      }
+    },
     {field: 'updatedDate',headerName: 'Activity Date'},
-    {field: 'amount',headerName: 'Amount'},
+    {field: 'amount',headerName: 'Amount',
+      renderCell: (params) => (
+        <div>
+          {formatMoney(params.value)}
+        </div>
+      )
+    },
     {field: 'commission',headerName: 'Commission'},
     {field: 'bookRef',headerName: 'Book Ref'},
     {field: 'status',headerName: 'Status',minWidth: 160,
@@ -99,7 +148,7 @@ export default function OrdersData({data,setData}) {
       <div className='flex gap-4 justify-between flex-wrap items-center'>
         <div className='flex gap-4 items-center justify-between md:justify-start flex-1 max-w-full'>
           <h5>Orders</h5>
-          <TableFilter options={filterOptions} value={'ALL'} />
+          <TableFilter options={filterOptions} value={filter} onChange={(val) => setFilter(val)} />
         </div>
         <CreateOrder label='Create new order' handleReturn={() => setData([...data,tempObj])} />
       </div>

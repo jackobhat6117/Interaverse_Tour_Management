@@ -190,7 +190,7 @@ export default function CreateFlightOrder() {
       <div className='justify-center items-center flex flex-col gap-4'>
         <div className='flex flex-col gap-4'>
           <div>
-            <h6>Journey Type</h6>
+            {/* <h6>Journey Type</h6> */}
             <RadioGroup onChange={(ev) => setType(ev.target.value)} >
               <div className='flex gap-4'>
                 <RadioInput className='whitespace-nowrap' value={'oneway'} checked={type === 'oneway'}>One way</RadioInput>

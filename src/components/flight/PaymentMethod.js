@@ -6,7 +6,7 @@ import payForTicket from "../../controllers/Flight/payForTicket";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 
-export default function PaymentMethod({data}) {
+export default function PaymentMethod({data,className}) {
   const {id} = useParams();
   // Bank, Card, USSD, QR, MobileMoney, BankTransfer
   const options = [
@@ -33,7 +33,7 @@ export default function PaymentMethod({data}) {
     } else enqueueSnackbar(res?.msg,{variant: 'error'})
   }
   return (
-    <div className='border p-4 flex flex-col gap-6 md:min-w-[400px] '>
+    <div className={'border p-4 flex flex-col gap-6 md:min-w-[400px] '+className}>
       <h5>Choose payment method</h5>
       <hr />
       <RadioGroup options={options} value={method} 

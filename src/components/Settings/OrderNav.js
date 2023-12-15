@@ -9,6 +9,8 @@ export const orderLinks = [
   {to: "/settings/order/commission", title: 'commission', icon: LockOutlined,label: "Commision"},
   {to: "/settings/order/points", title: 'points', icon: LayersOutlined, label: "Miles Points"},
   {to: "/settings/order/suppliers", title: 'suppliers', icon: 'carbon:scis-transparent-supply', label: "Suppliers"},
+  {to: "/settings/order/dealcodes", title: 'dealcodes', icon: 'iconamoon:discount-light', label: "Promo Codes"},
+  {to: "/settings/order/emailTemplates", title: 'emailTemplates', icon: 'fluent:mail-template-20-regular', label: "Email Templates"},
 ]
 
 export default function OrderNav() {

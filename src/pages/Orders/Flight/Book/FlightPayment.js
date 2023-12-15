@@ -6,6 +6,9 @@ import SeatSelection from './SeatSelection';
 import FlightPriceSummary from '../../../../components/flight/FlightPriceSummary';
 import { useSelector } from 'react-redux';
 import PaymentMethod from '../../../../components/flight/PaymentMethod';
+import Icon from '../../../../components/HOC/Icon';
+import { formatMoney } from '../../../../features/utils/formatMoney';
+import FlightPriceCommission from '../../../../components/flight/FlightPriceCommission';
 
 
 export default function FlightPayment() {
@@ -43,19 +46,28 @@ export default function FlightPayment() {
             </div>
           )
         })}
-        <Link to={`/order/new/flight/book/details/${id}`}>Detail</Link>
-        <Link to={`/order/new/flight/book/ancillaries/${id}`}>Seats</Link>
-        <b>Payment</b>
+        <Link to={`/order/new/flight/book/details/${id}`}>Passenger details</Link>
+        <Link to={`/order/new/flight/book/ancillaries/${id}`}>Ancillaries</Link>
+        <label>Payment</label>
       </BreadCrumb>
 
-      <div className='flex flex-col gap-6 flex-wrap-reverse md:flex-nowrap items-center justify-center my-10'>
-        <FlightPriceSummary onBook 
-            data={offer} 
-          // footer={
-          //   <Link className='btn-theme rounded-md flex justify-center' to={`/order/new/flight/book/payment/${id}`}>Proceed to checkout</Link>
-          // } 
-        />
-        <PaymentMethod data={data} />
+      <div className='flex flex-col gap-6 flex-wrap-reverse md:flex-nowrap items-center justify-center my-10 self-center'>
+        <div className='flex gap-3 flex-col'>
+          <div className='bg-theme1/10 px-6 p-4 w-full flex flex-col justify-center gap-4 items-center'>
+            <h5>Airline Commision</h5>
+            <div className='flex gap-2'>
+              <Icon icon='ep:success-filled' className='text-green-500' />
+              <p>You qualify for a <b className='font-bold'>{formatMoney(80000)}</b> commission on this order</p>
+            </div>
+          </div>
+          <FlightPriceCommission 
+              data={offer} 
+            // footer={
+            //   <Link className='btn-theme rounded-md flex justify-center' to={`/order/new/flight/book/payment/${id}`}>Proceed to checkout</Link>
+            // } 
+          />
+        </div>
+        <PaymentMethod className={'w-full'} data={data} />
       </div>
     </div>
   )

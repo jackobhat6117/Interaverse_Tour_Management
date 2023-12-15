@@ -4,7 +4,7 @@ import SearchInput from "../form/SearchInput";
 import Button1 from "../form/Button1";
 
 export default function CustomTable(props) {
-  const { columns, rows, searchProps, loading, ...restProps } = props;
+  const { columns=[], rows=[], searchProps, loading, ...restProps } = props;
 
   const [searchVal, setSearchVal] = useState(searchProps?.q || "");
 
@@ -17,7 +17,7 @@ export default function CustomTable(props) {
     setModRows(Array.isArray(rows) ? [...rows] : [rows]);
   }, [rows]);
 
-  rows.map((obj, i) => {
+  rows?.map((obj, i) => {
     if (modRows[i] && !obj.id) modRows[i]["id"] = i;
     Object.entries(obj).map(([key, val]) => {
       let length = val?.toString()?.length || 1;

@@ -46,6 +46,8 @@ import OrderNav from './components/Settings/OrderNav.js';
 import PayoutMethods from './pages/Settings/Finance/PayoutMethods.js';
 import PaymentGateway from './pages/Settings/Agency/PaymentGateway.js';
 import SupplierSettings from './pages/Settings/Order/Suppliers/Suppliers.js';
+import PromoSettings from './pages/Settings/Order/PromoCodes/PromoCodes.js';
+import EmailTemplateSettings from './pages/Settings/EmailTemplates/EmailTemplates.js';
 // import 'dotenv/config'
 
 
@@ -134,6 +136,8 @@ function App() {
                     <Route path='commission' element={<CommissionSettings />} />
                     <Route path='points' element={<PointsSettings />} />
                     <Route path='suppliers' element={<SupplierSettings />} />
+                    <Route path='dealcodes' element={<PromoSettings />} />
+                    <Route path='emailTemplates' element={<EmailTemplateSettings />} />
                     <Route path='*' element={<PageNotFound />} />
                   </Route>
                   <Route path='finance' element={<FinanceContainer />}>
