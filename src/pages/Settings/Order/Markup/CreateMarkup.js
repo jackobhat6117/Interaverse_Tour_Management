@@ -7,6 +7,7 @@ import CitiesInput from "../../../../components/form/CitiesInput";
 import { Checkbox, MenuItem, RadioGroup } from "@mui/material";
 import Button1 from "../../../../components/form/Button1";
 import createFlightPriceAdjustment from "../../../../controllers/flightPriceAdjustment/createFlightPriceAdjustment";
+import updateFlightPriceAdjustment from "../../../../controllers/flightPriceAdjustment/updateFlightPriceAdjustment";
 
 export default function CreateMarkup({
   reload,
@@ -58,7 +59,7 @@ export default function CreateMarkup({
     setLoading(true);
     let res = { return: false, msg: "Error", data: [] };
     if (!update) res = await createFlightPriceAdjustment({ ...data, currency });
-    // else // update logic
+    else await updateFlightPriceAdjustment({ ...data });
 
     setLoading(false);
     if (res.return) {

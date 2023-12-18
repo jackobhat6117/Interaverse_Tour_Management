@@ -1,4 +1,4 @@
-import fetchServer from "../../fetchServer";
+import fetchServer from "../fetchServer";
 
 /**
  *
