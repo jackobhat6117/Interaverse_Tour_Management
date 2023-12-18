@@ -3,6 +3,7 @@ import RevenueAnalytics from "./RevenuAnalytics";
 import { useSelector } from "react-redux";
 import Button1 from "../../components/form/Button1";
 import { Link } from "react-router-dom";
+import CreateOrder from "../Orders/CreateOrder";
 
 export default function Dashboard() {
   const { user } = useSelector((state) => state.user.userData);
@@ -36,12 +37,13 @@ export default function Dashboard() {
             Book on-hold orders
           </Link>
           <div className="flex items-center">
-            <Button1
+            <CreateOrder label='Create a new order' />
+            {/* <Button1
               className="btn-theme1 whitespace-nowrap flex-1 md:flex-none !w-auto "
-              href="/order"
+              href="/order?create"
             >
               Create a new order
-            </Button1>
+            </Button1> */}
           </div>
         </div>
       </div>
