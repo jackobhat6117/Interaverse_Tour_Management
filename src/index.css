@@ -115,6 +115,11 @@ code {
   }
 
 
+  .menuItem {
+    @apply flex flex-col bg-secondary rounded-lg p-2
+  }
+
+
   .pd-md {
     @apply px-6 sm:px-16 py-10;
   }

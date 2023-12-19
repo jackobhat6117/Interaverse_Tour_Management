@@ -50,7 +50,7 @@ export default function SeatSelection({offer}) {
 }
 
 
-function FlightSeatDisplay({obj,routeIndex}) {
+export function FlightSeatDisplay({obj,routeIndex}) {
   const [open,setOpen] = useState(false);
   const [loading,setLoading] = useState(false);
 
@@ -73,7 +73,8 @@ function FlightSeatDisplay({obj,routeIndex}) {
     // const flight = flights?.find((ob,i) => JSON.stringify(ob) === JSON.stringify(obj))
 
     let modOffer = clone(offer);
-    modOffer.directions = [[flight]]
+    if(modOffer)
+      modOffer.directions = [[flight]]
 
     const reqData = {
       offers: [modOffer],

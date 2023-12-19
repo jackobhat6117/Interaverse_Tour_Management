@@ -25,7 +25,7 @@ export default function FlightPayment() {
   const data = {
     ...bookingData?.orderData?.booking,
     paymentData,
-    link: `/orders/flight/${bookingData?.orderData?.booking?._id}`,
+    link: `/order/flight/${bookingData?.orderData?.booking?._id}`,
   }
 
   const navigate = useNavigate();

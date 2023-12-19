@@ -11,6 +11,7 @@ module.exports = {
         secondary: '#fff',
         // theme1: '#1E61DC'
         'theme1': 'rgba(var(--theme-color), <alpha-value>)',
+        'theme2': 'rgba(var(--theme-color2), <alpha-value>)'
       }
     },
   },

@@ -1,6 +1,7 @@
 :root {
   --primary-color: 0, 0, 0;
   --theme-color: 30, 120, 220; /* Default theme color */
+  --theme-color2: 30, 169, 153;
 }
 
 hr {

@@ -20,7 +20,7 @@ export default function Dashboard() {
           {/* <Link className='btn whitespace-nowrap flex-1 md:flex-none' to="/">View pending orders</Link> */}
           <Link
             className="p-2 px-4 rounded-md flex-1 md:flex-none border-primary border flex gap-3 whitespace-nowrap items-center"
-            to="/order"
+            to="/order?filter=needsreview"
           >
             <span className="bg-theme1/20 text-xs font-bold w-5 h-5 flex items-center justify-center">
               5
@@ -29,7 +29,7 @@ export default function Dashboard() {
           </Link>
           <Link
             className="p-2 px-4 rounded-md flex-1 md:flex-none border-primary border flex gap-3 whitespace-nowrap items-center"
-            to="/order"
+            to="/order?filter=onhold"
           >
             <span className="bg-theme1/20 text-xs font-bold w-5 h-5 flex items-center justify-center">
               15

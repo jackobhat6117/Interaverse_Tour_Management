@@ -30,7 +30,7 @@ export default function FlightPriceSummary({data,onBook,footer}) {
         </div>
       )}
       <div className='flex gap-4 justify-between'>
-        <h5>Price Summary:</h5>
+        <h5>Trip Total:</h5>
         <h5>{formatMoney(data?.totalAmount)}</h5>
       </div>
       {!onBook ? 

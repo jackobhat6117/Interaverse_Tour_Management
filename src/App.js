@@ -112,7 +112,7 @@ function App() {
                   <Route path='order/new/flight/book/details/:id' element={<FlightBookDetails />} />
                   <Route path='order/new/flight/book/ancillaries/:id' element={<FlightAncillaries />} />
                   <Route path='order/new/flight/book/payment/:id' element={<FlightPayment />} />
-                  <Route path='orders/flight/:id' element={<FlightOrder />} />
+                  <Route path='order/flight/:id' element={<FlightOrder />} />
                   <Route path='users' element={<UserManagement />} />
                   <Route path='link' element={<Links />} />
                   <Route path='*' element={<PageNotFound />} />

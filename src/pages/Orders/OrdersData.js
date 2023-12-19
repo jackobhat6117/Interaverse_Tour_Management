@@ -13,22 +13,27 @@ import AddBags from './AddBags'
 import AddSeats from './AddSeats'
 import CancelOrder from './cancelOrder'
 import { formatMoney } from '../../features/utils/formatMoney'
+import { useNavigate } from 'react-router-dom'
 
 
 const ActionContext = createContext();
 
+export const Menu = (props) => {
+  const {className,label,value,showFor,hideFor,...extraProps} = props;
+  const ShowerClass = showFor?.includes(value?.toLowerCase() || value) ? '' : !showFor ? '' : '!hidden'
+  const hiderClass = !hideFor?.includes(value?.toLowerCase() || value) ? '' : !hideFor ? '' : '!hidden'
+  
+  return (
+    <MenuItem className={`${className} ${ShowerClass} ${hiderClass}`} value={value} {...extraProps} >{label || value}</MenuItem>
+  )
+}
+
 function StatusCol({params}) {
   const status = params.value || '';
+  const navigate = useNavigate();
 
-  const Menu = (props) => {
-    const {className,label,value,showFor,hideFor,...extraProps} = props;
-    const ShowerClass = showFor?.includes(value?.toLowerCase() || value) ? '' : !showFor ? '' : '!hidden'
-    const hiderClass = !hideFor?.includes(value?.toLowerCase() || value) ? '' : !hideFor ? '' : '!hidden'
-    
-    return (
-      <MenuItem className={`${className} ${ShowerClass} ${hiderClass}`} value={value} {...extraProps} >{label || value}</MenuItem>
-    )
-  }
+
+  const orderType = params?.row?.type?.toLowerCase() || 'type';
 
   return (
     <div className='flex justify-between items-center gap-2 w-full '>
@@ -40,8 +45,8 @@ function StatusCol({params}) {
       )}>
         <ActionContext.Consumer>
           {({bags,seats,cancel}) => (
-            <div className='flex flex-col bg-secondary rounded-lg p-2'>
-              <Menu value={status} label='View Order' />
+            <div className='menuItem'>
+              <Menu value={status} label='View Order' onClick={() => navigate(`/order/${orderType}/${params?.row?.id}`)} />
               <Menu value={status} label='Make Payment' showFor={['confirmed']} />
               <Menu value={status} label='Issue Ticket' showFor={['confirmed']} className='!btn disabled' />
               <Menu value={status} label='Manage Ticket' showFor={['confirmed']} />
@@ -146,11 +151,16 @@ export default function OrdersData({data:gotData,setData: setOrig}) {
   return (
     <div className='pd-md flex-1 flex flex-col gap-1'>
       <div className='flex gap-4 justify-between flex-wrap items-center'>
-        <div className='flex gap-4 items-center justify-between md:justify-start flex-1 max-w-full'>
-          <h5>Orders</h5>
-          <TableFilter options={filterOptions} value={filter} onChange={(val) => setFilter(val)} />
-        </div>
-        <CreateOrder label='Create new order' handleReturn={() => setData([...data,tempObj])} />
+        <h5>Orders</h5>
+        {/* <div className='flex gap-4 flex-wrap items-center justify-between md:justify-start flex-1 max-w-full'> */}
+          <div className='order-3 md:order-2 max-w-full'>
+            <TableFilter options={filterOptions} value={filter} onChange={(val) => setFilter(val)} />
+          </div>
+          <div className='order-2 md:order-3 flex gap-2'>
+            <button className='btn-theme-light !bg-primary/10 rounded-md'>Queue</button>
+            <CreateOrder label='Create new order' handleReturn={() => setData([...data,tempObj])} />
+          </div>
+        {/* </div> */}
       </div>
       <hr />
       <div className='flex gap-4 justify-between items-center flex-wrap'>

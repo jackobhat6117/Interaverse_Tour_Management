@@ -15,4 +15,5 @@ export const alertType = {
   Pending: "warn",
   Failed: "error",
   Success: "success",
+  success: "success",
 };

@@ -10,18 +10,16 @@ RadioGroup.protoTypes = {
   onChange: func,
 }
 export default function RadioGroup(props) {
-  const {className,options:gotOpt,onChange,value,render} = props;
+  const {className,radioClass,options:gotOpt,onChange,value,render} = props;
   const [selected,setSelected] = useState(value||'');
   const [options,setOptions] = useState(gotOpt)
 
   useEffect(() => {
-    gotOpt && setOptions(gotOpt)
-  },[gotOpt])
-
-  useEffect(() => {
-    if(value)
-      setSelected(value)
-  },[value])
+    if(gotOpt) {
+      setOptions(gotOpt)
+    } 
+    setSelected(value || '')
+  },[gotOpt,value])
 
   function handleChange(val) {
     onChange && onChange(val);
@@ -33,7 +31,7 @@ export default function RadioGroup(props) {
     <MuiRadioGroup onChange={(ev) => handleChange(ev.target.value)} value={selected}>
       <div className={` ${className}`}>
         {options?.map((obj,i) => (
-          <RadioInput key={i} value={obj?.value} checked={selected === obj?.value}>
+          <RadioInput key={i} value={obj?.value} checked={selected === obj?.value} className={radioClass}>
             {render && !obj.render ? 
               render(obj) 
               : obj.render ?

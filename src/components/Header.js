@@ -19,6 +19,7 @@ import { Link } from "react-router-dom";
 import IOSSwitch from "./form/IOSSwitch";
 import Logo from "./Logo/Logo";
 import { Icon } from "@iconify/react";
+import Applications from "./Applications";
 
 const colors = ["#1E61DC", "#D9A513", "#1EA994", "#1E61DC", "#B52026"];
 
@@ -63,7 +64,7 @@ export default function Header() {
         <div className="flex-1 z-[90]">
           <SearchInput exampleview={true} searchview={true} />
         </div>
-        <div className="flex gap-3 items-center text-primary/50">
+        <div className="flex gap-5 items-center text-primary/50">
           <div className="">
             <small>Go Live</small>
             <FormControlLabel
@@ -120,27 +121,45 @@ export default function Header() {
           <SupportAgentOutlined />
 
           <Link className="" variant="text" to="/settings/">
-            <Icon icon="ant-design:setting-filled" />
+            <Icon icon="ant-design:setting-filled" className="text-xl" />
           </Link>
 
-          <Icon icon="subway:menu" />
+          <Applications />
 
           <CustomMenu
             element={
-              <div className="rounded-full overflow-hidden bg-theme1/10 w-10 h-10 text-lg flex items-center justify-center font-extrabold">
-                {user?.detail?.agencyLogo ? (
+              <div className="rounded-full overflow-hidden bg-theme1/10 w-9 h-9 text-lg flex items-center justify-center font-extrabold">
+                {/* {user?.detail?.agencyLogo ? (
                   <img
                     src={user?.detail?.agencyLogo}
                     alt=""
                     className="object-contain w-full h-full"
                   />
                 ) : (
-                  user?.firstName?.at(0) || <Person className="!text-base" />
-                )}
+                  )} */}
+                {user?.firstName?.at(0)}
               </div>
             }
           >
-            <div className="shadow-md border bg-secondary flex flex-col gap-1">
+            <div className="shadow-md border bg-secondary p-6 flex flex-col gap-1">
+              <div className="flex flex-col gap-2 items-center">
+                {user?.detail?.agencyLogo ? (
+                  <img
+                  src={user?.detail?.agencyLogo}
+                    alt=""
+                    className="max-h-[50px]"
+                  />
+                ) : (
+                  user?.firstName?.at(0)
+                )}
+
+                <p>
+                  Hi, {user?.firstName} {user?.lastName}
+                </p>
+
+                <Link to='/settings/' className="btn-theme rounded-md">Manage your business</Link>
+              </div>
+
               <Button1
                 onClick={handleLogout}
                 variant={"text"}
