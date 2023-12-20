@@ -11,7 +11,7 @@ import Modal1 from "../../../components/DIsplay/Modal/Modal1";
 
 export default function PayoutMethods() {
   const [ownBankAccounts, setOwnBankAccounts] = useState([]);
-  const [showAdd,setShowAdd] = useState(false);
+  const [showAdd, setShowAdd] = useState(false);
   const [banks, setBanks] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -45,9 +45,6 @@ export default function PayoutMethods() {
     setLoading(false);
   }
 
-
-  console.log(ownBankAccounts)
-
   return (
     <div
       className={`flex flex-col gap-4 ${
@@ -72,12 +69,15 @@ export default function PayoutMethods() {
         <div className="flex gap-4 justify-between items-center">
           <h5>Saved Accounts</h5>
           <div>
-            <Button1 onClick={() => setShowAdd(!showAdd)}>
-              Add Account
-            </Button1>
+            <Button1 onClick={() => setShowAdd(!showAdd)}>Add Account</Button1>
           </div>
         </div>
-        <BankAccounts reload={load} banks={banks} data={ownBankAccounts} loading={loading} />
+        <BankAccounts
+          reload={load}
+          banks={banks}
+          data={ownBankAccounts}
+          loading={loading}
+        />
         <br />
         <div className="flex flex-col gap-2">
           <h5>Payout settings</h5>
