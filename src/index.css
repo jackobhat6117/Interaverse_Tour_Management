@@ -101,6 +101,12 @@ code {
   .btn-small {
     @apply btn text-sm;
   }
+  .btn-outlined {
+    @apply btn bg-primary/0;
+  }
+  .btn-light {
+    @apply btn bg-primary/10 text-primary/80;
+  }
     
   .btn-theme {
     @apply !bg-theme1 !text-secondary !capitalize flex gap-2 p-2 !px-4 cursor-pointer font-normal;
