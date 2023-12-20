@@ -55,8 +55,8 @@ export function FlightSeatDisplay({obj,routeIndex}) {
   const [loading,setLoading] = useState(false);
 
   const {bookingData} = useSelector(state => state.flightBooking);
-  let offers = clone(bookingData?.offersPrice || bookingData?.offer)
-  let offer = offers?.at(-1);
+  let offers = clone(bookingData?.offersPrice || bookingData?.offer) || []
+  let offer = Array.isArray(offers) ? offers?.at(-1) : offers;
   const dispatch = useDispatch();
 
   const [data,setData] = useState([]);
