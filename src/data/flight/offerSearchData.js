@@ -10,15 +10,15 @@ export const offerSearchTemp = {
   "maxSolutions": 20,
   "originDestinations": [
       {
-          "from": "LOS",
-          "to": "LHR",
+          "from": "",
+          "to": "",
           "departure": {
               "date": "2023-11-24"
           }
       },
       {
-          "from": "LHR",
-          "to": "LOS",
+          "from": "",
+          "to": "",
           "departure": {
               "date": "2023-11-28"
           }
@@ -28,7 +28,10 @@ export const offerSearchTemp = {
       "adult": 1
   },
   "cabinClass": [
-      "Economy"
+      "Economy",
+    //   "PremiumEconomy",
+    //   "Business",
+    //   "FirstClass"
   ],
 //   "flightFilters": {
       // "allowedCarriers": [],

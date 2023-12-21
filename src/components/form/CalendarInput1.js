@@ -7,7 +7,7 @@ import 'react-day-picker/dist/style.css';
 import { clone } from '../../features/utils/objClone';
 import Button1 from './Button1';
 
-export default function CalendarInput1({value,label,className,multiple,onChange,...restProps}) {
+function CalendarInput1({value,label,className,multiple,onChange,...restProps},ref) {
   // const [date,setDate] = useState();
   const [anchorEl,setAnchorEl] = useState();
 
@@ -15,11 +15,21 @@ export default function CalendarInput1({value,label,className,multiple,onChange,
     setAnchorEl(ev.currentTarget)
   }
 
+  
+  React.useImperativeHandle(ref, () => ({
+    toggle: (el) => {
+      console.log(ref,el,ref.current)
+      setAnchorEl(anchorEl ? null : ref)
+    }
+  }));
+
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popper' : undefined;
 
-
+  
   let dateInit = value;
+  console.log('date : ',dateInit)
+
   if(Array.isArray(dateInit)) {
     dateInit = {start: value[0] || '',end: value[1] || ''}
   } else if(typeof(dateInit) === 'string')
@@ -59,7 +69,7 @@ export default function CalendarInput1({value,label,className,multiple,onChange,
   // console.log(selectedRange)
 
   return (
-    <div >
+    <div ref={ref || null}>
       <fieldset className={'flex items-center justify-between gap-2 cursor-pointer relative '+(label?' border border-primary/30 rounded-sm p-[14px] pt-[9px] -translate-y-2 ':'')+className} onClick={handleClick}  aria-describedby={id}>
         <legend className={`${label ? 'px-2':''} text-xs  bg-inherit text-primary/70 whitespace-nowrap max-w-[80%] overflow-hidden `} title={label}>{label || ''}</legend>
         {/* <FormLabel component={'legend'}>{label || ''}</FormLabel> */}
@@ -92,3 +102,5 @@ export default function CalendarInput1({value,label,className,multiple,onChange,
     </div>
   )
 }
+
+export default React.forwardRef(CalendarInput1)

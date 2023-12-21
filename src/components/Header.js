@@ -20,6 +20,11 @@ import IOSSwitch from "./form/IOSSwitch";
 import Logo from "./Logo/Logo";
 import { Icon } from "@iconify/react";
 import Applications from "./Applications";
+import CopyText from "./mini/CopyText";
+import flight from '../assets/icons/packages/Flight.svg'
+import hotel from '../assets/icons/packages/Hotel.svg'
+import tour from '../assets/icons/packages/Tour.svg'
+
 
 const colors = ["#1E61DC", "#D9A513", "#1EA994", "#1E61DC", "#B52026"];
 
@@ -61,6 +66,19 @@ export default function Header() {
     <div>
       <div className="hidden md:flex items-center gap-10 px-md py-2">
         <Logo />
+
+        <div className="hidden lg:flex gap-4">
+          <Link to='/order/new/flight' className="rounded-full py-2 px-5 text-[#233767] bg-[#E7F6FF] hover:bg-[#e0eff8] transition-all hover:shadow-lg shadow-md">
+            <img alt='' src={flight} className="w-4 h-4" />
+          </Link>
+          <Link to='/order/new/hotel' className="rounded-full py-2 px-5 text-[#233767] bg-[#E7F6FF] hover:bg-[#e0eff8] transition-all hover:shadow-lg shadow-md">
+            <img alt='' src={hotel} className="w-4 h-4"/>
+          </Link>
+          <Link to='/order/new/tour' className="rounded-full py-2 px-5 text-[#233767] bg-[#E7F6FF] hover:bg-[#e0eff8] transition-all hover:shadow-lg shadow-md">
+            <img alt='' src={tour} className="w-4 h-4"/>
+          </Link>
+        </div>
+
         <div className="flex-1 z-[90]">
           <SearchInput exampleview={true} searchview={true} />
         </div>
@@ -158,6 +176,25 @@ export default function Header() {
                 </p>
 
                 <Link to='/settings/' className="btn-theme rounded-md">Manage your business</Link>
+
+                <div className="w-full flex flex-col gap-2 pt-3">
+                  <div className="flex flex-col">
+                    <p>Miles Point</p>
+                    <span>0</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <p>Referral Link</p>
+                    <span className="flex gap-4">
+                      <CopyText>
+                        <input type='text' className="border-0" disabled value={'intraverse.africa/touchcore'} />
+                      </CopyText>
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <p>Referral Code</p>
+                    <span>{user?.reference}</span>
+                  </div>
+                </div>
               </div>
 
               <Button1

@@ -65,7 +65,7 @@ export default function FilterTime({returnData}) {
   }
   return (
     <Collapse show label={<h5>Time</h5>}>
-      <Tabs value={selectedValue} indicatorColor='secondary' textColor='secondary'
+      <Tabs value={selectedValue} indicatorColor='primary' textColor='primary'
        variant='scrollable'
        onChange={(ev,val) => handleTab(val)}
        scrollButtons={false}
@@ -85,7 +85,7 @@ export default function FilterTime({returnData}) {
          step={15}
          max={1440}
          getAriaValueText={formatTime}
-         color='secondary' size='small' />
+         color='primary' size='small' />
         <div className='flex justify-between gap-4'>
           <span>{formatTime(departureTime[0])}</span>
           <span>{formatTime(departureTime[1])}</span>
@@ -103,7 +103,7 @@ export default function FilterTime({returnData}) {
          step={15}
          max={1440}
          getAriaValueText={formatTime}
-         color='secondary' size='small' />
+         color='primary' size='small' />
         <div className='flex justify-between gap-4'>
           <span>{formatTime(arrivalTime[0])}</span>
           <span>{formatTime(arrivalTime[1])}</span>

@@ -55,6 +55,7 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
     return [];
   }
   function filterByStops(data,objs) {
+    console.log(data,objs)
     let newData = data.filter(obj => {
       if(obj.segments) {
         if(!objs.allowOv && obj.segments.every(item => item.numberOfStops > 0 && item.flights.every((flight,ind,arr) => {

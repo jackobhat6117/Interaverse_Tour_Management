@@ -1,27 +1,57 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Autocomplete, InputAdornment, TextField } from '@mui/material';
-import {countries} from 'country-data';
+import getCityCodes from '../../controllers/Flight/getCityCodes';
 
-export default function CitiesInput({value,onChange,label,icon,className,required,...restProps}) {
-  const option = countries.all.filter((country) => country.status === 'assigned');
+export default function CitiesInput({value,onChange,label,icon,className,required,optionLabel='iata',...restProps}) {
+  // countries.all.filter((country) => country.status === 'assigned');
+  const [option,setOption] = useState([])
+  const [loading,setLoading] = useState(false);
+
+  const [isFocused, setIsFocused] = useState(false);
+
+
+  useEffect(() => {
+    load();
+    //eslint-disable-next-line
+  },[value])
+
+  async function load() {
+    if(!value) return setOption([]);
+    if(value?.icao) return false;
+
+    setLoading(true);
+    const res = await getCityCodes(value);
+    setLoading(false);
+    if(res.return) {
+      let data = res?.data?.data;
+      if(optionLabel)
+        data = data?.filter(obj => obj[optionLabel])
+      setOption(data)
+    }
+  }
 
   function handleChange(newVal) {
     if(onChange)
       onChange(newVal);
+
   }
   return (
     <Autocomplete className={'min-w-[200px] '+className}
     {...restProps}
+    open={isFocused}
+    onFocus={() => setIsFocused(true)}
+    onBlur={() => setIsFocused(false)}
+    loading={loading}
     noOptionsText='No data'
     disableClearable
     freeSolo
     options={option}
     getOptionLabel={(option) =>
-      typeof option === 'string' ? option : option.alpha2
+      typeof option === 'string' ? option : option.city + ` (${option[optionLabel]})`
     }
     value={value}
-    onChange={(ev,newVal) => handleChange(newVal)}
-    onInputChange={(ev,newVal) => handleChange(newVal)}
+    onChange={(ev,newVal) => {handleChange(newVal); setIsFocused(false)}}
+    onInputChange={(ev,newVal) => {handleChange(newVal); setIsFocused(true)}}
     renderInput={(params) => (
       <TextField {...params} required={required} value='test' label={label || "Nationality"} 
         InputProps={{
@@ -39,9 +69,12 @@ export default function CitiesInput({value,onChange,label,icon,className,require
     )}
     renderOption={(props,opt) => {
       return (
-        <div {...props} className='flex flex-col !p-2 !cursor-pointer' style={{padding: 10,cursor: 'pointer'}}>
-          <h5>{opt.alpha2}</h5>
-          <small className='!whitespace-nowrap !text-ellipsis !block' title={opt.name}>{opt.name}</small>
+        <div {...props} className='flex items-center overflow-hidden justify-between !p-2 !cursor-pointer border-b' style={{padding: 10,cursor: 'pointer'}}>
+          <div className='flex flex-col flex-1 overflow-hidden'>
+            <h6>{opt.city}</h6>
+            <small className='!whitespace-nowrap overflow-hidden max-s-full !overflow-ellipsis !block' title={opt.name}>{opt.name}</small>
+          </div>
+          <small className='min-w-[20px] pl-2'>{opt[optionLabel]}</small>
         </div>
       )
     }}

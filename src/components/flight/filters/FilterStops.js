@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import Collapse from "../../mini/Collapse";
 import { def } from "../../../config";
 import { clone } from "../../../features/utils/objClone";
+import RadioInput from "../../form/RadioInput";
+import { Radio } from "@mui/material";
 
 export default function FilterStops({returnData,orgi,cats}) {
   const [stops,setStops] = useState([
@@ -42,6 +44,7 @@ export default function FilterStops({returnData,orgi,cats}) {
 
   function handleChange(val) {
     setSelectedValue(val)
+    console.log(val)
     returnData({data: stops.find(d => d.name === val),allowOv: allowOverNightStops});
   }
   function handleCheck(val) {
@@ -53,7 +56,7 @@ export default function FilterStops({returnData,orgi,cats}) {
       {stops.map((data,i) => (
         <label key={i} className='flex gap-4 justify-between'>
           <span className='flex gap-2'>
-            <input name='stops' type='radio' value={data.name} checked={selectedValue === data.name} onChange={(ev) => handleChange(ev.target.value)} />
+            <input name='stops' type='radio' value={data.name} onChange={(ev) => handleChange(ev.target.value)} />
             <span>{data.label}</span>
           </span>
           {def.currency}{data.value}

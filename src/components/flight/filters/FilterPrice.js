@@ -16,7 +16,7 @@ export default function FilterPrice({returnData,min,max}) {
   <Collapse show label={<h5>Price</h5>}>
     <div className="pt-2">
       <Slider valueLabelDisplay="auto"
-        step={(maxPrice - minPrice) / 50} min={minPrice} max={maxPrice} value={price} onChange={handleChange} color='secondary' size='small' />
+        step={(maxPrice - minPrice) / 50} min={minPrice} max={maxPrice} value={price} onChange={handleChange} color='primary' size='small' />
       <div className='flex justify-between gap-4'>
         <span>{def.currency}{minPrice}</span>
         <span>Any</span>

@@ -70,6 +70,8 @@ export default function convertFlightObject(newObj) {
       segment.flights.push(oldFlight);
     });
 
+    segment.numberOfStops = Math.min(0,segment.flights.length - 2)
+
     oldObj.segments.push(segment);
   });
 

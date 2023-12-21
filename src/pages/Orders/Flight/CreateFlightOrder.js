@@ -16,6 +16,8 @@ import { offerSearchTemp } from '../../../data/flight/offerSearchData'
 import { clone } from '../../../features/utils/objClone'
 import Icon from '../../../components/HOC/Icon'
 import moment from 'moment'
+import TextInput from '../../../components/form/TextInput'
+import CitiesInput from '../../../components/form/CitiesInput'
 
 export default function CreateFlightOrder() {
   const [travelClass,setTravelClass] = useState('All');
@@ -26,13 +28,16 @@ export default function CreateFlightOrder() {
   const [corporateUniFares] = useState("");
   const [date,setDate] = useState([""]);
   const [destination,setDestination] = useState(offerSearchTemp.originDestinations);
+  const [airline,setAirline] = useState();
+  const [markup,setMarkup] = useState({value: '',type: ''});
+
+  const [showAdvanced,setShowAdvanced] = useState(false);
 
   const [searchParam] = useSearchParams();
   const q = useMemo(() => searchParam.get('q'),[searchParam]);
   const [qObj,setQObj] = useState();
 
   const [noStops,setNoStops] = useState(qObj && qObj.noAirportChange)
-  const [airline] = useState();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -64,6 +69,7 @@ export default function CreateFlightOrder() {
     }
     //eslint-disable-next-line
   },[type])
+
 
   const handleSetPassengers = useCallback((newPassengers) => {
     setPassengers(newPassengers);
@@ -107,12 +113,15 @@ export default function CreateFlightOrder() {
     // Backward Compatability
     searchObj['originDestinations']?.map(obj => {
       obj.departure.date = moment(obj.date).format('YYYY-MM-DD');
+      obj.from = obj.from?.iata || obj?.from
+      obj.to = obj.to?.iata || obj?.to
+      
       return true
     })
     searchObj['destinations'] = searchObj.originDestinations.map(obj => {
       return {
-        departureLocation: obj.from,
-        arrivalLocation: obj.to,
+        departureLocation: obj.from?.iata || obj?.from,
+        arrivalLocation: obj.to?.iata || obj?.to,
         date: obj.date
       };
     })
@@ -144,12 +153,17 @@ export default function CreateFlightOrder() {
   function handleSetDate(val,i=0) {
     let tempDate = clone(date);
     tempDate[i] = val;
+    // if(tempDate?.at(i+1) !== 'undefined')
+    //   tempDate[i+1] = val;
+    
     setDate(tempDate);
 
-    if(calendarRef.current?.at(i+1))
-      calendarRef.current[i+1]?.focus();
+    if(calendarRef.current?.at(i+1)) {
+      calendarRef.current[i]?.toggle();
+      calendarRef.current[i+1]?.toggle(calendarRef.current[i]);
+    }
 
-    // console.log('ad: ',calendarRef.current)
+    console.log('ad: ',calendarRef.current)
   } 
 
   function handleSetDestination(obj,i=0) {
@@ -180,6 +194,19 @@ export default function CreateFlightOrder() {
     });
   }
 
+  function swipeLoc(i=0) {
+    let tempDestination = clone(destination);
+    
+    let from = tempDestination[i].from;
+    tempDestination[i].from = tempDestination[i].to;
+    tempDestination[i].to = from;
+
+    console.log(' => ',tempDestination)
+
+    setDestination(tempDestination);
+  }
+
+
 
   return (
     <div className='self-center flex flex-col gap-5 flex-1 pd-md w-full py-5'>
@@ -199,14 +226,21 @@ export default function CreateFlightOrder() {
               </div>
             </RadioGroup>
           </div>
-          <div className='flex gap-4'>
-            <CountriesInput label={'Origin'} placeholder='Origin'
+          <div className='flex gap-[2px]'>
+            <CitiesInput label='Where from?' placeholder='Origin'
               value={destination[0]?.from || ''}
-              onChange={(val) => handleSetDestination({...destination[0],from: val?.alpha2 || val})}
+              onChange={(val) => handleSetDestination({...destination[0],from: val})}
             />
-            <CountriesInput label={'Destination'} placeholder='Destination' 
+            <div className='relative flex items-center justify-center z-10 cursor-pointer'>
+              <div className='absolute items-center justify-center flex'>
+                <span className='bg-secondary shadow-lg rounded-full p-1 hover:rotate-180 transition-all' onClick={() => swipeLoc()}>
+                  <Icon icon='mdi:exchange' className='!w-5 !h-5' />
+                </span>
+              </div>
+            </div>
+            <CitiesInput label={'Where to?'} placeholder='Destination' 
               value={destination[0]?.to || ''}
-              onChange={(val) => handleSetDestination({...destination[0],to: val?.alpha2 || val})}            
+              onChange={(val) => handleSetDestination({...destination[0],to: val})}            
             />
           </div>
           <div className='flex justify-stretch gap-4'>
@@ -239,7 +273,7 @@ export default function CreateFlightOrder() {
                         onChange={(val) => handleSetDestination({...destination[i+1],to: val?.alpha2 || val},i+1)}         
                       />
                     </div>
-                    <CalendarInput1 label='Departure Date' className='w-full border border-primary/20 rounded-md p-2'
+                    <CalendarInput1 ref={el => calendarRef.current[i+1] = el} label='Departure Date' className='w-full border border-primary/20 rounded-md p-2'
                       value={d || ''}
                       onChange={(value) => handleSetDate(value?.start || value,i+1)}
                     />
@@ -270,9 +304,34 @@ export default function CreateFlightOrder() {
               </SelectInput>
             </div>
           </div>
-          <div className='flex justify-end cursor-pointer text-theme1 text-sm'>
+          <button className='flex justify-end cursor-pointer text-theme1 text-sm'
+            onClick={() => setShowAdvanced(prev => !prev)}
+          >
             Advanced Options
-          </div>
+          </button>
+          {showAdvanced ? 
+            <div className='flex flex-col gap-4'>
+              <div>
+                <CountriesInput label='Preferred Airline' placeholder='Search'
+                  value={airline || ''}
+                  onChange={(value) => setAirline(value?.start || value)}
+                />
+              </div>
+              <div className='flex gap-4'>
+                <TextInput label='Markup Value' 
+                  value={markup?.value}
+                  onChange={(ev) => setMarkup({...markup,value: ev.target.value})}
+                />
+                <TextInput select label='Markup by'
+                  value={markup?.type}
+                  onChange={(ev) => setMarkup({...markup,type: ev.target.value})}
+                >
+                  <MenuItem value='percent'>Percent</MenuItem>
+                  <MenuItem value='value'>value</MenuItem>
+                </TextInput>
+              </div>
+            </div>
+          :null}
           <Button1 onClick={handleSearch}>Search for flights</Button1>
         </div>
       </div>
