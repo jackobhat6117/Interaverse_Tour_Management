@@ -85,7 +85,6 @@ function PassengerDetails({ offer }) {
   let arrival =
     segments[segments.length - 1]?.arrivalLocation ||
     segments[0]?.arrivalLocation;
-
   const [open, setOpen] = useState(false);
   const [bookingDone, setBookingDone] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -97,10 +96,12 @@ function PassengerDetails({ offer }) {
 
   async function book() {
     // await new Promise(resolve => setTimeout(resolve,3000))
-    let passengerCount = Object.values(offer?.passengers)?.reduce(
-      (c, p) => parseInt(c.total) + parseInt(p.total),
-      { total: 0 },
-    );
+    let passengerCount =
+      offer?.passengers &&
+      Object.values(offer?.passengers)?.reduce(
+        (c, p) => parseInt(c.total) + parseInt(p.total),
+        { total: 0 },
+      );
     // console.log(' ----------------- ',passengerCount)
     let req = {
       supplier: offer?.supplier,
