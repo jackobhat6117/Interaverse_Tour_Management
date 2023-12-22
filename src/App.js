@@ -48,6 +48,7 @@ import PaymentGateway from './pages/Settings/Agency/PaymentGateway.js';
 import SupplierSettings from './pages/Settings/Order/Suppliers/Suppliers.js';
 import PromoSettings from './pages/Settings/Order/PromoCodes/PromoCodes.js';
 import EmailTemplateSettings from './pages/Settings/EmailTemplates/EmailTemplates.js';
+import ChangeFlightOrder from './pages/Orders/Flight/Booked/ChangeOrder/ChangeOrder.js';
 // import 'dotenv/config'
 
 
@@ -113,6 +114,7 @@ function App() {
                   <Route path='order/new/flight/book/ancillaries/:id' element={<FlightAncillaries />} />
                   <Route path='order/new/flight/book/payment/:id' element={<FlightPayment />} />
                   <Route path='order/flight/:id' element={<FlightOrder />} />
+                  <Route path='order/flight/change/:id' element={<ChangeFlightOrder />} />
                   <Route path='users' element={<UserManagement />} />
                   <Route path='link' element={<Links />} />
                   <Route path='*' element={<PageNotFound />} />

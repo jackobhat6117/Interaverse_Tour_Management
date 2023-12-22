@@ -2,7 +2,7 @@ import React from 'react'
 import { Autocomplete, InputAdornment, TextField } from '@mui/material';
 import {countries} from 'country-data';
 
-export default function CountriesInput({value,onChange,label,icon,className,required}) {
+export default function CountriesInput({value,onChange,label,icon,className,required,...restProps}) {
   const option = countries.all.filter((country) => country.status === 'assigned');
 
   function handleChange(newVal) {
@@ -11,6 +11,7 @@ export default function CountriesInput({value,onChange,label,icon,className,requ
   }
   return (
     <Autocomplete className={'min-w-[200px] '+className}
+    {...restProps}
     noOptionsText='No data'
     disableClearable
     freeSolo

@@ -46,7 +46,7 @@ export default function StatusBar({data}) {
         <PolicyStatus title='Order Change Policy' value={false} text='This order is not changable' />
         <PolicyStatus title='Order Refund Policy' value={true} text='This order is refundable up until the initial departure date' />
   
-        {!data?.needsReview ? 
+        {/* {data?.needsReview ?  */}
           <div className='flex flex-col gap-5'>
             <Button1 variant='outlined' className='!border-primary !text-primary'
               onClick={() => setOpenBaggage(true)}
@@ -59,17 +59,16 @@ export default function StatusBar({data}) {
             >Cancel booking</Button1>
             <Button1>Issue ticket</Button1>
           </div>
-        :
+        {/* : */}
           <div className='flex flex-col gap-5'>
             <Button1 variant='outlined' className='!border-primary !text-primary'
               onClick={() => setOpenBaggage(true)}
             >Request Cancellation</Button1>
-            <Button1 variant='outlined' className='!border-primary !text-primary'
-              onClick={() => setOpenSeats(true)}
+            <Button1 to={'/order/flight/change/M48894'} variant='outlined' className='!border-primary !text-primary'
             >Request Change</Button1>
             <Button1>Accept Changes</Button1>
           </div>
-        }
+        {/* } */}
         
         <Modal1 open={openBaggage} setOpen={setOpenBaggage}>
           <div className='card p-10 flex flex-col gap-4'>

@@ -16,7 +16,7 @@ import { offerSearchTemp } from '../../data/flight/offerSearchData'
 import { clone } from '../../features/utils/objClone'
 import Icon from '../HOC/Icon'
 
-export default function FlightSearch() {
+export default function FlightSearch({callback}) {
   const [travelClass,setTravelClass] = useState('All');
   const [type,setType] = useState('oneway');
   const {bookingData} = useSelector(state => state.flightBooking);
@@ -120,7 +120,10 @@ export default function FlightSearch() {
     let referralCode = searchParam.get('refCode');
 
 
-    navigate(`/order/new/flight/offers?referralCode=${referralCode}&q=${enc}`);
+    if(callback)
+      callback(searchObj);
+    else
+      navigate(`/order/new/flight/offers?referralCode=${referralCode}&q=${enc}`);
 
   }
 
@@ -160,14 +163,16 @@ export default function FlightSearch() {
 
   return (
     <div className='self-center flex flex-col gap-5 flex-1 pd-md w-full py-5'>
-      <BreadCrumb>
-        <Link to={'/order'}>Orders</Link>
-        <b>New Order</b>
-      </BreadCrumb>
+      {!callback ?
+        <BreadCrumb>
+          <Link to={'/order'}>Orders</Link>
+          <b>New Order</b>
+        </BreadCrumb>
+      :null}
       <div className='justify-center items-center flex flex-col gap-4'>
         <div className='flex flex-col gap-4'>
           <div>
-            <h6>Journey Type</h6>
+            {/* <h6>Journey Type</h6> */}
             <RadioGroup onChange={(ev) => setType(ev.target.value)} >
               <div className='flex gap-4'>
                 <RadioInput className='whitespace-nowrap' value={'oneway'} checked={type === 'oneway'}>One way</RadioInput>

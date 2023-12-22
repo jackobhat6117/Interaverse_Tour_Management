@@ -8,16 +8,16 @@ import { MenuItem, TextField } from "@mui/material";
 import CountriesInput from "../../components/form/CountriesInput";
 
 
-export function PassengerInputs({returnData,ind,type}) {
+export function PassengerInputs({returnData,ind,type,data:defData}) {
   const {bookingData} = useSelector((state) => state.flightBooking);
   const [newPassenger,setNewPassenger] = useState(false);
   const urlData = bookingData;
 
-  const dataInit = (urlData.bookingInfo && urlData.bookingInfo[ind]) || {...passengerDataTemp,boardingUserType: type,middleName: '',title: '',ffn: '',idType: ''};
+  const dataInit = (defData && {...passengerDataTemp,defData}) || (urlData.bookingInfo && urlData.bookingInfo[ind]) || {...passengerDataTemp,boardingUserType: type,middleName: '',title: '',ffn: '',idType: ''};
   const [data,setDataa] = useState(clone(dataInit))
   
   function setData(obj) {
-    returnData(obj)
+    returnData && returnData(obj)
     setDataa(obj);
   }
 
@@ -100,17 +100,17 @@ export function PassengerInputs({returnData,ind,type}) {
     data.gender =["MALE","FEMALE"][parseInt(Math.random()*2)]
 
     setData(data)
-    returnData(data);
+    returnData && returnData(data);
   }
   return (
     <div className='flex flex-col gap-3'>
       <FetchUsersInput from={passengerList} enableNew onChange={(obj) => handleSelectPassenger(obj)} label={'Passengers'} />
-      {newPassenger ? (
+      {newPassenger || defData ? (
         <div className='gap-3 flex flex-col'>
           <h6 onDoubleClick={testFill}>Passenger Detail</h6>
           <hr />
           <div className='flex gap-2'>
-            <TextField className='min-w-[60px]' size='small' label='Title' select
+            <TextField className='!min-w-[60px]' size='small' label='Title' select
               value={data.title||""}
               onChange={(ev) => setData({...data,title: ev.target.value})}
               InputLabelProps={{
@@ -160,7 +160,7 @@ export function PassengerInputs({returnData,ind,type}) {
             </TextField>
           </div>
           <div className='flex gap-2'>
-            <CountriesInput required
+            <CountriesInput required size='small'
               value={data.nationality}
               // onChange={(val) => handleChange(val.name || val)}
               onChange={(val) => setData({...data,nationality: val.alpha2 || val})}
@@ -177,7 +177,7 @@ export function PassengerInputs({returnData,ind,type}) {
 
           </div>
           <div className='flex gap-2 flex-wrap'>
-            <CountriesInput required label="Issuance Country" 
+            <CountriesInput required label="Issuance Country" size='small'
               value={data.issuanceCountry} name='issuanceCountry'
               onChange={(val) => setData({...data,issuanceCountry: val.alpha2 || val})}
             />

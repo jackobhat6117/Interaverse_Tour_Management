@@ -90,7 +90,7 @@ export default function OffersList() {
 
   const fetchData = useCallback(async (req) => {
     if(!q && !test) return {return: false};
-    let obj = req || clone(JSON.parse(decrypt(q)));
+    let obj = req || clone(JSON.parse(decrypt(q))) || {};
 
     console.log(obj, ' ========= ')
 

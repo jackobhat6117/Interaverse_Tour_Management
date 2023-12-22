@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import RadioGroup from "../form/RadioGroup";
 import Icon from "../HOC/Icon";
 import Button1 from "../form/Button1";
@@ -7,7 +7,7 @@ import { useSnackbar } from "notistack";
 import { useState } from "react";
 
 export default function PaymentMethod({data,className}) {
-  const {id} = useParams();
+  // const {id} = useParams();
   // Bank, Card, USSD, QR, MobileMoney, BankTransfer
   const options = [
     {icon: <Icon icon='' />,name: 'Pay with stored card',description: 'Pay with stored card',value: 'stored'},
@@ -21,7 +21,7 @@ export default function PaymentMethod({data,className}) {
 
   async function handlePay() {
     let obj = {
-      ...data.paymentData,
+      ...(data.paymentData || {}),
       paymentMode: method,
       callback: window.location.href
     }

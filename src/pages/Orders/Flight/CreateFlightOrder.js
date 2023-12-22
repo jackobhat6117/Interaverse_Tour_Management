@@ -19,7 +19,7 @@ import moment from 'moment'
 import TextInput from '../../../components/form/TextInput'
 import CitiesInput from '../../../components/form/CitiesInput'
 
-export default function CreateFlightOrder() {
+export default function CreateFlightOrder({callback}) {
   const [travelClass,setTravelClass] = useState('All');
   const [type,setType] = useState('oneway');
   const {bookingData} = useSelector(state => state.flightBooking);
@@ -144,7 +144,10 @@ export default function CreateFlightOrder() {
     let referralCode = searchParam.get('refCode');
 
 
-    navigate(`/order/new/flight/offers?referralCode=${referralCode}&q=${enc}`);
+    if(callback)
+      callback(searchObj);
+    else
+      navigate(`/order/new/flight/offers?referralCode=${referralCode}&q=${enc}`);
 
   }
 
@@ -210,10 +213,12 @@ export default function CreateFlightOrder() {
 
   return (
     <div className='self-center flex flex-col gap-5 flex-1 pd-md w-full py-5'>
-      <BreadCrumb>
-        <Link to={'/order'}>Orders</Link>
-        <b>New Order</b>
-      </BreadCrumb>
+      {!callback ?
+        <BreadCrumb>
+          <Link to={'/order'}>Orders</Link>
+          <b>New Order</b>
+        </BreadCrumb>
+      :null}
       <div className='justify-center items-center flex flex-col gap-4'>
         <div className='flex flex-col gap-4'>
           <div>
