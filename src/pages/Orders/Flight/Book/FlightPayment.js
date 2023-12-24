@@ -2,8 +2,6 @@ import React from 'react'
 import BreadCrumb from '../../../../components/DIsplay/Nav/BreadCrumb'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { decrypt } from '../../../../features/utils/crypto';
-import SeatSelection from './SeatSelection';
-import FlightPriceSummary from '../../../../components/flight/FlightPriceSummary';
 import { useSelector } from 'react-redux';
 import PaymentMethod from '../../../../components/flight/PaymentMethod';
 import Icon from '../../../../components/HOC/Icon';

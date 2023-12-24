@@ -18,6 +18,7 @@ import { useSnackbar } from "notistack";
 import { countries } from "country-data";
 import { clone } from "../../../../features/utils/objClone";
 import moment from "moment";
+import bookFlightOffer from "../../../../controllers/Flight/bookFlightOffer";
 
 export default function FlightBookDetails() {
   const { id } = useParams();
@@ -35,7 +36,6 @@ export default function FlightBookDetails() {
   function handlePayTime(val) {
     dispatch(setBookingData({ ...bookingData, payTime: val }));
   }
-  console.log(" -> ", offer);
   return (
     <div className="pd-md py-4 flex flex-col gap-4">
       <BreadCrumb>
@@ -92,23 +92,19 @@ function PassengerDetails({ offer }) {
   const { enqueueSnackbar } = useSnackbar();
 
   const [data, setData] = useState({ ...clone(travelersInfo), passengers: [] });
-  console.log(" data --> ", offer);
 
   async function book() {
-    // await new Promise(resolve => setTimeout(resolve,3000))
     let passengerCount =
       offer?.passengers &&
       Object.values(offer?.passengers)?.reduce(
         (c, p) => parseInt(c.total) + parseInt(p.total),
         { total: 0 },
       );
-    // console.log(' ----------------- ',passengerCount)
     let req = {
       supplier: offer?.supplier,
       offers: [offer],
       travelersInfo: clone(data?.passengers)?.slice(0, passengerCount || 1),
     };
-    // console.log(' --> ',data)
     let pn = data?.phone?.toString()?.split("-");
     let countryObj = Object.values(countries)?.find((obj) =>
       obj?.countryCallingCodes?.includes("+" + pn?.at(0)),
@@ -132,19 +128,18 @@ function PassengerDetails({ offer }) {
       return obj;
     });
 
-    // console.log(req)
+    console.dir(req, { depth: null });
     setLoading(true);
     dispatch(
       setBookingData({ ...bookingData, travelersInfo: req.travelersInfo }),
     );
-    // const res = await bookFlightOffer(req);
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    const res = await bookFlightOffer(req);
     setLoading(false);
 
-    // if(res.return) {
-    setBookingDone(true);
-    //   dispatch(setBookingData({...bookingData,orderData: res?.data}))
-    // } else enqueueSnackbar(res.msg,{variant: 'error'})
+    if (res.return) {
+      setBookingDone(true);
+      dispatch(setBookingData({ ...bookingData, orderData: res?.data }));
+    } else enqueueSnackbar(res.msg, { variant: "error" });
     setOpen(false);
   }
 
