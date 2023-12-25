@@ -15,17 +15,15 @@ import { def } from '../../../../config';
 import PriceTimeout from '../../../../components/flight/PriceTimeout';
 import { formatMoney } from '../../../../features/utils/formatMoney';
 import splitCapitals from '../../../../features/utils/splitCapital';
-import offerResponseSample from '../../../../data/flight/offerResponseSample';
 import BreadCrumb from '../../../../components/DIsplay/Nav/BreadCrumb';
 import Icon from '../../../../components/HOC/Icon';
 import Modal1 from '../../../../components/DIsplay/Modal/Modal1';
-import FlightSearch from '../../../../components/flight/FlightSearch';
 import Paginate from '../../../../components/DIsplay/Paginate';
 import Button1 from '../../../../components/form/Button1';
 import getFlightOffers from '../../../../controllers/Flight/getFlightOffers';
 import convertFlightObject, { createFlightCat } from '../../../../features/utils/flight/flightOfferObj';
-import getFlightOfferPrice from '../../../../controllers/Flight/getOfferPrice';
 import { offerSearchTemp } from '../../../../data/flight/offerSearchData';
+import CreateFlightOrder from '../CreateFlightOrder';
 // import getCalendarSearch from '../../../controllers/search/getCalendarSearch';
 
 
@@ -486,7 +484,7 @@ export default function OffersList() {
         <FlightOfferSort {...{cat,getCatInfo,sortByCat}} />
       </Modal1>
       <Modal1 open={openSearch} setOpen={setOpenSearch}>
-        <FlightSearch />
+        <CreateFlightOrder />
       </Modal1>
 
     </div>

@@ -31,6 +31,9 @@ export default function CitiesInput({value,onChange,label,icon,className,require
   }
 
   function handleChange(newVal) {
+    if(restProps.lockUpdate)
+      return false;
+
     if(onChange)
       onChange(newVal);
 

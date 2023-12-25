@@ -1,14 +1,15 @@
 import { CalendarMonth } from '@mui/icons-material'
 import { Popover } from '@mui/material';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { clone } from '../../features/utils/objClone';
 import Button1 from './Button1';
 
-function CalendarInput1({value,label,className,multiple,onChange,...restProps},ref) {
+function CalendarInput1({value,label,multiple,onChange,config,...restProps},ref) {
   // const [date,setDate] = useState();
+  const fieldRef = useRef();
   const [anchorEl,setAnchorEl] = useState();
 
   function handleClick(ev) {
@@ -18,9 +19,10 @@ function CalendarInput1({value,label,className,multiple,onChange,...restProps},r
   
   React.useImperativeHandle(ref, () => ({
     toggle: (el) => {
-      console.log(ref,el,ref.current)
-      setAnchorEl(anchorEl ? null : ref)
-    }
+      // console.log(ref,el,ref.current)
+      setAnchorEl(anchorEl ? null : el || ref)
+    },
+    ref: fieldRef
   }));
 
   const open = Boolean(anchorEl);
@@ -28,7 +30,6 @@ function CalendarInput1({value,label,className,multiple,onChange,...restProps},r
 
   
   let dateInit = value;
-  console.log('date : ',dateInit)
 
   if(Array.isArray(dateInit)) {
     dateInit = {start: value[0] || '',end: value[1] || ''}
@@ -65,12 +66,25 @@ function CalendarInput1({value,label,className,multiple,onChange,...restProps},r
     selected: !multiple ? selectedRange.start : { from: selectedRange.start, to: selectedRange.end },
   };
 
+  const isDateDisabled = (date) => {
+    if(config?.validDates) {
+      let valid = false;
+      if(date >= new Date(config.validDates[0]))
+        valid = true;
+      if(config.validDates[1])
+        valid = date <= new Date(config.validDates[1])
+
+      return !valid;
+    }
+    return false;
+  }
+
 
   // console.log(selectedRange)
 
   return (
     <div ref={ref || null}>
-      <fieldset className={'flex items-center justify-between gap-2 cursor-pointer relative '+(label?' border border-primary/30 rounded-sm p-[14px] pt-[9px] -translate-y-2 ':'')+className} onClick={handleClick}  aria-describedby={id}>
+      <fieldset ref={fieldRef} className={'flex items-center justify-between gap-2 cursor-pointer relative '+(label?' border border-primary/30 rounded-sm p-[14px] pt-[9px] -translate-y-2 ':'')+restProps.className} onClick={handleClick}  aria-describedby={id}>
         <legend className={`${label ? 'px-2':''} text-xs  bg-inherit text-primary/70 whitespace-nowrap max-w-[80%] overflow-hidden `} title={label}>{label || ''}</legend>
         {/* <FormLabel component={'legend'}>{label || ''}</FormLabel> */}
         <span className='whitespace-nowrap'>
@@ -92,7 +106,9 @@ function CalendarInput1({value,label,className,multiple,onChange,...restProps},r
         horizontal: 'right',
        }}>
         <DayPicker mode='single' numberOfMonths={multiple ? 2 : 1} {...restProps}
+          disabled={isDateDisabled}
           selected={selectedRange.start} modifiers={modifiers} onDayClick={handleDayClick} 
+          className='border-0'
           // onSelect={(val) => setDate(val)}
            />
         <div className='flex justify-end p-2'>

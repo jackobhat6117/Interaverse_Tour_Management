@@ -39,6 +39,9 @@ export default function CreateFlightOrder({callback}) {
 
   const [noStops,setNoStops] = useState(qObj && qObj.noAirportChange)
 
+  const [lockupd,setLocUpd] = useState(false);
+
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -47,8 +50,19 @@ export default function CreateFlightOrder({callback}) {
     if(q) {
       let obj = JSON.parse(decrypt(q));
       setQObj(obj)
+      setDate(obj.originDestinations?.map(obj => obj.date))
+      setDestination(obj.originDestinations);
       setNoStops(obj && obj.noAirportChange)
       setTravelClass((obj && obj.travelClass) || 'All')
+
+      let type = 'oneway'
+      if(obj.originDestinations?.length) {
+        if(obj.originDestinations?.at(0)?.from === obj?.originDestinations?.at(-1)?.to)
+          type = 'return'
+        if(obj.originDestinations.length > 2)
+          type = 'multiple'
+      }
+      setType(type)
     }
   },[q])
 
@@ -163,7 +177,7 @@ export default function CreateFlightOrder({callback}) {
 
     if(calendarRef.current?.at(i+1)) {
       calendarRef.current[i]?.toggle();
-      calendarRef.current[i+1]?.toggle(calendarRef.current[i]);
+      calendarRef.current[i+1]?.toggle(calendarRef.current[i+1]?.ref?.current);
     }
 
     console.log('ad: ',calendarRef.current)
@@ -173,6 +187,9 @@ export default function CreateFlightOrder({callback}) {
     const tempDestination = clone(destination);
     tempDestination[i] = obj;
     setDestination(tempDestination)
+    console.log('here by: ')
+    setLocUpd(false);
+
   }
 
   function handleAdd() {
@@ -206,6 +223,7 @@ export default function CreateFlightOrder({callback}) {
 
     console.log(' => ',tempDestination)
 
+    setLocUpd(true);
     setDestination(tempDestination);
   }
 
@@ -232,7 +250,7 @@ export default function CreateFlightOrder({callback}) {
             </RadioGroup>
           </div>
           <div className='flex gap-[2px]'>
-            <CitiesInput label='Where from?' placeholder='Origin'
+            <CitiesInput label='Where from?' placeholder='Origin' lockUpdate={lockupd}
               value={destination[0]?.from || ''}
               onChange={(val) => handleSetDestination({...destination[0],from: val})}
             />
@@ -243,7 +261,7 @@ export default function CreateFlightOrder({callback}) {
                 </span>
               </div>
             </div>
-            <CitiesInput label={'Where to?'} placeholder='Destination' 
+            <CitiesInput label={'Where to?'} placeholder='Destination'  lockUpdate={lockupd}
               value={destination[0]?.to || ''}
               onChange={(val) => handleSetDestination({...destination[0],to: val})}            
             />
@@ -253,12 +271,15 @@ export default function CreateFlightOrder({callback}) {
               <CalendarInput1 ref={(el) => calendarRef.current[0] = el} label='Departure Date' className='w-full border border-primary/20 rounded-md p-2'
                 value={date[0] || ''}
                 onChange={(value) => handleSetDate(value?.start || value)}
+                config={{validDates: [new Date()]}}
               />
             </div>
             {type === 'return' ? 
               <CalendarInput1 ref={(el) => calendarRef.current[1] = el} label='Return Date' className='w-full border border-primary/20 rounded-md p-2'
                 value={date[1] || ''}
                 onChange={(value) => handleSetDate(value?.start || value,1)}
+                defaultMonth={new Date(date[0])}
+                config={{validDates: [date[0]]}}
               />
             :null}
           </div>
@@ -273,7 +294,7 @@ export default function CreateFlightOrder({callback}) {
                         value={destination[i+1]?.from || ''}
                         onChange={(val) => handleSetDestination({...destination[i+1],from: val?.alpha2 || val},i+1)}
                       />
-                      <CountriesInput label={'Destination'} placeholder='Destination' 
+                      <CountriesInput label={'Destination'} placeholder='Destination'
                         value={destination[i+1]?.to || ''}
                         onChange={(val) => handleSetDestination({...destination[i+1],to: val?.alpha2 || val},i+1)}         
                       />
@@ -281,6 +302,8 @@ export default function CreateFlightOrder({callback}) {
                     <CalendarInput1 ref={el => calendarRef.current[i+1] = el} label='Departure Date' className='w-full border border-primary/20 rounded-md p-2'
                       value={d || ''}
                       onChange={(value) => handleSetDate(value?.start || value,i+1)}
+                      defaultMonth={new Date(date[i-1])}
+                      config={{validDates: [date[i-1]]}}
                     />
                   </div>
                   <div>
