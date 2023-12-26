@@ -1,10 +1,10 @@
 import React from 'react'
-import OffersList from '../../../FlightSearch/OffersList'
+import FlightOfferDisplay from '../../../../../../components/flight/FlightOfferDisplay'
 
 export default function ChangeFlightOffer({callback}) {
   return (
     <div>
-        <OffersList />
+      <FlightOfferDisplay />
     </div>
   )
 }

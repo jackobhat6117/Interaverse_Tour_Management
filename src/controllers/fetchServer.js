@@ -4,7 +4,8 @@ import { logout } from "../redux/reducers/userSlice";
 
 export default async function fetchServer({
       method,url,data,headers={},
-      api=process.env.API || 'https://miles-staging-gateway.onrender.com/api'
+      api=process.env.API || 'https://miles-staging-gateway.onrender.com/api',
+      onDownloadProgress
   }) {
 
   // console.log('api: ',api,process.env.REACT_APP_API)
@@ -24,6 +25,7 @@ export default async function fetchServer({
     method,
     url: api+url,
     data,
+    onDownloadProgress,
     headers
   })
   .catch(err => {
@@ -36,3 +38,17 @@ export default async function fetchServer({
 
   return res;
 }
+
+axios.interceptors.request.use(config => {
+  config.metadata = { startTime: new Date() }; // Store the request start time
+  return config;
+});
+
+axios.interceptors.response.use(response => {
+  const { startTime } = response.config.metadata;
+  const elapsedTime = new Date() - startTime; // Calculate the elapsed time
+  const progress = Math.round((elapsedTime / 1000) * 10); // Assuming 10 milliseconds per percentage point
+  response.config.metadata.progress = progress;
+  
+  return response;
+});

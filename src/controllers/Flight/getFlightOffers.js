@@ -1,7 +1,7 @@
 import { store } from "../../redux/store";
 import fetchServer from "../fetchServer";
 
-export default async function getFlightOffers(obj, userId) {
+export default async function getFlightOffers(obj, userId, onDownloadProgress) {
   var result = { return: 0, msg: "Error", data: [] };
 
   let token = store.getState().user.userData.accessToken;
@@ -14,6 +14,7 @@ export default async function getFlightOffers(obj, userId) {
     url: `/product/v1/flight/search/`,
     data: obj,
     headers,
+    onDownloadProgress
   })
     .then((res) => {
       if (res) {

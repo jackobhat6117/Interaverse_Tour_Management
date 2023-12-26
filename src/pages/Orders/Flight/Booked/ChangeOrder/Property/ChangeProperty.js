@@ -12,13 +12,17 @@ import ChangeSeat from './ChangeSeat';
 import Button1 from '../../../../../../components/form/Button1';
 import ChangeBag from './ChangeBag';
 import ChangeContact from './ChangeContact';
+import PassengerView from './ViewChange/Passenger';
+import FlightView from './ViewChange/Flight';
 
 
 const properties = [
     {name: 'unkProp',value: '???'},
+    {name: 'class',value: 'Change flight date',elem: <ChangeFlight />,view: <FlightView />},
+    {name: 'class',value: 'Select flight',elem: <ChangeFlightOffer />},
     {name: 'flight',value: 'Change flight date',elem: <ChangeFlight />},
     {name: 'flight',value: 'Select flight',elem: <ChangeFlightOffer />},
-    {name: 'passenger',value: 'Passenger',elem: <ChangePassenger />},
+    {name: 'passenger',value: 'Passenger',elem: <ChangePassenger />,view: <PassengerView />},
     {name: 'insurance',value: 'Select Plan',elem: <ChangeInsurance />},
     {name: 'seat',value: 'Change Seat',elem: <ChangeSeat />},
     {name: 'bags',value: 'Add bag to order',elem: <ChangeBag />},
@@ -77,7 +81,7 @@ export default function ChangeProperty({property,obj}) {
                         />
                 </div>
 
-                {selected?.elem && React.cloneElement(selected?.elem,{callback: () => next(),property})}
+                {selected?.elem && React.cloneElement(selected?.elem,{callback: () => next(),property,pageObj:props[0]})}
             </div>
         </div>
     </div>
@@ -85,9 +89,12 @@ export default function ChangeProperty({property,obj}) {
 }
 
 
-function Payment() {
+function Payment({pageObj}) {
     return (
         <div className='flex flex-col gap-4 card p-10'>
+            {/* {pageObj?.view ? React.cloneElement(pageObj?.view,{data: pageObj}) : null} */}
+            {pageObj.view && React.cloneElement(pageObj.view,{page: 'payment'})}
+            
             <div className='border rounded-md p-4 flex gap-4 justify-between'>
                 <b>Change Fee</b>
                 <b>{formatMoney(10000)}</b>
@@ -98,14 +105,30 @@ function Payment() {
     )
 }
 
-function Confirmation({property,callback}) {
-    return (
-        <div className='card flex flex-col gap-4'>
+function Confirmation({property,callback,pageObj}) {
+    console.log(' -> ',pageObj)
+    return Math.random()*2 > 1 ? (
+        <div className='card flex flex-col gap-8'>
             <div className='flex gap-4 justify-between'>
                 <h5>{property} change was successful</h5>
                 <label className='success'>Completed</label>
             </div>
+            {pageObj.view && React.cloneElement(pageObj.view,{page: 'confirmation'})}
+
             <Button1 onClick={callback}>Continue</Button1>
+        </div>
+    ) : (
+        <div className='card flex flex-col gap-6'>
+            <div className='flex gap-4 justify-between'>
+                <h5>Change unsuccessful</h5>
+                <label className='error'>Failed</label>
+            </div>
+
+            <p>
+                The requested change was not successful but not to worry our team will take additional steps to complete the change.
+            </p>
+
+            <Button1 onClick={callback}>Notify us about this error</Button1>
         </div>
     )
 }
