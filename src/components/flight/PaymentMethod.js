@@ -1,10 +1,12 @@
 import RadioGroup from "../form/RadioGroup";
-import Icon from "../HOC/Icon";
 import Button1 from "../form/Button1";
 import payForTicket from "../../controllers/Flight/payForTicket";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { Modal } from "@mui/material";
+import card from '../../assets/icons/payment/card-payment.svg'
+import payment from '../../assets/icons/payment/payment.svg'
+import wallet from '../../assets/icons/payment/wallet.svg'
 
 export default function PaymentMethod({data,callback,className}) {
   // const {id} = useParams();
@@ -12,19 +14,19 @@ export default function PaymentMethod({data,callback,className}) {
   const [paynow,setPaynow] = useState(false);
   const options = [
     {
-      icon: <Icon icon="" />,
+      icon: <img alt='' src={card} className="" />,
       name: "Pay with stored card",
       description: "Pay with stored card",
       value: "stored",
     },
     {
-      icon: <Icon icon="" />,
+      icon: <img alt='' src={payment} className="" />,
       name: "Pay instantly with a new card",
       description: "Pay with a debit or credit card",
       value: "Card",
     },
     {
-      icon: <Icon icon="" />,
+      icon: <img alt='' src={wallet} className="" />,
       name: "Pay with miles balance",
       description: "Pay with a debit or credit card",
       value: "balance",
@@ -60,11 +62,17 @@ export default function PaymentMethod({data,callback,className}) {
         <div className="flex flex-col gap-3">
           <RadioGroup options={options} value={method} 
             className='flex flex-col gap-4'
+            radioClass='flex-row-reverse justify-between'
             onChange={(val) => setMethod(val)}
             render={(obj) => (
-              <div className="flex flex-col">
-                <span>{obj.name}</span>
-                <small>{obj.description}</small>
+              <div className="flex gap-2">
+                <div className="w-7">
+                  {obj.icon}
+                </div>
+                <div className="flex flex-col">
+                  <span>{obj.name}</span>
+                  <small>{obj.description}</small>
+                </div>
               </div>
             )} />
           <hr />

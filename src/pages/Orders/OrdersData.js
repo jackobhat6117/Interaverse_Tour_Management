@@ -79,12 +79,12 @@ export default function OrdersData({data:gotData,setData: setOrig}) {
 
   const [data,setData] = useState(gotData || [])
   let countObj = {
-    all: data?.length,
+    all: gotData?.length,
     flights: 0,
     tours: 0,
     stays: 0
   }
-  data?.filter(obj => {
+  gotData?.filter(obj => {
     let type = obj?.type?.toLowerCase();
     if(type === 'flight')
       countObj.flights++;
