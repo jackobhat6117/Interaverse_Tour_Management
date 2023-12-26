@@ -4,29 +4,34 @@ import payForTicket from "../../controllers/Flight/payForTicket";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { Modal } from "@mui/material";
-import card from '../../assets/icons/payment/card-payment.svg'
-import payment from '../../assets/icons/payment/payment.svg'
-import wallet from '../../assets/icons/payment/wallet.svg'
+import card from "../../assets/icons/payment/card-payment.svg";
+import payment from "../../assets/icons/payment/payment.svg";
+import wallet from "../../assets/icons/payment/wallet.svg";
 
-export default function PaymentMethod({data,callback,className}) {
+export default function PaymentMethod({
+  flightBookingId,
+  callback,
+  className,
+  deductCommission,
+}) {
   // const {id} = useParams();
   // Bank, Card, USSD, QR, MobileMoney, BankTransfer
-  const [paynow,setPaynow] = useState(false);
+  const [paynow, setPaynow] = useState(false);
   const options = [
     {
-      icon: <img alt='' src={card} className="" />,
+      icon: <img alt="" src={card} className="" />,
       name: "Pay with stored card",
       description: "Pay with stored card",
       value: "stored",
     },
     {
-      icon: <img alt='' src={payment} className="" />,
+      icon: <img alt="" src={payment} className="" />,
       name: "Pay instantly with a new card",
       description: "Pay with a debit or credit card",
       value: "Card",
     },
     {
-      icon: <img alt='' src={wallet} className="" />,
+      icon: <img alt="" src={wallet} className="" />,
       name: "Pay with miles balance",
       description: "Pay with a debit or credit card",
       value: "balance",
@@ -40,9 +45,10 @@ export default function PaymentMethod({data,callback,className}) {
 
   async function handlePay() {
     let obj = {
-      ...(data.paymentData || {}),
+      flightBookingId,
       paymentMode: method,
       callback: window.location.href,
+      deductCommission,
     };
     setLoading(true);
     const res = await payForTicket(obj);
@@ -58,38 +64,45 @@ export default function PaymentMethod({data,callback,className}) {
     >
       <h5>Choose payment method</h5>
       <hr />
-      {paynow ? 
+      {paynow ? (
         <div className="flex flex-col gap-3">
-          <RadioGroup options={options} value={method} 
-            className='flex flex-col gap-4'
-            radioClass='flex-row-reverse justify-between'
+          <RadioGroup
+            options={options}
+            value={method}
+            className="flex flex-col gap-4"
+            radioClass="flex-row-reverse justify-between"
             onChange={(val) => setMethod(val)}
             render={(obj) => (
               <div className="flex gap-2">
-                <div className="w-7">
-                  {obj.icon}
-                </div>
+                <div className="w-7">{obj.icon}</div>
                 <div className="flex flex-col">
                   <span>{obj.name}</span>
                   <small>{obj.description}</small>
                 </div>
               </div>
-            )} />
+            )}
+          />
           <hr />
-          <Button1 loading={loading} onClick={handlePay}>Pay now</Button1>
-          <button className="btn" onClick={() => callback && callback()}>Hold booking and pay later</button>
+          <Button1 loading={loading} onClick={handlePay}>
+            Pay now
+          </Button1>
+          <button className="btn" onClick={() => callback && callback()}>
+            Hold booking and pay later
+          </button>
         </div>
-      :
+      ) : (
         <div className="flex flex-col gap-3">
           <Button1 onClick={() => setPaynow(true)}>Pay now</Button1>
-          <button className="btn" onClick={() => callback && callback()}>Hold booking and pay later</button>
+          <button className="btn" onClick={() => callback && callback()}>
+            Hold booking and pay later
+          </button>
         </div>
-      }
+      )}
       <Modal
         open={Boolean(paymentUrl)}
         onClose={() => setPaymentUrl(undefined)}
       >
-        <div className="h-full max-w-[50%] overflow-y-scroll md:overflow-y-hidden">
+        <div className="h-full max-w-[100%] overflow-y-scroll md:overflow-y-hidden">
           <iframe src={paymentUrl} title="Payment" className="w-full h-full" />
         </div>
       </Modal>
