@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import BreadCrumb from "../../../../components/DIsplay/Nav/BreadCrumb";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Button1 from "../../../../components/form/Button1";
 import TextInput from "../../../../components/form/TextInput";
 import { Menu } from "../../OrdersData";
@@ -191,12 +191,12 @@ export default function FlightOrder() {
               <PassengerInfo label={"Adult"} />
               <PassengerInfo label={"Child"} />
             </div>
-            <PriceSummary />
+            <PriceSummary data={order} />
             <ShareViaEmail />
           </div>
 
           <div>
-            <StatusBar data={obj} />
+            <StatusBar data={order} />
           </div>
         </div>
       )}
