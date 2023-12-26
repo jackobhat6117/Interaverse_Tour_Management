@@ -28,7 +28,6 @@ export default function FlightBookDetails() {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
-
   function handleSearchRoute(i) {
     navigate("/order/new/flight/offers?q=" + id + "&path=" + i);
   }
