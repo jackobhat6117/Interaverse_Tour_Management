@@ -1,40 +1,86 @@
+import { useEffect, useState } from "react";
+import { getCurrencySymbol } from "../../features/utils/currency";
 import { formatMoney } from "../../features/utils/formatMoney";
 import Checkbox from "../form/Checkbox";
 
+export default function FlightPriceCommission({
+  data,
+  deductCommission,
+  setDeductCommission,
+}) {
+  const [bookingInfo, setBookingInfo] = useState();
+  const [payable, setPayable] = useState(0);
 
-export default function FlightPriceCommission({data}) {
-  // let tripType = data?.segments?.length > 1 ? '' : 'One way'
-  // if(data?.segments?.length > 1) {
-  //   if(data?.segments?.at(0)?.departureLocation === data?.segments?.at(-1)?.arrivalLocation)
-  //     tripType = 'Round trip'
-  // }
+  useEffect(() => {
+    if (data) {
+      const formattedData = {
+        grandTotal: data?.booking?.flightBooking?.at(0)?.grandTotal,
+        basePrice: data?.booking?.flightBooking?.at(0)?.basePrice,
+        currency: getCurrencySymbol(
+          data?.booking?.flightBooking?.at(0)?.currency,
+        ),
+        tax:
+          data?.booking?.flightBooking?.at(0)?.grandTotal -
+          data?.booking?.flightBooking?.at(0)?.basePrice,
+        commission: data?.expectedCommission?.commission,
+        ticketingFee: data?.booking?.flightBooking?.at(0)?.ticketingFee || 0,
+      };
+      setPayable(formattedData.grandTotal + formattedData.ticketingFee);
+      setBookingInfo(formattedData);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (deductCommission) {
+      const totalPayable =
+        bookingInfo?.grandTotal +
+        bookingInfo?.ticketingFee -
+        bookingInfo?.commission;
+      setPayable(totalPayable);
+    } else {
+      const totalPayable = bookingInfo?.grandTotal + bookingInfo?.ticketingFee;
+      setPayable(totalPayable);
+    }
+  }, [
+    bookingInfo?.commission,
+    bookingInfo?.grandTotal,
+    bookingInfo?.ticketingFee,
+    deductCommission,
+  ]);
+
   return (
-    <div className='border p-4 flex flex-col gap-4 md:min-w-[400px]'>
+    <div className="border p-4 flex flex-col gap-4 md:min-w-[400px]">
       <div className="border-b pb-3 flex justify-between items-center gap-4">
         <h6>Price Summary</h6>
         <p>Amount</p>
       </div>
       {/* <div>{tripType} flight</div> */}
-      <div className='flex flex-col '>
-        <div className='flex gap-4 justify-between font-bold'>
+      <div className="flex flex-col ">
+        <div className="flex gap-4 justify-between font-bold">
           <h6>Order total:</h6>
-          <b>{formatMoney(10000)}</b>
+          <b>{formatMoney(bookingInfo?.grandTotal, bookingInfo?.currency)}</b>
         </div>
-        <div className='flex gap-4 justify-between'>
+        <div className="flex gap-4 justify-between">
           <span>Flight:</span>
-          <span>{formatMoney(8000)}</span>
+          <span>
+            {formatMoney(bookingInfo?.basePrice, bookingInfo?.currency)}
+          </span>
         </div>
-        <div className='flex gap-4 justify-between'>
+        <div className="flex gap-4 justify-between">
           <span>Tax:</span>
-          <span>{formatMoney(1000)}</span>
+          <span>{formatMoney(bookingInfo?.tax, bookingInfo?.currency)}</span>
         </div>
-        <div className='flex gap-4 justify-between'>
-          <span>Commision:</span>
-          <span>+{formatMoney(500)}</span>
+        <div className="flex gap-4 justify-between">
+          <span>Commission:</span>
+          <span>
+            +{formatMoney(bookingInfo?.commission, bookingInfo?.currency)}
+          </span>
         </div>
-        <div className='flex gap-4 justify-between'>
+        <div className="flex gap-4 justify-between">
           <span>Ticketing Fee:</span>
-          <span>-{formatMoney(300)}</span>
+          <span>
+            -{formatMoney(bookingInfo?.ticketingFee, bookingInfo?.currency)}
+          </span>
         </div>
       </div>
       <hr />
@@ -43,7 +89,10 @@ export default function FlightPriceCommission({data}) {
           <h6>Claim commission </h6>
           <small>(Deduct commission from payable)</small>
         </div>
-        <Checkbox />
+        <Checkbox
+          value={deductCommission}
+          onChange={(e) => setDeductCommission(e.target.checked)}
+        />
       </div>
       <hr />
       {/* {Object.entries(data?.passengers || {})?.map(([key,obj],i) => 
@@ -62,10 +111,10 @@ export default function FlightPriceCommission({data}) {
           </div>
         </div>
       )} */}
-      <div className='flex gap-4 justify-between'>
+      <div className="flex gap-4 justify-between">
         <h5>Payable due:</h5>
-        <h5>{formatMoney(data?.totalAmount)}</h5>
+        <h5>{formatMoney(payable, bookingInfo?.currency)}</h5>
       </div>
     </div>
-  )
+  );
 }

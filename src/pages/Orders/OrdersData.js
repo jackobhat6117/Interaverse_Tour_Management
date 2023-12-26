@@ -139,9 +139,9 @@ export default function OrdersData({ data: gotData, setData: setOrig }) {
     all: gotData?.length,
     flights: 0,
     tours: 0,
-    stays: 0
-  }
-  gotData?.filter(obj => {
+    stays: 0,
+  };
+  gotData?.filter((obj) => {
     let type = obj?.type?.toLowerCase();
     if (type === "flight") countObj.flights++;
     else if (type === "tour") countObj.tours++;
@@ -192,7 +192,9 @@ export default function OrdersData({ data: gotData, setData: setOrig }) {
     {
       field: "amount",
       headerName: "Amount",
-      renderCell: (params) => <div>{formatMoney(params.value)}</div>,
+      renderCell: (params) => (
+        <div>{formatMoney(params.value, params.row?.currency)}</div>
+      ),
     },
     { field: "commission", headerName: "Commission" },
     { field: "bookRef", headerName: "PNR" },

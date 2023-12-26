@@ -18,6 +18,7 @@ import PassengerInfo from "./PassengerInfo";
 import FlightInfo from "./FlightInfo";
 import { useParams } from "react-router-dom";
 import getBooking from "../../../../controllers/booking/getBooking";
+import { LinearProgress } from "@mui/material";
 
 export default function FlightOrder() {
   let obj = {
@@ -32,6 +33,7 @@ export default function FlightOrder() {
   const [openInsurance, setOpenInsurance] = useState(false);
   const [selectedOption, setSelectedOption] = useState();
   const [order, setOrder] = useState();
+  const [loading, setLoading] = useState(false);
 
   function handleOption() {
     if (selectedOption === "email") setOpenEmailExport(true);
@@ -68,15 +70,15 @@ export default function FlightOrder() {
 
   useEffect(() => {
     const fetch = async () => {
+      setLoading(true);
       const res = await getBooking(id);
+      setLoading(false);
       if (res.return) {
         setOrder(res.data);
       }
     };
     fetch();
   }, [id]);
-
-  console.log(order);
 
   return (
     <div className="flex flex-col gap-4 pd-md py-4">
@@ -85,115 +87,119 @@ export default function FlightOrder() {
         <label>Confirmation</label>
       </BreadCrumb>
 
-      <div className="flex gap-4">
-        <div className="flex flex-col gap-4 flex-1">
-          <div className="flex gap-4 items-center">
-            <h5>Flight details</h5>
+      {loading ? (
+        <LinearProgress /> //TODO: change this
+      ) : (
+        <div className="flex gap-4">
+          <div className="flex flex-col gap-4 flex-1">
+            <div className="flex gap-4 items-center">
+              <h5>Flight details</h5>
 
-            <div className="flex flex-1 gap-3 justify-end flex-wrap">
-              <div>
-                <Button1
-                  variant={"outlined"}
-                  className=""
-                  onClick={() => setOpenExport(true)}
-                >
-                  Export itinerary
-                </Button1>
-              </div>
-              <div>
-                <TextInput
-                  select
-                  size="small"
-                  label="Manage this order"
-                  noShrink
-                  className="!min-w-[180px] bg-primary/10"
-                >
-                  <div className="menuItem">
-                    <Menu
-                      value={"pending"}
-                      label="Add Seats"
-                      hideFor={["confirmed"]}
-                    />
-                    <Menu
-                      value={"pending"}
-                      label="Add Bags"
-                      hideFor={["confirmed"]}
-                    />
-                    <Menu
-                      value={"pending"}
-                      label="Add Insurance"
-                      hideFor={["confirmed"]}
-                      onClick={() => setOpenInsurance(true)}
-                    />
-                    <Menu
-                      value={"pending"}
-                      label="Confirm Payment"
-                      showFor={["pending", "on hold"]}
-                    />
-                    <Menu
-                      value={"pending"}
-                      label="Edit PNR"
-                      hideFor={["confirmed"]}
-                    />
-                    <Menu
-                      value={"pending"}
-                      label="Hold Order"
-                      hideFor={["confirmed"]}
-                    />
-                    <Menu
-                      value={"pending"}
-                      label="Cancel Order"
-                      className="!bg-red-500 !text-white !rounded-md"
-                    />
-                  </div>
-                </TextInput>
-              </div>
-            </div>
-          </div>
-
-          <hr />
-          {obj?.needsReview ? (
-            <div className="flex flex-col gap-4">
-              <div className="flex gap-4 items-center">
-                <div className="flex flex-1 justify-start gap-2 ">
-                  <div className="">
-                    <button
-                      className={`${onChangedData ? "!btn" : "btn-light"}`}
-                      onClick={() => setOnChangedData(true)}
-                    >
-                      New Details
-                    </button>
-                  </div>
-                  <div className="">
-                    <button
-                      className={`${!onChangedData ? "!btn" : "btn-light"}`}
-                      onClick={() => setOnChangedData(false)}
-                    >
-                      Previous Details
-                    </button>
-                  </div>
+              <div className="flex flex-1 gap-3 justify-end flex-wrap">
+                <div>
+                  <Button1
+                    variant={"outlined"}
+                    className=""
+                    onClick={() => setOpenExport(true)}
+                  >
+                    Export itinerary
+                  </Button1>
                 </div>
-                <button className="warn text-sm px-4 font-normal">
-                  Changes detected
-                </button>
+                <div>
+                  <TextInput
+                    select
+                    size="small"
+                    label="Manage this order"
+                    noShrink
+                    className="!min-w-[180px] bg-primary/10"
+                  >
+                    <div className="menuItem">
+                      <Menu
+                        value={"pending"}
+                        label="Add Seats"
+                        hideFor={["confirmed"]}
+                      />
+                      <Menu
+                        value={"pending"}
+                        label="Add Bags"
+                        hideFor={["confirmed"]}
+                      />
+                      <Menu
+                        value={"pending"}
+                        label="Add Insurance"
+                        hideFor={["confirmed"]}
+                        onClick={() => setOpenInsurance(true)}
+                      />
+                      <Menu
+                        value={"pending"}
+                        label="Confirm Payment"
+                        showFor={["pending", "on hold"]}
+                      />
+                      <Menu
+                        value={"pending"}
+                        label="Edit PNR"
+                        hideFor={["confirmed"]}
+                      />
+                      <Menu
+                        value={"pending"}
+                        label="Hold Order"
+                        hideFor={["confirmed"]}
+                      />
+                      <Menu
+                        value={"pending"}
+                        label="Cancel Order"
+                        className="!bg-red-500 !text-white !rounded-md"
+                      />
+                    </div>
+                  </TextInput>
+                </div>
               </div>
-              <hr />
             </div>
-          ) : null}
 
-          <FlightInfo />
-          <div className="py-4">
-            <PassengerInfo label={"Adult"} />
-            <PassengerInfo label={"Child"} />
+            <hr />
+            {obj?.needsReview ? (
+              <div className="flex flex-col gap-4">
+                <div className="flex gap-4 items-center">
+                  <div className="flex flex-1 justify-start gap-2 ">
+                    <div className="">
+                      <button
+                        className={`${onChangedData ? "!btn" : "btn-light"}`}
+                        onClick={() => setOnChangedData(true)}
+                      >
+                        New Details
+                      </button>
+                    </div>
+                    <div className="">
+                      <button
+                        className={`${!onChangedData ? "!btn" : "btn-light"}`}
+                        onClick={() => setOnChangedData(false)}
+                      >
+                        Previous Details
+                      </button>
+                    </div>
+                  </div>
+                  <button className="warn text-sm px-4 font-normal">
+                    Changes detected
+                  </button>
+                </div>
+                <hr />
+              </div>
+            ) : null}
+
+            <FlightInfo data={order} />
+            <div className="py-4">
+              <PassengerInfo label={"Adult"} />
+              <PassengerInfo label={"Child"} />
+            </div>
+            <PriceSummary />
+            <ShareViaEmail />
           </div>
-          <PriceSummary />
-          <ShareViaEmail />
-        </div>
 
-        <div>
-          <StatusBar data={obj} />
+          <div>
+            <StatusBar data={obj} />
+          </div>
         </div>
-      </div>
+      )}
 
       <Modal1 open={openEmailExport} setOpen={setOpenEmailExport}>
         <EmailExport />
