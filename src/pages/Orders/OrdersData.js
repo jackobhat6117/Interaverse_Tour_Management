@@ -139,15 +139,9 @@ export default function OrdersData({ data: gotData, setData: setOrig }) {
     all: gotData?.length,
     flights: 0,
     tours: 0,
-<<<<<<< HEAD
     stays: 0
   }
   gotData?.filter(obj => {
-=======
-    stays: 0,
-  };
-  data?.filter((obj) => {
->>>>>>> 8181cdd9e35de8d99fc8ff566d618cfedc8a861e
     let type = obj?.type?.toLowerCase();
     if (type === "flight") countObj.flights++;
     else if (type === "tour") countObj.tours++;
