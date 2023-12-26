@@ -8,7 +8,7 @@ import { MenuItem, TextField } from "@mui/material";
 import CountriesInput from "../../components/form/CountriesInput";
 
 
-export function PassengerInputs({returnData,ind,type,data:defData}) {
+export function PassengerInputs({returnData,ind,type,data:defData,required}) {
   const {bookingData} = useSelector((state) => state.flightBooking);
   const [newPassenger,setNewPassenger] = useState(false);
   const urlData = bookingData;
@@ -104,7 +104,9 @@ export function PassengerInputs({returnData,ind,type,data:defData}) {
   }
   return (
     <div className='flex flex-col gap-3'>
-      <FetchUsersInput from={passengerList} enableNew onChange={(obj) => handleSelectPassenger(obj)} label={'Passengers'} />
+      {!defData ? 
+        <FetchUsersInput from={passengerList} enableNew onChange={(obj) => handleSelectPassenger(obj)} label={'Passengers'} />
+      :null}
       {newPassenger || defData ? (
         <div className='gap-3 flex flex-col'>
           <h6 onDoubleClick={testFill}>Passenger Detail</h6>
@@ -120,7 +122,7 @@ export function PassengerInputs({returnData,ind,type,data:defData}) {
                 <MenuItem value='Ms'>Ms</MenuItem>
                 <MenuItem value='Mrs'>Mrs</MenuItem>
               </TextField>
-            <TextField required className='flex-1' size='small' label='First Name' name='firstName'
+            <TextField required={required ? required?.includes('firstName') : true} className='flex-1' size='small' label='First Name' name='firstName'
               value={data.firstName}
               onChange={(ev) => setData({...data,firstName: ev.target.value})}
               InputLabelProps={{
@@ -132,7 +134,7 @@ export function PassengerInputs({returnData,ind,type,data:defData}) {
               InputLabelProps={{
                 shrink: true,
               }} />
-            <TextField required className='flex-1' size='small' label='Surname' name='lastName'
+            <TextField required={required ? required?.includes('lastName') : true} className='flex-1' size='small' label='Surname' name='lastName'
               value={data.lastName}
               onChange={(ev) => setData({...data,lastName: ev.target.value})}
               InputLabelProps={{
@@ -141,7 +143,7 @@ export function PassengerInputs({returnData,ind,type,data:defData}) {
 
           </div>
           <div className='flex gap-2'>
-            <TextField required className='flex-1 min-w-[100px]' size='small' label='Date of birth' type='date'
+            <TextField required={required ? required?.includes('birthDate') : true} className='flex-1 min-w-[100px]' size='small' label='Date of birth' type='date'
               value={moment(data.birthDate).format("YYYY-MM-DD") || ""}
               onChange={(ev) => setData({...data,birthDate: ev.target.value})}
               error={data.birthDate !== "" && (getAgeType(data.birthDate) !== type)}
@@ -149,7 +151,7 @@ export function PassengerInputs({returnData,ind,type,data:defData}) {
               InputLabelProps={{
                 shrink: true,
               }} />
-            <TextField required className='flex-1' size='small' label='Gender' select
+            <TextField required={required ? required?.includes('gender') : true} className='flex-1' size='small' label='Gender' select
               value={data.gender}
               onChange={(ev) => setData({...data,gender: ev.target.value})}
               InputLabelProps={{
@@ -160,12 +162,12 @@ export function PassengerInputs({returnData,ind,type,data:defData}) {
             </TextField>
           </div>
           <div className='flex gap-2'>
-            <CountriesInput required size='small'
+            <CountriesInput required={required ? required?.includes('nationality') : true} size='small'
               value={data.nationality}
               // onChange={(val) => handleChange(val.name || val)}
               onChange={(val) => setData({...data,nationality: val.alpha2 || val})}
             />
-            <TextField required className='flex-1 min-w-[150px]' size='small' label='Identification Type' select
+            <TextField required={required ? required?.includes('idType') : true} className='flex-1 min-w-[150px]' size='small' label='Identification Type' select
               value={data.idType || "Passport"}
               onChange={(ev) => setData({...data,idType: ev.target.value})}
               InputLabelProps={{
@@ -177,17 +179,17 @@ export function PassengerInputs({returnData,ind,type,data:defData}) {
 
           </div>
           <div className='flex gap-2 flex-wrap'>
-            <CountriesInput required label="Issuance Country" size='small'
+            <CountriesInput required={required ? required?.includes('issuanceCountry') : true} label="Issuance Country" size='small'
               value={data.issuanceCountry} name='issuanceCountry'
               onChange={(val) => setData({...data,issuanceCountry: val.alpha2 || val})}
             />
-            <TextField required className='flex-1' size='small' label={data.idType === 'NationalID' ? 'National ID No' : 'Passport Number'}
+            <TextField required={required ? required?.includes('passportId') : true} className='flex-1' size='small' label={data.idType === 'NationalID' ? 'National ID No' : 'Passport Number'}
               value={data.passportId}
               onChange={(ev) => setData({...data,passportId: ev.target.value})}
               InputLabelProps={{
                 shrink: true,
               }} />
-            <TextField required className='flex-1' size='small' label='Expiry Date' type='date' 
+            <TextField required={required ? required?.includes('passportExpirationDate') : true} className='flex-1' size='small' label='Expiry Date' type='date' 
               value={moment(data.passportExpirationDate).format("YYYY-MM-DD") || ""}
               onChange={(ev) => setData({...data,passportExpirationDate: ev.target.value})}
               inputProps={{
