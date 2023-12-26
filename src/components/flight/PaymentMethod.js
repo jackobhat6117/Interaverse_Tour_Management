@@ -76,13 +76,23 @@ export default function PaymentMethod({data,callback,className}) {
               </div>
             )} />
           <hr />
+          <div className="flex flex-col ">
+            <h5>Flexify</h5>
+            <p>Pay in instalments</p>
+          </div>
+          <hr />
+          <div className="flex flex-col ">
+            <h5>Price freeze</h5>
+            <p>Hold price for a while</p>
+          </div>
+          <hr />
           <Button1 loading={loading} onClick={handlePay}>Pay now</Button1>
-          <button className="btn" onClick={() => callback && callback()}>Hold booking and pay later</button>
+          <button className="p-2" onClick={() => callback && callback()}>Hold booking and pay later</button>
         </div>
       :
         <div className="flex flex-col gap-3">
           <Button1 onClick={() => setPaynow(true)}>Pay now</Button1>
-          <button className="btn" onClick={() => callback && callback()}>Hold booking and pay later</button>
+          <button className="btn bg-primary" onClick={() => callback && callback()}>Hold booking and pay later</button>
         </div>
       }
       <Modal

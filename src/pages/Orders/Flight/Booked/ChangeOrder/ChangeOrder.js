@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import BreadCrumb from '../../../../../components/DIsplay/Nav/BreadCrumb'
 import { Link, useLocation } from 'react-router-dom'
 import TextInput from '../../../../../components/form/TextInput'
@@ -7,17 +7,17 @@ import Icon from '../../../../../components/HOC/Icon'
 import airline from '../../../../../assets/images/airline.svg'
 import { formatMoney } from '../../../../../features/utils/formatMoney'
 import ChangeProperty from './Property/ChangeProperty'
+import { MenuItem } from '@mui/material'
 
 
 let temp = {
     orderId: 'DD4498'
 }
 export default function ChangeFlightOrder({obj=temp}) {
-	const [passengerType,setPassengerType] = useState('Primary Passenger');
 	const location = useLocation();
 	const searchParams = new URLSearchParams(location.search);
 	const property = searchParams?.get('property');
-
+	
 	if(property)
 		return <ChangeProperty property={property} />
 
@@ -30,18 +30,8 @@ export default function ChangeFlightOrder({obj=temp}) {
         </BreadCrumb>
         <div className='flex flex-col items-center'>
 					<div className='card p-10 py-4 flex flex-col gap-10'>
-						<Tabs option={[{value: 'Primary Passenger'},{value: 'Secondary Passenger'}]} 
-							value={passengerType}
-							onChange={(val) => setPassengerType(val)} />
-
 						<div className='flex flex-col gap-3'>
-							<h5>Passenger Details</h5>
-							<div className='flex gap-2 '>
-								<TextInput label={'Primary Passenger'} size='small' value='Chienema Okafor' disabled />
-								<Link to='?property=passenger' className='flex items-center light-bg p-1'>
-									<Icon icon='icon-park:change' className='p-1' />
-								</Link>
-							</div>
+							<PassengerView />
 						</div>
 
 						<div className='flex flex-col gap-3'>
@@ -85,6 +75,48 @@ export default function ChangeFlightOrder({obj=temp}) {
 				</div>
     </div>
   )
+}
+
+function PassengerView() {
+	const [passengerType,setPassengerType] = useState('Primary Passenger');
+	let passengers = [
+		{firstName: 'Okafor',lastName: 'Chiemena',id: 1},
+		{firstName: 'Yeabsira',lastName: 'Abebe',id: 2},
+	]
+	
+	if(passengerType === 'Primary Passenger')
+		passengers = passengers.slice(0,1);
+	else passengers = passengers.slice(1);
+
+	const [selected,setSelected] = useState(passengers[0]?.id)
+
+	useEffect(() => {
+		setSelected(passengers[0]?.id)
+		//eslint-disable-next-line
+	},[passengerType])
+
+	return (
+		<div className='flex flex-col gap-5'>
+			<Tabs option={[{value: 'Primary Passenger'},{value: 'Secondary Passenger'}]} 
+				value={passengerType}
+				onChange={(val) => setPassengerType(val)} />
+
+			<h5>Passenger Details</h5>
+			<div className='flex gap-2 '>
+				<TextInput select label={'Primary Passenger'} size='small' 
+				  value={selected}
+				  onChange={(ev) => setSelected(ev.target.value)}
+				>
+					{passengers?.map((obj,i) => (
+						<MenuItem key={i} value={obj.id}>{obj.firstName} {obj.lastName}</MenuItem>
+					))}
+				</TextInput>
+				<Link to={'?property=passenger&id='+selected} className='flex items-center light-bg p-1'>
+					<Icon icon='icon-park:change' className='p-1' />
+				</Link>
+			</div>
+		</div>
+	)
 }
 
 function ContactPersonView({obj}) {

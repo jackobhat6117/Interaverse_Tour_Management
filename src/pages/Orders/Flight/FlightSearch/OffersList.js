@@ -24,6 +24,7 @@ import getFlightOffers from '../../../../controllers/Flight/getFlightOffers';
 import convertFlightObject, { createFlightCat } from '../../../../features/utils/flight/flightOfferObj';
 import { offerSearchTemp } from '../../../../data/flight/offerSearchData';
 import CreateFlightOrder from '../CreateFlightOrder';
+import LoadingBar from '../../../../components/animation/LoadingBar';
 // import getCalendarSearch from '../../../controllers/search/getCalendarSearch';
 
 
@@ -48,13 +49,14 @@ const tempFlightDate = [
 const fetchedData = createRef([]);
 const test = def.devStatus === 'test';
 
-export default function OffersList() {
+export default function OffersList({hide}) {
   const [data,setData] = useState([]);
   const {bookingData} = useSelector(state => state.flightBooking);
   const [cat,setCat] = useState(tempCat);
   const [flightDate,setFlightDate] = useState(tempFlightDate);
   const [curDetail,setCurDetail] = useState();
   const [loading,setLoading] = useState(false);
+  const [progress,setProgress] = useState(0);
   const [resMsg,setResMsg] = useState("No Result");
   const [searchParam] = useSearchParams();
   const q = useMemo(() => searchParam.get('q'),[searchParam]);
@@ -85,6 +87,13 @@ export default function OffersList() {
     //eslint-disable-next-line
   },[qIndex])
   console.log(searchObj,searchPath)
+
+  function onDownloadProgress(progressEvent) {
+    // const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+    console.log('--------------------')
+    console.log(progressEvent)
+    // setProgress(percentCompleted);
+  }
 
   const fetchData = useCallback(async (req) => {
     if(!q && !test) return {return: false};
@@ -124,7 +133,7 @@ export default function OffersList() {
     // let userId = null;
     // if(bookingData.as)
     //   userId = bookingData.as.id;
-    const newRes = await getFlightOffers(obj);
+    const newRes = await getFlightOffers(obj,null,onDownloadProgress);
     if(newRes.return) {
       let data = newRes?.data?.data?.map(obj => convertFlightObject(obj))
       console.log('data: ',data)
@@ -340,33 +349,37 @@ export default function OffersList() {
 
   return (
     <div className='w-full flex flex-col gap-2 py-4 flex-1'>
-      <div className='pd-md py-2'>
-        <BreadCrumb>
-          <Link to={'/order'}>Orders</Link>
-          <Link to='/order/new/flight'>New order</Link>
-          {searchPath.map((obj,i) => {
-            if(i === searchPath.length-1)
-              return (
-                <b>{obj?.departureLocation} to {obj?.arrivalLocation}</b>
-              )
+      {!hide || !hide?.includes('breadcrumb') ? 
+        <div className='pd-md py-2'>
+          <BreadCrumb>
+            <Link to={'/order'}>Orders</Link>
+            <Link to='/order/new/flight'>New order</Link>
+            {searchPath.map((obj,i) => {
+              if(i === searchPath.length-1)
+                return (
+                  <b>{obj?.departureLocation} to {obj?.arrivalLocation}</b>
+                )
 
-            return (
-              <div onClick={() => handleSearchRoute(i)} className='cursor-pointer'>
-                {obj.departureLocation} to {obj.arrivalLocation}
-              </div>
-            )
-          })}
-          {/* <b>{searchObj?.destinations[0]?.departureLocation} to {searchObj?.destinations[0]?.arrivalLocation}</b> */}
-        </BreadCrumb>
-      </div>
+              return (
+                <div onClick={() => handleSearchRoute(i)} className='cursor-pointer'>
+                  {obj.departureLocation} to {obj.arrivalLocation}
+                </div>
+              )
+            })}
+            {/* <b>{searchObj?.destinations[0]?.departureLocation} to {searchObj?.destinations[0]?.arrivalLocation}</b> */}
+          </BreadCrumb>
+        </div>
+      :null}
       <PriceTimeout />
       {/* <CheckFlightTimeout /> */}
       {/* <div className='bg-secondary px-4'>
         <FlightSearchInput cur={searchType} />
       </div> */}
-      <div className='hidden md:flex justify-center px-6 bg-primary bg-opacity-[3%]'>
-        <FlightOfferSort {...{cat,getCatInfo,sortByCat}} />
-      </div>
+      {!hide || !hide?.includes('sort') ? 
+        <div className='hidden md:flex justify-center px-6 bg-primary bg-opacity-[3%]'>
+          <FlightOfferSort {...{cat,getCatInfo,sortByCat}} />
+        </div>
+      :null}
       {/* <div className='bg-secondary flex justify-center'>
         <Tabs indicatorColor='inherit' textColor='inherit' value={curFlightDate} scrollButtons allowScrollButtonsMobile variant='scrollable' className='div_mid'>
           {flightDate.map((obj,i) => (
@@ -389,31 +402,34 @@ export default function OffersList() {
       
 
       <div className='flex gap-4 flex-1'>
-        <div className='hidden md:block self-end sticky bottom-0 rounded-2xl '>
-          <div className='pt-4 px-6 flex flex-col gap-1'>
-            <div className='flex gap-4 justify-between'>
-              <div className='flex gap-2 uppercase'>
-                <h6>{searchObj?.destinations[0]?.departureLocation}</h6>
-                <h6>-</h6>
-                <h6>{searchObj?.destinations[0]?.arrivalLocation}</h6>
+        {!hide || !hide?.includes('filter') ? 
+          <div className='hidden md:block self-end sticky bottom-0 rounded-2xl '>
+            <div className='pt-4 px-6 flex flex-col gap-1'>
+              <div className='flex gap-4 justify-between'>
+                <div className='flex gap-2 uppercase'>
+                  <h6>{searchObj?.destinations[0]?.departureLocation}</h6>
+                  <h6>-</h6>
+                  <h6>{searchObj?.destinations[0]?.arrivalLocation}</h6>
+                </div>
+                <Icon icon='ri:plane-fill' className='self-end' />
               </div>
-              <Icon icon='ri:plane-fill' className='self-end' />
+              <div>
+                {moment(departDate).format('DD MMM')} - {' '}
+                {arrivalDate ? moment(arrivalDate).format('DD MMM')+ ' - ' : ' '}
+                {passengersCount} passenger{passengersCount>1?'s':''}
+              </div>
+              <div>
+                <Button1 className='self-start !w-auto ' size='small' onClick={() => setOpenSearch(true)}>Edit Search</Button1>
+              </div>
             </div>
-            <div>
-              {moment(departDate).format('DD MMM')} - {' '}
-              {arrivalDate ? moment(arrivalDate).format('DD MMM')+ ' - ' : ' '}
-              {passengersCount} passenger{passengersCount>1?'s':''}
-            </div>
-            <div>
-              <Button1 className='self-start !w-auto ' size='small' onClick={() => setOpenSearch(true)}>Edit Search</Button1>
-            </div>
+            <FlightOfferFilter cats={cat} orgi={fetchedData.current} data={data} setData={setData} />
           </div>
-          <FlightOfferFilter cats={cat} orgi={fetchedData.current} data={data} setData={setData} />
-        </div>
+        :null}
         <div className='flex-1 flex flex-col gap-2 py-5 px-4 md:px-0'>
           {
             loading ?
-              <h5 className='bg-secondary p-5 rounded-md flex items-center justify-center text-primary/30 '>Loading...</h5>
+              <LoadingBar progress={progress} />
+              // <h5 className='bg-secondary p-5 rounded-md flex items-center justify-center text-primary/30 '>{progress}% Loading...</h5>
             : data?.length < 1 ?
               <div className='bg-secondary p-5 rounded-md flex items-center justify-center flex-col gap-2'>
                 <h5 className=' text-primary/30 uppercase'>{resMsg?.msg || resMsg}</h5>

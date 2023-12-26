@@ -241,13 +241,15 @@ export default function CreateFlightOrder({callback}) {
         <div className='flex flex-col gap-4'>
           <div>
             {/* <h6>Journey Type</h6> */}
-            <RadioGroup onChange={(ev) => setType(ev.target.value)} >
-              <div className='flex gap-4'>
-                <RadioInput className='whitespace-nowrap' value={'oneway'} checked={type === 'oneway'}>One way</RadioInput>
-                <RadioInput className='whitespace-nowrap' value={'return'} checked={type === 'return'}>Return</RadioInput>
-                <RadioInput className='whitespace-nowrap' value={'multiple'} checked={type === 'multiple'}>Multi-city</RadioInput>
-              </div>
-            </RadioGroup>
+            {!callback ? 
+              <RadioGroup onChange={(ev) => setType(ev.target.value)} >
+                <div className='flex gap-4'>
+                  <RadioInput className='whitespace-nowrap' value={'oneway'} checked={type === 'oneway'}>One way</RadioInput>
+                  <RadioInput className='whitespace-nowrap' value={'return'} checked={type === 'return'}>Return</RadioInput>
+                  <RadioInput className='whitespace-nowrap' value={'multiple'} checked={type === 'multiple'}>Multi-city</RadioInput>
+                </div>
+              </RadioGroup>
+            :null}
           </div>
           <div className='flex gap-[2px]'>
             <CitiesInput label='Where from?' placeholder='Origin' lockUpdate={lockupd}
