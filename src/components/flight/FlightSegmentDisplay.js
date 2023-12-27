@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import SkullLoad from "../DIsplay/SkullLoad";
 import FlightInfoCard from "./FlightInfoCard";
 
-export default function FlightSegmentDisplay({data: og}) {
+export default function FlightSegmentDisplay({changeRoute,data: og}) {
   const [data,setData] = useState(og);
   useEffect(() => {
     setTimeout(() => setData(og),2000)
@@ -28,12 +28,12 @@ export default function FlightSegmentDisplay({data: og}) {
               </h5>
               <p><SkullLoad value={data?.flights?.at(0)?.departureAirportName || data?.flights?.at(0)?.marketingCarrier} label='Airline' /></p>
             </div>
-            <p>{data?.numberOfStops || data?.numberOfStops === 0 ? data?.numberOfStops+'stopover':''} </p>
+            <p>{data?.numberOfStops || data?.numberOfStops === 0 ? data?.numberOfStops+' stopover':''} </p>
           </div>
 
           <div>
             <h6><SkullLoad value={data?.duration} label={'Duration'} /></h6>
-            <small>{data?.duration?'Change':''}</small>
+            <button className="text-sm" onClick={changeRoute}>{'Change flight'}</button>
           </div>
         </div>
       </div>

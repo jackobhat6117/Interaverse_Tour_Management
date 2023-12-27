@@ -11,6 +11,7 @@ export default function CountriesInput({value,onChange,label,icon,className,requ
   }
   return (
     <Autocomplete className={'min-w-[200px] '+className}
+    size='small'
     {...restProps}
     noOptionsText='No data'
     disableClearable

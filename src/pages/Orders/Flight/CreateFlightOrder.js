@@ -319,10 +319,12 @@ export default function CreateFlightOrder({callback}) {
                 Add another flight</Button1>
             </div>
           ):null}
-          <div className='flex gap-4'>
-            <div className='flex-1'>
-              <TravelInfo q={qObj} returnPassenger={handleSetPassengers} />
-            </div>
+          <div className={'flex gap-4 '+callback?'order-first':''}>
+            {!callback ? 
+              <div className='flex-1'>
+                <TravelInfo q={qObj} returnPassenger={handleSetPassengers} />
+              </div>
+            :null}
             <div className='flex-1'>
               <SelectInput value={travelClass} onChange={(ev) => setTravelClass(ev.target.value)} className='min-w-[100px]'
               select label="Travel Class" size='small'>
@@ -334,11 +336,13 @@ export default function CreateFlightOrder({callback}) {
               </SelectInput>
             </div>
           </div>
-          <button className='flex justify-end cursor-pointer text-theme1 text-sm'
+          {!callback ? 
+            <button className='flex justify-end cursor-pointer text-theme1 text-sm'
             onClick={() => setShowAdvanced(prev => !prev)}
-          >
-            Advanced Options
-          </button>
+            >
+              Advanced Options
+            </button>
+          :null}
           {showAdvanced ? 
             <div className='flex flex-col gap-4'>
               <div>

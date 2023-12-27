@@ -1,19 +1,30 @@
 import React from 'react'
 
 export default function PassengerView({data: obj,page}) {
-    let data = {
-        firstName: 'John',
-        lastName: 'Doe',
+    let data = [{
+        title: 'Mr',
+        givenName: 'John Doe',
+        surname: 'Doe',
         ...(obj || {})
-    }
+    }]
     
     const Detail = ({data,label}) => (
         <div className='flex flex-col gap-2'>
             <div className='bg-primary/5 rounded-md p-2 px-4'>{label}</div>
-            {Object.entries(data).map(([key,value],i) => (
-                <div key={i} className='flex justify-between gap-3'>
-                    <p>{key}</p>
-                    <div>{value}</div>
+            {data.map((obj,i) => (
+                <div key={i} className='flex flex-col gap-2'>
+                    <div className='flex justify-between gap-3'>
+                        <p className='flex-1'>Title</p>
+                        <div className='flex-1'>{obj.title}</div>
+                    </div>
+                    <div className='flex justify-between gap-3'>
+                        <p className='flex-1'>Given Name</p>
+                        <div className='flex-1'>{obj.givenName}</div>
+                    </div>
+                    <div className='flex justify-between gap-3'>
+                        <p className='flex-1'>Surname</p>
+                        <div className='flex-1'>{obj.surname}</div>
+                    </div>
                 </div>
             ))}
         </div>

@@ -74,7 +74,7 @@ export default function FlightBook() {
         <div className='flex flex-col gap-2 flex-1'>
           {offer ? offer?.at(0)?.segments?.map((obj,i) => (
             <div key={i}>
-              <FlightSegmentDisplay data={obj} />
+              <FlightSegmentDisplay changeRoute={() => handleSearchRoute(i)} data={obj} />
             </div>
           )): !loading && (
             <div className='flex flex-col justify-center items-center p-4'>
