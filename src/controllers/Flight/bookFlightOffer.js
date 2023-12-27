@@ -1,37 +1,33 @@
 import { store } from "../../redux/store";
 import fetchServer from "../fetchServer";
 
-
-export default async function bookFlightOffer(obj,userId) {
-  var result = {return: 0,msg: 'Error',data: {}}
+export default async function bookFlightOffer(obj, userId) {
+  var result = { return: 0, msg: "Error", data: {} };
 
   let token = store.getState().user.userData.accessToken;
-  
-  console.log("on price req : ",obj);
 
-  let headers = {Authorization: `Bearer ${token}`}
+  let headers = { Authorization: `Bearer ${token}` };
 
-  if(userId)
-    headers['user-id'] = userId;
+  if (userId) headers["user-id"] = userId;
 
-  await fetchServer({method: "POST",url: `/product/v1/book/`,
+  await fetchServer({
+    method: "POST",
+    url: `/product/v1/book/`,
     data: obj,
-    headers
+    headers,
   })
-  .then((res) => {
-    console.log(" => ",{...res})
-    if(res) {
-      if(res.status === 200) {
-        result = {return: 1,msg: "Successfull",data: res.data.data || []};
-      } else if(res?.data?.error)
-        result['msg'] = res.data.error
-    } 
-  })
-  .catch((err) => {
-    console.log("Network Error: ",err);
-    
-    // result = {return: 1,msg: 'Successfull',data:[]}
-  })
+    .then((res) => {
+      if (res) {
+        if (res.status === 200) {
+          result = { return: 1, msg: "Successfull", data: res.data.data || [] };
+        } else if (res?.data?.error) result["msg"] = res.data.error;
+      }
+    })
+    .catch((err) => {
+      console.log("Network Error: ", err);
+
+      // result = {return: 1,msg: 'Successfull',data:[]}
+    });
 
   return result;
 }

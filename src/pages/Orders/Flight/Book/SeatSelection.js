@@ -61,7 +61,6 @@ export function FlightSeatDisplay({obj,routeIndex}) {
 
   const [data,setData] = useState([]);
   const [selectedSeat,setSelectedSeat] = useState();
-  console.log(data,offer)
 
   let flights = offer?.directions?.flat()
 
@@ -105,7 +104,6 @@ export function FlightSeatDisplay({obj,routeIndex}) {
       // flights[routeIndex] = {...flights[routeIndex],selectedSeat: obj}
       // offers[offers.length-1].directions = flights
       // // bookingData.offer = ?.at(-1).directions = flights;
-      console.log(' -> ',offer)
       dispatch(setBookingData({...bookingData,offer: [offer]}))
     } catch(ex) {console.log(ex)}
   }

@@ -9,7 +9,6 @@ export default function FlightSegmentDisplay({changeRoute,data: og}) {
   },[og])
   const [viewMore,setViewMore] = useState(false);
 
-  console.log(data," <-----")
   return (
     <div className='border rounded-md cursor-pointer shad-hover'>
       <div className={`flex gap-4 p-4 shadow-primary ${viewMore?'bg-theme1/10':''}`} onClick={() => setViewMore(!viewMore)}>

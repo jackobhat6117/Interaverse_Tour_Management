@@ -17,7 +17,6 @@ export default function WelcomeNavbar(props) {
   
   const links = ['','pricing','learn','support']
   
-  console.log(page,locations," 000")
   const [tabIndex,setTabIndex] = useState(
     links.indexOf(page)
   );

@@ -63,7 +63,6 @@ export function FareOption({selected,data: gotData,select,activate}) {
   const lastPath = bookingData?.offer?.at((bookingData?.offer?.length || 1) - 1)
 
 
-  console.log(lastPath,data)
   useEffect(() => {
     if(gotData)
       setData(gotData)

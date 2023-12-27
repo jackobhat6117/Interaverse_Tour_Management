@@ -16,7 +16,6 @@ export default function EmailTemplateSettings() {
         const editorInstance = editorRef.current.editor;
         if(editorInstance ) {
             const htmlData = editorInstance.getData();
-            console.log(htmlData)
         }
     }
   return (

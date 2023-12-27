@@ -12,7 +12,6 @@ export default function Table(props) {
     return newData;
   });
 
-  console.log('sotred dat: ',sortedData)
 
   return (
     <table className='w-full my-2' {...restProps}>

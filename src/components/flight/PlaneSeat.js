@@ -17,7 +17,6 @@ function PlaneSeat({seatMapData,loading,returnData}) {
 	let width = deck?.deckConfiguration?.width;
 	let length = deck?.deckConfiguration?.length;
 
-  console.log('seats: ',width,length,seats,seatMapData)
 
   function handleReturn(newObj) {
     let pricingDetail = {
@@ -30,7 +29,6 @@ function PlaneSeat({seatMapData,loading,returnData}) {
     let req = Object.entries(newObj).map(([key,obj]) => ({pricingDetail,...obj,seatNumber: key}))
     returnData && returnData(req)
 
-    // console.log('req: ',req)
 
   } 
 
@@ -50,7 +48,6 @@ function PlaneSeat({seatMapData,loading,returnData}) {
     handleReturn(rest)
   }
 
-  // console.log('seatRow: ',planeSeatsTemp.seatmapInformation.row)
   return (
     <div className='flex flex-col justify-center gap-2 p-2 flex-wrap'>
       {loading ? (

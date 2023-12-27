@@ -14,7 +14,6 @@ export async function shareFlightOffer(data) {
     headers
   })
   .then((res) => {
-    console.log(" => ",{...res})
     if(res) {
       if(res.data.success) {
         result = {return: 1,msg: "Successfull",data: res.data.data};

@@ -67,7 +67,6 @@ const Map = ({label,className,handleReturn}) => {
       else if(obj.types.includes("country")) country = obj.long_name
       return true
     })
-    console.log(place);
     //console log all results
     // console.log(`Name: ${name}`);
     // console.log(`Formatted Address: ${formattedAddress}`);
@@ -116,7 +115,6 @@ const Map = ({label,className,handleReturn}) => {
       if (status === 'OK') {
         if (results[0]) {
           getPlaceDetail(results[0])
-          console.log(results); // Location details
         } else {
           console.log('No results found');
         }

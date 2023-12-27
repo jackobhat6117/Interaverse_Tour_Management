@@ -25,7 +25,6 @@ export default function ProfileStatusCheck() {
     return obj.complete = data?.findIndex(d => (d.label === obj.label) && d.complete) >= 0
   })
   const complete = list.every(obj => obj.complete);
-  console.log(list,data)
 
   const cards = [
     {title: 'Support',description: 'Find answers to some of the most frequently asked questions about Intraverse.',

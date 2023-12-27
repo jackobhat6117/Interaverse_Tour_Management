@@ -66,7 +66,6 @@ export default function FlightAncillaries() {
           // travelersInfo: clone(offer?.passengers)?.slice(0,passengerCount || 1)
         }
         
-        console.log(req)
         // dispatch(setBookingData({...bookingData,travelersInfo: req.travelersInfo}))
 
         setLoading(true);

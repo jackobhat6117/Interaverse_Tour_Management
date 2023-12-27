@@ -6,7 +6,6 @@ export default async function getFlightBooking(id) {
 
   await fetchServer({method: "GET",url: `/product/v1/book/${id}?populate=flightBooking`})
   .then((res) => {
-    console.log(" => ",{...res})
     if(res) {
       if(res.status === 200) {
         result = {return: 1,msg: "Successfull",data: res.data.data};

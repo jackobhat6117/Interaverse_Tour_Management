@@ -8,12 +8,10 @@ function MilesForFlights(props) {
   const [initAnimate,setInitAnimate] = useState(false);
   
   function handleAnimation() {
-    console.log('animating')
     setInitAnimate(true)
   }
 
   function handleCancelAnimation() {
-    console.log('cancelled')
     setInitAnimate(false);
   }
   

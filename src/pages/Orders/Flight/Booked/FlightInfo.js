@@ -6,7 +6,7 @@ export default function FlightInfo({ minify, data }) {
   const [formattedOrder, setFormattedOrder] = useState();
 
   useEffect(() => {
-    if (data?.orderDetail?.offers) {
+    if (data?.orderDetail?.offers && !formattedOrder) {
       const segments =
         data?.orderDetail?.offers &&
         Array.isArray(data?.orderDetail?.offers) &&

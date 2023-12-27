@@ -66,7 +66,6 @@ export default function FlightOfferDisplay({data,path,showDetail,select,offer}) 
     select && select(obj)
   }
 
-  console.log('lastPath: ',lastPath,qIndex)
 
   return (
     <div className='bg-secondary rounded-2xl overflow-clip border border-primary/10 hover:shadow-xl shadow-primary cursor-pointer transition-all' data-container={true} onClick={handleOpenDetail}>

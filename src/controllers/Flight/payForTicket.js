@@ -9,7 +9,6 @@ export default async function payForTicket(obj) {
     data: obj,
   })
     .then((res) => {
-      console.log(" => ", { ...res });
       if (res) {
         if (res.status === 200) {
           result = { return: 1, msg: "Successful", data: res.data.data };

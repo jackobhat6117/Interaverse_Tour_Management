@@ -47,7 +47,6 @@ export default function PaymentGateway() {
       enqueueSnackbar("Successfull", { variant: "success" });
     } else enqueueSnackbar(res.msg, { variant: "error" });
   }
-  console.log(data)
   return (
     <form
       onSubmit={handleSubmit}

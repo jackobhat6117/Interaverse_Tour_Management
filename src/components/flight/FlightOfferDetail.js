@@ -37,7 +37,6 @@ export function   FlightOfferDetail({obj,onBook}) {
   } catch(ex) {
     
   }
-  // console.log(" -- ",obj)
   const data = obj;
   // const enc = encrypt(JSON.stringify({offer: obj}));
   // window.localStorage.setItem("offerDetail",enc);
@@ -64,7 +63,6 @@ export function   FlightOfferDetail({obj,onBook}) {
       setOpenShare(false);
     } 
     // else dispatch(setAlertMsg(['error',res.msg]))
-    // console.log(req,reqData)
   }
   
   return !obj ? null : (
@@ -208,7 +206,6 @@ export function   FlightOfferDetail({obj,onBook}) {
 //       </div>
 //     </div>
 //   )
-//   // console.log('farerule : ',data)
 //   return data.data && (
 //     <div>
 //       <button onClick={openFareRule} className='py-4 text-theme1'>View fare rule</button>
