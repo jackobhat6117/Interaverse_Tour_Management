@@ -18,11 +18,11 @@ import FlightView from './ViewChange/Flight';
 
 const properties = [
     {name: 'unkProp',value: '???'},
+    {name: 'passenger',value: 'Passenger',elem: <ChangePassenger />,view: <PassengerView />},
     {name: 'class',value: 'Change flight date',elem: <ChangeFlight />,view: <FlightView />},
     {name: 'class',value: 'Select flight',elem: <ChangeFlightOffer />},
     {name: 'flight',value: 'Change flight date',elem: <ChangeFlight />},
     {name: 'flight',value: 'Select flight',elem: <ChangeFlightOffer />},
-    {name: 'passenger',value: 'Passenger',elem: <ChangePassenger />,view: <PassengerView />},
     {name: 'insurance',value: 'Select Plan',elem: <ChangeInsurance />},
     {name: 'seat',value: 'Change Seat',elem: <ChangeSeat />},
     {name: 'bags',value: 'Add bag to order',elem: <ChangeBag />},
@@ -61,6 +61,10 @@ export default function ChangeProperty({property,obj}) {
             setSelected(options[curIndex + 1])
     }
 
+    function back() {
+        setSelected(options[Math.min(0,1)])
+    }
+
     console.log(selected)
   return (
     <div className='flex flex-col gap-4 pd-md py-4 light-bg'>
@@ -72,7 +76,7 @@ export default function ChangeProperty({property,obj}) {
         </BreadCrumb>
         
         <div className='flex flex-col items-center gap-4 '>
-            <div className='w-[700px] max-w-full flex flex-col gap-4'>
+            <div className='w-[750px] max-w-full flex flex-col gap-4'>
                 <div className='bg-primary/20 flex gap-4 justify-center p-4 w-full'>
                     <Tabs option={options} value={selected?.value} onChange={handleTab} 
                         config={{
@@ -81,7 +85,7 @@ export default function ChangeProperty({property,obj}) {
                         />
                 </div>
 
-                {selected?.elem && React.cloneElement(selected?.elem,{callback: () => next(),property,pageObj:props[0]})}
+                {selected?.elem && React.cloneElement(selected?.elem,{callback: () => next(),back,property,pageObj:props[0]})}
             </div>
         </div>
     </div>
@@ -110,7 +114,7 @@ function Confirmation({property,callback,pageObj}) {
     return Math.random()*2 > 1 ? (
         <div className='card flex flex-col gap-8'>
             <div className='flex gap-4 justify-between'>
-                <h5>{property} change was successful</h5>
+                <h5><span className='capitalize'>{property}</span> change was successful</h5>
                 <label className='success'>Completed</label>
             </div>
             {pageObj.view && React.cloneElement(pageObj.view,{page: 'confirmation'})}

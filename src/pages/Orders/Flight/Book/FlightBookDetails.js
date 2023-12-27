@@ -25,16 +25,16 @@ export default function FlightBookDetails() {
   const qObj = JSON.parse(decrypt(id));
   const { bookingData } = useSelector((state) => state.flightBooking);
   const offer = bookingData?.offer && bookingData?.offer?.at(-1);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const navigate = useNavigate();
   function handleSearchRoute(i) {
     navigate("/order/new/flight/offers?q=" + id + "&path=" + i);
   }
 
-  function handlePayTime(val) {
-    dispatch(setBookingData({ ...bookingData, payTime: val }));
-  }
+  // function handlePayTime(val) {
+  //   dispatch(setBookingData({ ...bookingData, payTime: val }));
+  // }
   return (
     <div className="pd-md py-4 flex flex-col gap-4">
       <BreadCrumb>
@@ -55,7 +55,7 @@ export default function FlightBookDetails() {
       </BreadCrumb>
       <div className="flex gap-10 flex-wrap-reverse md:flex-nowrap">
         <div className="flex flex-col gap-6 md:w-[80%]">
-          <PayTime callback={(val) => handlePayTime(val)} />
+          {/* <PayTime callback={(val) => handlePayTime(val)} /> */}
           <div className="bg-theme1/10 flex items-center gap-2 p-2">
             <Icon icon={"ic:sharp-lock"} className="w-8 h-8" />
             We take privacy issues seriously. You can be sure that your personal
@@ -156,7 +156,7 @@ function PassengerDetails({ offer }) {
       <h5>Contact Details</h5>
       <div className="flex gap-4">
         <div className="flex-1">
-          <EmailInput
+          <EmailInput size='large'
             label="Enter your email"
             value={data.email}
             onChange={(ev) => setData({ ...data, email: ev.target.value })}

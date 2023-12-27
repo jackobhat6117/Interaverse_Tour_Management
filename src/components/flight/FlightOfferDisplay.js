@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 // import { offerDataTemp } from '../../data/flight/offerData';
 
-export default function FlightOfferDisplay({data,path,showDetail,select}) {
+export default function FlightOfferDisplay({data,path,showDetail,select,offer}) {
   const [loading,setLoading] = useState(false);
   const [openDetail,setOpenDetail] = useState(false);
   const [openFareOptions,setOpenFareOptions] = useState(false);
@@ -20,7 +20,7 @@ export default function FlightOfferDisplay({data,path,showDetail,select}) {
   let qIndex = useMemo(() => searchParam.get('path'),[searchParam]) || 0;
   qIndex = Number(qIndex)
 
-  const lastPath = bookingData?.offer?.at((bookingData?.offer?.length || 1) - 1)
+  const lastPath = (offer || bookingData?.offer)?.at(-1)
   // const data = offerDataTemp;
   // data.flightData.booked_flights[1] = (flightDataTemp.flightData.booked_flights[0])
   async function loadDetail(ev,data) {
@@ -85,7 +85,10 @@ export default function FlightOfferDisplay({data,path,showDetail,select}) {
         </div>
         <div className='flex flex-col p-2 gap-2 justify-center items-center w-[35%] border-l border-b border-primary/10 py-4'>
           <div className='flex flex-col items-center justify-center'>
-            <h5>{lastPath ? '+':''} {formatMoney((totalPrice) - (lastPath?.totalAmount || 0))}</h5>
+            <h5>
+              {lastPath ? ((totalPrice - (lastPath?.totalAmount || 0)) >= 0 ? '+' : '-') : null} 
+              {formatMoney(Math.abs((totalPrice) - (lastPath?.totalAmount || 0)))}
+            </h5>
             {data?.segments?.length > 1 ? 
               <small>Round trip per traveller</small>
             :null}
@@ -123,7 +126,7 @@ export default function FlightOfferDisplay({data,path,showDetail,select}) {
           </p>
           <div className='flex-1 flex flex-col '>
             <h5>{formatMoney(totalPrice)}</h5>
-            <p>{Object.entries(data?.passengers).map(([label,obj],ind) => (
+            <p>{Object.entries(data?.passengers || {}).map(([label,obj],ind) => (
               <span key={ind} className='capitalize'>
                 {obj.total} {label} - {formatMoney(obj.totalAmount)}
               </span>

@@ -10,7 +10,7 @@ SelectInput.propTypes = {
 export default function SelectInput(props) {  
   return (
     <div className='w-full'>
-      <TextField label={<div className='font-bold' >
+      <TextField size='small' label={<div className='font-bold' >
             {props.label || 'Select'}
         </div>}
         // InputLabelProps={{

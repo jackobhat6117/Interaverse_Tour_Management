@@ -10,7 +10,7 @@ TextInput.propTypes = {
 export default function TextInput(props) {
   return (
     <div className='w-full'>
-      <TextField className='w-full !min-w-[100px] ' label={<div className='font-bold' >
+      <TextField size='small' className='w-full !min-w-[100px] ' label={<div className='font-bold' >
           {props.label}
         </div>}
         InputLabelProps={{
