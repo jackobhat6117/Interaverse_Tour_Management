@@ -5,8 +5,8 @@ import Button1 from '../../../../../../components/form/Button1'
 
 export default function ChangeContact({callback}) {
   return (
-    <div className='card flex flex-col gap-6 p-10'>
-        <h5>Cotact Person Details</h5>
+    <div className='flex flex-col gap-6'>
+        <h5>Contact Person Details</h5>
         <EmailInput label='Email Address' />
         <PhoneNumberInput label='Phone Number' />
 

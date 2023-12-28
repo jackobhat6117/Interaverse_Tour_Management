@@ -13,10 +13,12 @@ export default function PaymentMethod({
   callback,
   className,
   deductCommission,
+  hide,
+  expand
 }) {
   // const {id} = useParams();
   // Bank, Card, USSD, QR, MobileMoney, BankTransfer
-  const [paynow, setPaynow] = useState(false);
+  const [paynow, setPaynow] = useState(expand);
   const options = [
     {
       icon: <img alt="" src={card} className="" />,
@@ -83,18 +85,24 @@ export default function PaymentMethod({
             )}
           />
           <hr />
-          <div className="flex flex-col ">
-            <h5>Flexify</h5>
-            <p>Pay in instalments</p>
-          </div>
-          <hr />
-          <div className="flex flex-col ">
-            <h5>Price freeze</h5>
-            <p>Hold price for a while</p>
-          </div>
-          <hr />
+          {!hide || !hide.includes('flexify') ? 
+            <div className="flex flex-col ">
+              <h5>Flexify</h5>
+              <p>Pay in instalments</p>
+              <hr />
+            </div>
+          :null}
+          {!hide || !hide.includes('freeze') ? 
+            <div className="flex flex-col ">
+              <h5>Price freeze</h5>
+              <p>Hold price for a while</p>
+              <hr />
+            </div>
+          :null}
           <Button1 loading={loading} onClick={handlePay}>Pay now</Button1>
-          <button className="p-2" onClick={() => callback && callback()}>Hold booking and pay later</button>
+          {!hide || !hide.includes('booklater') ? 
+            <button className="p-2" onClick={() => callback && callback()}>Hold booking and pay later</button>
+          :null}
         </div>
       ) : (
         <div className="flex flex-col gap-3">

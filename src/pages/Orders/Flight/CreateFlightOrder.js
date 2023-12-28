@@ -319,7 +319,7 @@ export default function CreateFlightOrder({callback}) {
                 Add another flight</Button1>
             </div>
           ):null}
-          <div className={'flex gap-4 '+callback?'order-first':''}>
+          <div className={'flex gap-4 '+(callback?'order-first':'')}>
             {!callback ? 
               <div className='flex-1'>
                 <TravelInfo q={qObj} returnPassenger={handleSetPassengers} />

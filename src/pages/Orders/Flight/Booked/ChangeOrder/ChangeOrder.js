@@ -70,12 +70,30 @@ export default function ChangeFlightOrder({obj=temp}) {
 							<h5>Insurance</h5>
 							<InsuranceView />
 						</div>
+						
+						{/* <div className='flex flex-col gap-3'>
+							<h5>Split PNR</h5>
+							<SplitPNRView />
+						</div> */}
 
 					</div>
 				</div>
     </div>
   )
 }
+
+// function SplitPNRView() {
+// 	return (
+// 		<div className='border border-primary/20 flex items-center p-4 py-1 gap-3 rounded-md'>
+// 			<div className='flex flex-wrap gap-1 flex-1'>
+// 				Jhon Doe
+// 			</div>
+// 			<Link to='?property=pnr' className='light-bg p-1'>
+// 				<Icon icon='icon-park:change' className='p-1' />
+// 			</Link>
+// 		</div>
+// 	)
+// }
 
 function PassengerView() {
 	const [passengerType,setPassengerType] = useState('Primary Passenger');
@@ -150,6 +168,7 @@ function InsuranceView() {
 		</div>
 	)
 }
+
 
 function BagsView({obj}) {
 	let data = {

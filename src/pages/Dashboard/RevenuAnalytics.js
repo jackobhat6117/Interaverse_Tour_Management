@@ -167,7 +167,7 @@ export default function RevenueAnalytics() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap py-4 items-center justify-between gap-4 ">
-        <h5>Revenu Analytics</h5>
+        <h5>Revenue Analytics</h5>
         <div className="flex gap-2 flex-wrap">
           <Button1 variant="text" className="flex-1">
             Export

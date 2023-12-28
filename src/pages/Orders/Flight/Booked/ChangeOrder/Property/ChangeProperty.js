@@ -14,6 +14,13 @@ import ChangeBag from './ChangeBag';
 import ChangeContact from './ChangeContact';
 import PassengerView from './ViewChange/Passenger';
 import FlightView from './ViewChange/Flight';
+import ChangeSeatConfirm from './ChangeSeatConfirm';
+import SeatView from './ViewChange/Seat';
+import ChangeBagConfirm from './ChangeBagConfirm';
+import BagView from './ViewChange/BagView';
+import ContactView from './ViewChange/Contact';
+import ChangeSplitPNR from './ChangeSplitPNR';
+import ChangeSplitPNRConfirm from './ChangeSplitPNRConfirm';
 
 
 const properties = [
@@ -23,10 +30,15 @@ const properties = [
     {name: 'class',value: 'Select flight',elem: <ChangeFlightOffer />},
     {name: 'flight',value: 'Change flight date',elem: <ChangeFlight />},
     {name: 'flight',value: 'Select flight',elem: <ChangeFlightOffer />},
+    {name: 'seat',value: 'Add Seat to order',elem: <ChangeSeat />,view: <SeatView />},
+    {name: 'seat',value: 'Confirm seat',elem: <ChangeSeatConfirm />},
+    {name: 'bags',value: 'Add bag to order',elem: <ChangeBag />,view: <BagView />},
+    {name: 'bags',value: 'Confirm bag',elem: <ChangeBagConfirm />},
+    {name: 'contact',value: 'Change contact',elem: <ChangeContact />,view: <ContactView />},
+    // {name: 'contact',value: 'Confirm contact',elem: <ChangeContactConfirm />},
     {name: 'insurance',value: 'Select Plan',elem: <ChangeInsurance />},
-    {name: 'seat',value: 'Change Seat',elem: <ChangeSeat />},
-    {name: 'bags',value: 'Add bag to order',elem: <ChangeBag />},
-    {name: 'contact',value: 'Change contact',elem: <ChangeContact />},
+    {name: 'pnr',value: 'Split PNR',elem: <ChangeSplitPNR />},
+    {name: 'pnr',value: 'Confirm Split PNR',elem: <ChangeSplitPNRConfirm />},
 ]
 
 const payment = {value: 'Payment', elem: <Payment />};
@@ -72,7 +84,7 @@ export default function ChangeProperty({property,obj}) {
             <Link to='/order' >Orders</Link>
             <Link to={`/order/flight/${data?.orderId}`} >{data?.orderId}</Link>
             <Link to={`/order/flight/change/${data?.orderId}`} >Change Order</Link>
-            <label>{property} Change</label>
+            <label className='capitalize'>{property} change</label>
         </BreadCrumb>
         
         <div className='flex flex-col items-center gap-4 '>
@@ -85,7 +97,9 @@ export default function ChangeProperty({property,obj}) {
                         />
                 </div>
 
-                {selected?.elem && React.cloneElement(selected?.elem,{callback: () => next(),back,property,pageObj:props[0]})}
+                <div className='bg-secondary p-10'>
+                    {selected?.elem && React.cloneElement(selected?.elem,{callback: () => next(),back,property,pageObj:props[0]})}
+                </div>
             </div>
         </div>
     </div>
@@ -95,7 +109,7 @@ export default function ChangeProperty({property,obj}) {
 
 function Payment({pageObj}) {
     return (
-        <div className='flex flex-col gap-4 card p-10'>
+        <div className='flex flex-col gap-4 '>
             {/* {pageObj?.view ? React.cloneElement(pageObj?.view,{data: pageObj}) : null} */}
             {pageObj.view && React.cloneElement(pageObj.view,{page: 'payment'})}
             
@@ -104,7 +118,7 @@ function Payment({pageObj}) {
                 <b>{formatMoney(10000)}</b>
             </div>
 
-            <PaymentMethod />
+            <PaymentMethod expand hide={['flexify','freeze','booklater']} />
         </div>
     )
 }
@@ -112,7 +126,7 @@ function Payment({pageObj}) {
 function Confirmation({property,callback,pageObj}) {
     console.log(' -> ',pageObj)
     return Math.random()*2 > 1 ? (
-        <div className='card flex flex-col gap-8'>
+        <div className='flex flex-col gap-8'>
             <div className='flex gap-4 justify-between'>
                 <h5><span className='capitalize'>{property}</span> change was successful</h5>
                 <label className='success'>Completed</label>
@@ -122,7 +136,7 @@ function Confirmation({property,callback,pageObj}) {
             <Button1 onClick={callback}>Continue</Button1>
         </div>
     ) : (
-        <div className='card flex flex-col gap-6'>
+        <div className='flex flex-col gap-6'>
             <div className='flex gap-4 justify-between'>
                 <h5>Change unsuccessful</h5>
                 <label className='error'>Failed</label>

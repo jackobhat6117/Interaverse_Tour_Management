@@ -23,7 +23,7 @@ export default function ChangePassenger({callback}) {
   }
   
   return (
-    <div className='card p-10 flex flex-col gap-6'>
+    <div className='flex flex-col gap-6'>
         <ContentInfo>
           Use all given names and surnames exactly as they appear in your passport/ID to avoid boarding complications
         </ContentInfo>

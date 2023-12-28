@@ -30,7 +30,7 @@ export default function ChangeFlightOffer({back,callback}) {
   )
   
   return (
-    <div className='flex flex-col gap-4 bg-secondary p-10'>
+    <div className='flex flex-col gap-4'>
       <h5>Showing results for</h5>
       <div className='flex gap-4 items-center'>
         <div className='flex gap-4 max-w-full py-1 overflow-x-auto overflow-hidden'>

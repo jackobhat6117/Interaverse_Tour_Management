@@ -50,7 +50,7 @@ export default function SeatSelection({offer}) {
 }
 
 
-export function FlightSeatDisplay({obj,routeIndex}) {
+export function FlightSeatDisplay({obj,routeIndex,readOnly}) {
   const [open,setOpen] = useState(false);
   const [loading,setLoading] = useState(false);
 
@@ -127,9 +127,11 @@ export function FlightSeatDisplay({obj,routeIndex}) {
           <Button1 variant='outlined' onClick={() => handleSelect(!open)}>{!open?'Select Seat':'Hide Seats'}</Button1>
         </div>
       </div>
-      <div className={`h-0 transition-all overflow-hidden ${open?'!h-auto':''}`}>
-        <PlaneSeat seatMapData={data} loading={loading} returnData={(val) => handleSelectedSeat(val)} />
-      </div>
+      {!readOnly ? 
+        <div className={`h-0 transition-all overflow-hidden ${open?'!h-auto':''}`}>
+          <PlaneSeat seatMapData={data} loading={loading} returnData={(val) => handleSelectedSeat(val)} />
+        </div>
+      :null}
     </div>
   )
 }
