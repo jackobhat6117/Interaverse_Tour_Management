@@ -43,7 +43,6 @@ const MapAutoComplete = ({handleReturn,children}) => {
       else if(obj.types.includes("country")) country = obj.long_name
       return true
     })
-    console.log(place);
     //console log all results
     // console.log(`Name: ${name}`);
     // console.log(`Formatted Address: ${formattedAddress}`);

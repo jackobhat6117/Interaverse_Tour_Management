@@ -158,7 +158,6 @@ function WebHook() {
     {label: 'Succeded',value: 'Succeded'},
     {label: 'Failed',value: 'Failed'}
   ]
-  console.log('data ',data)
   return (
     <div className={`flex flex-col gap-4 !text-primary/60 ${!data.length ? 'bg-emptypage flex-1 h-full ':''}`}>
       <div className='flex gap-4 justify-between items-center'>

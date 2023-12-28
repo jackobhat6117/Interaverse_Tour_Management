@@ -6,7 +6,6 @@ export default async function getFlightSeats(data) {
 
   await fetchServer({method: "POST",url: `/product/v1/flight/seatmap/`,data})
   .then((res) => {
-    console.log(" => ",{...res})
     if(res) {
       if(res.status === 200) {
         result = {return: 1,msg: "Successfull",data: res.data.data};

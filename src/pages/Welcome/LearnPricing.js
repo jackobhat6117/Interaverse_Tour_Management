@@ -220,7 +220,6 @@ const PriceBreakdown = React.memo(({obj}) => {
     </ScreenViewObserver>
   )
 }, (p,n) => {
-  console.log(p === n)
   return JSON.stringify(p) === JSON.stringify(n)})
 
 const pricePlans = [

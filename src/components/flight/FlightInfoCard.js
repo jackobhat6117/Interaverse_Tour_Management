@@ -8,7 +8,6 @@ export default function FlightInfoCard({data,label='Depart'}) {
   // let tdata = offerDataTemp.segments[0];
   // const departureDateTime = moment(`${data?.departureDate} ${data?.departureTime}`, "YYYY-MM-DD HH:mm");
   // const arrivalDateTime = moment(`${data?.arrivalDate} ${data?.arrivalTime}`, "YYYY-MM-DD HH:mm");
-  console.log(data && data)
   return (
     <div className=' rounded-md w-full border-gray-300 bg-secondary'>
       <div className='flex gap-4 justify-between p-5'>

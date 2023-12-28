@@ -12,7 +12,6 @@ function Training({updateProfile,back,next,type}) {
   useCalendlyEventListener({
     // onDateAndTimeSelected: (e) => console.log(e),
     onEventScheduled: async (e) => {
-      console.log(e)
       const res = await updateProfile({haveScheduledTraining: true})
       if(res)
         next && next()

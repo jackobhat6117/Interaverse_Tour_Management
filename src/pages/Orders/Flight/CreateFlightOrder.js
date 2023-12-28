@@ -142,7 +142,6 @@ export default function CreateFlightOrder({callback}) {
 
     
     // searchObj['currencyOverride'] = def.currencyCode;
-    console.log("Search Request - ",searchObj);
     // setData(newData);
 
     let enc = encrypt(JSON.stringify(searchObj));
@@ -180,14 +179,12 @@ export default function CreateFlightOrder({callback}) {
       calendarRef.current[i+1]?.toggle(calendarRef.current[i+1]?.ref?.current);
     }
 
-    console.log('ad: ',calendarRef.current)
   } 
 
   function handleSetDestination(obj,i=0) {
     const tempDestination = clone(destination);
     tempDestination[i] = obj;
     setDestination(tempDestination)
-    console.log('here by: ')
     setLocUpd(false);
 
   }
@@ -221,7 +218,6 @@ export default function CreateFlightOrder({callback}) {
     tempDestination[i].from = tempDestination[i].to;
     tempDestination[i].to = from;
 
-    console.log(' => ',tempDestination)
 
     setLocUpd(true);
     setDestination(tempDestination);

@@ -41,7 +41,6 @@ export default function Auth() {
     //eslint-disable-next-line
   },[accessToken])
 
-  // console.log(view)
   return !loading ? (
     <div className='bg-secondary sm:bg-inherit'>
       {view === 'register' ? 

@@ -42,7 +42,6 @@ export default function ProfileSurvey() {
   const completedSteps = checkProfileComplete(user);
   const completed = completedSteps.every((obj) => obj.complete);
   const [activated, setActivated] = useState(false);
-  console.log(completedSteps);
   const [step, setStep] = useState(() => {
     let cur = 0;
     let stop = false;

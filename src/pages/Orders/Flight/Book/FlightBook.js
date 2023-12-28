@@ -19,7 +19,6 @@ export default function FlightBook() {
   const [loading,setLoading] = useState(false);
   const dispatch = useDispatch();
 
-  console.log(qObj)
 
   useEffect(() => {
     getPrice();
@@ -42,13 +41,11 @@ export default function FlightBook() {
     const res = await getFlightOfferPrice(req);
     setLoading(false);
     if(res.return) {
-      console.log(res.data.data)
       let data = (res.data.data?.map(obj => convertFlightObject(obj)) || [])
       setOffer(data)
       dispatch(setBookingData({...bookingData,offersPrice: data}))
     } else setOffer(null)
   }
-  console.log(' -----> ',offer)
 
   const navigate = useNavigate();
   

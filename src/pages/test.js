@@ -8,7 +8,6 @@ export default function Test() {
 	let seats = deck?.seats
 
 	function handleReturn(obj) {
-		console.log(obj)
 	}
 
 	function toggleSeat(obj, loc) {

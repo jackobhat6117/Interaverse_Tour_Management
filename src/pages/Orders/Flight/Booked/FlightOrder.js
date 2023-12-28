@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import BreadCrumb from "../../../../components/DIsplay/Nav/BreadCrumb";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Button1 from "../../../../components/form/Button1";
 import TextInput from "../../../../components/form/TextInput";
 import { Menu } from "../../OrdersData";
@@ -19,6 +19,7 @@ import FlightInfo from "./FlightInfo";
 import { useParams } from "react-router-dom";
 import getBooking from "../../../../controllers/booking/getBooking";
 import { LinearProgress } from "@mui/material";
+import { getPassengerCategory } from "../../../../utils/getPassengerCategory";
 
 export default function FlightOrder() {
   let obj = {
@@ -188,15 +189,24 @@ export default function FlightOrder() {
 
             <FlightInfo data={order} />
             <div className="py-4">
-              <PassengerInfo label={"Adult"} />
-              <PassengerInfo label={"Child"} />
+              {order?.orderDetail?.travelers &&
+                Array.isArray(order?.orderDetail?.travelers) &&
+                order?.orderDetail?.travelers?.map((traveler) => (
+                  <PassengerInfo
+                    label={getPassengerCategory(traveler.dateOfBirth)}
+                    traveler={traveler}
+                    order={order}
+                  />
+                ))}
+              {/* <PassengerInfo label={"Adult"} />
+              <PassengerInfo label={"Child"} /> */}
             </div>
-            <PriceSummary />
+            <PriceSummary data={order} />
             <ShareViaEmail />
           </div>
 
           <div>
-            <StatusBar data={obj} />
+            <StatusBar data={order} />
           </div>
         </div>
       )}

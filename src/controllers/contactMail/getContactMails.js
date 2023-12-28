@@ -3,7 +3,6 @@ import fetchServer from "../fetchServer";
 export default async function getContactMails(query) {
   let result = {return: 0,msg: 'Something went wrong fetching Emails!'}
 
-  console.log(query)
   await fetchServer({method: 'GET',url: `/main/v1/contact${query?'?'+query:''}`})
   .then((res) => {
     if(res?.data && !res?.data?.error) {

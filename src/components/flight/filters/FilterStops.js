@@ -44,7 +44,6 @@ export default function FilterStops({returnData,orgi,cats}) {
 
   function handleChange(val) {
     setSelectedValue(val)
-    console.log(val)
     returnData({data: stops.find(d => d.name === val),allowOv: allowOverNightStops});
   }
   function handleCheck(val) {

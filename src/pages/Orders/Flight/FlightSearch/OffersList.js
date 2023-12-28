@@ -72,7 +72,6 @@ export default function OffersList({hide}) {
   
   const [searchPath,setSearchPath] = useState([searchObj?.destinations[0]])
 
-  console.log(flightDate)
   // const curFlightDate = flightDate.findIndex(f => f.active)
   
   const dispatch = useDispatch();
@@ -86,12 +85,9 @@ export default function OffersList({hide}) {
     setSearchPath(path)
     //eslint-disable-next-line
   },[qIndex])
-  console.log(searchObj,searchPath)
 
   function onDownloadProgress(progressEvent) {
     // const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-    console.log('--------------------')
-    console.log(progressEvent)
     // setProgress(percentCompleted);
   }
 
@@ -99,7 +95,6 @@ export default function OffersList({hide}) {
     if(!q && !test) return {return: false};
     let obj = req || clone(JSON.parse(decrypt(q))) || {};
 
-    console.log(obj, ' ========= ')
 
     let path = parseInt(qIndex || 0)
     if(path) {
@@ -136,7 +131,6 @@ export default function OffersList({hide}) {
     const newRes = await getFlightOffers(obj,null,onDownloadProgress);
     if(newRes.return) {
       let data = newRes?.data?.data?.map(obj => convertFlightObject(obj))
-      console.log('data: ',data)
       return {return: 1,msg: 'Successfull',data,cat: createFlightCat(data)}
     } else return newRes;
     
@@ -183,7 +177,6 @@ export default function OffersList({hide}) {
 
     dispatch(setBookingData({offer: parseInt(qIndex)?offer:[],time: new Date().getTime()}))
 
-    console.log('[p] res : ',res)
     setLoading(false);
 
     if(res.return) {
@@ -217,8 +210,7 @@ export default function OffersList({hide}) {
       // if(Array.isArray(obj[0]))
       //     obj = obj[0]
 
-      console.log(" => ",data)
-      console.log(" => ",obj)
+     
 
       let calendar = obj.map((item,i) => {
         let itierary = item;
@@ -261,7 +253,6 @@ export default function OffersList({hide}) {
     let sortedData = [];
     arr.map(i => sortedData.push(temp[i]))
 
-    console.log("sorted: ",sortedData)
 
     setData(sortedData);
   }
@@ -342,7 +333,6 @@ export default function OffersList({hide}) {
     navigate('?q='+q+'&path='+i)
   }
 
-  console.log(searchObj)
   const departDate = searchObj?.destinations[0]?.date || 0;
   const arrivalDate = searchObj?.destinations[1]?.date || 0;
   const passengersCount = Object.values(searchObj?.passengers || {})?.reduce((p,c) => Number(p)+Number(c),0);

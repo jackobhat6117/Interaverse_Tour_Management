@@ -192,7 +192,6 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
   }
 
   function setFilteredData(filter) {
-    console.log('got Filter',filter);
     let datas = orgi;
     let res = Object.entries({...filters,...filter}).reduce((data,[key,val]) => {
       if(key === 'cabin')

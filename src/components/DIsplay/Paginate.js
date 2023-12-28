@@ -16,7 +16,6 @@ export default function Paginate({data,limit=2,render,className}) {
         setPage(page => page-1)
     }
   }
-  // console.log(data.length,page,'slice '+page*limit+" - "+((limit*page)+limit))
   return (
     <div>
       <div className={className}>

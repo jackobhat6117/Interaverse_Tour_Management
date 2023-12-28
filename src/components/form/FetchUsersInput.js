@@ -24,7 +24,6 @@ export default function FetchUsersInput({from,value,onChange,label,shrink,enable
     // console.log('user: ',newVal)
   }
   async function fetchUser(val) {
-    console.log(option)
     if(val.length > 1 || from) return false;
     // let q = {
     //   q: val,
@@ -51,7 +50,6 @@ export default function FetchUsersInput({from,value,onChange,label,shrink,enable
     else return temp;
   };
 
-  console.log('users opiton : ',option)
   return (
     <Autocomplete className='min-w-[200px]'
     noOptionsText='No data'
