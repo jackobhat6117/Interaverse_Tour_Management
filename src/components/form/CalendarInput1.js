@@ -11,6 +11,7 @@ function CalendarInput1({value,label,multiple,onChange,config,...restProps},ref)
   // const [date,setDate] = useState();
   const fieldRef = useRef();
   const [anchorEl,setAnchorEl] = useState();
+  const [selectedRange, setSelectedRange] = useState({ start: null, end: null});
 
   function handleClick(ev) {
     setAnchorEl(ev.currentTarget)
@@ -29,24 +30,17 @@ function CalendarInput1({value,label,multiple,onChange,config,...restProps},ref)
   const id = open ? 'simple-popper' : undefined;
 
   
-  let dateInit = value;
-
-  if(Array.isArray(dateInit)) {
-    dateInit = {start: value[0] || '',end: value[1] || ''}
-  } else if(typeof(dateInit) === 'string')
-    dateInit = {start: dateInit}
-  const [selectedRange, setSelectedRange] = useState({ start: null, end: null,...dateInit });
-
-
   useEffect(() => {
-    let start = moment(selectedRange.start).toString();
-    let end = moment(selectedRange.end).toString();
-    if(selectedRange.start || selectedRange.end) {
-      onChange && onChange({start,end})
-    }
+    let dateInit = value;
 
-    //eslint-disable-next-line
-  },[selectedRange])
+    if(Array.isArray(dateInit)) {
+      dateInit = {start: value[0] || '',end: value[1] || ''}
+    } else if(typeof(dateInit) === 'string')
+      dateInit = {start: dateInit}
+
+    setSelectedRange(date => ({...date,...dateInit}))
+  },[value])
+
   const handleDayClick = (day) => {
     let newDate = clone(selectedRange);
     // console.log('day: ',JSON.stringify(day),typeof(JSON.stringify(day)))
@@ -60,6 +54,13 @@ function CalendarInput1({value,label,multiple,onChange,config,...restProps},ref)
       }
     }
     setSelectedRange(newDate)
+
+    let start = moment(newDate.start).toString();
+    let end = moment(newDate.end).toString();
+    if(newDate.start || newDate.end) {
+      onChange && onChange({start,end})
+    }
+
   };
 
   const modifiers = {
@@ -80,7 +81,6 @@ function CalendarInput1({value,label,multiple,onChange,config,...restProps},ref)
   }
 
 
-  // console.log(selectedRange)
 
   return (
     <div ref={ref || null}>

@@ -41,7 +41,7 @@ export default function CitiesInput({value,onChange,label,icon,className,require
   return (
     <Autocomplete className={'min-w-[200px] '+className}
     {...restProps}
-    open={isFocused}
+    open={isFocused && !restProps.lockUpdate}
     onFocus={() => setIsFocused(true)}
     onBlur={() => setIsFocused(false)}
     loading={loading}

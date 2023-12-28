@@ -337,6 +337,27 @@ export default function OffersList({hide}) {
   const arrivalDate = searchObj?.destinations[1]?.date || 0;
   const passengersCount = Object.values(searchObj?.passengers || {})?.reduce((p,c) => Number(p)+Number(c),0);
 
+
+  console.log('data:: ',data)
+  // classify with airline and price
+  let modData = [];
+
+  function rearrageArray(array) {
+    const result = array.reduce((acc,cur,ind) => {
+      if(ind > 0 && cur.totalAmount === array[ind - 1].totalAmount) {
+        const prev = acc?.at(-1);
+        prev.objects.push(cur);
+      }
+      else 
+        acc.push({airline: '',price: '',objects: [cur]})
+
+      return acc
+    },[])
+
+    return result;
+  }
+  modData = rearrageArray(data);
+
   return (
     <div className='w-full flex flex-col gap-2 py-4 flex-1'>
       {!hide || !hide?.includes('breadcrumb') ? 
@@ -429,11 +450,9 @@ export default function OffersList({hide}) {
                 <h5 className='bg-secondaryx p-5 rounded-md flex text-center items-center justify-center text-primary/30 uppercase'>Sorry something went wrong from our end! Please try again.</h5>
                 <p>If this error persists please contact our support team.</p>
               </div>
-            : 
-            <Paginate className='flex flex-col gap-4' data={data} limit={10} render={(obj,i) => (
-              <FlightOfferDisplay key={i} path={qIndex} data={obj} showDetail={async () => await showDetail(obj)} select={handleOfferSelect} />
-            )} />
+            : null
           }
+            <Paginate className='flex flex-col gap-4' data={modData} limit={10} render={(obj,i) => <SortedOffers obj={obj} key={i} params={{qIndex,showDetail,handleOfferSelect}} />} />
           {/* <FlightOfferDisplay showDetail={(obj) => setCurDetail(obj)} /> */}
         </div>
         <div className='hidden lg:block self-end sticky bottom-0'>
@@ -490,12 +509,36 @@ export default function OffersList({hide}) {
         <FlightOfferSort {...{cat,getCatInfo,sortByCat}} />
       </Modal1>
       <Modal1 open={openSearch} setOpen={setOpenSearch}>
-        <CreateFlightOrder />
+        <CreateFlightOrder data={searchObj} />
       </Modal1>
 
     </div>
   )
 }
+
+const SortedOffers = ({obj,params:{qIndex,showDetail,handleOfferSelect}}) => {
+  const [view,setView] = useState(false);
+
+  return (
+  <div>
+    <FlightOfferDisplay path={qIndex} data={obj?.objects[0]} showDetail={async () => await showDetail(obj)} select={handleOfferSelect} />
+    {obj.objects.length > 1 ? (
+      <div className='flex flex-col gap-2 relative'>
+        <button className='text-sm text-theme1 self-center border border-b-0 rounded-t-md -translate-y-full px-4 py-1 bg-secondary ' 
+          onClick={() => setView(!view)}>
+            {view ? `Hide same prices` : `${obj.objects.length} more flight options available at this price`}
+        </button>
+        {view ? 
+          obj.objects.slice(1).map((obj,i) => (
+            <FlightOfferDisplay key={i} path={qIndex} data={obj} showDetail={async () => await showDetail(obj)} select={handleOfferSelect} />
+          ))
+        :null}
+      </div>
+    ):null}
+  </div>
+  )
+}
+
 
 
 function FlightOfferSort({cat,getCatInfo,sortByCat}) {

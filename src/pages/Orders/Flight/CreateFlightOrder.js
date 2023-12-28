@@ -19,7 +19,7 @@ import moment from 'moment'
 import TextInput from '../../../components/form/TextInput'
 import CitiesInput from '../../../components/form/CitiesInput'
 
-export default function CreateFlightOrder({callback}) {
+export default function CreateFlightOrder({callback,data}) {
   const [travelClass,setTravelClass] = useState('All');
   const [type,setType] = useState('oneway');
   const {bookingData} = useSelector(state => state.flightBooking);
@@ -44,11 +44,13 @@ export default function CreateFlightOrder({callback}) {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  
+  console.log(' -> ',data);
 
 
   useEffect(() => {
-    if(q) {
-      let obj = JSON.parse(decrypt(q));
+    if(q || data) {
+      let obj = JSON.parse(decrypt(q)) || data;
       setQObj(obj)
       setDate(obj.originDestinations?.map(obj => obj.date))
       setDestination(obj.originDestinations);
@@ -64,7 +66,7 @@ export default function CreateFlightOrder({callback}) {
       }
       setType(type)
     }
-  },[q])
+  },[q,data])
 
   useEffect(() => {
     if(type !== 'oneway') {
