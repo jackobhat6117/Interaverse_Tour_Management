@@ -18,7 +18,6 @@ export default function RecoverPassword() {
   const dispatch = useDispatch();
   const searchParams = new URLSearchParams(window.location.search);
   const email = searchParams.get("email");
-  console.log("emailL: ", email);
 
   async function handleSubmit(ev) {
     ev.preventDefault();

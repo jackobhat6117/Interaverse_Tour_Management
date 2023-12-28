@@ -18,12 +18,9 @@ const ScreenViewObserver = (props) => {
             // The component is in the viewport
             handleComponentInView();
             setInView(true)
-            // console.log('in',entry);
           } 
           else if(top > 0) {
             setInView(false)
-            console.log('out',entry,innerHeight);
-            // console.log('in');
             handleComponentOffView();  
           }
         });
@@ -48,12 +45,10 @@ const ScreenViewObserver = (props) => {
 
   const handleComponentInView = () => {
     // Handle the event when the component is in view
-    // console.log('Component is in view');
     props.onScreenViewCallBack && props.onScreenViewCallBack(inView)
   };
   const handleComponentOffView = () => {
     // Handle the event when the component is in view
-    // console.log('Component is out of view');
     props.offScreenViewCallBack && props.offScreenViewCallBack(inView);
   };
 

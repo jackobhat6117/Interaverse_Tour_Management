@@ -145,7 +145,6 @@ export default function TeamMembers() {
       data = data.map(obj => ({...obj,...obj?.member,id: obj._id,name: (obj?.member?.firstName||'')+' '+(obj?.member?.lastName||'')}))
       data = data.filter((cur,i,arr) => arr.findIndex((obj) => obj.email === cur.email) === i)
       setData(data);
-      console.log(data)
     }
     setLoading(false);
   }
@@ -160,7 +159,6 @@ export default function TeamMembers() {
       enqueueSnackbar(res.msg || 'Invitation Error',{variant: 'error'})
   }
 
-  console.log('data: ',data)
 
   let columns = [
     {field: 'name',headerName: 'Member',flex: 1},

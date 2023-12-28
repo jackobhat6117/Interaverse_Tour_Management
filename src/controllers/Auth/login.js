@@ -5,7 +5,6 @@ export default async function login(data) {
 
   await fetchServer({method: 'POST',url: '/main/v1/account/login?populate=detail',data})
   .then((res) => {
-    console.log('res: ',res)
     if(res.data && res?.data?.data) {
       result = {return: 1,msg: 'Welcome',data: res.data?.data}
     } else result['msg'] = res?.data?.error || result['msg']

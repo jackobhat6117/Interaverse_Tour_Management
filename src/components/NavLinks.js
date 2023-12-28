@@ -52,9 +52,7 @@ export default function NavLinks({profileCompleted}) {
   function handleLink(ev,val) {
     setLink(val)
     navigate(ev.target.dataset.link)
-    // console.log(ev.target,val,third)
   }
-  console.log(page)
 
   return profileCompleted && !verified ? (
     <div className="">

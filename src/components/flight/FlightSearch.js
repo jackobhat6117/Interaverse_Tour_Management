@@ -104,7 +104,6 @@ export default function FlightSearch({callback}) {
     }
       
     // searchObj['currencyOverride'] = def.currencyCode;
-    // console.log("Search Request - ",searchObj);
     // setData(newData);
 
     let enc = encrypt(JSON.stringify(searchObj));

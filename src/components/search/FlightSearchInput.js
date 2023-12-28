@@ -344,7 +344,6 @@ function RoundTripInput({handleSearch,q}) {
   // for(let i=2;i>date.length;i--) {
   //   date.push('')
   // }
-  console.log('date to be : ',date)
 
   function handleChange(dates) {
     if(!Array.isArray(dates))

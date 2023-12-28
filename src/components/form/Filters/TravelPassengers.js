@@ -26,17 +26,14 @@ export default function FilterTravelPassengers({returnData,q,oneLine,value}) {
   ]
   const [passenger,setPassenger] = useState(init)
 
-  console.log('inside passenger')
 
   const handleReturnData = useCallback((passenger) => {
     if(returnData)
       returnData(passenger);
-    console.log('returned')
   },[returnData])
 
   useEffect(() => {
     if(value) {
-      console.log('setted : ',value)
       setPassenger(value);
     }
     //eslint-disable-next-line

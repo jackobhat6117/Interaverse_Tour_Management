@@ -354,7 +354,6 @@ function sortIndices(arr) {
 
 
 export function convertBrandedFareObject(obj) {
-  console.log('reading: ',obj)
   const segment = obj?.fareDetailsBySegment?.at(0);
   let data = {
     title: segment?.cabin,

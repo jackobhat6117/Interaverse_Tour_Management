@@ -77,7 +77,6 @@ export default function ChangeProperty({property,obj}) {
         setSelected(options[Math.min(0,1)])
     }
 
-    console.log(selected)
   return (
     <div className='flex flex-col gap-4 pd-md py-4 light-bg'>
         <BreadCrumb>
@@ -124,7 +123,6 @@ function Payment({pageObj}) {
 }
 
 function Confirmation({property,callback,pageObj}) {
-    console.log(' -> ',pageObj)
     return Math.random()*2 > 1 ? (
         <div className='flex flex-col gap-8'>
             <div className='flex gap-4 justify-between'>

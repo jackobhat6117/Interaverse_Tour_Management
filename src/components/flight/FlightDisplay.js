@@ -9,7 +9,6 @@ export default function FlightDisplay({flight: data}) {
   //test
   const departureDateTime = moment(`${flight?.departureDate} ${flight?.departureTime}`, "YYYY-MM-DD HH:mm");
   const arrivalDateTime = moment(`${flight?.arrivalDate} ${flight?.arrivalTime}`, "YYYY-MM-DD HH:mm");
-  // console.log(flight.duration,flight.arrivalDateTime)
   const duration = getFlightDuration(departureDateTime,arrivalDateTime);
 
   return (flight && flight?.flights[0]) && (
