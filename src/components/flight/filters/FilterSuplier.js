@@ -1,34 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Collapse from "../../mini/Collapse";
 
 export default function FilterSuplier({ returnData, cats, orgi }) {
   const [suplier, setSuplier] = useState([
     // {
-    //   "name": "Amadeus NG",
-    //   "id": "AmadeusNG",
-    //   "value": false
+    //   name: "Travelport",
+    //   id: "Travelport",
+    //   value: true,
     // },
     // {
-    //   "name": "Amadeus DXB",
-    //   "id": "AmadeusDXB",
-    //   "value": false
+    //   name: "Amadeus",
+    //   id: "Amadeus",
+    //   value: true,
     // },
-    {
-      name: "Travelport",
-      id: "Travelport",
-      value: true,
-    },
-    {
-      name: "Amadeus",
-      id: "Amadeus",
-      value: true,
-    },
-    {
-      name: "Sabre",
-      id: "Sabre",
-      value: true,
-    },
+    // {
+    //   name: "Sabre",
+    //   id: "Sabre",
+    //   value: true,
+    // },
   ]);
+
+  useEffect(() => {
+    let suppliers = [...new Set(orgi?.map(obj => obj.supplier))]?.map(supplier => ({name: supplier?.replace('_',' '),id: supplier,value: false}))
+    setSuplier(suppliers)
+  },[orgi])
+  
 
   function handleCheck(val, i) {
     let temp = [...suplier];

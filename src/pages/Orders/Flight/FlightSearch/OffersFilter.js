@@ -35,6 +35,8 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
   //   // )))
   // }
   function filterByCabin(data,objs) {
+    if(!data) return [];
+
     // let newData = data.filter(obj => {
     //   if(objs.name === "") return true;
     //   if(obj.segments) {
@@ -46,15 +48,18 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
 
     let newQObj = qObj;
     newQObj.travelClass = objs.name
+    newQObj.cabinClass = [objs.name]
     // console.log('cabin: ',objs);
     // console.log('qObj: ',newQObj);
 
     let enc = encrypt(JSON.stringify(newQObj));
-    navigate(`/search/flight/offers?q=${enc}`);
+    navigate(`/order/new/flight/offers?q=${enc}`);
 
     return [];
   }
   function filterByStops(data,objs) {
+    if(!data) return [];
+
     console.log(data,objs)
     let newData = data.filter(obj => {
       if(obj.segments) {
@@ -90,6 +95,8 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
     return newData;
   }
   function filterByCountry(data,objs) {
+    if(!data) return [];
+
     let newData = data.filter(obj => {
       if(obj.segments)
         if(obj.segments.every(item => item.flights.every((flight) => objs.every((d) => !d.value || (d.alpha !== flight.arrivalCountryCode )))))
@@ -101,7 +108,9 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
     return newData;
   }
   function filterByAirline(data,objs) {
-    let newData = data.filter(obj => {
+    if(!data) return [];
+    console.log(data,objs)
+    let newData = data?.filter(obj => {
       if(obj.segments)
         if(obj.segments.every(item => item.flights.every((flight) => objs.every((d) => !d.value || (d.name === flight.carrierName)))))
           return true;
@@ -112,6 +121,8 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
     return newData;
   }
   function filterBySuplier(data,objs) {
+    if(!data) return [];
+
     let newData = data.filter(obj => {
       let found = objs.find(suplier => suplier.value && obj[suplier.id])
       if(found) return true;
@@ -122,6 +133,8 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
     return newData;
   }
   function filterByPrice(data,obj) {
+    if(!data) return [];
+
     if(obj.price === obj.max) return data;
 
     let newData = data.filter(offer => {
@@ -131,6 +144,7 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
     return newData;
   }
   function filterByTime(data,obj) {
+    if(!data) return [];
     // console.log(' filte by time --------')
     let newData = data.filter(offer => {
       if(obj.selectedValue === 'Departure') {
@@ -163,6 +177,8 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
     return newData;
   }
   function filterByDay(data,obj) {
+    if(!data) return [];
+
     let newData = data.filter(offer => {
       let time;
       if(obj.selectedValue === 'Departure') {
@@ -224,6 +240,10 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
     setData(orgi);
   }
 
+
+  let minPrice = orgi[0]?.totalAmount;
+  let maxPrice = orgi?.at(-1)?.totalAmount;
+
   return (
     <div className='flex flex-col gap-5 p-6 max-w-[300px] rounded-2xl overflow-clip'>
       <div className='flex gap-6 justify-between items-center'>
@@ -244,8 +264,8 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
       <hr />
         <FilterStops cats={cats} orgi={orgi} returnData={(objs) => setFilteredData({stops: objs})} />
       <hr />
-        <FilterAirlines returnData={(objs) => setFilteredData({airlines: objs})} />
-      <hr />
+        <FilterAirlines orgi={orgi} returnData={(objs) => setFilteredData({airlines: objs})} />
+      {/* <hr /> */}
       {/* <Collapse show label={<h5>Flexibility</h5>}>
         <label className='flex gap-4 justify-between'>
           <span className='flex gap-2'>
@@ -266,12 +286,12 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
           </span>
         </label>
       </Collapse> */}
-      <hr />
-        <FilterExCountries returnData={(objs) => setFilteredData({exCant: objs})} />
+      {/* <hr />
+        <FilterExCountries returnData={(objs) => setFilteredData({exCant: objs})} /> */}
       <hr />
         <FilterTime returnData={((objs) => setFilteredData({time: objs}))} />
       <hr />
-        <FilterPrice returnData={(obj) => setFilteredData({price: obj})} />
+        <FilterPrice min={minPrice} max={maxPrice} returnData={(obj) => setFilteredData({price: obj})} />
       <hr />
       <FilterDay returnData={obj => setFilteredData({day: obj})} />
     </div>

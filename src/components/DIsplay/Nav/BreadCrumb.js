@@ -8,7 +8,7 @@ export default function BreadCrumb(props) {
     <div>
       <Breadcrumbs separator={<Icon icon='ic:round-greater-than' className='p-1 -mx-2' />} className='flex'>
         {childrens.map((child,i) => {
-          if(i === childrens.length-1) {
+          if(i <= childrens.length-1) {
             return <span className='cursor-default text-primary'>{child}</span>
            } else return (
             <span className='text-primary/50'>{child}</span>

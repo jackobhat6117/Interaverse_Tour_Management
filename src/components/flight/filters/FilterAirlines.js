@@ -1,20 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Collapse from "../../mini/Collapse";
 import AirlinesInput from "../../form/AirlinesInput";
 
-export default function FilterAirlines({returnData}) {
+export default function FilterAirlines({returnData,orgi}) {
   const [airlines,setAirlines] = useState([
-    {
-      "name": "Ethiopian Airlines",
-      "id": "ET",
-      "value": false
-    },
-    {
-      "name": "Brussels Airlines",
-      "id": "SN",
-      "value": false
+    // {
+    //   "name": "Ethiopian Airlines",
+    //   "id": "ET",
+    //   "value": false
+    // },
+    // {
+    //   "name": "Brussels Airlines",
+    //   "id": "SN",
+    //   "value": false
+    // }
+  ])
+
+  useEffect(() => {
+    if(orgi) {
+      let airlineObjs = orgi.map(obj => obj.segments)?.flat()?.map(obj => obj.flights)?.flat()
+      airlineObjs = [...new Set(airlineObjs.map(obj => JSON.stringify({name: obj.carrierName,id: obj.marketingCarrier,value: false})))]
+      setAirlines(airlineObjs.map(obj => JSON.parse(obj)))
     }
-])
+  },[orgi])
 
 
   function handleChange(val) {
@@ -37,7 +45,7 @@ export default function FilterAirlines({returnData}) {
   }
   return (
     <Collapse show label={<h5>Airlines</h5>}>
-    <AirlinesInput label={"Search here"} returnData={handleChange} />
+    <AirlinesInput option={airlines} label={"Search here"} returnData={handleChange} />
     {airlines.map((obj,i) => (
       <label key={i} className='flex gap-4 justify-between'>
         <span className='flex gap-2'>

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { priceTimeout } from '../../config';
 import Modal1 from '../DIsplay/Modal/Modal1';
 import Button1 from '../form/Button1';
+import { useNavigate } from 'react-router-dom';
 
 // export const PriceTimeout = (
 //   <div className="self-center ">
@@ -18,6 +19,7 @@ import Button1 from '../form/Button1';
 export default function PriceTimeout({returnData,gotTime}) {
   const [open,setOpen] = useState(false);
   const {bookingData} = useSelector((state) => state.flightBooking);
+  const navigate = useNavigate();
 
   useEffect(() => {
     let t = null;
@@ -56,7 +58,8 @@ export default function PriceTimeout({returnData,gotTime}) {
           <h4 className='py-2'>You have been gone for too long.</h4>
           <p> The flight offer may have changed. Click the button to get the latest price.</p>
           <br />
-          <div className='flex justify-end'>
+          <div className='flex justify-between gap-4'>
+            <Button1 className='!w-auto self-end' variant='outlined' onClick={() => navigate('/order/new/flight')}>New Search</Button1>
             <Button1 className='btn1 !w-auto self-end' onClick={() => window.location.reload()}>Refresh</Button1>
           </div>
         </div>

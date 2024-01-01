@@ -2,6 +2,7 @@ import { AccessTime, FlightOutlined } from '@mui/icons-material'
 import moment from 'moment';
 import React from 'react'
 import getFlightDuration from '../../features/flight/getFlightDuration';
+import Icon from '../HOC/Icon';
 
 
 export default function FlightDisplay({flight: data}) {
@@ -17,12 +18,13 @@ export default function FlightDisplay({flight: data}) {
         <img alt='airline' src={flight?.flights[0].carrierIcon} />
         <p>{flight?.flights[0].carrierName}</p>
       </div>
-      <div className='flex flex-col gap-1 grow p-3'>
+      <div className='flex flex-col gap-1 grow p-3 py-8'>
         {/* <p className=''>{flight?.flights[0].departureAirportName}</p> */}
         <div className='flex justify-between items-center relative grow'>
-          <div className='flex flex-col items-center justify-center gap-3 '>
-            <h6>{flight?.departureLocation}</h6>
+          <div className='flex flex-col justify-center gap-1  items-between'>
             <b>{flight?.departureTime}</b>
+            <div>{flight?.flights[0]?.carrierName}</div>
+            <h6>{flight?.departureLocation}</h6>
           </div>
           <div className='flex flex-col items-center justify-center '>
             <small className='whitespace-nowrap py-1 flex items-center gap-1'>
@@ -39,11 +41,22 @@ export default function FlightDisplay({flight: data}) {
               {flight?.numberOfStops || 0} stopover{flight?.numberOfStops > 1 ? 's':''}
             </small>
           </div>
-          <div className='flex flex-col items-center justify-center gap-3'>
-            <h6>{flight?.arrivalLocation}</h6>
+          <div className='flex flex-col justify-center gap-1 items-between'>
             <b>{flight?.arrivalTime}</b>
+            <div>{flight?.flights[0]?.carrierName}</div>
+            <h6>{flight?.arrivalLocation}</h6>
           </div>
         </div>
+        <div className='p-1 flex gap-2'>
+          <label className='flex gap-1 items-center text-xs'>
+            <Icon icon={'icon-park-solid:airplane-window-one'} className='p-1 -scale-x-100' />
+            {flight?.flights[0]?.cabin} | <b>{flight?.flights[0]?.bookingClass}</b>
+          </label>
+          <label className='flex gap-1 items-center text-xs'>
+            <Icon icon={'ph:bag-simple-fill'} className='p-1 -scale-x-100' />
+            {flight?.flights[0]?.baggage}
+          </label>
+        </div> 
         {/* <p className='text-end self-end'>{flight?.flights[0].arrivalAirportName}</p> */}
 
         {/* <small className='flex gap-1 items-center'>

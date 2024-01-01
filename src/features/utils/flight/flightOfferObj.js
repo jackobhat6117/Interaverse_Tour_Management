@@ -46,6 +46,7 @@ export default function convertFlightObject(newObj) {
     direction.forEach(function(flight) {
       var oldFlight = {
         carrierIcon: flight.airline.image.url,
+        carrierName: flight.airline.image.description,
         marketingCarrier: flight.airline.marketing,
         equipment: flight.aircraftType,
         flightNumber: flight.flightNumber,
@@ -62,7 +63,7 @@ export default function convertFlightObject(newObj) {
         arrivalTerminal: flight.arrival.terminal,
         arrivalLocation: flight.arrival.location,
         duration: flight.duration,
-        numberOfStops: flight.numberOfStops,
+        numberOfStops: flight.numberOfStops || (direction.length - 1),
         baggage: flight.baggage
       };
 
@@ -70,7 +71,7 @@ export default function convertFlightObject(newObj) {
       segment.flights.push(oldFlight);
     });
 
-    segment.numberOfStops = Math.min(0,segment.flights.length - 2)
+    segment.numberOfStops = Math.max(0,direction.length - 1)
 
     oldObj.segments.push(segment);
   });

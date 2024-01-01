@@ -21,7 +21,7 @@ import CitiesInput from '../../../components/form/CitiesInput'
 
 export default function CreateFlightOrder({callback,data}) {
   const [travelClass,setTravelClass] = useState('All');
-  const [type,setType] = useState('oneway');
+  const [type,setType] = useState('return');
   const {bookingData} = useSelector(state => state.flightBooking);
   const [passengers,setPassengers] = useState(offerSearchTemp.passengers);
   const [flightType] = useState('INTERNATIONAL');
@@ -240,7 +240,7 @@ export default function CreateFlightOrder({callback,data}) {
           <div>
             {/* <h6>Journey Type</h6> */}
             {!callback ? 
-              <RadioGroup onChange={(ev) => setType(ev.target.value)} >
+              <RadioGroup value={type} onChange={(ev) => setType(ev.target.value)} >
                 <div className='flex gap-4'>
                   <RadioInput className='whitespace-nowrap' value={'oneway'} checked={type === 'oneway'}>One way</RadioInput>
                   <RadioInput className='whitespace-nowrap' value={'return'} checked={type === 'return'}>Return</RadioInput>

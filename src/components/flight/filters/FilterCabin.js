@@ -18,18 +18,23 @@ export default function FilterCabin({returnData,cats,orgi}) {
   //   if(returnData)
   //     returnData(luggage);
   // },[luggage,returnData])
+  console.log(orgi,cabin)
 
   useEffect(() => {
     let temp = clone(cabin);
     
     temp.map(data => {
       cats.cheapest && cats.cheapest.find(i => {
-        try {    
-          let segments = orgi[i] && orgi[i].segments && orgi[i].segments[0]
-          if(segments && (data.name === "All" || (segments.cabin.toUpperCase() === data.name))) {
-            data.value = orgi[i].farePrice.fareTotal
+        try {
+          if(data.name === 'All' || orgi[i]?.segments[0].flights?.every(obj => obj.cabin === data.name)) {
+            data.value = orgi[i].totalAmount
             return true;
           }
+          // let segments = orgi[i] && orgi[i].segments && orgi[i].segments[0]
+          // if(segments && (data.name === "All" || (segments.cabin.toUpperCase() === data.name))) {
+          //   data.value = orgi[i].farePrice.fareTotal
+          //   return true;
+          // }
         } catch(ex) {}
         return false
       })

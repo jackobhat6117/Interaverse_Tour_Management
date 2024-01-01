@@ -8,9 +8,11 @@ SelectInput.propTypes = {
   placeHolder: PropTypes.string,
 }
 export default function SelectInput(props) {  
+
+  let Element = props.elem || TextField;
   return (
     <div className='w-full'>
-      <TextField size='small' label={<div className='font-bold' >
+      <Element size='small' label={<div className='font-bold' >
             {props.label || 'Select'}
         </div>}
         // InputLabelProps={{
@@ -21,7 +23,7 @@ export default function SelectInput(props) {
         select
       >
         {props.children}
-      </TextField>
+      </Element>
     </div>
   )
 }

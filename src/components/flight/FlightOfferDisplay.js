@@ -8,6 +8,7 @@ import Modal1 from '../DIsplay/Modal/Modal1';
 import FareOptions from './FareOptions';
 import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
+import Icon from '../HOC/Icon';
 // import { offerDataTemp } from '../../data/flight/offerData';
 
 export default function FlightOfferDisplay({data,path,showDetail,select,offer}) {
@@ -66,6 +67,19 @@ export default function FlightOfferDisplay({data,path,showDetail,select,offer}) 
     select && select(obj)
   }
 
+  const getSupplierClass = (sup) => {
+    let supplier = sup?.toString()?.toLowerCase();
+    let className = 'bg-blue-200 text-blue-600';
+    if(supplier === 'sabre') {
+      className = 'bg-red-200 text-red-800';
+    } else if(supplier === 'verteil') {
+      className = 'bg-orange-200 text-orange-800';
+    } else if(supplier === 'travelport')
+      className = 'bg-gray-200 text-gray-700'
+    return className
+  };
+
+
 
   return (
     <div className='bg-secondary rounded-2xl overflow-clip border border-primary/10 hover:shadow-xl shadow-primary cursor-pointer transition-all' data-container={true} onClick={handleOpenDetail}>
@@ -76,14 +90,13 @@ export default function FlightOfferDisplay({data,path,showDetail,select,offer}) 
               // let flight = obj.flights[0];
               return (
                 <div key={i} className={`flex flex-col justify-stretch grow border-b border-[#e7e7e7] ${i===0?'border-t-0':''} `}>
-                  <FlightDisplay key={i} flight={obj} />
+                  <FlightDisplay key={i} flight={obj} />       
                 </div>
             )})
           }
-          {/* <Icon icon={'bxs:down-arrow'} className='p-1 mx-6 mb-2' /> */}
         </div>
         <div className='flex flex-col p-2 gap-2 justify-center items-center w-[35%] border-l border-b border-primary/10 py-4'>
-          <div className='flex flex-col items-center justify-center'>
+          <div className='flex flex-col gap-1 items-center justify-center'>
             <h5>
               {lastPath ? ((totalPrice - (lastPath?.totalAmount || 0)) >= 0 ? '+' : '-') : null} 
               {formatMoney(Math.abs((totalPrice) - (lastPath?.totalAmount || 0)))}
@@ -91,7 +104,9 @@ export default function FlightOfferDisplay({data,path,showDetail,select,offer}) 
             {data?.segments?.length > 1 ? 
               <small>Round trip per traveller</small>
             :null}
-            {/* {data?.formatedTotalAmount} */}
+            <small className={'rounded-md px-2 uppercase font-bold tracking-widest '+getSupplierClass(data?.supplier)}>
+              {data?.supplier}
+            </small>
             {/* <p>{data?.segments[0].cabin} {data?.segments[0]?.bookingClass}</p> */}
           </div>
           {/* <p>N Seats left at this price</p> */}

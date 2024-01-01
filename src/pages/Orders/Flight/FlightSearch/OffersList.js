@@ -1,5 +1,5 @@
 import React, { createRef, useCallback, useEffect, useMemo, useState } from 'react'
-import { SwipeableDrawer, Tab, Tabs } from '@mui/material';
+import { SwipeableDrawer, Tab, Tabs, ThemeProvider, createTheme } from '@mui/material';
 import FlightOfferDisplay from '../../../../components/flight/FlightOfferDisplay';
 import { FlightOfferDetail } from '../../../../components/flight/FlightOfferDetail';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
@@ -25,6 +25,8 @@ import convertFlightObject, { createFlightCat } from '../../../../features/utils
 import { offerSearchTemp } from '../../../../data/flight/offerSearchData';
 import CreateFlightOrder from '../CreateFlightOrder';
 import LoadingBar from '../../../../components/animation/LoadingBar';
+import SelectInput from '../../../../components/form/SelectInput';
+import IOSSwitch from '../../../../components/form/IOSSwitch';
 // import getCalendarSearch from '../../../controllers/search/getCalendarSearch';
 
 
@@ -64,6 +66,9 @@ export default function OffersList({hide}) {
   const [openFilter,setOpenFilter] = useState(false);
   const [openSearch,setOpenSearch] = useState(false);
   const [openSort,setOpenSort] = useState(false);
+
+  const [sortby,setSortBy] = useState('price');
+  
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -250,12 +255,43 @@ export default function OffersList({hide}) {
 
   function sortByCat(arr) {
     let temp = clone(fetchedData.current);
-    let sortedData = [];
-    arr.map(i => sortedData.push(temp[i]))
+    try {
+      let sortedData = [];
+      arr.map(i => {
+        sortedData.push(temp[i])
+        return true;
+      })
 
 
-    setData(sortedData);
+      setData(sortedData);
+    } catch(ex) {}
   }
+
+  function filterSort(val) {
+    setSortBy(val)
+
+    try {
+      let temp = clone(fetchedData.current);
+      let sortedData = temp
+
+      const getArrivalTime = (obj) => {
+        return moment(`${obj.arrivalDate} ${obj.arrivalTime}`,'YYYY-MM-DD HH:mm').toDate().getTime()
+      }
+      const getDepartureTime = (obj) => {
+        return moment(`${obj.departureDate} ${obj.departureTime}`,'YYYY-MM-DD HH:mm').toDate().getTime()
+      }
+
+      if(val === 'price') {
+        sortedData = temp.sort((a,b) => a?.totalAmount < b?.totalAmount)
+      } else if(val === 'inbound')
+        sortedData = temp.sort((a,b) => getArrivalTime(a?.segments?.at(0)) - getArrivalTime(b?.segments?.at(0)))
+      else if(val === 'outbound')
+        sortedData = temp.sort((a,b) => getDepartureTime(a?.segments?.at(0)) - getDepartureTime(b?.segments?.at(0)))
+
+      setData(sortedData);
+    } catch(ex) {}
+  }
+
 
 
   async function showDetail(obj) {
@@ -312,14 +348,15 @@ export default function OffersList({hide}) {
       // amount = (amount.replace(",",""))
       amount = formatMoney(amount)
       let time = fetchedData.current[ind].segments[0]?.departureTime;
+      let duration = fetchedData.current[ind].segments[0]?.duration;
       // time = [0,0]
-      time = time?.split(":")
-      let h = parseInt(time[0]);
-      let m = parseInt(time[1]);
-      time = h+"h ";
-      if(m) time += m+'m'
+      // time = time?.split(":")
+      // let h = parseInt(time[0]);
+      // let m = parseInt(time[1]);
+      // time = h+"h ";
+      // if(m) time += m+'m'
       
-      return {amount,time};
+      return {amount,time,duration};
     } catch(ex) {
       // console.log(ex)
       return "";
@@ -338,13 +375,25 @@ export default function OffersList({hide}) {
   const passengersCount = Object.values(searchObj?.passengers || {})?.reduce((p,c) => Number(p)+Number(c),0);
 
 
-  console.log('data:: ',data)
+  console.log('data:: ',data,searchObj)
   // classify with airline and price
   let modData = [];
 
   function rearrageArray(array) {
+    const airlinesMatch = (cur,prev) => {
+      try {
+        let curAirlines = [...new Set(cur?.segments?.map(obj => obj.flights).flat().map(obj => obj.marketingCarrier))]
+        let prevAirlines = [...new Set(prev?.segments?.map(obj => obj.flights).flat().map(obj => obj.marketingCarrier))]
+        if(curAirlines.length === prevAirlines.length)
+          if(curAirlines.every(val => prevAirlines.includes(val)))
+            return true;
+      } catch(ex) {}
+
+      return false;
+    }
     const result = array.reduce((acc,cur,ind) => {
-      if(ind > 0 && cur.totalAmount === array[ind - 1].totalAmount) {
+      if(ind > 0 && (cur.totalAmount === array[ind - 1].totalAmount &&
+                     airlinesMatch(cur,array[ind - 1]))) {
         const prev = acc?.at(-1);
         prev.objects.push(cur);
       }
@@ -358,39 +407,14 @@ export default function OffersList({hide}) {
   }
   modData = rearrageArray(data);
 
+
   return (
     <div className='w-full flex flex-col gap-2 py-4 flex-1'>
-      {!hide || !hide?.includes('breadcrumb') ? 
-        <div className='pd-md py-2'>
-          <BreadCrumb>
-            <Link to={'/order'}>Orders</Link>
-            <Link to='/order/new/flight'>New order</Link>
-            {searchPath.map((obj,i) => {
-              if(i === searchPath.length-1)
-                return (
-                  <b>{obj?.departureLocation} to {obj?.arrivalLocation}</b>
-                )
-
-              return (
-                <div onClick={() => handleSearchRoute(i)} className='cursor-pointer'>
-                  {obj.departureLocation} to {obj.arrivalLocation}
-                </div>
-              )
-            })}
-            {/* <b>{searchObj?.destinations[0]?.departureLocation} to {searchObj?.destinations[0]?.arrivalLocation}</b> */}
-          </BreadCrumb>
-        </div>
-      :null}
       <PriceTimeout />
       {/* <CheckFlightTimeout /> */}
       {/* <div className='bg-secondary px-4'>
         <FlightSearchInput cur={searchType} />
       </div> */}
-      {!hide || !hide?.includes('sort') ? 
-        <div className='hidden md:flex justify-center px-6 bg-primary bg-opacity-[3%]'>
-          <FlightOfferSort {...{cat,getCatInfo,sortByCat}} />
-        </div>
-      :null}
       {/* <div className='bg-secondary flex justify-center'>
         <Tabs indicatorColor='inherit' textColor='inherit' value={curFlightDate} scrollButtons allowScrollButtonsMobile variant='scrollable' className='div_mid'>
           {flightDate.map((obj,i) => (
@@ -411,32 +435,93 @@ export default function OffersList({hide}) {
         </Tabs>
       </div> */}
       
+      <div className='flex gap-10 justify-between pd-md py-5'>
+        <div className='flex gap-4 justify-between'>
+          <div className='flex gap-2 uppercase'>
+            <h6>{searchObj?.destinations[0]?.departureLocation}</h6>
+            <Icon icon='ri:plane-fill' className='rotate-90 p-1' />
+            <h6>{searchObj?.destinations[0]?.arrivalLocation}</h6>
+          </div>
+          <div>
+            {moment(departDate).format('DD MMM')} - {' '}
+            {arrivalDate ? moment(arrivalDate).format('DD MMM')+ ' - ' : ' '}
+            {passengersCount} passenger{passengersCount>1?'s':''}
+          </div>
+        </div>
+        <div>
+          <Button1 className='self-start !w-auto ' size='small' onClick={() => setOpenSearch(true)}>Edit Search</Button1>
+        </div>
+      </div>
+      
 
       <div className='flex gap-4 flex-1'>
         {!hide || !hide?.includes('filter') ? 
-          <div className='hidden md:block self-end sticky bottom-0 rounded-2xl '>
+        
+          //  Filter  Part 
+
+          <div className='hidden md:block self-end sticky bottom-0 rounded-2xl max-w-[300px]'>
             <div className='pt-4 px-6 flex flex-col gap-1'>
-              <div className='flex gap-4 justify-between'>
-                <div className='flex gap-2 uppercase'>
-                  <h6>{searchObj?.destinations[0]?.departureLocation}</h6>
-                  <h6>-</h6>
-                  <h6>{searchObj?.destinations[0]?.arrivalLocation}</h6>
+              <div>
+                <div className='flex gap-2 justify-between'>
+                  <b>Setup price alerts</b>
+                  <ThemeProvider theme={createTheme({
+                    palette: {
+                      mode: 'dark'
+                    }
+                  })}>
+                    <IOSSwitch />
+                  </ThemeProvider>
                 </div>
-                <Icon icon='ri:plane-fill' className='self-end' />
-              </div>
-              <div>
-                {moment(departDate).format('DD MMM')} - {' '}
-                {arrivalDate ? moment(arrivalDate).format('DD MMM')+ ' - ' : ' '}
-                {passengersCount} passenger{passengersCount>1?'s':''}
-              </div>
-              <div>
-                <Button1 className='self-start !w-auto ' size='small' onClick={() => setOpenSearch(true)}>Edit Search</Button1>
+                <p>Receive alerts when the prices for this route change.</p>
               </div>
             </div>
             <FlightOfferFilter cats={cat} orgi={fetchedData.current} data={data} setData={setData} />
           </div>
         :null}
-        <div className='flex-1 flex flex-col gap-2 py-5 px-4 md:px-0'>
+
+
+        {/* Offers List */}
+
+        <div className='flex-1 flex flex-col gap-2 py-5 px-4 md:px-0 overflow-hidden'>
+           {!hide || !hide?.includes('breadcrumb') ? 
+              <div className='px-10 py-2 max-w-full'>
+                <BreadCrumb>
+                  {/* <Link to={'/order'}>Orders</Link> */}
+                  {/* <Link to='/order/new/flight'>New order</Link> */}
+                  {searchPath.map((obj,i) => {
+                    if(i === searchPath.length-1)
+                      return (
+                        <b>{obj?.departureLocation} to {obj?.arrivalLocation}</b>
+                      )
+
+                    return (
+                      <div onClick={() => handleSearchRoute(i)} className='cursor-pointer'>
+                        {obj.departureLocation} to {obj.arrivalLocation}
+                      </div>
+                    )
+                  })}
+                  <p>Review your trip</p>
+                  <p>Make Payment</p>
+                  {/* <b>{searchObj?.destinations[0]?.departureLocation} to {searchObj?.destinations[0]?.arrivalLocation}</b> */}
+                </BreadCrumb>
+              </div>
+            :null}
+
+            {!hide || !hide?.includes('sort') ? 
+              <div className='hidden md:flex justify-center  max-w-full gap-6'>
+                <FlightOfferSort {...{cat,getCatInfo,sortByCat}} />
+                <div className='flex flex-col gap-1 border border-primary/20 p-1 px-3 rounded-md'>
+                  <p className='text-[13px]'>Sort by</p>
+                  <SelectInput elem='select' label='' className='bg-transparent'
+                    value={sortby} onChange={(ev) => filterSort(ev.target.value)}
+                  >
+                    <option value={'price'}>Price</option>
+                    <option value={'inbound'}>In-bound</option>
+                    <option value={'outbound'}>Out-bound</option>
+                  </SelectInput>
+                </div>
+              </div>
+            :null}
           {
             loading ?
               <LoadingBar progress={progress} />
@@ -452,6 +537,7 @@ export default function OffersList({hide}) {
               </div>
             : null
           }
+
             <Paginate className='flex flex-col gap-4' data={modData} limit={10} render={(obj,i) => <SortedOffers obj={obj} key={i} params={{qIndex,showDetail,handleOfferSelect}} />} />
           {/* <FlightOfferDisplay showDetail={(obj) => setCurDetail(obj)} /> */}
         </div>
@@ -523,15 +609,23 @@ const SortedOffers = ({obj,params:{qIndex,showDetail,handleOfferSelect}}) => {
   <div>
     <FlightOfferDisplay path={qIndex} data={obj?.objects[0]} showDetail={async () => await showDetail(obj)} select={handleOfferSelect} />
     {obj.objects.length > 1 ? (
-      <div className='flex flex-col gap-2 relative'>
-        <button className='text-sm text-theme1 self-center border border-b-0 rounded-t-md -translate-y-full px-4 py-1 bg-secondary ' 
-          onClick={() => setView(!view)}>
-            {view ? `Hide same prices` : `${obj.objects.length} more flight options available at this price`}
-        </button>
+      <div className={'flex flex-col gap-4 relative  '+(view?'bg-[#F3F7FF] -translate-y-[12px] shadow-inner':'')}>
+        <div className='relative flex flex-col gap-2 mb-4'>
+          <button className={'text-sm text-theme1 font-bold self-center shadow-inner border border-b-0 absolute bottom-0 max-h-[1.3rem] rounded-t-lg  pt-2 w-[50%] '+(view?'bg-[#F3F7FF]':'bg-secondary')} 
+            onClick={() => setView(!view)}>
+              <div className={'px-4 pb-2 rounded-lg '+(view?'bg-[#F3F7FF]':'bg-secondary')}>
+                {view ? `Hide flights` : `${obj.objects.length-1} more flight options available at this price`}
+              </div>
+          </button>
+        </div>
         {view ? 
-          obj.objects.slice(1).map((obj,i) => (
-            <FlightOfferDisplay key={i} path={qIndex} data={obj} showDetail={async () => await showDetail(obj)} select={handleOfferSelect} />
-          ))
+          <div className='flex flex-col gap-4 p-3'>
+            {
+              obj.objects.slice(1).map((obj,i) => (
+                <FlightOfferDisplay key={i} path={qIndex} data={obj} showDetail={async () => await showDetail(obj)} select={handleOfferSelect} />
+              ))
+            }
+          </div>
         :null}
       </div>
     ):null}
@@ -544,24 +638,27 @@ const SortedOffers = ({obj,params:{qIndex,showDetail,handleOfferSelect}}) => {
 function FlightOfferSort({cat,getCatInfo,sortByCat}) {
   const [value,setValue] = useState();
 
+  console.log(cat)
   return (
     <Tabs indicatorColor='inherit' textColor='inherit' scrollButtons allowScrollButtonsMobile variant='scrollable' className='div_mid'
       value={value}
       onChange={(ev,val) => setValue(val)}
     >
       {
-        Object.entries(cat).map((obj,i) => {
-          let catInfo = getCatInfo(obj[1][0])
+        Object.entries(cat).map(([name,obj],i) => {
+          let catInfo = getCatInfo(obj[0])
+          console.log(catInfo)
           return (
-            <Tab key={i} className={`p-5 !min-w-[200px] ${i===value?' !bg-theme1 !text-secondary':''}`} sx={{textTransform: 'capitalize'}}
-              onClick={() => sortByCat(obj[1])}
+            <Tab key={i} className={`p-5 !min-w-[200px] !border border-[#333] ${i===value?' !bg-theme1 !text-secondary':''}`} 
+              sx={{textTransform: 'capitalize',border: 1,borderRadius: 2,mr: 2}}
+              onClick={() => sortByCat(obj)}
               label={(
                 <div className='text-start flex flex-col gap-1'>
-                  <h6>{splitCapitals(obj[0])}</h6>
+                  <mall>{splitCapitals(name)}</mall>
                   <div className='flex gap-1 relative items-center'>
                     <span>{catInfo.amount}</span>
                     <div className='-translate-y-[1px] px-1 '>{catInfo.time ? '|' : ''}</div>
-                    <div>{catInfo.time}</div>
+                    <div>{(['quickest'].includes(name.toLowerCase())) ? catInfo.duration : catInfo.time}</div>
                   </div>
                 </div>
               )}

@@ -3,9 +3,18 @@ import { InputAdornment, TextField } from '@mui/material';
 import FetcherInput from '../mini/FetcherInput';
 import getAirlineCodes from '../../controllers/Flight/getAirlines';
 
-export default function AirlinesInput({val,returnData,label,icon,multiple}) {
+export default function AirlinesInput({val,returnData,option,label,icon,multiple}) {
   const [ariline,setAriline] = useState([]);
   const [data,setData] = useState(val || "")
+
+  option.map(val => {
+    let airlines = [];
+    getAriline(val.id,(data) => (
+      airlines = [...data]
+    ))
+    console.log('----------')
+    return console.log(airlines)
+  })
   
   async function handleChange(val) {
     if(!val || val.length === 0)
@@ -18,11 +27,13 @@ export default function AirlinesInput({val,returnData,label,icon,multiple}) {
       returnData(val);
   }
   
-  async function getAriline(val) {
+  async function getAriline(val,callback) {
     if(val === '') return false;
     const res = await getAirlineCodes(val);
     if(res.return)
-      setAriline(res.data);
+      if(!callback)
+        setAriline(res.data);
+      else callback(res.data)
   }
 
   const filterOptions = (options, inputValue) => {
