@@ -277,12 +277,14 @@ export default function CreateFlightOrder({callback,data,returnData}) {
               />
             </div>
             {type === 'return' ? 
-              <CalendarInput1 ref={(el) => calendarRef.current[1] = el} label='Return Date' className='w-full border border-primary/20 rounded-md p-2'
-                value={date[1] || ''}
-                onChange={(value) => handleSetDate(value?.start || value,1)}
-                defaultMonth={new Date(date[0])}
-                config={{validDates: [date[0]]}}
-              />
+              <div className='flex-1'>
+                <CalendarInput1 ref={(el) => calendarRef.current[1] = el} label='Return Date' className='w-full border border-primary/20 rounded-md p-2'
+                  value={date[1] || ''}
+                  onChange={(value) => handleSetDate(value?.start || value,1)}
+                  defaultMonth={new Date(date[0])}
+                  config={{validDates: [date[0]]}}
+                  />
+              </div>
             :null}
           </div>
           {type === 'multiple' ? (

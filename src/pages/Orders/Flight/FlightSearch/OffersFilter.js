@@ -241,8 +241,12 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
   }
 
 
-  let minPrice = (orgi && orgi[0]?.totalAmount ) || 0;
-  let maxPrice = (orgi && orgi?.at(-1)?.totalAmount) || 0;
+  let minPrice = 0;
+  let maxPrice = 0;
+  try {
+    minPrice = (orgi && orgi[0]?.totalAmount ) || 0;
+    maxPrice = (orgi && orgi?.at(-1)?.totalAmount) || 0;
+  } catch(ex) {}
 
   return (
     <div className='flex flex-col gap-5 p-6 max-w-[300px] rounded-2xl overflow-clip'>
