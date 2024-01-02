@@ -19,7 +19,7 @@ import moment from 'moment'
 import TextInput from '../../../components/form/TextInput'
 import CitiesInput from '../../../components/form/CitiesInput'
 
-export default function CreateFlightOrder({callback,data}) {
+export default function CreateFlightOrder({callback,data,returnData}) {
   const [travelClass,setTravelClass] = useState('All');
   const [type,setType] = useState('return');
   const {bookingData} = useSelector(state => state.flightBooking);
@@ -158,6 +158,8 @@ export default function CreateFlightOrder({callback,data}) {
 
     let referralCode = searchParam.get('refCode');
 
+    if(returnData)
+      returnData(searchObj)
 
     if(callback)
       callback(searchObj);

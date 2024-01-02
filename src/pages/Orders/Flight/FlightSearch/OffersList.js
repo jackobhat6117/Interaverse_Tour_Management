@@ -4,7 +4,7 @@ import FlightOfferDisplay from '../../../../components/flight/FlightOfferDisplay
 import { FlightOfferDetail } from '../../../../components/flight/FlightOfferDetail';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 // import getFlightOffers from '../../../controllers/search/getFlightOffers';
-import { decrypt } from '../../../../features/utils/crypto';
+import { decrypt, encrypt } from '../../../../features/utils/crypto';
 // import getFlightOfferPrice from '../../../controllers/flight/getOfferPrice';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBookingData } from '../../../../redux/reducers/flight/flightBookingSlice';
@@ -595,7 +595,9 @@ export default function OffersList({hide}) {
         <FlightOfferSort {...{cat,getCatInfo,sortByCat}} />
       </Modal1>
       <Modal1 open={openSearch} setOpen={setOpenSearch}>
-        <CreateFlightOrder data={searchObj} />
+        <CreateFlightOrder data={searchObj} returnData={(searchObj) => {
+          setOpenSearch(false);
+        }} />
       </Modal1>
 
     </div>

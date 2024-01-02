@@ -3,6 +3,7 @@ import React from 'react'
 
 export default function Modal1({open,setOpen,children,className}) {
   function handleCLickAway(ev) {
+    ev?.stopPropagation();
     if(ev.target.parentElement.getAttribute('name') && (ev.target.getAttribute('name') !== 'modalChild'))
       setOpen && setOpen(false);
   }

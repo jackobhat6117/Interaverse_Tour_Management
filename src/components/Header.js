@@ -226,6 +226,18 @@ export default function Header() {
             SlideProps={{ className: "min-w-[300px]" }}
           >
             <div className="w-full h-full shadow-md border bg-secondary flex flex-col gap-4 p-4 overflow-y-auto overflow-hidden">
+              <div className="flex gap-4 justify-evenly pb-4">
+                <Link to='/order/new/flight' className="rounded-full py-2 px-5 text-[#233767] bg-[#E7F6FF] hover:bg-[#e0eff8] transition-all hover:shadow-lg shadow-md">
+                  <img alt='' src={flight} className="w-4 h-4" />
+                </Link>
+                <Link to='/order/new/hotel' className="rounded-full py-2 px-5 text-[#233767] bg-[#E7F6FF] hover:bg-[#e0eff8] transition-all hover:shadow-lg shadow-md">
+                  <img alt='' src={hotel} className="w-4 h-4"/>
+                </Link>
+                <Link to='/order/new/tour' className="rounded-full py-2 px-5 text-[#233767] bg-[#E7F6FF] hover:bg-[#e0eff8] transition-all hover:shadow-lg shadow-md">
+                  <img alt='' src={tour} className="w-4 h-4"/>
+                </Link>
+              </div>
+
               <CustomLink to={"/"} active={true} Icon={Home} label="Home" />
               <CustomLink
                 to={"/settings/"}

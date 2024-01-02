@@ -62,7 +62,7 @@ export default function StatusBar({ data,needsReview }) {
         text="This order is refundable up until the initial departure date"
       />
 
-      {needsReview ? 
+      {!needsReview ? 
       <div className="flex flex-col gap-5">
         <Button1
           variant="outlined"

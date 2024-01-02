@@ -241,8 +241,8 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
   }
 
 
-  let minPrice = orgi[0]?.totalAmount;
-  let maxPrice = orgi?.at(-1)?.totalAmount;
+  let minPrice = (orgi && orgi[0]?.totalAmount ) || 0;
+  let maxPrice = (orgi && orgi?.at(-1)?.totalAmount) || 0;
 
   return (
     <div className='flex flex-col gap-5 p-6 max-w-[300px] rounded-2xl overflow-clip'>
