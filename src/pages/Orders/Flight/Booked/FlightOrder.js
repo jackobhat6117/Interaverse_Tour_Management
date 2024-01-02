@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import BreadCrumb from "../../../../components/DIsplay/Nav/BreadCrumb";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Button1 from "../../../../components/form/Button1";
 import TextInput from "../../../../components/form/TextInput";
 import { Menu } from "../../OrdersData";
@@ -22,10 +22,6 @@ import { LinearProgress } from "@mui/material";
 import { getPassengerCategory } from "../../../../utils/getPassengerCategory";
 
 export default function FlightOrder() {
-  let obj = {
-    needsReview: true,
-    orderId: "F34FJJ6",
-  };
   const { id } = useParams();
   const [onChangedData, setOnChangedData] = useState(true);
   const [openExport, setOpenExport] = useState(false);
@@ -36,6 +32,14 @@ export default function FlightOrder() {
   const [order, setOrder] = useState();
   const [loading, setLoading] = useState(false);
 
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const change = searchParams.get('change')
+  let obj = {
+    needsReview: change,
+    orderId: "F34FJJ6",
+  };
+  
   function handleOption() {
     if (selectedOption === "email") setOpenEmailExport(true);
     else if (selectedOption === "pdf") {
@@ -206,7 +210,7 @@ export default function FlightOrder() {
           </div>
 
           <div>
-            <StatusBar data={order} />
+            <StatusBar needsReview={obj.needsReview} data={order} />
           </div>
         </div>
       )}

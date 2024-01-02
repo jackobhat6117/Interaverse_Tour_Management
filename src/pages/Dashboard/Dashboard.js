@@ -1,7 +1,6 @@
 import React from "react";
 import RevenueAnalytics from "./RevenuAnalytics";
 import { useSelector } from "react-redux";
-import Button1 from "../../components/form/Button1";
 import { Link } from "react-router-dom";
 import CreateOrder from "../Orders/CreateOrder";
 
@@ -20,7 +19,7 @@ export default function Dashboard() {
           {/* <Link className='btn whitespace-nowrap flex-1 md:flex-none' to="/">View pending orders</Link> */}
           <Link
             className="p-2 px-4 rounded-md flex-1 md:flex-none border-primary border flex gap-3 whitespace-nowrap items-center"
-            to="/order?filter=needsreview"
+            to="/order?status=needsReview"
           >
             <span className="bg-theme1/20 text-xs font-bold w-5 h-5 flex items-center justify-center">
               5
@@ -29,7 +28,7 @@ export default function Dashboard() {
           </Link>
           <Link
             className="p-2 px-4 rounded-md flex-1 md:flex-none border-primary border flex gap-3 whitespace-nowrap items-center"
-            to="/order?filter=onhold"
+            to="/order?status=onhold"
           >
             <span className="bg-theme1/20 text-xs font-bold w-5 h-5 flex items-center justify-center">
               15

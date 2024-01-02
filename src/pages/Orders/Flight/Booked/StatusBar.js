@@ -8,7 +8,7 @@ import Button1 from "../../../../components/form/Button1";
 import { alertType } from "../../../../data/constants";
 import moment from "moment";
 
-export default function StatusBar({ data }) {
+export default function StatusBar({ data,needsReview }) {
   const [openBaggage, setOpenBaggage] = useState(false);
   const [openSeats, setOpenSeats] = useState(false);
   const [cancelBooking, setCancelBooking] = useState(false);
@@ -62,7 +62,7 @@ export default function StatusBar({ data }) {
         text="This order is refundable up until the initial departure date"
       />
 
-      {/* {data?.needsReview ?  */}
+      {needsReview ? 
       <div className="flex flex-col gap-5">
         <Button1
           variant="outlined"
@@ -87,7 +87,7 @@ export default function StatusBar({ data }) {
         </Button1>
         <Button1>Issue ticket</Button1>
       </div>
-      {/* : */}
+      :
       <div className="flex flex-col gap-5">
         <Button1
           variant="outlined"
@@ -105,7 +105,7 @@ export default function StatusBar({ data }) {
         </Button1>
         <Button1>Accept Changes</Button1>
       </div>
-      {/* } */}
+      }
 
       <Modal1 open={openBaggage} setOpen={setOpenBaggage}>
         <div className="card p-10 flex flex-col gap-4">

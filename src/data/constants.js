@@ -12,6 +12,7 @@ export const alertType = {
   pending: "warn",
   inactive: "warn",
   "on hold": "warn",
+  'needs review': 'warn',
   Pending: "warn",
   Failed: "error",
   Success: "success",

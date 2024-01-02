@@ -13,7 +13,8 @@ import AddBags from "./AddBags";
 import AddSeats from "./AddSeats";
 import CancelOrder from "./cancelOrder";
 import { formatMoney } from "../../features/utils/formatMoney";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import OrderDataChanges from "./OrderDataChanges";
 
 const ActionContext = createContext();
 
@@ -134,6 +135,10 @@ export default function OrdersData({ data: gotData, setData: setOrig }) {
   const [openAddSeats, setOpenAddSeats] = useState(false);
   const [openCancelOrder, setOpenCancelOrder] = useState(false);
 
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const status = searchParams.get('status');
+
   const [data, setData] = useState(gotData || []);
   let countObj = {
     all: gotData?.length,
@@ -211,6 +216,7 @@ export default function OrdersData({ data: gotData, setData: setOrig }) {
       ),
     },
   ];
+  
 
   return (
     <div className="pd-md flex-1 flex flex-col gap-1">
@@ -241,8 +247,8 @@ export default function OrdersData({ data: gotData, setData: setOrig }) {
           + <span>Filter</span>
         </div>
         <div className="flex gap-2">
-          <button className="btn-theme-light">Needs review</button>
-          <button className="btn-theme-light">On hold</button>
+          <Link to='?status=needsReview' className={status === 'needsReview' ? 'btn' : "btn-theme-light"}>Needs review</Link>
+          <button className={status === 'onhold' ? 'btn' : "btn-theme-light"}>On hold</button>
         </div>
         <div className="flex gap-2 items-center">
           <Button1 variant="text" className="capitalize">
@@ -279,7 +285,11 @@ export default function OrdersData({ data: gotData, setData: setOrig }) {
           },
         }}
       >
-        <CustomTable rows={data} columns={columns} />
+        {status === 'needsReview' ? 
+          <OrderDataChanges data={data} />
+        :
+          <CustomTable rows={data} columns={columns} />
+        }
       </ActionContext.Provider>
 
       <AddBags open={openAddBags} setOpen={setOpenAddBags} />
