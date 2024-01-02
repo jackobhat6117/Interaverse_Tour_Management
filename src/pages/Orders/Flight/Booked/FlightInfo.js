@@ -8,24 +8,27 @@ export default function FlightInfo({ minify, data }) {
   useEffect(() => {
     if (data?.orderDetail?.offers && !formattedOrder) {
       const segments =
-        data?.orderDetail?.offers &&
-        Array.isArray(data?.orderDetail?.offers) &&
-        data?.orderDetail?.offers?.flatMap((offer) => offer.directions.flat());
+        data?.orderDetail?.pricing?.offers &&
+        Array.isArray(data?.orderDetail?.pricing?.offers) &&
+        data?.orderDetail?.pricing?.offers?.flatMap((offer) =>
+          offer.directions.flat(),
+        );
 
       const originalSegments =
-        data?.orderDetail?.offers &&
-        Array.isArray(data?.orderDetail?.offers) &&
-        data?.orderDetail?.offers?.flatMap((offer) => offer.directions).slice();
-      const origin = originalSegments[0][0];
-      const destination = originalSegments[originalSegments.length - 1].pop();
+        data?.orderDetail?.pricing?.offers &&
+        Array.isArray(data?.orderDetail?.pricing?.offers) &&
+        data?.orderDetail?.pricing?.offers
+          ?.flatMap((offer) => offer.destinations)
+          .slice();
+      const destinations = originalSegments[0];
 
       const formatted = segments.map((segment) => ({
         ...segment,
         from: segment?.departure?.location,
         to: segment?.arrival?.location,
-        origin: origin?.departure?.location,
-        destination: destination?.arrival?.location,
-        airline: segment?.airline?.marketing,
+        origin: destinations?.from,
+        destination: destinations?.to,
+        airline: segment?.airline?.image?.description,
         airlineIcon: segment?.airline?.image?.url,
         departureDate: segment?.departure?.date,
         departureTime: segment?.departure?.time,
@@ -53,7 +56,6 @@ export default function FlightInfo({ minify, data }) {
       setFormattedOrder(formatted);
     }
   }, [data, formattedOrder]);
-
   return (
     <>
       {formattedOrder?.map((formatted, index) => (
@@ -100,7 +102,7 @@ export default function FlightInfo({ minify, data }) {
 
           <div className="flex justify-between items-center gap-4 flex-wrap">
             <div className="flex gap-6 text-primary/50">
-              <span>{formatted?.bookingClass}</span>
+              <span>{formatted?.cabinClass}</span>
               <span>{formatted?.airline}</span>
               <span>{formatted?.aircraftType}</span>
               <span>{formatted?.flightNumber}</span>
