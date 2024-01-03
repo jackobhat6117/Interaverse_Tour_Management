@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import BreadCrumb from "../../../../components/DIsplay/Nav/BreadCrumb";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Button1 from "../../../../components/form/Button1";
 import TextInput from "../../../../components/form/TextInput";
 import { Menu } from "../../OrdersData";
@@ -32,14 +32,6 @@ export default function FlightOrder() {
   const [order, setOrder] = useState();
   const [loading, setLoading] = useState(false);
 
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const change = searchParams.get('change')
-  let obj = {
-    needsReview: change,
-    orderId: "F34FJJ6",
-  };
-  
   function handleOption() {
     if (selectedOption === "email") setOpenEmailExport(true);
     else if (selectedOption === "pdf") {
@@ -69,7 +61,7 @@ export default function FlightOrder() {
       pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
 
       // Download the PDF
-      pdf.save(obj?.orderId + ".pdf");
+      pdf.save(order?.booking?.bookingId + ".pdf");
     });
   }
 
@@ -84,7 +76,7 @@ export default function FlightOrder() {
     };
     fetch();
   }, [id]);
-
+  
   return (
     <div className="flex flex-col gap-4 pd-md py-4">
       <BreadCrumb>
@@ -162,7 +154,7 @@ export default function FlightOrder() {
             </div>
 
             <hr />
-            {obj?.needsReview ? (
+            {order?.booking?.flightBooking[0]?.needsReview ? (
               <div className="flex flex-col gap-4">
                 <div className="flex gap-4 items-center">
                   <div className="flex flex-1 justify-start gap-2 ">
@@ -210,7 +202,10 @@ export default function FlightOrder() {
           </div>
 
           <div>
-            <StatusBar needsReview={obj.needsReview} data={order} />
+            <StatusBar
+              needsReview={order?.booking?.flightBooking[0]?.needsReview}
+              data={order}
+            />
           </div>
         </div>
       )}

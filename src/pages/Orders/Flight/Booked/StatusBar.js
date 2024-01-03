@@ -54,7 +54,7 @@ export default function StatusBar({ data,needsReview }) {
       <PolicyStatus
         title="Order Change Policy"
         value={false}
-        text="This order is not changable"
+        text="This order is not changeable"
       />
       <PolicyStatus
         title="Order Refund Policy"
@@ -97,7 +97,7 @@ export default function StatusBar({ data,needsReview }) {
           Request Cancellation
         </Button1>
         <Button1
-          to={"/order/flight/change/M48894"}
+          to={`/order/flight/change/${data?.booking?._id}`}
           variant="outlined"
           className="!border-primary !text-primary"
         >

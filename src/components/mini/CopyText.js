@@ -14,7 +14,6 @@ const CopyText = (props) => {
             .then(() => {
                 setCopied(true);
                 setTimeout(() => setCopied(false),2000)
-              console.log('Text copied to clipboard');
             })
             .catch((error) => {
               console.error('Failed to copy text:', error);
