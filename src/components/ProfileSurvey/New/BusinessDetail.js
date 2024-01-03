@@ -73,7 +73,6 @@ function BusinessType({next,updateProfile}) {
       next && next();
     setLoading(false);
   }
-  console.log(userDetails,data)
 
   return (
     <div>
