@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import BreadCrumb from "../../../../../../components/DIsplay/Nav/BreadCrumb";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Tabs from "../../../../../../components/DIsplay/Nav/Tabs";
 import ChangePassenger from "./ChangePassenger";
 import ChangeInsurance from "./ChangeInsurance";
@@ -22,17 +22,40 @@ import ContactView from "./ViewChange/Contact";
 import ChangeSplitPNR from "./ChangeSplitPNR";
 import ChangeSplitPNRConfirm from "./ChangeSplitPNRConfirm";
 
-const payment = { value: "Payment", elem: <Payment /> };
-const confirmation = { value: "Confirmation", elem: <Confirmation /> };
-
 export default function ChangeProperty({ property, obj }) {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const id = searchParams?.get("id");
+  const [newData, setNewData] = useState({
+    firstName: "",
+    lastName: "",
+  });
+
+  const payment = { value: "Payment", elem: <Payment /> };
+  const confirmation = { value: "Confirmation", elem: <Confirmation /> };
   const properties = [
     { name: "unkProp", value: "???" },
     {
       name: "passenger",
       value: "Passenger",
-      elem: <ChangePassenger booking={obj}/>,
-      view: <PassengerView />,
+      elem: (
+        <ChangePassenger
+          passenger={obj?.orderDetail?.travelers?.find(
+            (passenger) => passenger?.id === id,
+          )}
+          submit={(data) => {
+            setNewData(data);
+          }}
+        />
+      ),
+      view: (
+        <PassengerView
+          passenger={obj?.orderDetail?.travelers?.find(
+            (passenger) => passenger?.id === id,
+          )}
+          newData={newData}
+        />
+      ),
     },
     {
       name: "class",
@@ -76,6 +99,7 @@ export default function ChangeProperty({ property, obj }) {
   const [selected, setSelected] = useState();
 
   const props = properties?.filter((obj) => obj.name === property);
+
   let options = [
     ...(props.length ? props : [properties[0]]),
     payment,
@@ -150,7 +174,7 @@ function Payment({ pageObj }) {
 
       <div className="border rounded-md p-4 flex gap-4 justify-between">
         <b>Change Fee</b>
-        <b>{formatMoney(10000)}</b>
+        <b>{formatMoney(0)}</b>
       </div>
 
       <PaymentMethod expand hide={["flexify", "freeze", "booklater"]} />
