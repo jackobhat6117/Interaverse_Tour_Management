@@ -35,6 +35,7 @@ export default function FlightOfferDisplay({data,path,showDetail,select,offer}) 
   }
 
   function handleOpenDetail(ev) {
+    console.log(' ---> ',data)
     ev?.preventDefault();
     ev?.stopPropagation();
 
@@ -83,7 +84,7 @@ export default function FlightOfferDisplay({data,path,showDetail,select,offer}) 
 
   return (
     <div className='bg-secondary rounded-2xl overflow-clip border border-primary/10 hover:shadow-xl shadow-primary cursor-pointer transition-all' data-container={true} onClick={handleOpenDetail}>
-      <div className='flex'>
+      <div className={`flex ${openDetail ? 'bg-[#F3F7FF]':''}`}>
         <div className='flex flex-col justify-stretch grow '>
           {
             (data?.segments || []).slice(qIndex,qIndex+1).map((obj,i) => {

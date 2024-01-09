@@ -295,6 +295,7 @@ export default function OffersList({hide}) {
 
 
   async function showDetail(obj) {
+    console.log(obj)
     // if(obj)
     //   setCurDetail(obj)
 
@@ -315,6 +316,7 @@ export default function OffersList({hide}) {
   }
 
   function handleOfferSelect(obj) {
+
     let offer = clone(bookingData.offer) || []
     if(!Array.isArray(offer))
       offer = [offer];
@@ -535,10 +537,10 @@ export default function OffersList({hide}) {
                 <h5 className='bg-secondaryx p-5 rounded-md flex text-center items-center justify-center text-primary/30 uppercase'>Sorry something went wrong from our end! Please try again.</h5>
                 <p>If this error persists please contact our support team.</p>
               </div>
-            : null
+            :
+              <Paginate className='flex flex-col gap-4 pt-4' data={modData} limit={10} render={(obj,i) => <SortedOffers obj={obj} key={i} params={{qIndex,showDetail,handleOfferSelect}} />} />
           }
 
-            <Paginate className='flex flex-col gap-4' data={modData} limit={10} render={(obj,i) => <SortedOffers obj={obj} key={i} params={{qIndex,showDetail,handleOfferSelect}} />} />
           {/* <FlightOfferDisplay showDetail={(obj) => setCurDetail(obj)} /> */}
         </div>
         <div className='hidden lg:block self-end sticky bottom-0'>
