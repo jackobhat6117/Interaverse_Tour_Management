@@ -247,10 +247,10 @@ function WebHook() {
 
 function CreateWebHook({reload}) {
   const [data,setData] = useState({url: '',events: []});
-  const [events,setEvents] = useState([]);
   const [open,setOpen] = useState(false);
   const [loading,setLoading] = useState(false);
   const {enqueueSnackbar} = useSnackbar();
+  const [events,setEvents] = useState([]);
 
   useEffect(() => {
     load();

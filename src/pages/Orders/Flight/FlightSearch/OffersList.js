@@ -377,7 +377,6 @@ export default function OffersList({hide}) {
   const passengersCount = Object.values(searchObj?.passengers || {})?.reduce((p,c) => Number(p)+Number(c),0);
 
 
-  console.log('data:: ',data,searchObj)
   // classify with airline and price
   let modData = [];
 
@@ -642,7 +641,6 @@ const SortedOffers = ({obj,params:{qIndex,showDetail,handleOfferSelect}}) => {
 function FlightOfferSort({cat,getCatInfo,sortByCat}) {
   const [value,setValue] = useState();
 
-  console.log(cat)
   return (
     <Tabs indicatorColor='inherit' textColor='inherit' scrollButtons allowScrollButtonsMobile variant='scrollable' className='div_mid'
       value={value}
@@ -651,7 +649,6 @@ function FlightOfferSort({cat,getCatInfo,sortByCat}) {
       {
         Object.entries(cat).map(([name,obj],i) => {
           let catInfo = getCatInfo(obj[0])
-          console.log(catInfo)
           return (
             <Tab key={i} className={`p-5 !min-w-[200px] !border border-[#333] ${i===value?' !bg-theme1 !text-secondary':''}`} 
               sx={{textTransform: 'capitalize',border: 1,borderRadius: 2,mr: 2}}

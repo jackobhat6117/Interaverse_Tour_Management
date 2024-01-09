@@ -50,7 +50,6 @@ export default function Settings() {
             value={data.agencyLogo}
             onChange={(value) => {
               setData({ ...data, agencyLogo: value });
-              console.log(value);
             }}
           />
           <div className="flex flex-col justify-center">
