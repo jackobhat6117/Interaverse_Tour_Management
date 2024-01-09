@@ -4,10 +4,15 @@ import offerResponseSample from '../../../../../../data/flight/offerResponseSamp
 import Button1 from '../../../../../../components/form/Button1';
 import LoadingBar from '../../../../../../components/animation/LoadingBar';
 import Paginate from '../../../../../../components/DIsplay/Paginate';
+import getFlightOffers from '../../../../../../controllers/Flight/getFlightOffers';
+import { useDispatch, useSelector } from 'react-redux';
+import { setBookingData } from '../../../../../../redux/reducers/flight/flightBookingSlice';
 
-export default function ChangeFlightOffer({back,callback}) {
+export default function ChangeFlightOffer({back,callback,prevResult: reqBody}) {
   const [data,setData] = useState([])
   const [loading,setLoading] = useState(false);
+  const {bookingData} = useSelector(state => state.flightBooking);
+  const dispatch = useDispatch();
 
 
   useEffect(() => {
@@ -17,11 +22,18 @@ export default function ChangeFlightOffer({back,callback}) {
   async function load() {
     setLoading(true);
     await new Promise(resolve => setTimeout(resolve,2000))
+    const res = await getFlightOffers(reqBody)
+    if(res.return) {
+      console.log(res.data);
+      // setData(res.data)
+    }
     setLoading(false);
-    setData(offerResponseSample.data);
+    // setData(offerResponseSample.data);
   }
 
   function handleSelect() {
+    dispatch(setBookingData({...bookingData,orderChange: data}));
+    // local storage 
     callback();
   }
 

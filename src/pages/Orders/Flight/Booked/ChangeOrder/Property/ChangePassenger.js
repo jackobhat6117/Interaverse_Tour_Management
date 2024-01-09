@@ -6,11 +6,15 @@ import ConfirmChangeModal from './ConfirmChangeModal';
 import SelectInput from '../../../../../../components/form/SelectInput';
 import { MenuItem } from '@mui/material';
 import TextInput from '../../../../../../components/form/TextInput';
+import { useDispatch, useSelector } from 'react-redux';
+import { setBookingData } from '../../../../../../redux/reducers/flight/flightBookingSlice';
 
 export default function ChangePassenger({callback}) {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const id = searchParams.get('id');
+  const {bookingData} = useSelector(state => state.flightBooking);
+  const dispatch = useDispatch();
   const [data,setData] = useState({
     givenName: '',
     surname: '',
@@ -19,6 +23,7 @@ export default function ChangePassenger({callback}) {
   const [open,setOpen] = useState(false);
 
   async function handleSubmit() {
+    dispatch(setBookingData({...bookingData,changeOrderData: data}))
     callback && callback();
   }
   

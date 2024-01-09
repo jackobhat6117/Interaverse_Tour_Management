@@ -74,6 +74,7 @@ export default function ChangeProperty({ property, obj }) {
   ];
 
   const [selected, setSelected] = useState();
+  const [prevResult,setPrevResult] = useState();
 
   const props = properties?.filter((obj) => obj.name === property);
   let options = [
@@ -93,7 +94,8 @@ export default function ChangeProperty({ property, obj }) {
     setSelected(options.find((obj) => obj.value === val));
   }
 
-  function next() {
+  function next(obj) {
+    if(obj) setPrevResult(obj);
     let curIndex = options.findIndex((obj) => selected?.value === obj?.value);
     if (curIndex < options.length - 1) setSelected(options[curIndex + 1]);
   }
@@ -133,6 +135,7 @@ export default function ChangeProperty({ property, obj }) {
                 callback: () => next(),
                 back,
                 property,
+                prevResult,
                 pageObj: props[0],
               })}
           </div>
