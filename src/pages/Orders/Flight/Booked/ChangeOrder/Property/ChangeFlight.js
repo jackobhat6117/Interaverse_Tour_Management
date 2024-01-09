@@ -4,7 +4,7 @@ import CreateFlightOrder from '../../../CreateFlightOrder'
 export default function ChangeFlight({callback}) {
   return (
     <div>
-        <CreateFlightOrder callback={() => callback()} />
+        <CreateFlightOrder callback={(obj) => callback(obj)} />
     </div>
   )
 }

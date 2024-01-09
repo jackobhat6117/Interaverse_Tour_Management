@@ -158,6 +158,9 @@ code {
   .warn {
     @apply bg-orange-300 px-2 py-1 rounded-md text-orange-800 font-bold;
   }
+  .triumph {
+    @apply bg-blue-300 px-2 py-1 rounded-md text-blue-700 font-bold;
+  }
 
   .flight {
     @apply text-[#2970F8] bg-[#EAF2FA];

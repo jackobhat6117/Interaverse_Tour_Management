@@ -35,6 +35,7 @@ export default function FlightOfferDisplay({data,path,showDetail,select,offer}) 
   }
 
   function handleOpenDetail(ev) {
+    console.log(' ---> ',data)
     ev?.preventDefault();
     ev?.stopPropagation();
 
@@ -79,11 +80,11 @@ export default function FlightOfferDisplay({data,path,showDetail,select,offer}) 
     return className
   };
 
-
+  console.log(data.passengers)
 
   return (
     <div className='bg-secondary rounded-2xl overflow-clip border border-primary/10 hover:shadow-xl shadow-primary cursor-pointer transition-all' data-container={true} onClick={handleOpenDetail}>
-      <div className='flex'>
+      <div className={`flex ${openDetail ? 'bg-[#F3F7FF]':''}`}>
         <div className='flex flex-col justify-stretch grow '>
           {
             (data?.segments || []).slice(qIndex,qIndex+1).map((obj,i) => {
@@ -138,11 +139,13 @@ export default function FlightOfferDisplay({data,path,showDetail,select,offer}) 
           <p className='self-start'>
             From 
           </p>
-          <div className='flex-1 flex flex-col '>
+          <div className='flex-1 flex flex-col mb-4'>
             <h5>{formatMoney(totalPrice)}</h5>
             <p>{Object.entries(data?.passengers || {}).map(([label,obj],ind) => (
-              <span key={ind} className='capitalize'>
+              <span key={ind} className='capitalize flex gap-4 flex-wrap'>
                 {obj.total} {label} - {formatMoney(obj.totalAmount)}
+                <span>Flight fare: {formatMoney(obj.totalAmountWithoutTax)}</span>
+                <span>Tax: {formatMoney(obj.totalAmount - obj.totalAmountWithoutTax)}</span>
               </span>
             ))}</p>
             {/* <p>1 Adult - {def.currency}50,000, 1 Child - {def.currency}10,000, 1 Infant - {def.currency}5,000 </p> */}

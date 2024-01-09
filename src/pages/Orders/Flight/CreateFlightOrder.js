@@ -19,7 +19,7 @@ import moment from 'moment'
 import TextInput from '../../../components/form/TextInput'
 import CitiesInput from '../../../components/form/CitiesInput'
 
-export default function CreateFlightOrder({callback,data}) {
+export default function CreateFlightOrder({callback,data,returnData}) {
   const [travelClass,setTravelClass] = useState('All');
   const [type,setType] = useState('return');
   const {bookingData} = useSelector(state => state.flightBooking);
@@ -158,6 +158,8 @@ export default function CreateFlightOrder({callback,data}) {
 
     let referralCode = searchParam.get('refCode');
 
+    if(returnData)
+      returnData(searchObj)
 
     if(callback)
       callback(searchObj);
@@ -275,12 +277,14 @@ export default function CreateFlightOrder({callback,data}) {
               />
             </div>
             {type === 'return' ? 
-              <CalendarInput1 ref={(el) => calendarRef.current[1] = el} label='Return Date' className='w-full border border-primary/20 rounded-md p-2'
-                value={date[1] || ''}
-                onChange={(value) => handleSetDate(value?.start || value,1)}
-                defaultMonth={new Date(date[0])}
-                config={{validDates: [date[0]]}}
-              />
+              <div className='flex-1'>
+                <CalendarInput1 ref={(el) => calendarRef.current[1] = el} label='Return Date' className='w-full border border-primary/20 rounded-md p-2'
+                  value={date[1] || ''}
+                  onChange={(value) => handleSetDate(value?.start || value,1)}
+                  defaultMonth={new Date(date[0])}
+                  config={{validDates: [date[0]]}}
+                  />
+              </div>
             :null}
           </div>
           {type === 'multiple' ? (
