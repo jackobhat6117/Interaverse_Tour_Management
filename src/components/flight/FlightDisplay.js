@@ -14,17 +14,19 @@ export default function FlightDisplay({flight: data}) {
 
   return (flight && flight?.flights[0]) && (
     <div className='flex flex-1 '>
-      <div className='flex flex-col gap-3 items-center justify-center p-3 w-[140px] text-center'>
-        <img alt='airline' src={flight?.flights[0].carrierIcon} />
-        <p>{flight?.flights[0].carrierName}</p>
+      <div className='flex flex-col items-center justify-center p-3 w-[140px] text-center'>
+        <img alt='airline' src={flight?.flights[0].carrierIcon} className=''/>
+        <p className=''>{flight?.flights[0].carrierName}</p>
       </div>
       <div className='flex flex-col gap-1 grow p-3 py-8'>
         {/* <p className=''>{flight?.flights[0].departureAirportName}</p> */}
-        <div className='flex justify-between items-center relative grow'>
-          <div className='flex flex-col justify-center gap-1  items-between'>
-            <b>{flight?.departureTime}</b>
-            <div>{flight?.flights[0]?.carrierName}</div>
-            <h6>{flight?.departureLocation}</h6>
+        <div className='flex justify-between items-center relative gap-2'>
+          <div className='flex flex-col justify-center gap-1  items-between '>
+            <div className='flex gap-2'>
+              <b>{flight?.departureTime}</b>
+              <h6>{flight?.departureLocation}</h6>
+            </div>
+            <div className='overflow-hidden max-w-[150px]'>{flight?.departureAirport}</div>
           </div>
           <div className='flex flex-col items-center justify-center '>
             <small className='whitespace-nowrap py-1 flex items-center gap-1'>
@@ -41,10 +43,12 @@ export default function FlightDisplay({flight: data}) {
               {flight?.numberOfStops || 0} stopover{flight?.numberOfStops > 1 ? 's':''}
             </small>
           </div>
-          <div className='flex flex-col justify-center gap-1 items-between'>
-            <b>{flight?.arrivalTime}</b>
-            <div>{flight?.flights[0]?.carrierName}</div>
-            <h6>{flight?.arrivalLocation}</h6>
+          <div className='flex flex-col justify-center gap-1 items-between '>
+            <div className='flex gap-2'>
+              <b>{flight?.arrivalTime}</b>
+              <h6>{flight?.arrivalLocation}</h6>
+            </div>
+            <div className='overflow-hidden max-w-[150px]'>{flight?.arrivalAirport}</div>
           </div>
         </div>
         <div className='p-1 flex gap-2'>

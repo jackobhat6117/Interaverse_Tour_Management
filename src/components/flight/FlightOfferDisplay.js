@@ -103,7 +103,7 @@ export default function FlightOfferDisplay({data,path,showDetail,select,offer}) 
               {formatMoney(Math.abs((totalPrice) - (lastPath?.totalAmount || 0)))}
             </h5>
             {data?.segments?.length > 1 ? 
-              <small>Round trip per traveller</small>
+              <small>Round trip /Person</small>
             :null}
             <small className={'rounded-md px-2 uppercase font-bold tracking-widest '+getSupplierClass(data?.supplier)}>
               {data?.supplier}
