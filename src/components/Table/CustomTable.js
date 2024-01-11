@@ -4,7 +4,7 @@ import SearchInput from "../form/SearchInput";
 import Button1 from "../form/Button1";
 
 export default function CustomTable(props) {
-  const { columns=[], rows=[], searchProps, loading, ...restProps } = props;
+  const { columns = [], rows = [], searchProps, loading, ...restProps } = props;
 
   const [searchVal, setSearchVal] = useState(searchProps?.q || "");
 
