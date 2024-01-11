@@ -27,9 +27,26 @@ export default function PassengerInfo({ label, traveler,order }) {
           </tbody>
         </table>
       </div>
-      <div>
-        <FlightInfo minify data={order}/>
+      <div className="flex flex-col gap-2 light-bg p-2 px-4">
+        <b>Flight Information</b>
+        <div className="flex gap-4 text-theme1">
+          <div className="flex gap-1">
+            <Icon icon='mdi:seat-passenger' />
+            <p>Seat 30J</p>
+          </div>
+          <div className="flex gap-1">
+            <Icon icon='mdi:bag-suitcase' />
+            <p>1 checked bag</p>
+          </div>
+          <div className="flex gap-1">
+            <Icon icon='game-icons:school-bag' />
+            <p>1 carry on bag</p>
+          </div>
+        </div>
       </div>
+      {/* <div>
+        <FlightInfo minify data={order}/>
+      </div> */}
     </div>
   );
 }

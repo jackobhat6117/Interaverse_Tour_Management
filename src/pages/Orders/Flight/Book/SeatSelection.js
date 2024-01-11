@@ -50,7 +50,7 @@ export default function SeatSelection({offer}) {
 }
 
 
-export function FlightSeatDisplay({obj,offers:gotOffers,routeIndex,readOnly}) {
+export function FlightSeatDisplay({obj,offers:gotOffers,routeIndex,readOnly,callback}) {
   const [open,setOpen] = useState(false);
   const [loading,setLoading] = useState(false);
 
@@ -91,6 +91,8 @@ export function FlightSeatDisplay({obj,offers:gotOffers,routeIndex,readOnly}) {
 
   function handleSelectedSeat(obj) {
     setSelectedSeat(obj);
+    if(callback)
+      return callback(obj);
 
     try {
       let count = 0;

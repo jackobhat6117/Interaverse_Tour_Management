@@ -19,6 +19,7 @@ import moment from 'moment'
 import TextInput from '../../../components/form/TextInput'
 import CitiesInput from '../../../components/form/CitiesInput'
 import { useSnackbar } from 'notistack'
+import AirlinesInput from '../../../components/form/AirlinesInput'
 
 export default function CreateFlightOrder({callback,data,returnData}) {
   const [travelClass,setTravelClass] = useState('All');
@@ -121,12 +122,18 @@ export default function CreateFlightOrder({callback,data,returnData}) {
     if(flightType !== 'Any') 
       searchObj['flightType'] = flightType;
     searchObj['requestedFlightTypes'] = noStops ? ['N'] : null;
-    searchObj['airlineOptions'] = airline ? {
-      "M": [airline]
-    }:null
-    if(corporateUniFares) {
-      searchObj['corporateUniFares'] = corporateUniFares.split(",")
-    }
+    // searchObj['airlineOptions'] = airline ? {
+    //   "M": [airline]
+    // }:null
+    try {
+      if(airline)
+        searchObj['flightFilters'] = {
+          allowedCarriers: [airline]
+        } 
+      if(corporateUniFares) {
+        searchObj['corporateUniFares'] = corporateUniFares.split(",")
+      }
+    } catch(ex) {console.log(ex)}
 
     // Backward Compatability
     searchObj['originDestinations']?.map(obj => {
@@ -147,17 +154,20 @@ export default function CreateFlightOrder({callback,data,returnData}) {
     let valid = searchObj['destinations']?.map((obj,i) => {
       if(obj.departureLocation === obj.arrivalLocation)
         return false;
+      if(!obj.departureLocation || !obj.arrivalLocation)
+        return false;
 
       // if(i > 0 && obj.departureLocation === searchObj['destinations'][i-1].departureLocation)
 
       return true;
     })
-    if(valid.some(val => !val)) return enqueueSnackbar('Invalid Route! Please select different places.',{variant: 'error'})
+    if(valid.some(val => !val)) return enqueueSnackbar('Invalid Route! Please select valid destination.',{variant: 'error'})
 
     
     // searchObj['currencyOverride'] = def.currencyCode;
     // setData(newData);
 
+    // return console.log(searchObj)
     let enc = encrypt(JSON.stringify(searchObj));
 
             // SET TIME ------
@@ -360,9 +370,9 @@ export default function CreateFlightOrder({callback,data,returnData}) {
           {showAdvanced ? 
             <div className='flex flex-col gap-4'>
               <div>
-                <CountriesInput label='Preferred Airline' placeholder='Search'
-                  value={airline || ''}
-                  onChange={(value) => setAirline(value?.start || value)}
+                <AirlinesInput label='Preferred Airline' placeholder='Search'
+                  // value={airline || ''}
+                  returnData={(value) => setAirline(value?.id || value)}
                 />
               </div>
               <div className='flex gap-4'>

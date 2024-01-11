@@ -11,6 +11,7 @@ import wallet from "../../assets/icons/payment/wallet.svg";
 export default function PaymentMethod({
   flightBookingId,
   callback,
+  handleReturn,
   className,
   deductCommission,
   hide,
@@ -55,6 +56,7 @@ export default function PaymentMethod({
     setLoading(true);
     const res = await payForTicket(obj);
     setLoading(false);
+    if(handleReturn) return handleReturn(res);
     if (res.return) {
       setPaymentUrl(res?.data?.data?.authorization_url);
       // navigate(data.link)

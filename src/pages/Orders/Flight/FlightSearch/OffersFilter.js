@@ -110,14 +110,18 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
   function filterByAirline(data,objs) {
     if(!data) return [];
     console.log(data,objs)
+    
+    if(objs.every(obj => !obj.value))
+      return data;
+    
     let newData = data?.filter(obj => {
       if(obj.segments)
-        if(obj.segments.every(item => item.flights.every((flight) => objs.every((d) => !d.value || (d.name === flight.carrierName)))))
+        if(obj.segments.every(item => item.flights.some((flight) => objs.filter(obj => obj.value).some((d) => (d.id === flight.marketingCarrier)))))
           return true;
       
       return false;
     })
-
+    
     return newData;
   }
   function filterBySuplier(data,objs) {

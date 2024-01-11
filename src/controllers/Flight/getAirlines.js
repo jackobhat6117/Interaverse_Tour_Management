@@ -8,14 +8,14 @@ export default async function getAirlineCodes(val) {
   let token = store.getState().user.userData.accessToken;
   
   // console.log("got iata q: ",val)
-  await fetchServer({method: "GET",url: `/flights/airline-codes/${val}`,
+  await fetchServer({method: "GET",url: `/product/v1/flight/airportCodes/${val}`,
       headers: {Authorization: `Bearer ${token}`}
   })
   .then((res) => {
     // console.log(" => ",{...res})
     if(res) {
       if(res.status === 200) {
-        result = {return: 1,msg: "Successfull",data: res.data};
+        result = {return: 1,msg: "Successfull",data: res.data?.data};
       }
     } 
   })

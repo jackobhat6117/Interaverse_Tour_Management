@@ -23,10 +23,11 @@ export default function FilterAirlines({returnData,orgi}) {
       setAirlines(airlineObjs.map(obj => JSON.parse(obj)))
     }
   },[orgi])
-
+  
+  console.log(airlines)
 
   function handleChange(val) {
-    if(val === null) return setAirlines(val);;
+    if(val === null) return false;
     
     let filtered = [...airlines];
     if(!airlines.find(d => d.name === val.name))
@@ -46,7 +47,7 @@ export default function FilterAirlines({returnData,orgi}) {
   return (
     <Collapse show label={<h5>Airlines</h5>}>
     <AirlinesInput option={airlines} label={"Search here"} returnData={handleChange} />
-    {airlines.map((obj,i) => (
+    {airlines?.map((obj,i) => (
       <label key={i} className='flex gap-4 justify-between'>
         <span className='flex gap-2'>
           <input name='xcountries' checked={obj.value} onChange={(ev) => handleCheck(ev.target.checked,i)} type='checkbox' />

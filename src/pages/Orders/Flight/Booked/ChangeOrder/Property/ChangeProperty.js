@@ -165,7 +165,7 @@ function Payment({ pageObj,prevResult,callback }) {
         <b>{formatMoney(0)}</b>
       </div>
 
-      <PaymentMethod expand hide={["flexify", "freeze", "booklater"]} />
+      <PaymentMethod handleReturn={callback} expand hide={["flexify", "freeze", "booklater"]} />
     </div>
   );
 }

@@ -10,7 +10,7 @@ export default function FlightDisplay({flight: data}) {
   //test
   const departureDateTime = moment(`${flight?.departureDate} ${flight?.departureTime}`, "YYYY-MM-DD HH:mm");
   const arrivalDateTime = moment(`${flight?.arrivalDate} ${flight?.arrivalTime}`, "YYYY-MM-DD HH:mm");
-  const duration = getFlightDuration(departureDateTime,arrivalDateTime);
+  const duration = getFlightDuration(departureDateTime,arrivalDateTime,'short');
 
   return (flight && flight?.flights[0]) && (
     <div className='flex flex-1 '>

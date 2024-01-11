@@ -1,18 +1,37 @@
+import { useState } from "react"
 import Button1 from "../../../../components/form/Button1"
 import RadioGroup from "../../../../components/form/RadioGroup"
 import { formatMoney } from "../../../../features/utils/formatMoney"
 
-export default function Insurance({cancel}) {
+export default function Insurance({cancel,callback,orgi}) {
     let data = {
       passengers: [
-        {name: 'Chinedu',insurance: true},
-        {name: 'Okafor',insurance: false},
+        // {
+        //   id: 1,
+        //   name: {firstName: 'Chinedu'},
+        //   insurance: true
+        // },
+        // {
+        //   id: 2,
+        //   name: {firstName: 'Okafor'},
+        //   insurance: false
+        // },
       ],
       plans: [
-        {title: 'I want diruption protection',description: 'Miles  will cover the cost of a new trip or offer an instant refund.',price: 100000},
-        {title: 'I want diruption protection',description: 'Miles  will cover the cost of a new trip or offer an instant refund.',price: 200000},
-        {title: 'I want diruption protection',description: 'Miles  will cover the cost of a new trip or offer an instant refund.',price: 300000},
+        {value: 1,title: 'I want disruption protection',description: 'Miles  will cover the cost of a new trip or offer an instant refund.',price: 100000},
+        {value: 2,title: 'I want disruption protection',description: 'Miles  will cover the cost of a new trip or offer an instant refund.',price: 200000},
+        {value: 3,title: 'I want disruption protection',description: 'Miles  will cover the cost of a new trip or offer an instant refund.',price: 300000},
       ]
+    }
+    if(orgi) {
+      if(orgi.passengers)
+        data.passengers = orgi.passengers?.map(obj => ({insurance:false,...obj}))
+    }
+    const [selectedPlan,setSelectedPlan] = useState();
+    const [selectedPassengers,setSelectedPassengers] = useState([]);
+
+    function handleSubmit() {
+      callback && callback({data,selectedPlan})
     }
     return (
       <div className='flex flex-col gap-6 card p-6 max-w-[600px]'>
@@ -21,11 +40,11 @@ export default function Insurance({cancel}) {
           <p>Select Passenger</p>
           {data?.passengers?.map((obj,i) => 
             <div className='flex justify-between gap-4'>
-              {obj.name}
-              {obj?.insurance ? 
-                <button>Remove</button>
+              {obj?.name?.firstName} {obj?.name?.lastName}
+              {selectedPassengers?.includes(obj?.id) ? 
+                <button onClick={() => setSelectedPassengers(prev => prev.filter(val => val !== obj?.id))}>Remove</button>
               :
-                <button>Add</button>
+                <button onClick={() => setSelectedPassengers(prev => [...prev,obj?.id])}>Add</button>
               }
             </div>
           )}
@@ -41,13 +60,16 @@ export default function Insurance({cancel}) {
               <b>{formatMoney(obj?.price)}</b>
             </div>
           </div>
-        )} />
+        )} 
+          value={selectedPlan}
+          onChange={(val) => {setSelectedPlan(val); console.log('selected',val)}}
+        />
   
         <div className='flex gap-4'>
           {cancel ? 
             <button className='px-4' onClick={cancel}>Cancel</button>
           :null}
-          <Button1>Confirm</Button1>
+          <Button1 onClick={handleSubmit}>Confirm</Button1>
         </div>
       </div>
     )

@@ -2,7 +2,6 @@ import { useState } from "react";
 import Modal1 from "../../../../components/DIsplay/Modal/Modal1";
 import AddFlightBaggage from "../../../../components/flight/Baggage";
 import CancelFlightOrder from "../../../../components/flight/CancelFlightOrder";
-import PolicyStatus from "../../../../components/flight/PolicyStatus";
 import AddFlightSeats from "../../../../components/flight/Seats";
 import Button1 from "../../../../components/form/Button1";
 import { alertType } from "../../../../data/constants";
@@ -50,17 +49,6 @@ export default function StatusBar({ data,needsReview }) {
           </b>
         </div>
       </div>
-
-      <PolicyStatus
-        title="Order Change Policy"
-        value={false}
-        text="This order is not changeable"
-      />
-      <PolicyStatus
-        title="Order Refund Policy"
-        value={true}
-        text="This order is refundable up until the initial departure date"
-      />
 
       {needsReview ? 
       <div className="flex flex-col gap-5">

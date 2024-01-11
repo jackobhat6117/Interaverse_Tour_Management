@@ -7,22 +7,23 @@ export default function AirlinesInput({val,returnData,option,label,icon,multiple
   const [ariline,setAriline] = useState([]);
   const [data,setData] = useState(val || "")
 
-  option.map(val => {
-    let airlines = [];
-    getAriline(val.id,(data) => (
-      airlines = [...data]
-    ))
-    console.log('----------')
-    return console.log(airlines)
-  })
+  // option?.map(val => {
+  //   let airlines = [];
+  //   getAriline(val.id,(data) => (
+  //     airlines = [...data]
+  //   ))
+  //   console.log('----------')
+  //   return console.log(airlines)
+  // })
   
   async function handleChange(val) {
     if(!val || val.length === 0)
-      return returnData(null)
+      return returnData && returnData(null)
     getAriline(val);
     setData(val);
   }
   function handleReturn(val) {
+    // console.log(' ---',val)
     if(returnData)
       returnData(val);
   }
@@ -32,8 +33,8 @@ export default function AirlinesInput({val,returnData,option,label,icon,multiple
     const res = await getAirlineCodes(val);
     if(res.return)
       if(!callback)
-        setAriline(res.data);
-      else callback(res.data)
+        setAriline(res.data?.data);
+      else callback(res.data?.data)
   }
 
   const filterOptions = (options, inputValue) => {

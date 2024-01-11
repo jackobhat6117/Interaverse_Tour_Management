@@ -20,6 +20,7 @@ import { useParams } from "react-router-dom";
 import getBooking from "../../../../controllers/booking/getBooking";
 import { LinearProgress } from "@mui/material";
 import { getPassengerCategory } from "../../../../utils/getPassengerCategory";
+import PolicyStatus from "../../../../components/flight/PolicyStatus";
 
 export default function FlightOrder() {
   const { id } = useParams();
@@ -74,7 +75,7 @@ export default function FlightOrder() {
         setOrder(res.data);
       }
     };
-    fetch();
+    // fetch();
   }, [id]);
   
   return (
@@ -184,6 +185,24 @@ export default function FlightOrder() {
             ) : null}
 
             <FlightInfo data={order} />
+
+            <div className="flex flex-wrap gap-4">
+              <div className="flex-1">
+                <PolicyStatus
+                  title="Order Change Policy"
+                  value={false}
+                  text="This order is not changeable"
+                />
+              </div>
+              <div className="flex-1">
+                <PolicyStatus
+                  title="Order Refund Policy"
+                  value={true}
+                  text="This order is refundable up until the initial departure date"
+                />
+              </div>
+            </div>
+
             <div className="py-4">
               {order?.orderDetail?.travelers &&
                 Array.isArray(order?.orderDetail?.travelers) &&

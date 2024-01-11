@@ -125,8 +125,7 @@ export default function OffersList({hide}) {
     } else {
       obj['supplier'] = offerSearchTemp.supplier;
       obj['flightFilters'] = {
-        ...(obj.flightFilters || {}),
-        allowedCarriers: null
+        ...(obj.flightFilters || {})
       }
     }
 

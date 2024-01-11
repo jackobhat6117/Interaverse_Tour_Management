@@ -22,15 +22,16 @@ export default function RadioGroup(props) {
   },[gotOpt,value])
 
   function handleChange(val) {
-    onChange && onChange(val);
     setSelected(val);
+    onChange && onChange(val);
   }
   return (
     // <RadioGroup options={[{label: 'asf',value: 'asdf'}]} render={({label,value}) => <div>{value}</div>}
     <MuiRadioGroup onChange={(ev) => handleChange(ev.target.value)} value={selected}>
       <div className={` ${className}`}>
-        {options?.map((obj,i) => (
-          <RadioInput key={i} value={obj?.value} checked={selected === obj?.value} className={radioClass}>
+        {options?.map((obj,i) => {
+          return (
+          <RadioInput key={i} value={obj?.value} checked={selected?.toString() === obj?.value?.toString()} className={radioClass}>
             {render && !obj.render ? 
               render(obj) 
               : obj.render ?
@@ -39,7 +40,7 @@ export default function RadioGroup(props) {
                 <div>{obj?.label}</div>
             }
           </RadioInput>
-        ))}
+        )})}
       </div>
     </MuiRadioGroup>
   )
