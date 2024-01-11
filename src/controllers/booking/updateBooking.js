@@ -24,7 +24,10 @@ import fetchServer from "../fetchServer";
  *   ],
  *   "travelersInfo": [
  *       {
+<<<<<<< HEAD
  *           "id": string,
+=======
+>>>>>>> 4a3383956f21f886c37fd419d966611f923e2de9
  *           "lastName": string,
  *           "firstName": string,
  *           "birthDate": string,

@@ -17,5 +17,5 @@ export default function ConfirmChangeModal({open,setOpen,callback,loading}) {
             </div>
         </div>
     </Modal1>
-  )
+  );
 }

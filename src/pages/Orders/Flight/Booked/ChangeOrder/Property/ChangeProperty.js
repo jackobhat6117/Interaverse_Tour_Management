@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import BreadCrumb from "../../../../../../components/DIsplay/Nav/BreadCrumb";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Tabs from "../../../../../../components/DIsplay/Nav/Tabs";
 import ChangePassenger from "./ChangePassenger";
 import ChangeInsurance from "./ChangeInsurance";
@@ -23,6 +23,7 @@ import ChangeSplitPNR from "./ChangeSplitPNR";
 import ChangeSplitPNRConfirm from "./ChangeSplitPNRConfirm";
 import ConfirmFlightOfferChange from "./ConfirmFlightOfferChange";
 
+<<<<<<< HEAD
 const payment = { value: "Payment", elem: <Payment /> };
 const confirmation = { value: "Confirmation", elem: <Confirmation /> };
 const properties = [
@@ -75,11 +76,87 @@ const properties = [
 ];
 
 export default function ChangeProperty({ property, obj }) {
+=======
+export default function ChangeProperty({ property, obj }) {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const id = searchParams?.get("id");
+  const [newData, setNewData] = useState({
+    firstName: "",
+    lastName: "",
+  });
+
+  const payment = { value: "Payment", elem: <Payment /> };
+  const confirmation = { value: "Confirmation", elem: <Confirmation /> };
+  const properties = [
+    { name: "unkProp", value: "???" },
+    {
+      name: "passenger",
+      value: "Passenger",
+      elem: (
+        <ChangePassenger
+          passenger={obj?.orderDetail?.travelers?.find(
+            (passenger) => passenger?.id === id,
+          )}
+          submit={(data) => {
+            setNewData(data);
+          }}
+        />
+      ),
+      view: (
+        <PassengerView
+          passenger={obj?.orderDetail?.travelers?.find(
+            (passenger) => passenger?.id === id,
+          )}
+          newData={newData}
+        />
+      ),
+    },
+    {
+      name: "class",
+      value: "Change flight date",
+      elem: <ChangeFlight />,
+      view: <FlightView />,
+    },
+    { name: "class", value: "Select flight", elem: <ChangeFlightOffer /> },
+    { name: "flight", value: "Change flight date", elem: <ChangeFlight /> },
+    { name: "flight", value: "Select flight", elem: <ChangeFlightOffer /> },
+    {
+      name: "seat",
+      value: "Add Seat to order",
+      elem: <ChangeSeat />,
+      view: <SeatView />,
+    },
+    { name: "seat", value: "Confirm seat", elem: <ChangeSeatConfirm /> },
+    {
+      name: "bags",
+      value: "Add bag to order",
+      elem: <ChangeBag />,
+      view: <BagView />,
+    },
+    { name: "bags", value: "Confirm bag", elem: <ChangeBagConfirm /> },
+    {
+      name: "contact",
+      value: "Change contact",
+      elem: <ChangeContact />,
+      view: <ContactView />,
+    },
+    // {name: 'contact',value: 'Confirm contact',elem: <ChangeContactConfirm />},
+    { name: "insurance", value: "Select Plan", elem: <ChangeInsurance /> },
+    { name: "pnr", value: "Split PNR", elem: <ChangeSplitPNR /> },
+    {
+      name: "pnr",
+      value: "Confirm Split PNR",
+      elem: <ChangeSplitPNRConfirm />,
+    },
+  ];
+>>>>>>> 4a3383956f21f886c37fd419d966611f923e2de9
 
   const [selected, setSelected] = useState();
   const [prevResult,setPrevResult] = useState();
 
   const props = properties?.filter((obj) => obj.name === property);
+
   let options = [
     ...(props.length ? props : [properties[0]]),
     payment,
@@ -161,7 +238,7 @@ function Payment({ pageObj,prevResult,callback }) {
 
       <div className="border rounded-md p-4 flex gap-4 justify-between">
         <b>Change Fee</b>
-        <b>{formatMoney(10000)}</b>
+        <b>{formatMoney(0)}</b>
       </div>
 
       <PaymentMethod expand hide={["flexify", "freeze", "booklater"]} />
