@@ -21,57 +21,60 @@ import BagView from "./ViewChange/BagView";
 import ContactView from "./ViewChange/Contact";
 import ChangeSplitPNR from "./ChangeSplitPNR";
 import ChangeSplitPNRConfirm from "./ChangeSplitPNRConfirm";
+import ConfirmFlightOfferChange from "./ConfirmFlightOfferChange";
 
 const payment = { value: "Payment", elem: <Payment /> };
 const confirmation = { value: "Confirmation", elem: <Confirmation /> };
+const properties = [
+  { name: "unkProp", value: "???" },
+  {
+    name: "passenger",
+    value: "Passenger",
+    elem: <ChangePassenger/>,
+    view: <PassengerView />,
+  },
+  {
+    name: "class",
+    value: "Change flight date",
+    elem: <ChangeFlight />,
+    view: <FlightView />,
+  },
+  { name: "class", value: "Select flight", elem: <ChangeFlightOffer /> },
+  { name: "class", value: "Confirm Date Change", elem: <ConfirmFlightOfferChange /> },
+  { name: "flight", value: "Change flight date", elem: <ChangeFlight /> },
+  { name: "flight", value: "Confirm Date Change", elem: <ConfirmFlightOfferChange /> },
+  { name: "flight", value: "Select flight", elem: <ChangeFlightOffer /> },
+  {
+    name: "seat",
+    value: "Add Seat to order",
+    elem: <ChangeSeat />,
+    view: <SeatView />,
+  },
+  { name: "seat", value: "Confirm seat", elem: <ChangeSeatConfirm /> },
+  {
+    name: "bags",
+    value: "Add bag to order",
+    elem: <ChangeBag />,
+    view: <BagView />,
+  },
+  { name: "bags", value: "Confirm bag", elem: <ChangeBagConfirm /> },
+  {
+    name: "contact",
+    value: "Change contact",
+    elem: <ChangeContact />,
+    view: <ContactView />,
+  },
+  // {name: 'contact',value: 'Confirm contact',elem: <ChangeContactConfirm />},
+  { name: "insurance", value: "Select Plan", elem: <ChangeInsurance /> },
+  { name: "pnr", value: "Split PNR", elem: <ChangeSplitPNR /> },
+  {
+    name: "pnr",
+    value: "Confirm Split PNR",
+    elem: <ChangeSplitPNRConfirm />,
+  },
+];
 
 export default function ChangeProperty({ property, obj }) {
-  const properties = [
-    { name: "unkProp", value: "???" },
-    {
-      name: "passenger",
-      value: "Passenger",
-      elem: <ChangePassenger booking={obj}/>,
-      view: <PassengerView />,
-    },
-    {
-      name: "class",
-      value: "Change flight date",
-      elem: <ChangeFlight />,
-      view: <FlightView />,
-    },
-    { name: "class", value: "Select flight", elem: <ChangeFlightOffer /> },
-    { name: "flight", value: "Change flight date", elem: <ChangeFlight /> },
-    { name: "flight", value: "Select flight", elem: <ChangeFlightOffer /> },
-    {
-      name: "seat",
-      value: "Add Seat to order",
-      elem: <ChangeSeat />,
-      view: <SeatView />,
-    },
-    { name: "seat", value: "Confirm seat", elem: <ChangeSeatConfirm /> },
-    {
-      name: "bags",
-      value: "Add bag to order",
-      elem: <ChangeBag />,
-      view: <BagView />,
-    },
-    { name: "bags", value: "Confirm bag", elem: <ChangeBagConfirm /> },
-    {
-      name: "contact",
-      value: "Change contact",
-      elem: <ChangeContact />,
-      view: <ContactView />,
-    },
-    // {name: 'contact',value: 'Confirm contact',elem: <ChangeContactConfirm />},
-    { name: "insurance", value: "Select Plan", elem: <ChangeInsurance /> },
-    { name: "pnr", value: "Split PNR", elem: <ChangeSplitPNR /> },
-    {
-      name: "pnr",
-      value: "Confirm Split PNR",
-      elem: <ChangeSplitPNRConfirm />,
-    },
-  ];
 
   const [selected, setSelected] = useState();
   const [prevResult,setPrevResult] = useState();
@@ -82,6 +85,8 @@ export default function ChangeProperty({ property, obj }) {
     payment,
     confirmation,
   ];
+
+  console.log(options)
 
   useEffect(() => {
     if (property) {
@@ -96,6 +101,7 @@ export default function ChangeProperty({ property, obj }) {
 
   function next(obj) {
     if(obj) setPrevResult(obj);
+    console.log(obj,'<---')
     let curIndex = options.findIndex((obj) => selected?.value === obj?.value);
     if (curIndex < options.length - 1) setSelected(options[curIndex + 1]);
   }
@@ -117,7 +123,7 @@ export default function ChangeProperty({ property, obj }) {
       </BreadCrumb>
 
       <div className="flex flex-col items-center gap-4 ">
-        <div className="w-[750px] max-w-full flex flex-col gap-4">
+        <div className="min-w-[750px] max-w-full flex flex-col gap-4">
           <div className="bg-primary/20 flex gap-4 justify-center p-4 w-full">
             <Tabs
               option={options}
@@ -132,8 +138,9 @@ export default function ChangeProperty({ property, obj }) {
           <div className="bg-secondary p-10">
             {selected?.elem &&
               React.cloneElement(selected?.elem, {
-                callback: () => next(),
+                callback: (obj) => next(obj),
                 back,
+                orgi: obj,
                 property,
                 prevResult,
                 pageObj: props[0],
@@ -145,7 +152,8 @@ export default function ChangeProperty({ property, obj }) {
   );
 }
 
-function Payment({ pageObj }) {
+function Payment({ pageObj,prevResult,callback }) {
+  if(!prevResult?.return || prevResult?.payment === false) return callback(prevResult);
   return (
     <div className="flex flex-col gap-4 ">
       {/* {pageObj?.view ? React.cloneElement(pageObj?.view,{data: pageObj}) : null} */}
@@ -161,8 +169,8 @@ function Payment({ pageObj }) {
   );
 }
 
-function Confirmation({ property, callback, pageObj }) {
-  return Math.random() * 2 > 1 ? (
+function Confirmation({ property, callback, pageObj, prevResult }) {
+  return prevResult?.return ? (
     <div className="flex flex-col gap-8">
       <div className="flex gap-4 justify-between">
         <h5>

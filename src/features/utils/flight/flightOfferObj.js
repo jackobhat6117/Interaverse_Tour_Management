@@ -12,11 +12,11 @@ export default function convertFlightObject(newObj) {
 
   var oldObj = {
     farePrice: {
-      fareTotal: convertPriceToNumber(newObj.pricingInformation.price.totalPrice),
-      convertedTotal: convertPriceToNumber(newObj.pricingInformation.price.totalPrice)
+      fareTotal: convertPriceToNumber(newObj?.pricingInformation?.price?.totalPrice),
+      convertedTotal: convertPriceToNumber(newObj?.pricingInformation?.price?.totalPrice)
     },
-    passengers:newObj?.pricingInformation.passengerFares,
-    totalAmount: convertPriceToNumber(newObj.pricingInformation.price.totalPrice),
+    passengers:newObj?.pricingInformation?.passengerFares,
+    totalAmount: convertPriceToNumber(newObj?.pricingInformation?.price?.totalPrice),
     segments: [],
     ...newObj
   };
@@ -30,7 +30,7 @@ export default function convertFlightObject(newObj) {
     }
   }
 
-  newObj.directions.forEach(function(direction) {
+  newObj?.directions?.forEach(function(direction) {
     let departureDate = moment(direction[0].departure.date);
     let arrivalDate = moment(direction[direction.length - 1].arrival.date);
     var segment = {

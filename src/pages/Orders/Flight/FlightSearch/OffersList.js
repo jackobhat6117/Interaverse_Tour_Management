@@ -380,33 +380,7 @@ export default function OffersList({hide}) {
   // classify with airline and price
   let modData = [];
 
-  function rearrageArray(array) {
-    const airlinesMatch = (cur,prev) => {
-      try {
-        let curAirlines = [...new Set(cur?.segments?.map(obj => obj.flights).flat().map(obj => obj.marketingCarrier))]
-        let prevAirlines = [...new Set(prev?.segments?.map(obj => obj.flights).flat().map(obj => obj.marketingCarrier))]
-        if(curAirlines.length === prevAirlines.length)
-          if(curAirlines.every(val => prevAirlines.includes(val)))
-            return true;
-      } catch(ex) {}
-
-      return false;
-    }
-    const result = array.reduce((acc,cur,ind) => {
-      if(ind > 0 && (cur.totalAmount === array[ind - 1].totalAmount &&
-                     airlinesMatch(cur,array[ind - 1]))) {
-        const prev = acc?.at(-1);
-        prev.objects.push(cur);
-      }
-      else 
-        acc.push({airline: '',price: '',objects: [cur]})
-
-      return acc
-    },[])
-
-    return result;
-  }
-  modData = rearrageArray(data);
+  modData = rearrageFlight(data);
 
 
   return (
@@ -605,12 +579,12 @@ export default function OffersList({hide}) {
   )
 }
 
-const SortedOffers = ({obj,params:{qIndex,showDetail,handleOfferSelect}}) => {
+export const SortedOffers = ({obj,offer,params:{qIndex,showDetail,handleOfferSelect,...restParams}}) => {
   const [view,setView] = useState(false);
 
   return (
   <div>
-    <FlightOfferDisplay path={qIndex} data={obj?.objects[0]} showDetail={async () => await showDetail(obj)} select={handleOfferSelect} />
+    <FlightOfferDisplay path={qIndex} offer={offer} data={obj?.objects[0]} showDetail={async () => await showDetail(obj)} select={handleOfferSelect} />
     {obj.objects.length > 1 ? (
       <div className={'flex flex-col gap-4 relative  '+(view?'bg-[#F3F7FF] -translate-y-[12px] shadow-inner':'')}>
         <div className='relative flex flex-col gap-2 mb-4'>
@@ -625,7 +599,7 @@ const SortedOffers = ({obj,params:{qIndex,showDetail,handleOfferSelect}}) => {
           <div className='flex flex-col gap-4 p-3'>
             {
               obj.objects.slice(1).map((obj,i) => (
-                <FlightOfferDisplay key={i} path={qIndex} data={obj} showDetail={async () => await showDetail(obj)} select={handleOfferSelect} />
+                <FlightOfferDisplay key={i} path={qIndex} offer={offer} data={obj} showDetail={async () => showDetail && await showDetail(obj)} select={handleOfferSelect} {...restParams} />
               ))
             }
           </div>
@@ -634,6 +608,33 @@ const SortedOffers = ({obj,params:{qIndex,showDetail,handleOfferSelect}}) => {
     ):null}
   </div>
   )
+}
+
+export function rearrageFlight(array) {
+  const airlinesMatch = (cur,prev) => {
+    try {
+      let curAirlines = [...new Set(cur?.segments?.map(obj => obj.flights).flat().map(obj => obj.marketingCarrier))]
+      let prevAirlines = [...new Set(prev?.segments?.map(obj => obj.flights).flat().map(obj => obj.marketingCarrier))]
+      if(curAirlines.length === prevAirlines.length)
+        if(curAirlines.every(val => prevAirlines.includes(val)))
+          return true;
+    } catch(ex) {}
+
+    return false;
+  }
+  const result = array.reduce((acc,cur,ind) => {
+    if(ind > 0 && (cur.totalAmount === array[ind - 1].totalAmount &&
+                   airlinesMatch(cur,array[ind - 1]))) {
+      const prev = acc?.at(-1);
+      prev.objects.push(cur);
+    }
+    else 
+      acc.push({airline: '',price: '',objects: [cur]})
+
+    return acc
+  },[])
+
+  return result;
 }
 
 

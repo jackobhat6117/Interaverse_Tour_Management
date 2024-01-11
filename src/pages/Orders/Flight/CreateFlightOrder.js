@@ -18,6 +18,7 @@ import Icon from '../../../components/HOC/Icon'
 import moment from 'moment'
 import TextInput from '../../../components/form/TextInput'
 import CitiesInput from '../../../components/form/CitiesInput'
+import { useSnackbar } from 'notistack'
 
 export default function CreateFlightOrder({callback,data,returnData}) {
   const [travelClass,setTravelClass] = useState('All');
@@ -31,6 +32,7 @@ export default function CreateFlightOrder({callback,data,returnData}) {
   const [airline,setAirline] = useState();
   const [markup,setMarkup] = useState({value: '',type: ''});
 
+  const {enqueueSnackbar} = useSnackbar();
   const [showAdvanced,setShowAdvanced] = useState(false);
 
   const [searchParam] = useSearchParams();
@@ -142,6 +144,16 @@ export default function CreateFlightOrder({callback,data,returnData}) {
       };
     })
 
+    let valid = searchObj['destinations']?.map((obj,i) => {
+      if(obj.departureLocation === obj.arrivalLocation)
+        return false;
+
+      // if(i > 0 && obj.departureLocation === searchObj['destinations'][i-1].departureLocation)
+
+      return true;
+    })
+    if(valid.some(val => !val)) return enqueueSnackbar('Invalid Route! Please select different places.',{variant: 'error'})
+
     
     // searchObj['currencyOverride'] = def.currencyCode;
     // setData(newData);
@@ -244,8 +256,8 @@ export default function CreateFlightOrder({callback,data,returnData}) {
             {!callback ? 
               <RadioGroup value={type} onChange={(ev) => setType(ev.target.value)} >
                 <div className='flex gap-4'>
-                  <RadioInput className='whitespace-nowrap' value={'oneway'} checked={type === 'oneway'}>One way</RadioInput>
                   <RadioInput className='whitespace-nowrap' value={'return'} checked={type === 'return'}>Return</RadioInput>
+                  <RadioInput className='whitespace-nowrap' value={'oneway'} checked={type === 'oneway'}>One way</RadioInput>
                   <RadioInput className='whitespace-nowrap' value={'multiple'} checked={type === 'multiple'}>Multi-city</RadioInput>
                 </div>
               </RadioGroup>

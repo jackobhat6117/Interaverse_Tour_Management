@@ -30,7 +30,7 @@ export default function Tabs({
       {option?.map((obj, i) => (
         <button
           key={i}
-          className={`${
+          className={`flex items-center ${
             value === obj.value || (index && index >= i)
               ? config.activeClass
               : config.inActiveClass

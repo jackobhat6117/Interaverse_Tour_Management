@@ -50,12 +50,12 @@ export default function SeatSelection({offer}) {
 }
 
 
-export function FlightSeatDisplay({obj,routeIndex,readOnly}) {
+export function FlightSeatDisplay({obj,offers:gotOffers,routeIndex,readOnly}) {
   const [open,setOpen] = useState(false);
   const [loading,setLoading] = useState(false);
 
   const {bookingData} = useSelector(state => state.flightBooking);
-  let offers = clone(bookingData?.offersPrice || bookingData?.offer) || []
+  let offers = clone(gotOffers || bookingData?.offersPrice || bookingData?.offer) || []
   let offer = Array.isArray(offers) ? offers?.at(-1) : offers;
   const dispatch = useDispatch();
 

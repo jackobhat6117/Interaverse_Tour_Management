@@ -9,7 +9,7 @@ import RadioGroup from "../../../../components/form/RadioGroup";
 import Icon from "../../../../components/HOC/Icon";
 import EmailInput from "../../../../components/form/EmailInput";
 import PhoneNumberInput from "../../../../components/form/PhoneNumberInput";
-import PrimaryPassenger from "../../../../components/flight/PrimaryPassenger";
+import PrimaryPassenger, { validateAge } from "../../../../components/flight/PrimaryPassenger";
 import Button1 from "../../../../components/form/Button1";
 import Modal1 from "../../../../components/DIsplay/Modal/Modal1";
 import { travelersInfo } from "../../../../data/flight/travelersInfo";
@@ -146,13 +146,28 @@ function PassengerDetails({ offer }) {
     let temp = data;
     temp.passengers[i] = obj;
     setData(temp);
-    // console.log(' => ',data,i)
+    // console.log(' => ',temp,i)
   }
 
-  // console.log(" -> ",data)
+  async function handleSubmit(ev) {
+    ev.preventDefault();
+    setTimeout(() => true,700)
+    // console.log(data.document.expiryDate)
+    const validAges = data.passengers.map(passenger => validateAge(passenger.birthDate,passenger?.gotType));
+    if(!validAges?.every(val => val[0]))
+      return false;
+    
+    const expiredPassport = data.passengers.map(passenger => moment(passenger.document.expiryDate).isBefore(moment(),'day'));
+    if(expiredPassport?.some(val => val))
+      return false;
+
+    setOpen(true);
+  }
+
+  console.log(" -> ",data.document)
   let count = 0;
   return (
-    <div className="flex flex-col gap-6 pb-10">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-6 pb-10">
       <h5>Contact Details</h5>
       <div className="flex gap-4">
         <div className="flex-1">
@@ -180,8 +195,8 @@ function PassengerDetails({ offer }) {
                 collapse={i + j !== 0}
                 key={count++}
                 count={count}
-                handleReturn={(obj, count) => {
-                  handlePassengers(obj, count);
+                handleReturn={(newObj, count) => {
+                  handlePassengers(newObj, count);
                 }}
                 label={
                   <div className="flex flex-1 items-center justify-between gap-4">
@@ -209,7 +224,7 @@ function PassengerDetails({ offer }) {
           </Button1>
         </div>
         <div className="flex-1">
-          <Button1 className="" onClick={() => setOpen(true)}>
+          <Button1 type='submit' className="" >
             Confirm booking
           </Button1>
         </div>
@@ -232,7 +247,7 @@ function PassengerDetails({ offer }) {
               <Button1 variant="text" onClick={() => setOpen(false)}>
                 Go back
               </Button1>
-              <Button1 className="sm:!p-3 sm:!px-4" onClick={book}>
+              <Button1 type='submit' className="sm:!p-3 sm:!px-4" onClick={book}>
                 Confirm
               </Button1>
             </div>
@@ -262,7 +277,7 @@ function PassengerDetails({ offer }) {
           </div>
         </div>
       </Modal1>
-    </div>
+    </form>
   );
 }
 

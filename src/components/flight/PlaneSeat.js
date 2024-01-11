@@ -102,7 +102,9 @@ function PlaneSeat({seatMapData,loading,returnData}) {
         </div>
       ))} */}
       
-      {!seats?.length && !loading && "---"}
+      <div className='flex items-center justify-center'>
+        {!seats?.length && !loading && "---"}
+      </div>
     </div>
   )
 }
