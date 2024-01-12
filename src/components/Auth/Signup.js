@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import {ReactComponent as TextLogo} from '../../assets/icons/textlogo.svg'
-import textlogo from '../../assets/icons/textlogo.svg'
 import logo from '../../assets/icons/logo.svg'
 import EmailInput from '../form/EmailInput'
 import PasswordInput from '../form/PasswordInput'
@@ -16,6 +15,7 @@ import { useSnackbar } from 'notistack'
 import Checkbox from '../form/Checkbox'
 import PhoneNumberInput from '../form/PhoneNumberInput'
 import Icon from '../HOC/Icon'
+import Logo from '../Logo/Logo'
 
 
 export default function Signup() {
@@ -53,10 +53,10 @@ export default function Signup() {
     <div className='flex min-h-screen '>
       <div className='bg-black hidden md:block flex-0'>
         <div className='w-full h-full hidden md:flex flex-col bg-theme1/40'>
-          <div className='lg:px-20 p-10 py-5 flex gap-2'>
+          <div className='lg:px-20 p-10 py-5 flex gap-2 text-white'>
             {/* <img src={logo} alt='' className='object-contain' /> */}
             {/* <img src={textlogo} alt='' className='' /> */}
-            <TextLogo className='text-secondary' />
+            <Logo />
           </div>
           <div className='flex flex-col p-10 lg:px-20 flex-1 gap-6 text-secondary'>
             <h4 className='pb-4 text-secondary'>Sell travel online seamlessly</h4>
@@ -157,7 +157,7 @@ export default function Signup() {
           </div>
           <form onSubmit={handleSubmit} className='flex flex-col items-center flex-1 sm:p-4'>
             <div className='lg:px-20 px-4 sm:hidden shadow-md w-full mb-2 bg-secondary'>
-              <img src={textlogo} alt='' className=' h-8 my-2' />
+              <TextLogo className='text-primary' />
             </div>
             <div className='bg-secondary rounded-lg px-4 !py-6 sm:card flex flex-col gap-5  sticky top-10'>
               <h5 className='pb-2 text-center sm:text-left'>Create an account on intraverse</h5>

@@ -32,8 +32,10 @@ export default async function fetchServer({
     if(err?.response?.status === 401) {
       store.dispatch(logout())
     }
-    throw new Error(err?.response?.status || "Network Error!")
-    // return err?.response?.data;
+    if(!err?.response?.status)
+      throw new Error(err?.response?.status || "Network Error! Please check your network connectivity.")
+
+    return err?.response?.data;
   })
 
   return res;

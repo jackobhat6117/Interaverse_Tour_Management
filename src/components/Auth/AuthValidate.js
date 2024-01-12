@@ -3,13 +3,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Outlet } from 'react-router-dom';
 import Auth from './Auth';
 import getAccount from '../../controllers/user/getAccount';
-import { setUserData } from '../../redux/reducers/userSlice';
+import { setUser } from '../../redux/reducers/userSlice';
+import LoadingBar from '../animation/LoadingBar';
+import Logo from '../Logo/Logo';
 
 
 export default function AuthValidate() {
   const {userData} = useSelector(state => state.user)
   const dispatch = useDispatch();
-
+  console.log(userData)
   useEffect(() => {
     loadUser();
     // eslint-disable-next-line
@@ -18,15 +20,21 @@ export default function AuthValidate() {
   async function loadUser() {
     const res = await getAccount();
     if(res.return)
-      dispatch(setUserData({loggedIn: true,accessToken: userData.accessToken,user: res?.data?.account}))
+      dispatch(setUser(res?.data?.account))
   }
 
-  const {loggedIn} = userData;
+  const {loggedIn,user} = userData;
 
   return (
     <div>
       {loggedIn ? (
+        user?._id ?
           <Outlet />
+        : 
+        <div className='flex flex-col gap-2 justify-center items-center h-screen w-full'>
+          <Logo />
+          <LoadingBar />
+        </div>
       ):<Auth />}
     </div>
   )

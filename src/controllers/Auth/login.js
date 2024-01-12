@@ -10,6 +10,8 @@ export default async function login(data) {
     } else result['msg'] = res?.data?.error || result['msg']
   })
   .catch((err) => {
+    console.log(err)
+    result['msg'] = err.message
     console.log('Network Error!')
   })
 

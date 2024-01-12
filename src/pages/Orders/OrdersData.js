@@ -217,6 +217,7 @@ export default function OrdersData({ data: gotData, setData: setOrig }) {
     },
   ];
   
+  console.log(data)
 
   return (
     <div className="pd-md flex-1 flex flex-col gap-1">

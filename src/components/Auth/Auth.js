@@ -27,11 +27,15 @@ export default function Auth() {
   async function validateGoogleToken() {
     // const newUrl = `${window.location.protocol}//${window.location.host}`;
     // window.history.replaceState({}, document.title, newUrl);
-    navigate('/')
-
+    
     setLoading(true);
     setTimeout(() => setLoading(false),4000)
-    dispatch(setUserData({loggedIn: false,accessToken,id: id,user: {}}))
+    dispatch(setUserData({loggedIn: true,accessToken,id: id,user: {}}))
+
+    navigate({
+      pathname: '/',
+      search: ''
+    })
   }
 
   useEffect(() => {

@@ -63,11 +63,12 @@ export default function AccountSettings() {
         <EmailInput 
           value={data.email}
           onChange={(ev) => setData({...data,email: ev.target.value})}
-          tooltip={
+          tooltip={!user?.isEmailVerified ?
             <div>
               To complete your registration, please verify your email with the link we sent to <b>{data.email}. </b> 
               Didn't receive an email? <b className='cursor-pointer' onClick={handleResendLink}>{!resent ? 'Resend confirmation link' : 'Sent'}</b>
             </div>
+            :null
           } 
         />
         <div className='flex justify-end'>

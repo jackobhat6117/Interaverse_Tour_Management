@@ -4,6 +4,7 @@ import { getCurrencySymbol } from "../../features/utils/countires";
 export function templateFlightOrderData(obj) {
   // let data = mergeRecursive({...obj},ordersDataTemplate)
   let data = {
+    ...obj,
     id: obj?._id,
     bookingId: obj?.bookingId,
     date: moment(obj?.createdAt)?.format("DD, MMM"),

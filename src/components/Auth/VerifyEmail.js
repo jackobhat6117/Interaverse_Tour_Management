@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import EmailInput from "../form/EmailInput";
 import Button1 from "../form/Button1";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import verifyEmail from "../../controllers/Auth/verifyEmail";
 import { useDispatch } from "react-redux";
@@ -16,12 +16,14 @@ export default function VerifyEmail() {
   const searchParam = new URLSearchParams(window?.location?.search);
   const email = searchParam.get("email");
   const [data, setData] = useState({ otp: "", email: email || "" });
-  // const navigate = useNavigate()
+  const location = useLocation();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const [verified, setVerified] = useState(false);
 
+  
   async function handleSubmit(ev) {
     ev?.preventDefault();
     ev?.stopPropagation();
@@ -35,9 +37,12 @@ export default function VerifyEmail() {
       // enqueueSnackbar('Welcome, your email has been verified.',{variant: 'success'});
       let { token: accessToken, account: user } = res.data?.data;
       dispatch(setUserData({ accessToken, user, loggedIn: true }));
-      // setTimeout(() => {
-      //   navigate('/')
-      // },4000)
+      setTimeout(() => {
+        navigate({
+          pathname: location.pathname,
+          search: ''
+        })
+      },4000)
     } else enqueueSnackbar(res.msg, { variant: "error" });
   }
 

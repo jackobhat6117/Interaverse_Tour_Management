@@ -35,6 +35,7 @@ export default function Orders() {
         )
         return true;
       })
+      console.log(data)
       data = data?.map(obj => templateFlightOrderData(obj))
       setData(data)
     }
