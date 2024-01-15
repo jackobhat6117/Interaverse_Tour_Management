@@ -46,6 +46,8 @@ export default function ProfileSurvey() {
     let cur = 0;
     let stop = false;
 
+    console.log(completedSteps)
+
     completedSteps.map((obj) => {
       if (!stop) obj.complete ? cur++ : (stop = true);
 
@@ -70,10 +72,13 @@ export default function ProfileSurvey() {
         if (obj.complete) cur = i;
         return true;
       });
-      if (step > cur + 1) setStep(cur + 1);
+      
+      if(edit) {
+        setStep(Math.min(edit-1,cur))
+      } else if (step > cur + 1) setStep(cur + 1);
     }
     //eslint-disable-next-linex
-  }, [step, completedSteps, completed]);
+  }, [step, completedSteps, completed, edit]);
 
   async function sendProfile(data) {
     let modData = { ...data };
@@ -90,6 +95,9 @@ export default function ProfileSurvey() {
         // setStep(step => step+1)
       } else {
         enqueueSnackbar("Profile Completed", { variant: "success" });
+        navigate({
+          search: 'step=5'
+        })
         // dispatch(setUser(res?.data?.data))
       }
       res?.data?.data && dispatch(setUser(res?.data?.data));
@@ -172,6 +180,7 @@ export default function ProfileSurvey() {
           ) : step >= steps.length || completed ? (
             <ReviewBusinessProfile
               userId={user?._id}
+              completed={completed}
               setStep={setStep}
               activate={() => setActivated(true)}
             />
@@ -184,7 +193,7 @@ export default function ProfileSurvey() {
   );
 }
 
-function ReviewBusinessProfile({ userId, setStep, activate }) {
+function ReviewBusinessProfile({ setStep, activate, completed }) {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -201,7 +210,7 @@ function ReviewBusinessProfile({ userId, setStep, activate }) {
     const res = await updateProfile({ requestedVerification: true });
     if (res.return) {
       activate && activate();
-      dispatch(setUser(res?.data));
+      dispatch(setUser(res?.data?.data));
     } else
       enqueueSnackbar("Failed requesting activation. Please contact support", {
         variant: "error",
@@ -244,17 +253,17 @@ function ReviewBusinessProfile({ userId, setStep, activate }) {
         </div>
       ) : null}
 
-      {edit && Number(edit) <= 3 ? (
+      {edit && Number(edit) <= steps.length ? (
         <div>
           <Button1 onClick={() => handleContinue()}>Continue</Button1>
         </div>
-      ) : (
+      ) : completed ? (
         <div>
           <Button1 onClick={activateBusiness} loading={loading}>
             {!edit ? "Submit for review" : "Resubmit for review"}
           </Button1>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

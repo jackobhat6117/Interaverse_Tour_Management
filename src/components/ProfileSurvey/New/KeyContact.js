@@ -22,7 +22,9 @@ function KeyContact({updateProfile,back,next,review}) {
   const qedit = searchParams.get('edit')
   const [edit,setEdit] = useState(false);
 
-  async function handleChange() {
+  async function handleSubmit(ev) {
+    ev?.preventDefault();
+    
     if(updateProfile) {
       const {contact} = data;
       setLoading(true);
@@ -47,7 +49,7 @@ function KeyContact({updateProfile,back,next,review}) {
       : 
         <h4 className='py-4'>Edit representative details</h4>
       }
-      <div className='flex flex-col flex-wrap gap-4 justify-between self-stretch py-4'>
+      <form onSubmit={handleSubmit} className='flex flex-col flex-wrap gap-4 justify-between self-stretch py-4'>
         <div className='flex gap-4 flex-nowrap'>
           <TextInput key='regName' label={'First Name'} placeholder={'e.g Chiemena'}
             value={data?.contact?.firstName || ''}
@@ -66,7 +68,7 @@ function KeyContact({updateProfile,back,next,review}) {
           <MenuItem value='Share holder'>Share Holder</MenuItem>
         </SelectInput>
         <div>
-          <EmailInput label='Contact Email' placehodler='hello@gmail.com' 
+          <EmailInput label='Contact Email' placehodler='hello@gmail.com' required
             value={data?.contact?.email || ''}
             onChange={(ev) => setData({...data,contact:{...data.contact,email: ev.target.value}})}
           />
@@ -79,9 +81,9 @@ function KeyContact({updateProfile,back,next,review}) {
         </div>
         <div className='flex justify-between gap-4'>
           <Button1 className='!w-auto' onClick={back} variant='text'>Go back</Button1>
-          <Button1 className='!w-auto' onClick={handleChange} loading={loading} >{!qedit ? 'Next':'Update'}</Button1>
+          <Button1 className='!w-auto' type='submit' loading={loading} >{!qedit ? 'Next':'Update'}</Button1>
         </div>
-      </div>
+      </form>
     </div>
   )
 }

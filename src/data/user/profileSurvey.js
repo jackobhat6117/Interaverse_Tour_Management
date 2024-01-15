@@ -1,4 +1,6 @@
 export const profileSurveyData = {
+  "agencyType": "",
+  
   "registeredBusinessName": "",
   "tradingName": "",
   "sizeOfOrganization": "", //Small, Medium, Large
@@ -14,13 +16,15 @@ export const profileSurveyData = {
     "addressTwo": "",
     "additionalInfo": "",
   },
+  "businessEmail": '',
+  "businessPhone": '',
   "businessLocation": '',
   'position': '',
 
 	"agencyURL":"",
 	"agencyLogo":"",
   "legalInfo": {
-    "phone": '',
+    "companyNumber": '',
     "country": '',
     "taxIdentification": '',
   },

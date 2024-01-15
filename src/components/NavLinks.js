@@ -1,9 +1,9 @@
-import { HomeOutlined, Person, ShoppingCartOutlined, SupportAgentOutlined } from "@mui/icons-material";
+import { HomeOutlined, Person, ShoppingCartOutlined } from "@mui/icons-material";
 import { Tab, Tabs } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import Icon from "./HOC/Icon";
 import { useSelector } from "react-redux";
+import Icon from "./HOC/Icon";
 
 
 // const returnPage = (link) => link === 0 ? ''  
@@ -23,13 +23,13 @@ export default function NavLinks({profileCompleted}) {
   const page = locations[1]||'';
   const navigate = useNavigate();
   const [link,setLink] = useState(0)
-  const verified = user?.detail?.isVerified;
+  const profileComplete = user?.detail?.isProfileComplete;
 
   // const [initialPage,setInitialPage] = useState(link);
 
 
   useEffect(() => {
-    setLink(page === '' ? 0 
+    let pag = (page === '' ? 0 
     :
     page === 'order' ? 1
     :
@@ -38,6 +38,8 @@ export default function NavLinks({profileCompleted}) {
     page === 'support' ? 3
     :
     0)
+    setLink(!profileComplete?pag+1:pag)
+    //eslint-disable-next-line
   },[page])
 
   // useEffect(() => {
@@ -54,10 +56,13 @@ export default function NavLinks({profileCompleted}) {
     navigate(ev.target.dataset.link)
   }
 
-  return profileCompleted && !verified ? (
+  return profileCompleted ? (
     <div className="">
       <Tabs variant="scrollable" value={link} onChange={handleLink} className="font-bold" 
         TabIndicatorProps={{sx: {height: '4px'}}}>
+        {!profileComplete?
+          <Tab label='Getting Started' data-link="/welcome" icon={<Icon icon='heroicons:rocket-launch' className=' -rotate-[43deg]' />} iconPosition="start" className='!capitalize !min-w-[150px] md:flex-1 !whitespace-nowrap' />
+        :null}
         <Tab label='Home' data-link="/" icon={<HomeOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
         <Tab label='Orders' data-link="/order" icon={<ShoppingCartOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
         <Tab label='Customers' data-link="/users" icon={<Person />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />

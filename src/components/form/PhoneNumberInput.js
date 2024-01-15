@@ -35,7 +35,7 @@ export default function PhoneNumberInput({value,onChange,label,className,disable
     <div className={'relative text-[15px] '+className}>
     <FormControl variant='outlined' component='fieldset' className='!border-primary/20 hover:!border-primary !rounded-md !flex !nowrap !p-2 -translate-y-2' sx={{border: 1}} required={required}>
       {/* <InputLabel shrink className='bg-secondary font-bold !px-2 -ml-2' >{label !== null ? label : 'Phone Number'} </InputLabel> */}
-      <legend shrink className='!px-2 text-xs' >{label !== null ? label : 'Phone Number'} </legend>
+      <legend shrink className='!px-2 text-xs' >{label !== null ? label : 'Phone Number'} {required?'*':''} </legend>
       <div className='flex justify-end'>
       <input className={'!w-[60px] !px-2 py-1 flex-none cursor-pointer bg-inherit '+(size==='small'?'!py-0':'')} disabled={disabled}
         name='phoneCode'

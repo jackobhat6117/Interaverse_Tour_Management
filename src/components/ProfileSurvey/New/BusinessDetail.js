@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import TextInput from '../../form/TextInput'
 import { profileSurveyData } from '../../../data/user/profileSurvey'
 import RadioGroup from '../../form/RadioGroup'
@@ -130,7 +130,14 @@ function DetailInfo({next,back,updateProfile}) {
   const searchParams = new URLSearchParams(location.search);
   const edit = searchParams.get('edit')
 
-  async function handleSubmit() {
+  useEffect(() => {
+    if(!user?.detail?.agencyType)
+      back();
+  },[user,back])
+
+  async function handleSubmit(ev) {
+    ev.preventDefault();
+
     let {tradingName,address,businessEmail,businessPhone} = data;
     
     setLoading(true);
@@ -155,7 +162,7 @@ function DetailInfo({next,back,updateProfile}) {
 
   // console.log(user,data)
   return (
-    <div className='flex flex-col gap-4'>
+    <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
       {!edit ? 
         <div className='flex flex-col gap-2 py-4'>
           <h4 className=''>Hey {user.firstName}, let's get you started!</h4>
@@ -165,14 +172,14 @@ function DetailInfo({next,back,updateProfile}) {
         <h4 className='py-4'>Edit business detail</h4>
       }
       <div>
-        <TextInput key={'tradeName'} label={'Trading name'} 
+        <TextInput key={'tradeName'} label={'Trading name'} required
           value={data.tradingName || ''}
           onChange={(ev) => setData({...data,tradingName: ev.target.value})}          
         />
       </div>
       <div>
         <MapAutoComplete handleReturn={handleLocation}>
-          <TextInput key='regName' label={'Business Address'} 
+          <TextInput key='regName' label={'Business Address'} required
             placeholder={data?.address?.businessLocation || 'e.g 14b wole ariyo street, Lekki, Lagos'}
             // value={data?.address?.location[0] || ''}
             // onChange={(ev) => setData({...data,address:{location: [Number(ev.target.value),Number(ev.target.value)]}})}
@@ -180,20 +187,20 @@ function DetailInfo({next,back,updateProfile}) {
         </MapAutoComplete>
       </div>
       <div>
-        <PhoneNumberInput label={'Business Phone number'} placeholder='e.g 8170000000'
+        <PhoneNumberInput label={'Business Phone number'} placeholder='e.g 8170000000' required
           value={data?.businessPhone}
           onChange={(value) => setData({...data,businessPhone: value})}
         />
       </div>
       <div>
-        <EmailInput label='Business Email' placehodler='hello@gmail.com'
+        <EmailInput label='Business Email' placehodler='hello@gmail.com' required
           value={data?.businessEmail}
           onChange={(ev) => setData({...data,businessEmail: ev.target.value})}
         />
       </div>
         <div className='flex justify-between gap-4'>
           <Button1 className='!w-auto' onClick={() => back(edit)} variant='text'>Go back</Button1>
-          <Button1 className='!w-auto' onClick={handleSubmit} loading={loading}>{!edit ? 'Next':'Update'}</Button1>
+          <Button1 className='!w-auto' type='submit' loading={loading}>{!edit ? 'Next':'Update'}</Button1>
         </div>
       {/* {!edit ? 
       :null
@@ -202,7 +209,7 @@ function DetailInfo({next,back,updateProfile}) {
         //   <Button1 className='!w-auto'>Update</Button1>
         // </div>
       } */}
-    </div>
+    </form>
   )
 }
 

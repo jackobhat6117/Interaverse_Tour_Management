@@ -20,7 +20,8 @@ export default function checkProfileComplete(user) {
         break;
 
       case 'Key Contact':
-        if(contact?.firstName && contact?.lastName && contact?.email && contact?.phoneNumber && contact?.position)
+        // if(contact?.firstName && contact?.lastName && contact?.email && contact?.phoneNumber && contact?.position)
+        if(contact?.email)
           temp.complete = true;
         break;
       

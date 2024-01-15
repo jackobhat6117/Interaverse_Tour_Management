@@ -21,7 +21,9 @@ function LegalEntity({updateProfile,back,next,review}) {
 
   const [edit,setEdit] = useState(false);
 
-  async function handleChange() {
+  async function handleSubmit(ev) {
+    ev?.preventDefault();
+
     let {registeredBusinessName,typeOfBusiness,legalInfo: {taxIdentification,companyNumber}} = {...data};
     if(updateProfile) {
       if(user?.detail?.agencyType === 'starterBusiness') {
@@ -52,40 +54,40 @@ function LegalEntity({updateProfile,back,next,review}) {
       :
         <h4 className='py-4'>Edit business registration information</h4>
       }
-      <div className='flex flex-col flex-wrap gap-4 justify-between self-stretch py-4'>
+      <form onSubmit={handleSubmit} className='flex flex-col flex-wrap gap-4 justify-between self-stretch py-4'>
         <div>
-          <TextInput key='regName' label={'Registered business name'}
+          <TextInput key='regName' label={'Registered business name'} required
             value={data.registeredBusinessName || ''}
             onChange={(ev) => setData({...data,registeredBusinessName: ev.target.value})}
           />
         </div>
-        <SelectInput label='Type of registered business' 
+        <SelectInput label='Type of registered business' required
          value={data.typeOfBusiness || ''}
          onChange={(ev) => setData({...data,typeOfBusiness: ev.target.value})}>
           <MenuItem value='Private Limited'>Private limited</MenuItem>
           <MenuItem value='Sole proprietor'>Sole proprietor</MenuItem>
           <MenuItem value='Non-registered'>Non-registered</MenuItem>
         </SelectInput>
-        <TextInput key={'tradeName'} label={'Company Number'} placeholder={'e.g RC1234'}
+        <TextInput key={'tradeName'} label={'Company Number'} placeholder={'e.g RC1234'} required
             value={data?.legalInfo?.companyNumber || ''}
             onChange={(ev) => setData({...data,legalInfo:{...data?.legalInfo,companyNumber: ev.target.value}})}          
           />
         <div>
-          <TextInput key={'tradeName'} label={'Tax identification number'} placeholder='e.g 0123456789-1234'
+          <TextInput key={'tradeName'} label={'Tax identification number'} placeholder='e.g 0123456789-1234' required
             value={data?.legalInfo?.taxIdentification || ''}
             onChange={(ev) => setData({...data,legalInfo:{...data.legalInfo,taxIdentification: ev.target.value}})}          
           />
         </div>
         <div className='flex justify-between gap-4'>
           <Button1 className='!w-auto' onClick={back} variant='text'>Go back</Button1>
-          <Button1 className='!w-auto' onClick={handleChange} loading={loading}>{!qedit ? 'Next': 'Update'}</Button1>
+          <Button1 className='!w-auto' type='submit' loading={loading}>{!qedit ? 'Next': 'Update'}</Button1>
         </div>
-      </div>
+      </form>
     </div>
   ) : (
     <div className='flex flex-col max-w-[500px] slide items-center py-10 self-center gap-10 text-center flex-1 justify-center'>
       <p>As a regulated company, we will need you to complete this step when you have registered your business.</p>
-      <Button1 loading={loading} onClick={() => handleChange()}>Continue</Button1>
+      <Button1 loading={loading} onClick={handleSubmit}>Continue</Button1>
     </div>
   )
 }
