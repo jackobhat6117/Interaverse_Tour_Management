@@ -20,6 +20,7 @@ import { teamRolesData } from '../../data/team/rolesData';
 import { clone } from '../../features/utils/objClone';
 import updateTeamMemberRole from '../../controllers/settings/team/updateTeamMemberRole';
 import getSentInvitations from '../../controllers/settings/team/getSentInvitations';
+import deleteTeamInvitation from '../../controllers/settings/team/deleteInvitation';
 
 
 const Action = createContext();
@@ -27,8 +28,12 @@ const Action = createContext();
 function ActionCol({params,reload}) {
   const {enqueueSnackbar} = useSnackbar();
 
-  async function handleDelete() {
-    const res = await deleteTeamMember(params.id);
+  async function handleDelete(type) {
+    let res = {return: 0, msg:'Something went wrong on our end. (0xTM31)'}
+    if(type === 'Invited')
+      res = await deleteTeamInvitation(params.id);
+    else
+      res = await deleteTeamMember(params.id);
     if(res.return) {
       enqueueSnackbar('Removed',{variant: 'success'})
       reload && reload();
@@ -60,7 +65,7 @@ function ActionCol({params,reload}) {
         }
       >
         <Action.Consumer>
-          {({updateRole,resendInvitation}) => (
+          {({updateRole,resendInvitation,filter}) => (
 
             <div className='flex flex-col bg-secondary rounded-lg p-2'>
             {['Inactive','Deactivated'].includes(params?.row?.status) ? 
@@ -92,7 +97,7 @@ function ActionCol({params,reload}) {
               </Button1>
             }
             <Button1 className='!bg-red-500 !text-white flex !gap-2 !justify-start '
-              onClick={handleDelete}
+              onClick={() => handleDelete(filter?.value)}
             >
               <Delete className='!w-6 !h-6 ' fontSize='small' />
               Delete</Button1>
@@ -196,6 +201,7 @@ export default function TeamMembers() {
         <Action.Provider value={{
             updateRole: {open: (val) => setOpenUpdateRole(val || true)},
             resendInvitation,
+            filter,
           }}>
           <CustomTable loading={loading} rows={data} columns={columns}
             // filterModel={filter}

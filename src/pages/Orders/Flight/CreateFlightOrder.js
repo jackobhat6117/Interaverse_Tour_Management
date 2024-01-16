@@ -316,11 +316,11 @@ export default function CreateFlightOrder({callback,data,returnData}) {
                 <div key={i+1} className='flex gap-4 items-center'>
                   <div className='flex flex-col gap-4'>
                     <div className='flex gap-4'>
-                      <CountriesInput label={'Origin'} placeholder='Origin'
+                      <CitiesInput label='Where from?' placeholder='Origin' lockUpdate={lockupd}
                         value={destination[i+1]?.from || ''}
                         onChange={(val) => handleSetDestination({...destination[i+1],from: val?.alpha2 || val},i+1)}
                       />
-                      <CountriesInput label={'Destination'} placeholder='Destination'
+                      <CitiesInput label={'Where to?'} placeholder='Destination'  lockUpdate={lockupd}
                         value={destination[i+1]?.to || ''}
                         onChange={(val) => handleSetDestination({...destination[i+1],to: val?.alpha2 || val},i+1)}         
                       />
@@ -328,8 +328,8 @@ export default function CreateFlightOrder({callback,data,returnData}) {
                     <CalendarInput1 ref={el => calendarRef.current[i+1] = el} label='Departure Date' className='w-full border border-primary/20 rounded-md p-2'
                       value={d || ''}
                       onChange={(value) => handleSetDate(value?.start || value,i+1)}
-                      defaultMonth={new Date(date[i-1])}
-                      config={{validDates: [date[i-1]]}}
+                      defaultMonth={new Date(date[i-1]||date[0])}
+                      config={{validDates: [date[i-1]||date[0]]}}
                     />
                   </div>
                   <div>

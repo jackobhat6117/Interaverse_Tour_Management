@@ -141,10 +141,10 @@ export default function FlightOfferDisplay({data,path,showDetail,select,offer}) 
           </p>
           <div className='flex-1 flex flex-col mb-4'>
             <h5>{formatMoney(totalPrice)}</h5>
-            <p>{Object.entries(data?.passengers || {}).map(([label,obj],ind) => (
-              <span key={ind} className='capitalize flex gap-4 flex-wrap'>
+            <p className='flex flex-col gap-2'>{Object.entries(data?.passengers || {}).map(([label,obj],ind) => (
+              <span key={ind} className='capitalize flex flex-wrap'>
                 {obj.total} {label} - {formatMoney(obj.totalAmount)}
-                <span>Flight fare: {formatMoney(obj.totalAmountWithoutTax)}</span>
+                <span className='px-3'>Flight fare: {formatMoney(obj.totalAmountWithoutTax)}</span>
                 <span>Tax: {formatMoney(obj.totalAmount - obj.totalAmountWithoutTax)}</span>
               </span>
             ))}</p>

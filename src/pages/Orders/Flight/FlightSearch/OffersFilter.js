@@ -48,7 +48,7 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
 
     let newQObj = qObj;
     newQObj.travelClass = objs.name
-    newQObj.cabinClass = [objs.name]
+    newQObj.cabinClass = [objs.otherName || objs.name]
     // console.log('cabin: ',objs);
     // console.log('qObj: ',newQObj);
 

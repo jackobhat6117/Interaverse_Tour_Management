@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import Collapse from "../../mini/Collapse";
-import { def } from "../../../config";
 import { clone } from "../../../features/utils/objClone";
-import RadioInput from "../../form/RadioInput";
-import { Radio } from "@mui/material";
+import { formatMoney } from "../../../features/utils/formatMoney";
 
 export default function FilterStops({returnData,orgi,cats}) {
   const [stops,setStops] = useState([
@@ -58,7 +56,7 @@ export default function FilterStops({returnData,orgi,cats}) {
             <input name='stops' type='radio' value={data.name} onChange={(ev) => handleChange(ev.target.value)} />
             <span>{data.label}</span>
           </span>
-          {def.currency}{data.value}
+          {data.value ? formatMoney(data.value) : '-'}
         </label>
       ))}
       <label className="flex gap-2 py-3 cursor-pointer">

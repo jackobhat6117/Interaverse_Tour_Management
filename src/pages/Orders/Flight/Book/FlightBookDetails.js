@@ -80,10 +80,10 @@ function PassengerDetails({ offer }) {
   const { id } = useParams();
   const { bookingData } = useSelector((state) => state.flightBooking);
   const segments = bookingData?.offer?.at(-1)?.segments || [];
-  const departure = segments[0]?.departureLocation;
-  let arrival =
-    segments[segments.length - 1]?.arrivalLocation ||
-    segments[0]?.arrivalLocation;
+  // const departure = segments[0]?.departureLocation;
+  // let arrival =
+  //   segments[segments.length - 1]?.arrivalLocation ||
+  //   segments[0]?.arrivalLocation;
   const [open, setOpen] = useState(false);
   const [bookingDone, setBookingDone] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -219,7 +219,7 @@ function PassengerDetails({ offer }) {
       </div> */}
       <div className="flex justify-between gap-4">
         <div className="flex-1">
-          <Button1 className="!w-auto !bg-primary !text-secondary">
+          <Button1 className="!w-auto !bg-primary !text-secondary" to={`/order/new/flight/book/${id}`}>
             Go back
           </Button1>
         </div>
@@ -230,12 +230,12 @@ function PassengerDetails({ offer }) {
         </div>
       </div>
       <Modal1 open={open} setOpen={setOpen}>
-        <div className="flex flex-col">
+        <div className="flex flex-col max-w-[560px]">
           <div className="flex flex-col items-center gap-4 p-10">
             <h4>Confirm flight booking</h4>
             <p>
               By clicking confirm you have booked this flight for{" "}
-              <b>{departure}</b> to <b>{arrival}</b>
+              {segments.map(obj => obj.departureLocation + ' to ' + obj?.arrivalLocation)?.join('. ')}
             </p>
           </div>
           {loading ? (
@@ -281,7 +281,7 @@ function PassengerDetails({ offer }) {
   );
 }
 
-function PayTime({ callback }) {
+export function PayTime({ callback }) {
   const options = [
     {
       value: "paynow",

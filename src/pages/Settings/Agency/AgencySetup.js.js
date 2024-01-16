@@ -28,8 +28,8 @@ export default function AgencySetupSetting() {
     //   let phone = restData.legalInfo.phone;
     //   if(phone.length < 6)
     //     restData.legalInfo.phone = (phone+'00000000000')?.substring(0,14)
-    // } catch(ex) {console.log(ex)}    setLoading(true);
-
+    // } catch(ex) {console.log(ex)}    
+    setLoading(true);
     const res = await updateProfile(restData)
     setLoading(false);
     if(res.return) {

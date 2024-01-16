@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import Collapse from "../../mini/Collapse";
-import { def } from "../../../config";
 import { formatMoney } from "../../../features/utils/formatMoney";
 import { clone } from "../../../features/utils/objClone";
 
 export default function FilterCabin({returnData,cats,orgi}) {
   const [cabin,setCabin] = useState([
-    {name:'All',label: 'Any',value: 0},
-    {name:'ECONOMY',label: 'Economy class',value: 0},
-    {name:'PREMIUM',label: 'Premium economy',value: 0},
-    {name:'BUSINESS',label: 'Bussiness class',value: 0},
-    {name:'FIRST_SUPERSONIC',label: 'First Class',value: 0},
+    {name:'All',otherName: 'Economy',label: 'Any',value: 0},
+    {name:'ECONOMY',otherName: 'Economy',label: 'Economy class',value: 0},
+    {name:'PREMIUM',otherName: 'PremiumEconomy',ternaryName: 'PREMIUM_ECONOMY',label: 'Premium economy',value: 0},
+    {name:'BUSINESS',otherName: 'Business',label: 'Bussiness class',value: 0},
+    {name:'FIRST_SUPERSONIC',otherName: 'FirstClass',label: 'First Class',value: 0},
   ])
   const [selectedValue,setSelectedValue] = useState('');
 
@@ -26,7 +25,7 @@ export default function FilterCabin({returnData,cats,orgi}) {
     temp.map(data => {
       cats.cheapest && cats.cheapest.find(i => {
         try {
-          if(data.name === 'All' || orgi[i]?.segments[0].flights?.every(obj => obj.cabin === data.name)) {
+          if(data.name === 'All' || orgi[i]?.segments[0].flights?.every(obj => ([data.name,data.otherName,data.ternaryName].includes(obj.cabin)))) {
             data.value = orgi[i].totalAmount
             return true;
           }
@@ -56,7 +55,7 @@ export default function FilterCabin({returnData,cats,orgi}) {
             <input name='cabin' type='radio' value={data.name} checked={selectedValue === data.name} onChange={(ev) => handleChange(ev.target.value)} />
             <span>{data.label}</span>
           </span>
-          {formatMoney(data.value)}
+          {data.value ? formatMoney(data.value) : '-'}
         </label>
       ))}
     </Collapse>
