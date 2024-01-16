@@ -22,7 +22,7 @@ export default function Card({obj,className,elem}) {
         <div>{obj.icon}</div>
         <div>{obj.title}</div>
       </div>
-      <p>{obj.description}</p>
+      <p className="flex-1">{obj.description}</p>
       <div className="w-full">{obj.footer}</div>
     </ScreenViewObserver>
   )

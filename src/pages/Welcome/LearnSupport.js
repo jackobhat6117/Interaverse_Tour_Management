@@ -8,6 +8,8 @@ import Collapsible from '../../components/DIsplay/Collapsible'
 import ScreenViewObserver from '../../components/animation/ScreenViewObserver'
 import getFAQs from '../../controllers/FAQ/getFAQs'
 import { Link } from 'react-router-dom'
+import liveChat from '../../assets/icons/Live Chat.svg'
+import phoneBook from '../../assets/icons/Phone Book.svg'
 
 
 export default function LearnSupport() {
@@ -111,15 +113,15 @@ const questions = [
 
 const cards = [
   {
-    icon: <div className='min-h-[50px]'><Icon icon='bi:chat-dots-fill' /></div>,title: 'Live Chat',
+    icon: <img src={liveChat} className='h-[50px]' alt='' />,title: 'Live Chat',
     description: 'Need help with a purchase, or just want to chat with a friendly representative, our live chat is here to provide instant support.',
     footer: <div className='inline-block'>
       <Button1>Start live chat</Button1>
     </div>
   },
   {
-    icon: <div className='min-h-[50px]'><Icon icon='bi:chat-dots-fill' /></div>,title: 'Contact details',
-    description: 'Need help with a purchase, or just want to chat with a friendly representative, our live chat is here to provide instant support.',
+    icon: <img src={phoneBook} className='h-[40px]' alt='' />,title: 'Contact details',
+    description: "We're here to listen, assist, and engage with you, ensuring your inquiries and feedback are handled promptly and professionally.",
     footer: <div className='flex gap-3 justify-between text-primary/50'>
       <div className='bg-primary/[5%] rounded-md p-3'><Icon icon='subway:call-2' /></div>
       <div className='bg-primary/[5%] rounded-md p-3'><Icon icon='mdi:email-arrow-right' /></div>
@@ -127,8 +129,8 @@ const cards = [
     </div>
   },
   {
-    icon: <div className='min-h-[50px]'><img alt='' src={socialMediaIcon} className='w-10 h-10' /></div>,title: 'Social Media',
-    description: 'Need help with a purchase, or just want to chat with a friendly representative, our live chat is here to provide instant support.',
+    icon: <img alt='' src={socialMediaIcon} className='w-10 h-10' />,title: 'Social Media',
+    description: 'Stay updated on the latest news, exciting promotions, and engaging content.',
     footer: <div className='flex gap-3 justify-between text-primary/50'>
       <Link to='https://instagram.com/IntraverseHQ' className='bg-primary/[5%] rounded-md p-3'><Icon icon='mdi:instagram' /></Link>
       <Link to='https://facebook.com/IntraverseHQ' className='bg-primary/[5%] rounded-md p-3'><Icon icon='mdi:facebook' /></Link>

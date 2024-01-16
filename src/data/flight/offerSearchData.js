@@ -40,6 +40,11 @@ export const offerSearchTemp = {
   // ],
   // "preferredCarriers": []
   //   }
+  // adjustment: {
+  //   type: '', // Markup, Markdown
+  //   method: '', // Fixed, Percentage
+  //   adjustment: 0,
+  // }
 };
 
 // export const old = {

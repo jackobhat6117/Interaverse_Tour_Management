@@ -12,6 +12,7 @@ import { useSnackbar } from 'notistack';
 import { clone } from '../../../../features/utils/objClone';
 import getFlightOfferPrice from '../../../../controllers/Flight/getOfferPrice';
 import convertFlightObject from '../../../../features/utils/flight/flightOfferObj';
+import updateBooking from '../../../../controllers/booking/updateBooking';
 
 
 export default function FlightAncillaries() {
@@ -43,39 +44,42 @@ export default function FlightAncillaries() {
       } catch(ex) {console.log(ex)}
       return true;
     }))
-    const priceReq = {
-      supplier: offer?.supplier,
-      offers: [modOffer]
-    }
+    // const priceReq = {
+    //   supplier: offer?.supplier,
+    //   offers: [modOffer]
+    // }
 
     setLoading(true);
     try {
-      const resPrice = await getFlightOfferPrice(priceReq);
-      if(resPrice.return) {
-        let data = (resPrice.data.data?.map(obj => convertFlightObject(obj)) || [])
-        const pricedOffer = (data)
-        dispatch(setBookingData({...bookingData,offersPrice: data}))
+      // const resPrice = await getFlightOfferPrice(priceReq);
+      // if(resPrice.return) {
+        // let data = (resPrice.data.data?.map(obj => convertFlightObject(obj)) || [])
+        // const pricedOffer = (data)
+        // dispatch(setBookingData({...bookingData,offersPrice: data}))
 
-        let passengerCount = Object.values(offer?.passengers)?.reduce((c,p) => parseInt(c.total) + parseInt(p.total))
-
+        // let passengerCount = Object.values(offer?.passengers)?.reduce((c,p) => parseInt(c.total) + parseInt(p.total))
+        let req = bookingData?.orderData?.params
         
-        let req = {
-          supplier: offer?.supplier,
-          offers: pricedOffer,
-          travelersInfo: bookingData?.travelersInfo
-          // travelersInfo: clone(offer?.passengers)?.slice(0,passengerCount || 1)
-        }
+        // let req = {
+        //   supplier: offer?.supplier,
+        //   offers: booked,
+        //   travelersInfo: bookingData?.travelersInfo
+        //   // travelersInfo: clone(offer?.passengers)?.slice(0,passengerCount || 1)
+        // }
+
+        const pnr = bookingData?.orderData?.booking?.bookingId
+        // console.log(pricedOffer)
         
         // dispatch(setBookingData({...bookingData,travelersInfo: req.travelersInfo}))
 
         setLoading(true);
-        const res = await bookFlightOffer(req);
+        const res = await updateBooking(pnr,req);
         if(res.return) {
           // setBookingDone(true);
           dispatch(setBookingData({...bookingData,orderData: res?.data}))
           navigate(`/order/new/flight/book/payment/${id}`)
         } else enqueueSnackbar(res.msg,{variant: 'error'})
-      } else enqueueSnackbar(resPrice.msg,{variant: 'error'})
+      // } else enqueueSnackbar(resPrice.msg,{variant: 'error'})
     } catch(ex) {console.log(ex)}
     setLoading(false);
   }
@@ -101,9 +105,11 @@ export default function FlightAncillaries() {
           <SeatSelection offer={offer} />
         </div>
 
-        <FlightPriceSummary onBook footer={
-          <Button1 loading={loading} className='btn-theme rounded-md flex justify-center' onClick={() => book()}>Proceed to checkout</Button1>
-        } data={offer} />
+        <div className='sticky top-0'>
+          <FlightPriceSummary onBook footer={
+            <Button1 loading={loading} className='btn-theme rounded-md flex justify-center' onClick={() => book()}>Proceed to checkout</Button1>
+          } data={offer} />
+        </div>
       </div>
     </div>
   )

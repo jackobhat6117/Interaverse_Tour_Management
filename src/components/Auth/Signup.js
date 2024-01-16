@@ -51,14 +51,14 @@ export default function Signup() {
 
   return (
     <div className='flex min-h-screen '>
-      <div className='bg-black hidden md:block flex-0'>
+      <div className='bg-black hidden md:block flex-0 '>
         <div className='w-full h-full hidden md:flex flex-col bg-theme1/40'>
           <div className='lg:px-20 p-10 py-5 flex gap-2 text-white'>
             {/* <img src={logo} alt='' className='object-contain' /> */}
             {/* <img src={textlogo} alt='' className='' /> */}
             <Logo />
           </div>
-          <div className='flex flex-col p-10 lg:px-20 flex-1 gap-6 text-secondary'>
+          <div className='flex flex-col p-10 lg:px-20 flex-1 gap-6 text-secondary justify-center'>
             <h4 className='pb-4 text-secondary'>Sell travel online seamlessly</h4>
             <Service title={'Get instant connection to top flight GDS'} icon={flightCheckedIcon}>
               Search, book and issue tickets - without the need for accreditation or industry expertise.
@@ -149,18 +149,19 @@ export default function Signup() {
         
       ):( // sign up form
 
-        <div className='flex-1 flex flex-col sm:bg-theme1/10'>
+        <div className='flex-1 flex flex-col sm:bg-theme1/10 max-h-scroll overflow-auto justify-center'>
           <div className='lg:px-20 px-10 self-center md:hidden p-4 hidden sm:flex gap-2 w-full'>
             <img src={logo} alt='' className='object-contain' />
             <TextLogo className='text-primary' />
             {/* <img src={textlogo} alt='' className=' h-8 my-2' /> */}
           </div>
           <form onSubmit={handleSubmit} className='flex flex-col items-center flex-1 sm:p-4'>
-            <div className='lg:px-20 px-4 sm:hidden shadow-md w-full mb-2 bg-secondary'>
-              <TextLogo className='text-primary' />
+            <div className='lg:px-20 p-4 sm:hidden flex justify-center w-full mb-2 bg-secondary'>
+              <TextLogo className='text-primary h-4' />
             </div>
-            <div className='bg-secondary rounded-lg px-4 !py-6 sm:card flex flex-col gap-5  sticky top-10'>
-              <h5 className='pb-2 text-center sm:text-left'>Create an account on intraverse</h5>
+            <h5 className='sm:hidden text-primary/50'>Sell travel online seamlessly</h5>
+            <div className='bg-secondary rounded-lg px-4 !py-6 sm:card flex flex-col gap-5 sticky top-10'>
+              <h5 className='pb-2 text-center sm:text-left'>Create an account on Intraverse</h5>
               <div className='flex gap-4 flex-wrap sm:flex-nowrap'>
                 <TextInput size='small' required label={'First Name'} placeholder={'e.g John'}
                   value={data.firstName}

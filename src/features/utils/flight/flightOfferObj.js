@@ -68,7 +68,8 @@ export default function convertFlightObject(newObj) {
         arrivalLocation: flight.arrival.location,
         duration: flight.duration,
         numberOfStops: flight.numberOfStops || (direction.length - 1),
-        baggage: flight.baggage
+        baggage: flight.baggage,
+        amenities: flight?.amenities
       };
 
       segment['duration'] = flight.duration

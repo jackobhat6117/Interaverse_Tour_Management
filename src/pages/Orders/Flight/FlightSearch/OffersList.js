@@ -582,7 +582,7 @@ export const SortedOffers = ({obj,offer,params:{qIndex,showDetail,handleOfferSel
   const [view,setView] = useState(false);
 
   return (
-  <div>
+  <div className='px-4'>
     <FlightOfferDisplay path={qIndex} offer={offer} data={obj?.objects[0]} showDetail={async () => await showDetail(obj)} select={handleOfferSelect} />
     {obj.objects.length > 1 ? (
       <div className={'flex flex-col gap-4 relative  '+(view?'bg-[#F3F7FF] -translate-y-[12px] shadow-inner':'')}>

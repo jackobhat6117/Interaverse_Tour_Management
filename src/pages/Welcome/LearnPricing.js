@@ -227,17 +227,17 @@ const pricePlans = [
     fee: def.currency+'0',
     features: ['Start selling instantly','Earn airline commissions','Issue tickets with our authority','Issue tickets with our authority','Change name, date and re-issue ','No upfront payment','$3 ticketing fee','$2 Ancillaries fee'],
     color: '#2DA771',
-    footer: <Button1>Start your 30 day free trial</Button1>},
+    footer: <Button1 className="!bg-[#2DA771]">Start your 30 day free trial</Button1>},
   {title: 'Growth',description: 'APIs to components - everything you need to build your travel experience.',
     fee: def.currency+' 50,000',
     features: ['All starter features','Use own PCC / Office ID','Use your own IATA accreditation','Accept payment directly','Get your own selling website','$500 one-time setup fee applies*'],
     color: '#1E61DC',
-    footer: <Button1>Start your 30 day free trial</Button1>},
+    footer: <Button1 className="!bg-[#1E61DC]">Start your 30 day free trial</Button1>},
   {title: 'Enterprise',description: 'Get a full custom implementation done by our dedicate team.',
     fee: 'Contact us',
     features: ['Eerything in pay as you go plan','Enterprice level pricing','Volume discount','Tailored monetisation strategy support','Dedicated technical support','Use your own IATA accreditation'],
     color: '#6A59D1',
-    footer: <Button1>Contact our sales team</Button1>},
+    footer: <Button1 className="!bg-[#6A59D1]">Contact our sales team</Button1>},
 ]
 
 const features = [

@@ -135,6 +135,16 @@ export default function CreateFlightOrder({callback,data,returnData}) {
       }
     } catch(ex) {console.log(ex)}
 
+    try {
+      if(markup.value) {
+        searchObj['adjustment'] = {
+          type: 'Markup',
+          method: markup.type,
+          adjustment: Number(markup.value)
+        }
+      }
+    } catch(ex) {}
+
     // Backward Compatability
     searchObj['originDestinations']?.map(obj => {
       obj.departure.date = moment(obj.date).format('YYYY-MM-DD');
@@ -384,8 +394,8 @@ export default function CreateFlightOrder({callback,data,returnData}) {
                   value={markup?.type}
                   onChange={(ev) => setMarkup({...markup,type: ev.target.value})}
                 >
-                  <MenuItem value='percent'>Percent</MenuItem>
-                  <MenuItem value='value'>value</MenuItem>
+                  <MenuItem value='Percentage'>Percent</MenuItem>
+                  <MenuItem value='Fixed'>value</MenuItem>
                 </TextInput>
               </div>
             </div>

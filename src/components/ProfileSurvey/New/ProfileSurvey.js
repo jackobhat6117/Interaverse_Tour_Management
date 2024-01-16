@@ -145,6 +145,9 @@ export default function ProfileSurvey() {
       </div>
       <div className="overflow-y-auto max-h-full flex-1 max-w-full">
         <div className="flex flex-col items-center justify-center flex-1 p-4 max-w-full">
+          <div className="md:hidden">
+            <Logo />
+          </div>
           <Link
             to="/welcome/"
             className="flex items-center justify-end gap-1 w-full px-6 my-2 py-2 text-gray-500 font-bold"
@@ -163,7 +166,7 @@ export default function ProfileSurvey() {
                 </div>
               ) : null}
 
-              <div className="flex-1 flex flex-col justify-center">
+              <div className="flex-1 flex flex-col gap-5 justify-center">
                 <CurComp
                   data={data}
                   setData={setData}
@@ -175,6 +178,12 @@ export default function ProfileSurvey() {
                   next={stepNext}
                   loading={loading}
                 />
+                <Link
+                  to="/welcome/"
+                  className="flex items-center justify-center gap-1 w-full px-6 my-2 py-2 text-gray-500 font-bold"
+                >
+                  Close and continue later
+                </Link>
               </div>
             </div>
           ) : step >= steps.length || completed ? (
@@ -185,6 +194,8 @@ export default function ProfileSurvey() {
               activate={() => setActivated(true)}
             />
           ) : null}
+
+
         </div>
       </div>
     </div>

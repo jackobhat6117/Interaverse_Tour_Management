@@ -16,13 +16,15 @@ export default function FlightInfoCard({data,label='Depart'}) {
   // const departureDateTime = moment(`${data?.departureDate} ${data?.departureTime}`, "YYYY-MM-DD HH:mm");
   // const arrivalDateTime = moment(`${data?.arrivalDate} ${data?.arrivalTime}`, "YYYY-MM-DD HH:mm");
   const amenities = [
-    {icon: seat,value: true},
-    {icon: food,value: true},
-    {icon: seat2,value: true},
-    {icon: cabin,value: true},
-    {icon: stopwatch,value: true},
-    {icon: wifi,value: true,name: 'WIFI'},
+    {icon: seat,description: 'EXTRA LARGE SEAT',value: false, name: 'Extra large seat'},
+    {icon: food,description: 'MEALS AND DRINKS',value: false, name: ''},
+    {icon: seat2,description: '',value: true, name: ''},
+    {icon: cabin,description: '',value: true, name: ''},
+    {icon: stopwatch,description: '',value: true, name: ''},
+    {icon: wifi,description: '',value: true, name: 'WIFI'},
   ]
+
+  console.log(data?.flights?.map(flight => flight?.amenities)?.flat())
   return (
     <div className=' rounded-md w-full border-gray-300 bg-secondary'>
       <div className='flex gap-4 justify-between p-5'>
@@ -37,7 +39,10 @@ export default function FlightInfoCard({data,label='Depart'}) {
         </b>
       </div>
       {
-        data?.flights?.map((flight,i) => (
+        data?.flights?.map((flight,i) => {
+          const refundable = flight?.amenities?.find(amen => amen.description === 'REFUNDS')
+          const changable = flight?.amenities?.find(amen => amen.description === "CHANGEABLE TICKET")
+          return (
           <div key={i}>
 
             <div className=' '>
@@ -80,13 +85,15 @@ export default function FlightInfoCard({data,label='Depart'}) {
                 </div>
               </div>
               <div className='flex gap-6 p-4 px-6 indent-1 uppercase flex-wrap'>
-                <label className={`${false?'error':'triumph'} text-xs bg-opacity-30`}>{false ? 'Non Changable Ticket' : 'Changable Ticket'}</label>
-                <label className={`${true?'error':'triumph'} text-xs bg-opacity-30`}>{true ? 'Non refundable Ticket':'Refundable Ticket'}</label>
+                <label className={`${!changable?'error':'triumph'} text-xs bg-opacity-30`}>{!changable ? 'Non Changable Ticket' : 'Changable Ticket'}</label>
+                <label className={`${!refundable?'error':'triumph'} text-xs bg-opacity-30`}>{!refundable ? 'Non refundable Ticket':'Refundable Ticket'}</label>
                 <div className='flex gap-4'>
                   {amenities.map((obj,i) => 
-                    <Tooltip title={obj.name} key={i}>
+                    flight?.amenities?.find(amen => (amen.description === obj.description)) || obj.value ?
+                    <Tooltip title={obj.name || obj.description} key={i}>
                       <img alt='' src={obj.icon} />
                     </Tooltip>
+                    :null
                   )}
                 </div>
               </div>
@@ -122,7 +129,8 @@ export default function FlightInfoCard({data,label='Depart'}) {
 
 
           </div>
-        ))
+          )
+        })
       }
     </div>
   )

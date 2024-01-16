@@ -17,7 +17,7 @@ export default function ProfileStatusCheck() {
   
 
   const list = [
-    {label: 'Business Detail',title: 'Submit business information',description: 'please tell us a little about your travel business to serve you better',complete: true},
+    {label: 'Business Detail',title: 'Submit business information',description: 'Please tell us a little about your travel business to serve you better',complete: true},
     {label: 'Legal Entity',title: 'Submit legal entity',description: 'As a regulated travel technology company, we would need  your business registration information.',complete: false},
     {label: 'Key Contact',title: 'Submit representative information',description: 'A business representative is either an owner, director or shareholder of your business.',complete: false},
   ]
