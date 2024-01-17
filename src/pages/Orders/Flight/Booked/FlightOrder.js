@@ -75,8 +75,10 @@ export default function FlightOrder() {
         setOrder(res.data);
       }
     };
-    // fetch();
+    fetch();
   }, [id]);
+
+  console.log(order)
   
   return (
     <div className="flex flex-col gap-4 pd-md py-4">

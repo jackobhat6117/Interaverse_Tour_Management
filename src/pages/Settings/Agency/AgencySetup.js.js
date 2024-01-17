@@ -11,17 +11,27 @@ import CountriesInput from "../../../components/form/CountriesInput";
 import { useSelector } from "react-redux";
 import Map from "../../../components/form/Map";
 import mergeRecursive from "../../../features/utils/mergeRecursive";
+import ToolTip from "../../../components/DIsplay/ToolTip";
 
 export default function AgencySetupSetting() {
   const {user} = useSelector(state => state.user.userData);
-  const [data,setData] = useState({
+  const [data,setDataa] = useState({
     detail: mergeRecursive(profileSurveyData,user.detail,{createNew: false}),
   })
   const [loading,setLoading] = useState(false);
   const {enqueueSnackbar} = useSnackbar();
 
+  function setData(val) {
+    if(user?.detail?.requestedVerification)
+      return false
+    setDataa(val)
+  }
   async function handleSubmit(ev) {
     ev.preventDefault();
+    
+    if(user?.detail?.requestedVerification)
+      return enqueueSnackbar('Your profile is under review! you can not edit at this time!',{variant: 'warning'})
+
     const {interestedIn,goalsWithMiles,agencyLogo,agencyURL,phone,...restData} = data.detail;    
     // const {interestedIn,goalsWithMiles,agencyLogo,agencyURL,phone,...restData} = data.detail;    
     // try {
@@ -61,6 +71,10 @@ export default function AgencySetupSetting() {
       </div> */}
       <div className='flex flex-col gap-3 py-3'>
         <h5>Business Details</h5>
+        {(user?.detail?.requestedVerification) ? 
+          <ToolTip>Your profile is under review! you can not edit your profile at this time.</ToolTip>
+        :null}
+
         <p className="pb-3">We would be delighted to enable you to sell genuine flights. Before we proceed, we kindly request some information about your business. This data is necessary to meet the requirements set by regulatory bodies and financial partners, as well as the provisions outlined in our Service Agreement.</p>
         <TextInput select label='Business Type'
           value={data.detail.agencyType}

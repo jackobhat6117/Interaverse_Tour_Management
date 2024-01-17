@@ -11,7 +11,8 @@ export default async function getTeamMembers(query) {
     } else if(res?.data?.error) result['msg'] = res.data.error
   })
   .catch((err) => {
-    console.log('Network Error!')
+    result['msg'] = err?.message;
+    console.log(err?.message)
   })
 
   return result;

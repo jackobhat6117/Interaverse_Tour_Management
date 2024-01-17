@@ -106,6 +106,7 @@ export default function FlightPayment() {
             className={"w-full"}
             flightBookingId={booking?.booking?.flightBooking[0]?._id}
             deductCommission={deductCommission}
+            callback={() => navigate(`/order/flight/${booking?.booking?.flightBooking[0]?._id}`)}
           />
         </div>
       )}

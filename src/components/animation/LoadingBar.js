@@ -2,11 +2,13 @@ import React, { useEffect, useRef } from 'react'
 import loadingBar from '../../assets/json/loading-bar.json';
 import Lottie from 'lottie-web';
 
-export default function LoadingBar({config={},className,progress}) {
+export default function LoadingBar({config={},className,duration}) {
   const animationContainer = useRef(null);
+  const animationInstance = useRef(null);
+  // const initTime = (new Date()).getMilliseconds();
 
   useEffect(() => {
-    const animation = Lottie.loadAnimation({
+    animationInstance.current = Lottie.loadAnimation({
       container: animationContainer.current,
       renderer: 'svg',
       loop: false,
@@ -15,12 +17,26 @@ export default function LoadingBar({config={},className,progress}) {
       // rendererSettings: {
       //   preserveAspectRatio: 'xMidYMid slice',
       // },
-      duration: 100000,
       ...config
     })
 
-    return () => animation.destroy()
-  },[config])
+    if(duration) {
+      const animationDuration = animationInstance.current.getDuration();
+      animationInstance.current.setSpeed(animationDuration / duration);
+
+      // const desiredDuration = 10; // Desired duration in seconds
+      // const animationDuration = animationInstance.current.getDuration(); // Convert animation duration to seconds
+      // const speed = animationDuration !== 0 ? desiredDuration / animationDuration : 1;
+
+      // animationInstance.current.setSpeed(speed);
+    }
+
+    return () => {
+      if (animationInstance.current) {
+        animationInstance.current.destroy();
+      }
+    };
+  },[config,duration])
 
   return (
     <div ref={animationContainer} className={'h-[200px] '+className}></div>
