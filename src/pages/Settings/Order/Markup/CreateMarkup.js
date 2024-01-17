@@ -20,39 +20,31 @@ export default function CreateMarkup({
 }) {
   const [data, setData] = useState(
     defData || {
-      appliedTo: "",
-      method: "",
-      type: "MarkUp",
-      amount: "",
+      appliedTo: "Flight",
+      method: "Percentage",
+      type: "Markup",
+      amount: 0,
       name: "",
-      appliedType: "",
+      currency: undefined,
+      passengerType: undefined,
+      flightRoute: undefined,
+      airline: undefined,
+      departureAirport: undefined,
+      arrivalAirport: undefined,
+      transitAirport: undefined,
+      cabinClass: undefined,
+      ticketClass: undefined,
+      arrivalTime: undefined,
+      departureTime: undefined,
     },
   );
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleChange = (event) => {
-    const { value } = event.target;
-    let newval;
-    setData((data) => {
-      if (data.appliedTo.includes(value)) {
-        newval = data.appliedTo.filter((val) => val !== value);
-      } else {
-        newval = [...data.appliedTo, value];
-      }
-      return { ...data, appliedTo: newval };
-    });
-
-    // returnData({...data,interestedIn: newval})
-
-    // console.log('selected: ',selectedValues,newval)
-  };
-
   let currency = def.currencyCode;
 
   async function handleSubmit(ev) {
     ev.preventDefault();
-
     if (data.appliedTo === "" || data.method === "")
       return enqueueSnackbar("Please fill required fields!", {
         variant: "error",
@@ -68,7 +60,7 @@ export default function CreateMarkup({
       enqueueSnackbar(update ? "Markup updated" : "Markup created.", {
         variant: "success",
       });
-      reload();
+      reload && reload();
     } else enqueueSnackbar(res.msg, { variant: "error" });
   }
 
@@ -87,7 +79,16 @@ export default function CreateMarkup({
             <Checkbox labelClassName='' name='type' checked={data.appliedTo.includes('Protection')} onChange={handleChange} value='Protection'>Protection</Checkbox>
           </div> */}
         <div className="self-start">
-          <AirlinesInput label={'Airline'} placeholder='Search or select airline' />
+          <AirlinesInput
+            label={"Airline"}
+            placeholder="Search or select airline"
+            returnData={(val) => {
+              setData({
+                ...data,
+                airline: val?.id,
+              });
+            }}
+          />
         </div>
         <TextInput
           label={"Markup Title"}
@@ -97,15 +98,19 @@ export default function CreateMarkup({
           onChange={(ev) => setData({ ...data, name: ev.target.value })}
         />
         <div className="flex flex-row gap-2">
-          <TextInput select required
+          <TextInput
+            select
+            required
             value={data.type || ""}
             label="Type"
             onChange={(e) => setData({ ...data, type: e.target.value })}
           >
-            <MenuItem value="MarkUp">Mark Up</MenuItem>
-            <MenuItem value="MarkDown">Mark Down</MenuItem>
+            <MenuItem value="Markup">Mark Up</MenuItem>
+            <MenuItem value="Markdown">Mark Down</MenuItem>
           </TextInput>
-          <TextInput select required
+          <TextInput
+            select
+            required
             value={data.method || ""}
             label="Markup Method"
             onChange={(e) => setData({ ...data, method: e.target.value })}
@@ -143,7 +148,9 @@ export default function CreateMarkup({
           </RadioGroup> */}
         </div>
         <div className="flex gap-2">
-          <TextInput select required
+          <TextInput
+            select
+            required
             value={data.currency || ""}
             label="Currency"
             onChange={(e) => setData({ ...data, currency: e.target.value })}
@@ -151,21 +158,47 @@ export default function CreateMarkup({
             <MenuItem value="NGN">NGN</MenuItem>
             <MenuItem value="USD">USD</MenuItem>
           </TextInput>
-          <TextInput required
-            value={data.markup || ""}
+          <TextInput
+            required
+            value={data.amount || ""}
             label="Value"
-            onChange={(e) => setData({ ...data, markup: e.target.value })}
+            onChange={(e) => setData({ ...data, amount: e.target.value })}
           >
             <MenuItem value="Value">Value</MenuItem>
             <MenuItem value="Percentage">Percentage</MenuItem>
           </TextInput>
-
         </div>
         <div>
           <small>Applied To *</small>
           <div className="flex gap-2">
-            <Checkbox labelClassName='w-full' name='flight' value='Flight' checked={data?.appliedTo?.includes('Flight')}> Flight</Checkbox>
-            <Checkbox labelClassName='w-full' name='ancilaries' value='Ancilaries' checked={data?.appliedTo?.includes('Ancilaries')}> Ancilaries</Checkbox>
+            <Checkbox
+              labelClassName="w-full"
+              name="flight"
+              value="Flight"
+              checked={data?.appliedTo === "Flight"}
+              onChange={(e) => {
+                setData({
+                  ...data,
+                  appliedTo: e.target.checked ? "Flight" : "Ancillary",
+                });
+              }}
+            >
+              Flight
+            </Checkbox>
+            <Checkbox
+              labelClassName="w-full"
+              name="Ancillary"
+              value="Ancillary"
+              checked={data?.appliedTo === "Ancillary"}
+              onChange={(e) => {
+                setData({
+                  ...data,
+                  appliedTo: e.target.checked ? "Ancillary" : "Flight",
+                });
+              }}
+            >
+              Ancillaries
+            </Checkbox>
           </div>
         </div>
         <div>
@@ -194,8 +227,13 @@ export default function CreateMarkup({
                   <Checkbox
                     labelClassName="flex-1"
                     name="type"
-                    checked={data.appliedTo.includes("Adult")}
-                    onChange={handleChange}
+                    checked={data.passengerType === "Adult"}
+                    onChange={(e) => {
+                      setData({
+                        ...data,
+                        passengerType: e.target.checked ? "Adult" : "",
+                      });
+                    }}
                     value="Adult"
                   >
                     Adult
@@ -203,8 +241,13 @@ export default function CreateMarkup({
                   <Checkbox
                     labelClassName="flex-1"
                     name="type"
-                    checked={data.appliedTo.includes("Child")}
-                    onChange={handleChange}
+                    checked={data.passengerType === "Child"}
+                    onChange={(e) => {
+                      setData({
+                        ...data,
+                        passengerType: e.target.checked ? "Child" : "",
+                      });
+                    }}
                     value="Child"
                   >
                     Child
@@ -212,8 +255,13 @@ export default function CreateMarkup({
                   <Checkbox
                     labelClassName="flex-1"
                     name="type"
-                    checked={data.appliedTo.includes("Infant")}
-                    onChange={handleChange}
+                    checked={data.passengerType === "Infant"}
+                    onChange={(e) => {
+                      setData({
+                        ...data,
+                        passengerType: e.target.checked ? "Infant" : "",
+                      });
+                    }}
                     value="Infant"
                   >
                     Infant
@@ -226,8 +274,13 @@ export default function CreateMarkup({
                   <Checkbox
                     labelClassName="flex-1"
                     name="type"
-                    checked={data.appliedTo.includes("Oneway")}
-                    onChange={handleChange}
+                    checked={data.flightRoute === "Oneway"}
+                    onChange={(e) => {
+                      setData({
+                        ...data,
+                        flightRoute: e.target.checked ? "Oneway" : "",
+                      });
+                    }}
                     value="Oneway"
                   >
                     Oneway
@@ -235,8 +288,13 @@ export default function CreateMarkup({
                   <Checkbox
                     labelClassName="flex-1"
                     name="type"
-                    checked={data.appliedTo.includes("Return")}
-                    onChange={handleChange}
+                    checked={data.flightRoute === "Return"}
+                    onChange={(e) => {
+                      setData({
+                        ...data,
+                        flightRoute: e.target.checked ? "Return" : "",
+                      });
+                    }}
                     value="Return"
                   >
                     Return
@@ -244,8 +302,13 @@ export default function CreateMarkup({
                   <Checkbox
                     labelClassName="flex-1 whitespace-nowrap"
                     name="type"
-                    checked={data.appliedTo.includes("MultiCity")}
-                    onChange={handleChange}
+                    checked={data.flightRoute === "MultiCity"}
+                    onChange={(e) => {
+                      setData({
+                        ...data,
+                        flightRoute: e.target.checked ? "MultiCity" : "",
+                      });
+                    }}
                     value="MultiCity"
                   >
                     Multi City
@@ -253,55 +316,88 @@ export default function CreateMarkup({
                 </div>
               </div>
             </div>
-              <div className="flex gap-2">
-                <CitiesInput label='Departure Airport' size='small' placeholder='e.g LHR'
-                  value={data?.from || ''}
-                  onChange={(val) => setData({...data,from: val})}
-                />
-                {/* <div className='relative flex items-center justify-center z-10 cursor-pointer'>
+            <div className="flex gap-2">
+              <CitiesInput
+                label="Departure Airport"
+                size="small"
+                placeholder="e.g LHR"
+                value={data?.departureAirport || ""}
+                onChange={(val) =>
+                  setData({ ...data, departureAirport: val?.iata })
+                }
+              />
+              {/* <div className='relative flex items-center justify-center z-10 cursor-pointer'>
                   <div className='absolute items-center justify-center flex'>
                     <span className='bg-secondary shadow-lg rounded-full p-1 hover:rotate-180 transition-all' onClick={() => swipeLoc()}>
                       <Icon icon='mdi:exchange' className='!w-5 !h-5' />
                     </span>
                   </div>
                 </div> */}
-                <CitiesInput label={'Arrival Airport'} size='small' placeholder='e.g LOS' 
-                  value={data?.to || ''}
-                  onChange={(val) => setData({...data,to: val})}            
-                />
+              <CitiesInput
+                label={"Arrival Airport"}
+                size="small"
+                placeholder="e.g LOS"
+                value={data?.arrivalAirport || ""}
+                onChange={(val) =>
+                  setData({ ...data, arrivalAirport: val?.iata })
+                }
+              />
+            </div>
+            <div className="flex gap-2">
+              <TextInput
+                select
+                label={"Departure Time"}
+                value={data?.departureTime}
+                onChange={(ev) =>
+                  setData({ ...data, departureTime: ev.target.value })
+                }
+              >
+                <MenuItem value={undefined}></MenuItem>
+                <MenuItem value="Morning">Morning</MenuItem>
+                <MenuItem value="Afternoon">Afternoon</MenuItem>
+                <MenuItem value="Evening">Evening</MenuItem>
+              </TextInput>
+              <TextInput
+                select
+                label={"Arrival Time"}
+                value={data?.arrivalTime}
+                onChange={(ev) =>
+                  setData({ ...data, arrivalTime: ev.target.value })
+                }
+              >
+                <MenuItem value={undefined}></MenuItem>
+                <MenuItem value="Morning">Morning</MenuItem>
+                <MenuItem value="Afternoon">Afternoon</MenuItem>
+                <MenuItem value="Evening">Evening</MenuItem>
+              </TextInput>
+            </div>
 
-              </div>
-              <div className="flex gap-2">
-                <TextInput select label={'Departure Time'} 
-                  value={data?.departureTime}
-                  onChange={(ev) => setData({...data,departureTime: ev.target.value})}
-                >
-                  <MenuItem value='Morning'>Morning</MenuItem>
-                </TextInput>
-                <TextInput select label={'Arrival Time'} 
-                  value={data?.arrivalTime}
-                  onChange={(ev) => setData({...data,arrivalTime: ev.target.value})}
-                >
-                  <MenuItem value='Afternoon'>Afternoon</MenuItem>
-                </TextInput>
-              </div>
-
-              <div className="flex gap-2">
-                <TextInput select label={'Cabin Class'} 
-                  value={data?.cabinClass}
-                  onChange={(ev) => setData({...data,cabinClass: ev.target.value})}
-                >
-                  <MenuItem value='Economy'>Economy</MenuItem>
-                  <MenuItem value='BusinessEconomy'>Business</MenuItem>
-                  <MenuItem value='FistClass'>First Class</MenuItem>
-                </TextInput>
-                <TextInput select label={'Ticket Class'} 
-                  value={data?.ticketClass}
-                  onChange={(ev) => setData({...data,ticketClass: ev.target.value})}
-                >
-                  <MenuItem value='Z'>Z</MenuItem>
-                </TextInput>
-              </div>
+            <div className="flex gap-2">
+              <TextInput
+                select
+                label={"Cabin Class"}
+                value={data?.cabinClass}
+                onChange={(ev) =>
+                  setData({ ...data, cabinClass: ev.target.value })
+                }
+              >
+                <MenuItem value={undefined}></MenuItem>
+                <MenuItem value="Economy">Economy</MenuItem>
+                <MenuItem value="BusinessEconomy">Business</MenuItem>
+                <MenuItem value="FistClass">First Class</MenuItem>
+              </TextInput>
+              <TextInput
+                select
+                label={"Ticket Class"}
+                value={data?.ticketClass}
+                onChange={(ev) =>
+                  setData({ ...data, ticketClass: ev.target.value })
+                }
+              >
+                <MenuItem value={undefined}></MenuItem>
+                <MenuItem value="Z">Z</MenuItem>
+              </TextInput>
+            </div>
           </div>
         ) : null}
 

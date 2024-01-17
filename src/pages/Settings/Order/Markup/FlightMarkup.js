@@ -78,6 +78,7 @@ export default function FlightMarkup() {
           <Modal1 open={open} setOpen={setOpen}>
             <CreateMarkup
               forType={"Flights"}
+              reload={load}
               footer={
                 <div>
                   <Button1
