@@ -56,7 +56,7 @@ export default function CitiesInput({value,onChange,label,icon,className,require
     onChange={(ev,newVal) => {handleChange(newVal); setIsFocused(false)}}
     onInputChange={(ev,newVal) => {handleChange(newVal); setIsFocused(true)}}
     renderInput={(params) => (
-      <TextField {...params} required={required} value='test' label={label || "Nationality"} 
+      <TextField {...params} placeholder={restProps.placeholder} required={required} value='test' label={label || "Nationality"} 
         InputProps={{
           ...params.InputProps,
           type: 'search',
