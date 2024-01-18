@@ -1,5 +1,5 @@
 import { useSnackbar } from "notistack";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { def } from "../../../../config";
 import TextInput from "../../../../components/form/TextInput";
 import CitiesInput from "../../../../components/form/CitiesInput";
@@ -64,6 +64,10 @@ export default function CreateMarkup({
     } else enqueueSnackbar(res.msg, { variant: "error" });
   }
 
+  useEffect(() => {
+    setData(defData);
+  }, [defData]);
+
   return (
     <div>
       <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-4">
@@ -82,6 +86,7 @@ export default function CreateMarkup({
           <AirlinesInput
             label={"Airline"}
             placeholder="Search or select airline"
+            val={data?.airline}
             returnData={(val) => {
               setData({
                 ...data,
@@ -94,14 +99,14 @@ export default function CreateMarkup({
           label={"Markup Title"}
           placeholder={"e.g Virgin Air Markup"}
           required
-          value={data.name}
+          value={data?.name}
           onChange={(ev) => setData({ ...data, name: ev.target.value })}
         />
         <div className="flex flex-row gap-2">
           <TextInput
             select
             required
-            value={data.type || ""}
+            value={data?.type || ""}
             label="Type"
             onChange={(e) => setData({ ...data, type: e.target.value })}
           >
@@ -111,7 +116,7 @@ export default function CreateMarkup({
           <TextInput
             select
             required
-            value={data.method || ""}
+            value={data?.method || ""}
             label="Markup Method"
             onChange={(e) => setData({ ...data, method: e.target.value })}
           >
@@ -151,7 +156,7 @@ export default function CreateMarkup({
           <TextInput
             select
             required
-            value={data.currency || ""}
+            value={data?.currency || ""}
             label="Currency"
             onChange={(e) => setData({ ...data, currency: e.target.value })}
           >
@@ -160,7 +165,7 @@ export default function CreateMarkup({
           </TextInput>
           <TextInput
             required
-            value={data.amount || ""}
+            value={data?.amount || ""}
             label="Value"
             onChange={(e) => setData({ ...data, amount: e.target.value })}
           >
@@ -227,7 +232,7 @@ export default function CreateMarkup({
                   <Checkbox
                     labelClassName="flex-1"
                     name="type"
-                    checked={data.passengerType === "Adult"}
+                    checked={data?.passengerType === "Adult"}
                     onChange={(e) => {
                       setData({
                         ...data,
@@ -241,7 +246,7 @@ export default function CreateMarkup({
                   <Checkbox
                     labelClassName="flex-1"
                     name="type"
-                    checked={data.passengerType === "Child"}
+                    checked={data?.passengerType === "Child"}
                     onChange={(e) => {
                       setData({
                         ...data,
@@ -255,7 +260,7 @@ export default function CreateMarkup({
                   <Checkbox
                     labelClassName="flex-1"
                     name="type"
-                    checked={data.passengerType === "Infant"}
+                    checked={data?.passengerType === "Infant"}
                     onChange={(e) => {
                       setData({
                         ...data,
@@ -274,7 +279,7 @@ export default function CreateMarkup({
                   <Checkbox
                     labelClassName="flex-1"
                     name="type"
-                    checked={data.flightRoute === "Oneway"}
+                    checked={data?.flightRoute === "Oneway"}
                     onChange={(e) => {
                       setData({
                         ...data,
@@ -288,7 +293,7 @@ export default function CreateMarkup({
                   <Checkbox
                     labelClassName="flex-1"
                     name="type"
-                    checked={data.flightRoute === "Return"}
+                    checked={data?.flightRoute === "Return"}
                     onChange={(e) => {
                       setData({
                         ...data,
@@ -302,7 +307,7 @@ export default function CreateMarkup({
                   <Checkbox
                     labelClassName="flex-1 whitespace-nowrap"
                     name="type"
-                    checked={data.flightRoute === "MultiCity"}
+                    checked={data?.flightRoute === "MultiCity"}
                     onChange={(e) => {
                       setData({
                         ...data,
