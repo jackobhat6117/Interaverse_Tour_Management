@@ -1,19 +1,23 @@
 import React, { createContext, useEffect, useState } from "react";
 import CustomTable from "../../../../components/Table/CustomTable";
-import TextInput from "../../../../components/form/TextInput";
-import { MenuItem } from "@mui/material";
 import Modal1 from "../../../../components/DIsplay/Modal/Modal1";
 import Icon from "../../../../components/HOC/Icon";
 import CreateMarkup from "./CreateMarkup";
 import { Link } from "react-router-dom";
 import Button1 from "../../../../components/form/Button1";
 import getFlightPriceAdjustments from "../../../../controllers/flightPriceAdjustment/getFlightPriceAdjustments";
+import { Switch } from "@mui/material";
+import activateFlightAdjustment from "../../../../controllers/flightPriceAdjustment/activateFlightAdjustment";
+import deactivateFlightAdjustment from "../../../../controllers/flightPriceAdjustment/deactivateFlightAdjustment";
+import MarkupDelete from "./MarkupDelete";
 
 const ActionContext = createContext();
 export default function FlightMarkup() {
   const [open, setOpen] = useState(false);
   const [editObj, setEditObj] = useState();
+  const [deleteObj, setDeleteObj] = useState();
   const [flightMarkups, setFlightMarkups] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     load();
@@ -29,8 +33,14 @@ export default function FlightMarkup() {
     }
   }
 
-  async function changeStatus() {
-    // activate deactivate logic
+  async function changeStatus(value, param) {
+    setLoading(true);
+    if (value) {
+      await activateFlightAdjustment(param._id);
+    } else {
+      await deactivateFlightAdjustment(param._id);
+    }
+    setLoading(false);
     load();
   }
 
@@ -49,10 +59,11 @@ export default function FlightMarkup() {
           <ActionContext.Provider
             value={{
               setEditObj,
+              setDeleteObj,
               changeStatus,
             }}
           >
-            <ActionCol params={params} />
+            <ActionCol params={params.row} />
           </ActionContext.Provider>
         );
       },
@@ -94,8 +105,16 @@ export default function FlightMarkup() {
         </div>
       </div>
 
-      <CustomTable rows={flightMarkups} columns={columns} />
-
+      <CustomTable rows={flightMarkups} columns={columns} loading={loading} />
+      <Modal1 open={deleteObj} setOpen={() => setDeleteObj()}>
+        <div className="card p-10">
+          <MarkupDelete
+            data={deleteObj}
+            cancel={() => setDeleteObj()}
+            reload={load}
+          />
+        </div>
+      </Modal1>
       <Modal1 open={editObj} setOpen={setEditObj}>
         <div className="p-6">
           <CreateMarkup update data={editObj} />
@@ -109,25 +128,25 @@ function ActionCol({ params }) {
   return (
     <ActionContext.Consumer>
       {(value) => {
-        const { setEditObj, changeStatus } = value || {};
+        const { setEditObj, changeStatus, setDeleteObj } = value || {};
         return (
           <div className="flex gap-2">
-            <TextInput
-              select
-              value={params.value || ""}
-              size="small"
-              label=""
-              onChange={() => changeStatus(params?.id)}
-            >
-              <MenuItem value="active">Active</MenuItem>
-              <MenuItem value="inactive">Disabled</MenuItem>
-            </TextInput>
+            <Switch
+              checked={params.status === "Active"}
+              onChange={(ev) => changeStatus(ev.target.checked, params)}
+            />
             <label
               className="bg-primary/10 rounded-md cursor-pointer p-2 text-primary/30"
-              onClick={() => setEditObj(params?.row)}
+              onClick={() => setEditObj(params)}
             >
               <Icon icon="tabler:edit" />
             </label>
+            <span
+              className="p-2 bg-red-100 text-red-500 rounded-md cursor-pointer"
+              onClick={() => setDeleteObj(params)}
+            >
+              <Icon icon="material-symbols-light:delete" />
+            </span>
           </div>
         );
       }}
