@@ -14,7 +14,7 @@ export default function PromoDeleteForm({ data, reload, cancel }) {
   }
   return (
     <div className="flex flex-col gap-4">
-      <h5 className="self-center">Delete Promo Code</h5>
+      <h5 className="self-center">Delete Deal Code</h5>
       <div className="flex gap-4 justify-between">
         <p>Airline:</p>
         <b>{data?.airline}</b>

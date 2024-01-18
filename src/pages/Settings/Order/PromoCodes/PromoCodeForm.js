@@ -33,7 +33,7 @@ export default function PromoCodeForm({ data, cancel, reload }) {
   };
   return (
     <div className="flex flex-col gap-4">
-      <h5>{data ? "Update Promo Code" : "Create New Promo Code"}</h5>
+      <h5>{data ? "Update Deal Code" : "Create New Deal Code"}</h5>
       <form
         onSubmit={data ? handleUpdate : handleAdd}
         className="flex flex-col gap-4"
