@@ -167,17 +167,24 @@ export default function ProfileSurvey() {
               ) : null}
 
               <div className="flex-1 flex flex-col gap-5 justify-center">
-                <CurComp
+                {!user?.detail?.requestedVerification ? 
+                  <CurComp
                   data={data}
                   setData={setData}
-                  key={"editor"}
-                  user={user}
-                  component={steps[step]?.elem}
-                  updateProfile={sendProfile}
-                  back={stepBack}
-                  next={stepNext}
-                  loading={loading}
-                />
+                    key={"editor"}
+                    user={user}
+                    component={steps[step]?.elem}
+                    updateProfile={sendProfile}
+                    back={stepBack}
+                    next={stepNext}
+                    loading={loading}
+                    />
+                :
+                  <div className="flex flex-col items-center">
+                    <h5>Your request is under review!</h5>
+                    <p>You'll be able to update after confirmaion </p>
+                  </div>
+                }
                 <Link
                   to="/welcome/"
                   className="flex items-center justify-center gap-1 w-full px-6 my-2 py-2 text-gray-500 font-bold"

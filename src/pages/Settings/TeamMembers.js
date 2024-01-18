@@ -21,6 +21,7 @@ import { clone } from '../../features/utils/objClone';
 import updateTeamMemberRole from '../../controllers/settings/team/updateTeamMemberRole';
 import getSentInvitations from '../../controllers/settings/team/getSentInvitations';
 import deleteTeamInvitation from '../../controllers/settings/team/deleteInvitation';
+import LoadingBar from '../../components/animation/LoadingBar';
 
 
 const Action = createContext();
@@ -117,8 +118,10 @@ const filterItems = [
 
 export default function TeamMembers() {
   const [data,setData] = useState([])
+  const [InvitedData,setInvitedData] = useState([])
   const [filter,setFilter] = useState(filterItems[0])
-  const [loading,setLoading] = useState(false);
+  const [loading,setLoading] = useState(true);
+  const [error,setError] = useState();
 
   const {enqueueSnackbar} = useSnackbar();
 
@@ -130,6 +133,7 @@ export default function TeamMembers() {
   },[filter])
 
   async function load() {
+    setError();
     let res = {return:true,data: {data: []},msg: 'Failed fetching members. This error is from our end please notify customer support!'}
     setLoading(true);
     if(filter.value === 'All') {
@@ -149,8 +153,11 @@ export default function TeamMembers() {
       // console.log('dat: ',data)
       data = data.map(obj => ({...obj,...obj?.member,id: obj._id,name: (obj?.member?.firstName||'')+' '+(obj?.member?.lastName||'')}))
       data = data.filter((cur,i,arr) => arr.findIndex((obj) => obj.email === cur.email) === i)
-      setData(data);
-    }
+      if(filter?.value === 'All')
+        setData(data);
+      else
+        setInvitedData(data);
+    } else setError(res.msg)
     setLoading(false);
   }
 
@@ -166,7 +173,6 @@ export default function TeamMembers() {
 
 
   let columns = [
-    {field: 'name',headerName: 'Member',flex: 1},
     {field: 'email',headerName: 'Email',flex: 1},
     {field: 'role',headerName: 'Role',flex: 2},
     {field: 'action',headerName: '',flex: 2,minWidth: 60,
@@ -177,9 +183,24 @@ export default function TeamMembers() {
       }
     },
   ]
+
+  if(filter?.value === 'All')
+    columns.unshift({field: 'name',headerName: 'Member',flex: 1})
+
+  
   return (
     <div className='flex flex-col gap-4'>
-      {!data.length && !loading ? (
+      {loading ? 
+        <div className='flex flex-col items-center justify-center'>
+          <LoadingBar />
+        </div>
+      : error?.includes('Network Error!') ? 
+        <div className='flex flex-col gap-2 items-center justify-center self-center'>
+          <h5>{error}</h5>
+          <button onClick={load}>Refresh</button>
+        </div>
+      :
+      !data.length && !loading ? (
         <div className=' text-center flex flex-col items-center gap-8'>
           <h4>You don't have any team members</h4>
           <div className='flex gap-2'>
@@ -203,7 +224,7 @@ export default function TeamMembers() {
             resendInvitation,
             filter,
           }}>
-          <CustomTable loading={loading} rows={data} columns={columns}
+          <CustomTable loading={loading} rows={filter?.value === 'All' ? data : InvitedData} columns={columns}
             // filterModel={filter}
             // onFilterModelChange={(newFilter) => setFilter(newFilter)}
           

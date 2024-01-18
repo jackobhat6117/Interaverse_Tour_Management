@@ -158,14 +158,28 @@ export default function OrdersData({ data: gotData, setData: setOrig }) {
   const [filter, setFilter] = useState("ALL");
 
   useEffect(() => {
-    if (!filter || filter === "ALL") return setData(gotData);
+    if ((!filter || filter === "ALL") && !status) return setData(gotData);
 
     setData(
-      gotData.filter(
-        (obj) => obj.type?.toLowerCase() === filter?.toLowerCase(),
+      gotData?.filter(
+        (obj) => {
+          let pass = false;
+
+          if(!filter || (filter === 'ALL'))
+            pass = true;
+          else
+            pass = obj.type?.toLowerCase() === filter?.toLowerCase();
+
+          if(status === 'needsReview') {
+            pass = obj?.flightObj?.needsReview
+          }
+
+          return pass;
+        }
       ),
     );
-  }, [filter, gotData]);
+    //eslint-disable-next-line
+  }, [filter, status, gotData]);
 
   const filterOptions = [
     { label: "All", value: "ALL", count: countObj.all },
@@ -248,7 +262,7 @@ export default function OrdersData({ data: gotData, setData: setOrig }) {
           + <span>Filter</span>
         </div>
         <div className="flex gap-2">
-          <Link to='?status=needsReview' className={status === 'needsReview' ? 'btn' : "btn-theme-light"}>Needs review</Link>
+          <Link to={status === 'needsReview' ? '?status=null' : '?status=needsReview'} className={status === 'needsReview' ? 'btn' : "btn-theme-light"}>Needs review</Link>
           <button className={status === 'onhold' ? 'btn' : "btn-theme-light"}>On hold</button>
         </div>
         <div className="flex gap-2 items-center">
@@ -286,11 +300,11 @@ export default function OrdersData({ data: gotData, setData: setOrig }) {
           },
         }}
       >
-        {status === 'needsReview' ? 
+        {/* {status === 'needsReview' ? 
           <OrderDataChanges data={data} />
-        :
-          <CustomTable rows={data} columns={columns} />
-        }
+          :
+        } */}
+      <CustomTable rows={data} columns={columns} />
       </ActionContext.Provider>
 
       <AddBags open={openAddBags} setOpen={setOpenAddBags} />

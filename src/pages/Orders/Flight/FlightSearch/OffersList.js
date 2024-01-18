@@ -58,7 +58,6 @@ export default function OffersList({hide}) {
   const [flightDate,setFlightDate] = useState(tempFlightDate);
   const [curDetail,setCurDetail] = useState();
   const [loading,setLoading] = useState(false);
-  const [progress,setProgress] = useState(0);
   const [resMsg,setResMsg] = useState("No Result");
   const [searchParam] = useSearchParams();
   const q = useMemo(() => searchParam.get('q'),[searchParam]);
@@ -498,7 +497,7 @@ export default function OffersList({hide}) {
             :null}
           {
             loading ?
-              <LoadingBar progress={progress} />
+              <LoadingBar duration={8} />
               // <h5 className='bg-secondary p-5 rounded-md flex items-center justify-center text-primary/30 '>{progress}% Loading...</h5>
             : data?.length < 1 ?
               <div className='bg-secondary p-5 rounded-md flex items-center justify-center flex-col gap-2'>

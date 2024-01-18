@@ -48,8 +48,9 @@ axios.interceptors.request.use((config) => {
 axios.interceptors.response.use((response) => {
   const { startTime } = response.config.metadata;
   const elapsedTime = new Date() - startTime; // Calculate the elapsed time
-  const progress = Math.round((elapsedTime / 1000) * 10); // Assuming 10 milliseconds per percentage point
-  response.config.metadata.progress = progress;
+  // const progress = Math.round((elapsedTime / 1000) * 10); // Assuming 10 milliseconds per percentage point
+  // response.config.metadata.progress = progress;
+  response.duration = elapsedTime
 
   return response;
 });
