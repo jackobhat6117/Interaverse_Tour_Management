@@ -48,7 +48,7 @@ export default function CreateFlightOrder({callback,data,returnData}) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   
-  console.log(' -> ',data);
+  // console.log(' -> ',data);
 
 
   useEffect(() => {

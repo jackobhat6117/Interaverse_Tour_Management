@@ -3,7 +3,7 @@ import BreadCrumb from "../../../../components/DIsplay/Nav/BreadCrumb";
 import { Link } from "react-router-dom";
 import Button1 from "../../../../components/form/Button1";
 import TextInput from "../../../../components/form/TextInput";
-import { Menu } from "../../OrdersData";
+import { Menu, OrderMenus } from "../../OrdersData";
 import Modal1 from "../../../../components/DIsplay/Modal/Modal1";
 import RadioGroup from "../../../../components/form/RadioGroup";
 import html2canvas from "html2canvas";
@@ -21,6 +21,8 @@ import getBooking from "../../../../controllers/booking/getBooking";
 import { LinearProgress } from "@mui/material";
 import { getPassengerCategory } from "../../../../utils/getPassengerCategory";
 import PolicyStatus from "../../../../components/flight/PolicyStatus";
+import CustomMenu from "../../../../components/utils/CustomMenu";
+import Icon from "../../../../components/HOC/Icon";
 
 export default function FlightOrder() {
   const { id } = useParams();
@@ -75,9 +77,11 @@ export default function FlightOrder() {
         setOrder(res.data);
       }
     };
-    fetch();
+    // fetch();
   }, [id]);
 
+  const orderData = order?.booking?.flightBooking?.at(0)
+  let orderType = (orderData) ? 'flight' : ''
   console.log(order)
   
   return (
@@ -106,52 +110,31 @@ export default function FlightOrder() {
                   </Button1>
                 </div>
                 <div>
-                  <TextInput
+                  {/* <TextInput
                     select
                     size="small"
                     label="Manage this order"
                     noShrink
                     className="!min-w-[180px] bg-primary/10"
-                  >
-                    <div className="menuItem">
-                      <Menu
-                        value={"pending"}
-                        label="Add Seats"
-                        hideFor={["confirmed"]}
-                      />
-                      <Menu
-                        value={"pending"}
-                        label="Add Bags"
-                        hideFor={["confirmed"]}
-                      />
-                      <Menu
-                        value={"pending"}
-                        label="Add Insurance"
-                        hideFor={["confirmed"]}
-                        onClick={() => setOpenInsurance(true)}
-                      />
-                      <Menu
-                        value={"pending"}
-                        label="Confirm Payment"
-                        showFor={["pending", "on hold"]}
-                      />
-                      <Menu
-                        value={"pending"}
-                        label="Edit PNR"
-                        hideFor={["confirmed"]}
-                      />
-                      <Menu
-                        value={"pending"}
-                        label="Hold Order"
-                        hideFor={["confirmed"]}
-                      />
-                      <Menu
-                        value={"pending"}
-                        label="Cancel Order"
-                        className="!bg-red-500 !text-white !rounded-md"
-                      />
-                    </div>
-                  </TextInput>
+                  > */}
+                    <CustomMenu
+                      element={
+                        <button
+                          className="!min-w-[180px] !text-primary flex gap-2 !bg-primary/10 p-2 px-3"
+                        >
+                          Manage this order
+                          <Icon icon='mdi:arrow-down-drop' />
+                        </button>
+                      }
+                    >
+
+                    <OrderMenus data={{id,status: orderData?.status,orderType}} inDetail
+                      actions={{
+                        addInsurance: (id) => setOpenInsurance(id)
+                      }}
+                    />
+                    </CustomMenu>
+                  {/* </TextInput> */}
                 </div>
               </div>
             </div>

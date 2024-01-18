@@ -52,7 +52,7 @@ function WebHook() {
   const [data,setData] = useState([])
   const [webhook,setWebhook] = useState();
   const [selected,setSelected] = useState();
-  const [loading,setLoading] = useState(false);
+  const [loading,setLoading] = useState(true);
   const {enqueueSnackbar} = useSnackbar()
 
   useEffect(() => {
@@ -173,7 +173,7 @@ function WebHook() {
       </div>
       {!data.length && !loading ? (
         <div className=' text-center flex flex-col items-center gap-8'>
-          <h4>You don't have any test webooks</h4>
+          <h5>You don't have any test webooks</h5>
           <div className='flex gap-2'>
             <LearnMoreButton label='Learn about webhooks' />
             <CreateWebHook reload={() => load()} />
@@ -354,7 +354,7 @@ function AccessKeys() {
   const [open,setOpen] = useState(false);
   const [scope,setScope] = useState('');
   const [name,setName] = useState('');
-  const [loading,setLoading] = useState(false);
+  const [loading,setLoading] = useState(true);
   const {enqueueSnackbar} = useSnackbar();
   const [data,setData] = useState([]);
   const [selected,setSelected] = useState();
@@ -430,9 +430,9 @@ function AccessKeys() {
           <Button variant='contained' className='' onClick={() => setOpen(true)}>Create Key</Button>
         </div>
       </div>
-      {!data.length ? (
+      {!data.length && !loading ? (
         <div className=' text-center flex flex-col items-center gap-8 py-3'>
-          <h4>You don't have any access keys</h4>
+          <h5>You don't have any access keys</h5>
           <div className='flex gap-2'>
             <LearnMoreButton label='Learn about access keys'  />
             <Button variant='contained' className='' onClick={() => setOpen(true)}>Create Access Keys</Button>

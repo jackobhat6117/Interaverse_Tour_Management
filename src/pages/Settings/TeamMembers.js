@@ -202,7 +202,7 @@ export default function TeamMembers() {
       :
       !data.length && !loading ? (
         <div className=' text-center flex flex-col items-center gap-8'>
-          <h4>You don't have any team members</h4>
+          <h5>You don't have any team members</h5>
           <div className='flex gap-2'>
             <LearnMoreButton label='Learn about team members' />
             <InviteTeam reload={load} label='Invite a team member' />

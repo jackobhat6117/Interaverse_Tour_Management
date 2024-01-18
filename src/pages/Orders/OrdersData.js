@@ -42,12 +42,89 @@ export const Menu = (props) => {
   );
 };
 
+export function OrderMenus({callback,data:{status,id,orderType},actions,inDetail}) {
+  const {addBags,addSeats,addInsurance,cancelOrder} = actions || {}
+  const navigate = useNavigate();
+  
+  return (
+    <div>
+      <div className="menuItem" onClick={() => callback && callback()}>
+        {!inDetail?
+          <Menu
+            value={status}
+            label="View Order"
+            onClick={() =>
+              navigate(`/order/${orderType}/${id}`)
+            }
+          />
+        :null}
+        <Menu
+          value={status}
+          label="Make Payment"
+          showFor={["booked"]}
+        />
+        <Menu
+          value={status}
+          label="Issue Ticket"
+          showFor={["issuable"]}
+          className="!btn disabled"
+        />
+        <Menu
+          value={status}
+          label="Manage Ticket"
+          showFor={["issued"]}
+        />
+        <Menu
+          value={status}
+          label="Add Seats"
+          showFor={["booked"]}
+          onClick={() => addSeats && addSeats(id)}
+          />
+        <Menu
+          value={status}
+          label="Add Bags"
+          showFor={["booked"]}
+          onClick={() => addBags && addBags(id)}
+        />
+        <Menu
+          value={"pending"}
+          label="Add Insurance"
+          hideFor={["confirmed"]}
+          onClick={() => addInsurance && addInsurance(id)}
+        />
+
+        {/* <Menu
+          value={status}
+          label="Confirm Payment"
+          showFor={["bending", "on hold"]}
+        /> */}
+        {/* <Menu value={status} label="Edit PNR" showFor={["booked"]} /> */}
+        {/* <Menu value={status} label="Hold Order" hideFor={["Booked"]} /> */}
+        <Menu
+          value={status}
+          label="Cancel Order"
+          showFor={['issuable']}
+          className="!bg-red-500 !text-white !rounded-md"
+          onClick={() => cancelOrder && cancelOrder(id)}
+          />
+      </div>      
+    </div>
+
+  )
+}
+
 function StatusCol({ params }) {
   const status = params.value || "";
-  const navigate = useNavigate();
-
+  
   const orderType = params?.row?.type?.toLowerCase() || "type";
-
+  
+  // export enum BOOKING_STATUS {
+  //   Pending = "Pending",
+  //   Issuable = "Issuable",
+  //   Failed = "Failed",
+  //   Booked = "Booked",
+  //   Issued = "Issued",
+  // }
   return (
     <div className="flex justify-between items-center gap-2 w-full ">
       <span className={`${alertType[status]}`}>{status}</span>
@@ -59,58 +136,16 @@ function StatusCol({ params }) {
         }
       >
         <ActionContext.Consumer>
-          {({ bags, seats, cancel }) => (
-            <div className="menuItem">
-              <Menu
-                value={status}
-                label="View Order"
-                onClick={() =>
-                  navigate(`/order/${orderType}/${params?.row?.id}`)
-                }
-              />
-              <Menu
-                value={status}
-                label="Make Payment"
-                showFor={["confirmed"]}
-              />
-              <Menu
-                value={status}
-                label="Issue Ticket"
-                showFor={["confirmed"]}
-                className="!btn disabled"
-              />
-              <Menu
-                value={status}
-                label="Manage Ticket"
-                showFor={["confirmed"]}
-              />
-              <Menu
-                value={status}
-                label="Add Seats"
-                hideFor={["confirmed"]}
-                onClick={seats.open}
-              />
-              <Menu
-                value={status}
-                label="Add Bags"
-                hideFor={["confirmed"]}
-                onClick={bags.open}
-              />
-              <Menu
-                value={status}
-                label="Confirm Payment"
-                showFor={["pending", "on hold"]}
-              />
-              <Menu value={status} label="Edit PNR" hideFor={["confirmed"]} />
-              <Menu value={status} label="Hold Order" hideFor={["confirmed"]} />
-              <Menu
-                value={status}
-                label="Cancel Order"
-                className="!bg-red-500 !text-white !rounded-md"
-                onClick={cancel.open}
-              />
-            </div>
-          )}
+          {(value) => {
+            const {bags,seats,cancel} = value || {}
+            return (
+              <OrderMenus data={{id: params.id,status,orderType}} actions={{
+                addBags: bags?.open,
+                addSeats: seats?.open,
+                cancelOrder: cancel?.open
+              }} />
+            )
+          }}
         </ActionContext.Consumer>
       </CustomMenu>
     </div>
@@ -131,15 +166,16 @@ export default function OrdersData({ data: gotData, setData: setOrig }) {
       parseInt(Math.random() * 5)
     ],
   };
-  const [openAddBags, setOpenAddBags] = useState(false);
-  const [openAddSeats, setOpenAddSeats] = useState(false);
-  const [openCancelOrder, setOpenCancelOrder] = useState(false);
-
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const status = searchParams.get('status');
 
   const [data, setData] = useState(gotData || []);
+
+  const [openAddBags, setOpenAddBags] = useState(false);
+  const [openAddSeats, setOpenAddSeats] = useState(false);
+  const [openCancelOrder, setOpenCancelOrder] = useState(false);
+
   let countObj = {
     all: gotData?.length,
     flights: 0,
@@ -224,8 +260,6 @@ export default function OrdersData({ data: gotData, setData: setOrig }) {
       renderCell: (params) => (
         <StatusCol
           params={params}
-          addBags={() => setOpenAddBags(true)}
-          addSeats={() => setOpenAddSeats(true)}
         />
       ),
     },
@@ -286,17 +320,17 @@ export default function OrdersData({ data: gotData, setData: setOrig }) {
           bags: {
             openAddBags,
             setOpenAddBags,
-            open: () => setOpenAddBags(true),
+            open: (val) => setOpenAddBags(val),
           },
           seats: {
             openAddSeats,
             setOpenAddSeats,
-            open: () => setOpenAddSeats(true),
+            open: (val) => setOpenAddSeats(val),
           },
           cancel: {
             openCancelOrder,
             setOpenCancelOrder,
-            open: () => setOpenCancelOrder(true),
+            open: (val) => setOpenCancelOrder(val),
           },
         }}
       >

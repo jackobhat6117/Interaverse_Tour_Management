@@ -26,7 +26,7 @@ export default function FlightDisplay({flight: data}) {
               <b>{flight?.departureTime}</b>
               <h6>{flight?.departureLocation}</h6>
             </div>
-            <div className='overflow-hidden max-w-[150px]'>{flight?.departureAirport}</div>
+            <div className='overflow-hidden max-w-[150px]'>{flight?.departureAirport},{flight?.departureCity}</div>
           </div>
           <div className='flex flex-col items-center justify-center '>
             <small className='whitespace-nowrap py-1 flex items-center gap-1'>
@@ -48,7 +48,7 @@ export default function FlightDisplay({flight: data}) {
               <b>{flight?.arrivalTime}</b>
               <h6>{flight?.arrivalLocation}</h6>
             </div>
-            <div className='overflow-hidden max-w-[150px]'>{flight?.arrivalAirport}</div>
+            <div className='overflow-hidden max-w-[150px]'>{flight?.arrivalAirport},{flight?.arrivalCity}</div>
           </div>
         </div>
         <div className='p-1 flex gap-2'>

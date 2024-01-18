@@ -59,12 +59,12 @@ export default function PointsSettings() {
         ))}
       </div>
       <div className="flex gap-4 items-center justify-between">
-        <h4>
+        <h5>
           Points Transactions{" "}
           <small className="text-blue-500">
             {pointTransaction?.meta?.total}
           </small>
-        </h4>
+        </h5>
         <div>
           <SelectInput
             defaultValue="All"

@@ -24,7 +24,7 @@ export default function FlightInfoCard({data,label='Depart'}) {
     {icon: wifi,description: '',value: true, name: 'WIFI'},
   ]
 
-  console.log(data?.flights?.map(flight => flight?.amenities)?.flat())
+  // console.log(data?.flights?.map(flight => flight?.amenities)?.flat())
   return (
     <div className=' rounded-md w-full border-gray-300 bg-secondary'>
       <div className='flex gap-4 justify-between p-5'>

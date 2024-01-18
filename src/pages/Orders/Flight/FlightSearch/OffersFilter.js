@@ -12,6 +12,7 @@ import { clone } from "../../../../features/utils/objClone";
 import FilterDay from "../../../../components/flight/filters/FilterDay";
 import moment from "moment";
 import FilterSuplier from "../../../../components/flight/filters/FilterSuplier";
+import FilterFlexibility from "../../../../components/flight/filters/FilterFlexibility";
 
 
 export default function FlightOfferFilter({orgi,data,cats,setData}) {
@@ -147,6 +148,20 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
 
     return newData;
   }
+  function filterByFlexibility(data,obj) {
+    if(!data) return [];
+
+    if(obj?.name === 'Any') return data
+    console.log(' -> ',obj)
+    let newData = data?.filter(offer => {  
+      let refundable = offer?.segments?.every(segment => segment.flights?.every(flight => flight?.amenities?.find(amen => amen.description === 'REFUNDS')))  
+      if(obj?.name === 'Refundable')
+        return refundable
+      else return !refundable
+    })
+
+    return newData;
+  }
   function filterByTime(data,obj) {
     if(!data) return [];
     // console.log(' filte by time --------')
@@ -230,6 +245,8 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
         return filterByDay(data,val);
       else if(key === 'suplier')
         return filterBySuplier(data,val);
+      else if(key === 'flexibility')
+        return filterByFlexibility(data,val);
       
       return data
     },datas)
@@ -273,27 +290,9 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
         <FilterStops cats={cats} orgi={orgi} returnData={(objs) => setFilteredData({stops: objs})} />
       <hr />
         <FilterAirlines orgi={orgi} returnData={(objs) => setFilteredData({airlines: objs})} />
-      {/* <hr /> */}
-      {/* <Collapse show label={<h5>Flexibility</h5>}>
-        <label className='flex gap-4 justify-between'>
-          <span className='flex gap-2'>
-            <input name='stops' type='radio' />
-            <span>Any</span>
-          </span>
-        </label>
-        <label className='flex gap-4 justify-between'>
-          <span className='flex gap-2'>
-            <input name='stops' type='radio' />
-            <span>Refundable</span>
-          </span>
-        </label>
-        <label className='flex gap-4 justify-between'>
-          <span className='flex gap-2'>
-            <input name='stops' type='radio' />
-            <span>Non - Refundable</span>
-          </span>
-        </label>
-      </Collapse> */}
+      <hr />
+        <FilterFlexibility cats={cats} orgi={orgi} returnData={(objs) => setFilteredData({flexibility: objs})} />
+        
       {/* <hr />
         <FilterExCountries returnData={(objs) => setFilteredData({exCant: objs})} /> */}
       <hr />
