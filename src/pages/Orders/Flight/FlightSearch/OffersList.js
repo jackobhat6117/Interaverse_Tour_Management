@@ -517,7 +517,9 @@ export default function OffersList({hide}) {
                 <p>If this error persists please contact our support team.</p>
               </div>
             :
-              <Paginate className='flex flex-col gap-4 pt-4' data={modData} limit={10} render={(obj,i) => <SortedOffers obj={obj} key={i} params={{qIndex,showDetail,handleOfferSelect}} />} />
+              <Paginate className='flex flex-col gap-4 pt-4' data={modData} limit={10} render={(obj,i) => 
+                <SortedOffers obj={obj} key={i} params={{qIndex,showDetail,handleOfferSelect}} />
+              } />
           }
 
           {/* <FlightOfferDisplay showDetail={(obj) => setCurDetail(obj)} /> */}

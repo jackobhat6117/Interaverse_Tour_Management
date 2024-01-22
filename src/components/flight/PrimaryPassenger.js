@@ -27,9 +27,14 @@ export function validateAge(birthDate,type) {
   return [valid,msg];
 }
 
-export default function PrimaryPassenger({label,type,handleReturn,count=0,collapse=false}) {
+export default function PrimaryPassenger({label,type,handleReturn,count=0,collapse=false,config:gotConfig}) {
 
   const [data,setData] = useState(clone(travelersInfo))
+
+  const config = {
+    collapser: Collapse,
+    ...(gotConfig||{})
+  }
   useEffect(() => {
     let {email,phone,birthDate,expiryDate,...rest} = data
     birthDate = moment(birthDate).format('YYYY-MM-DD')
@@ -41,10 +46,14 @@ export default function PrimaryPassenger({label,type,handleReturn,count=0,collap
 
 
   const expiredPassport = data.document.expiryDate && moment(data.document.expiryDate).isBefore(moment(),'day');
+
+  let Collapser = config.collapser;
+  // if(typeof config.collapser === "string" )
+  //   Collapser = React.createElement(config.collapser)
   
   return (
     <div>
-      <Collapse label={label || 'Primary Passenger'} show={!collapse}>
+      <Collapser label={label || 'Primary Passenger'} show={!collapse}>
         <div className='flex flex-col gap-4'>
           <div className='flex gap-4 flex-wrap md:flex-nowrap'>
             <TextInput label={'Given name'} required placeholder={'e.g John Doe'}
@@ -74,8 +83,8 @@ export default function PrimaryPassenger({label,type,handleReturn,count=0,collap
             </div>
             <div className='flex-1'>
               <TextInput type='date' label={'Date of Birth'} required
-                error={!validateAge(data.birthDate,type)[0]}
-                helperText={<span className='text-red-500'>{validateAge(data.birthDate,type)[1]}</span>}
+                error={data.birthDate && !validateAge(data.birthDate,type)[0]}
+                helperText={data.birthDate && <span className='text-red-500'>{validateAge(data.birthDate,type)[1]}</span>}
                 value={data.birthDate}
                 onChange={(ev) => setData({...data,birthDate: ev.target.value})}
               />
@@ -127,7 +136,7 @@ export default function PrimaryPassenger({label,type,handleReturn,count=0,collap
           <h5>Remarks</h5>
           <TextInput multiline rows={4} label='' placeholder={'Add remarks to booking'} />
         </div>
-      </Collapse>
+      </Collapser>
     </div>
   )
 }

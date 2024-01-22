@@ -7,44 +7,53 @@ import getFlightSeats from '../../../../controllers/Flight/getFlightSeats'
 import { clone } from '../../../../features/utils/objClone'
 import { useDispatch, useSelector } from 'react-redux'
 import { setBookingData } from '../../../../redux/reducers/flight/flightBookingSlice'
+import Modal1 from '../../../../components/DIsplay/Modal/Modal1'
 
-export default function SeatSelection({offer}) {
+export default function SeatSelection({offer,hide}) {
   const flights = (offer || {})?.directions?.flat()
 
   return (
-    <div className='flex flex-col gap-4'>
+    <div className='flex flex-col gap-4 w-full'>
       <h6>Seat Selection (Optional)</h6>
-      <div className='bg-theme1/10 border-l-8 border-theme1 p-4 flex items-center gap-6'>
-        <div>
-          <Icon icon={'ic:round-airline-seat-recline-normal'} className='w-16 h-16' />
-        </div>
-        <div className='flex flex-col gap-2'>
-          <b>Select your seats</b>
-          <div className='flex gap-2 items-center'>
-            <Icon icon='ic:round-task-alt' className='p-1' />
-            <p>
-              Find the most comfortable seats for your group.
-            </p>
-          </div>
-          <div className='flex gap-2 items-center'>
-            <Icon icon='ic:round-task-alt' className='p-1' />
-            <p>
-              Get the additional legroom you need.
-            </p>
-          </div>
-          <div className='flex gap-2 items-center'>
-            <Icon icon='ic:round-task-alt' className='p-1' />
-            <p>
-              Save money — adding seats after booking is usually more expensive.
-            </p>
-          </div>
-        </div>
-      </div>
       
+      {!hide?.includes('info') ? 
+        <SeatInfo />
+      :null}
       {(flights || [...Array(2)]).map((obj,i) => (
         <FlightSeatDisplay obj={obj} key={i} routeIndex={i} />
       ))}
       {/* <FlightSeatDisplay offers={offer} data={obj} key={i} /> */}
+    </div>
+  )
+}
+
+function SeatInfo() {
+  return (
+    <div className='bg-theme1/10 border-l-8 border-theme1 p-4 flex items-center gap-6'>
+      <div>
+        <Icon icon={'ic:round-airline-seat-recline-normal'} className='w-16 h-16' />
+      </div>
+      <div className='flex flex-col gap-2'>
+        <b>Select your seats</b>
+        <div className='flex gap-2 items-center'>
+          <Icon icon='ic:round-task-alt' className='p-1' />
+          <p>
+            Find the most comfortable seats for your group.
+          </p>
+        </div>
+        <div className='flex gap-2 items-center'>
+          <Icon icon='ic:round-task-alt' className='p-1' />
+          <p>
+            Get the additional legroom you need.
+          </p>
+        </div>
+        <div className='flex gap-2 items-center'>
+          <Icon icon='ic:round-task-alt' className='p-1' />
+          <p>
+            Save money — adding seats after booking is usually more expensive.
+          </p>
+        </div>
+      </div>
     </div>
   )
 }
@@ -128,9 +137,33 @@ export function FlightSeatDisplay({obj,offers:gotOffers,routeIndex,readOnly,call
         </div>
       </div>
       {!readOnly ? 
-        <div className={`h-0 transition-all overflow-hidden ${open?'!h-auto':''}`}>
-          <PlaneSeat seatMapData={data} loading={loading} returnData={(val) => handleSelectedSeat(val)} />
-        </div>
+        <Modal1 open={open} setOpen={setOpen} 
+          // className={`h-0 transition-all overflow-hidden ${open?'!h-auto':''}`}
+        >
+          <div className='flex flex-col gap-4 p-4'>
+            <div className='flex gap-4 items-center'>
+              <div>
+                <SkullLoad label='' value={obj?.airline?.image?.url} render={(val) => <img alt='' src={val} className='w-[100px] h-[100px]' />} variant='rectangular' className='w-10 !h-[100px]' />
+              </div>
+              <div className='flex-1 flex-col gap-3'>
+                <div>
+                  <SkullLoad label='LOS' value={obj?.departure?.location} /> - <SkullLoad label='ISB' value={obj?.arrival?.location} />
+                </div>
+                <p>{selectedSeat ? selectedSeat[0]?.seatNumber : 'No seat selected'}</p>
+              </div>
+              <div className='flex flex-col gap-4'>
+                <div className='btn text-center bg-primary/10 cursor-default text-primary' >{selectedSeat ? selectedSeat[0]?.seatNumber : 'NON'}</div>
+                <Button1 variant='outlined' onClick={() => handleSelect(!open)}>{!open?'Select Seat':'Hide Seats'}</Button1>
+              </div>
+            </div>
+            <PlaneSeat seatMapData={data} loading={loading} returnData={(val) => handleSelectedSeat(val)} />
+
+            <div className='flex gap-4'>
+              <button className='px-4' onClick={(ev) => {ev?.preventDefault(); ev.stopPropagation(); setOpen(false)}}>Cancel</button>
+              <Button1 onClick={(ev) => {ev?.preventDefault(); ev.stopPropagation(); setOpen(false)}}>Confirm</Button1>
+            </div>
+          </div>
+        </Modal1>
       :null}
     </div>
   )

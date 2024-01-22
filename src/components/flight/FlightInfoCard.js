@@ -25,6 +25,7 @@ export default function FlightInfoCard({data,label='Depart'}) {
   ]
 
   // console.log(data?.flights?.map(flight => flight?.amenities)?.flat())
+  console.log(data)
   return (
     <div className=' rounded-md w-full border-gray-300 bg-secondary'>
       <div className='flex gap-4 justify-between p-5'>
@@ -47,16 +48,26 @@ export default function FlightInfoCard({data,label='Depart'}) {
 
             <div className=' '>
               <div className='p-2'>
-                <div className='flex gap-1 py-2 '>
+                <div className='flex gap-1 py-2 items-center text-sm'>
                   <img alt='airline' src={flight.carrierIcon} className='w-[50px] max-h-[30px] !object-contain' />
                   {flight.carrierName}
+                  <div className='flex flex-wrap gap-4 pl-5 items-center'>
+                    <span>
+                      {flight.cabin}, <b>{flight.bookingClass}</b> 
+                    </span>
+                    <span>{flight.aircraftType}</span>
+                    <label className='flex gap-1 items-center text-xs'>
+                      <Icon icon={'ph:bag-simple-fill'} className='p-1 -scale-x-100' />
+                      {flight?.baggage}
+                    </label>
+                  </div>
                 </div>
                 <div className='flex px-3'>
                   <div className='flex flex-col text-[#aaa] w-full '>
                     <small className='font-bold flex gap-2 items-center'>
                       <div className='dot mx-[4.7px]'></div>
                       <b className='text-primary min-w-[50px] '>{flight.departureTime}</b>
-                      <div className='text-primary'>{flight.departureAirportName} ({flight.departureLocation})</div>
+                      <div className='text-primary'>{flight.departureAirport} ({flight.departureLocation})</div>
                     </small>
                     <div className='px-2 flex'>
                       <div className='vr'></div>
@@ -79,7 +90,7 @@ export default function FlightInfoCard({data,label='Depart'}) {
                     <small className='font-bold flex gap-2 items-center'>
                       <div className='dot mx-[4.7px]'></div>
                       <b className='text-primary min-w-[50px] '>{flight.arrivalTime}</b>
-                      <div className='text-primary'>{flight.arrivalAirportName} ({flight.arrivalLocation})</div>
+                      <div className='text-primary'>{flight.arrivalAirport} ({flight.arrivalLocation})</div>
                     </small>
                   </div>
                 </div>
@@ -104,7 +115,10 @@ export default function FlightInfoCard({data,label='Depart'}) {
               const [hours] = duration.split("H");
               const hour = parseInt(hours);
 
-              const length = hour > 5 ? (hour > 12 ? "very long" : "long") : "short";
+              let length = hour > 5 ? (hour > 12 ? "very long" : "long") : "short";
+              const day = duration.split('day');
+              if(day.length > 1)
+                length = 'very long'
               // const length = 'short'; // long, very long 
               
               return (

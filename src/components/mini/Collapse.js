@@ -17,7 +17,7 @@ export default function Collapse({show,children,label,dropdown='def',returnData}
           !childShow ? <ArrowDropDownOutlined /> : <ArrowDropDownOutlined className='rotate-180' />
         )}
       </div>
-      <div className={'flex flex-col gap-4 p-2 py-4 overflow-hidden '+(childShow ? '' : 'h-0 py-0')}>
+      <div className={'flex flex-col gap-4 p-2 py-4 overflow-hidden '+(childShow ? '' : 'h-0 !py-0')}>
         {children}
       </div>
     </div>

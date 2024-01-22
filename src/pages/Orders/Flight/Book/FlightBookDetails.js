@@ -19,6 +19,10 @@ import { countries } from "country-data";
 import { clone } from "../../../../features/utils/objClone";
 import moment from "moment";
 import bookFlightOffer from "../../../../controllers/Flight/bookFlightOffer";
+import ContentInfo from "../../../../components/DIsplay/ContentInfo";
+import CheckedBags from "../../../../components/flight/CheckedBags";
+import SeatSelection from "./SeatSelection";
+import ExpandWrapper from "../../../../components/DIsplay/ExpandWrapper";
 
 export default function FlightBookDetails() {
   const { id } = useParams();
@@ -53,23 +57,25 @@ export default function FlightBookDetails() {
         <Link to={`/order/new/flight/book/${id}`}>Review</Link>
         <b>Details</b>
       </BreadCrumb>
-      <div className="flex gap-10 flex-wrap-reverse md:flex-nowrap">
-        <div className="flex flex-col gap-6 md:w-[80%]">
+      <div className="flex gap-10 flex-wrap-reverse ">
+        <div className="flex flex-col gap-6 flex-[2]">
           {/* <PayTime callback={(val) => handlePayTime(val)} /> */}
-          <div className="bg-theme1/10 flex items-center gap-2 p-2">
-            <Icon icon={"ic:sharp-lock"} className="w-8 h-8" />
+          <ContentInfo icon={<Icon icon={"ic:sharp-lock"} className="w-7 h-7" />}>
             We take privacy issues seriously. You can be sure that your personal
             data is securely protected.
-          </div>
+          </ContentInfo>
+
           <PassengerDetails offer={offer} />
         </div>
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 flex-1">
           {offer?.segments?.map((obj, i) => (
-            <div key={i}>
+            <div key={i} className="w-full">
               <FlightSegmentDisplay data={obj} />
             </div>
           ))}
-          <FlightPriceSummary onBook data={offer} />
+          <div className="sticky top-5">
+            <FlightPriceSummary onBook data={offer} />
+          </div>
         </div>
       </div>
     </div>
@@ -152,7 +158,7 @@ function PassengerDetails({ offer }) {
   async function handleSubmit(ev) {
     ev.preventDefault();
     setTimeout(() => true,700)
-    // console.log(data.document.expiryDate)
+    console.log(data)
     const validAges = data.passengers.map(passenger => validateAge(passenger.birthDate,passenger?.gotType));
     if(!validAges?.every(val => val[0]))
       return false;
@@ -186,34 +192,115 @@ function PassengerDetails({ offer }) {
         </div>
       </div>
 
+      <ContentInfo>
+        Use all given names and surnames exactly as they appear in your passport/ID to avoid boarding complications
+      </ContentInfo>
+
+      <PrimaryPassenger
+        type={'adult'}
+        // collapse={i + j !== 0}
+        count={count}
+        handleReturn={(newObj, count) => {
+          handlePassengers(newObj, count);
+        }}
+        label={
+          <div className="flex flex-1 items-center justify-between gap-4">
+            <h5>
+              {
+              // i + j === 0
+              //   ? 
+                "Primary Passenger"
+                // : "Another Passenger " + count
+                }
+            </h5>
+            <p className="capitalize">
+              Adult (over 12 years)
+            </p>
+          </div>
+        }
+      />
+      
+      <div className="flex flex-col gap-4 ">
+        <h5>Flight extras</h5>
+
+        <div className="flex gap-4 justify-between">
+          <CheckedBags />
+          <CheckedBags />
+        </div>
+      </div>
+
+
+      <div className="flex flex-col gap-4 ">
+        <div className="flex gap-4 justify-between">
+          <SeatSelection offer={offer} hide={['info']} />
+        </div>
+      </div>
+
+      <div>
       {offer?.passengers &&
-        Object.entries(offer?.passengers)?.map(([type, obj], i) =>
+        Object.entries(offer?.passengers)?.slice(1)?.map(([type, obj], i) =>
           [...Array(obj.total || obj.passengerCount)]?.map((val, j) => {
             return (
-              <PrimaryPassenger
-                type={type}
-                collapse={i + j !== 0}
-                key={count++}
-                count={count}
-                handleReturn={(newObj, count) => {
-                  handlePassengers(newObj, count);
+              <ExpandWrapper key={count++}>
+                {(value) => {
+                  const {open,setOpen} = value || {}
+                  return (
+                    <div>
+                      <div className="rounded-md border border-gray-300 light-bg flex gap-4 p-4 items-center">
+                        {type === "adult" ? <Icon icon='el:person' className='w-8 h-8' /> : 
+                         type === 'child' ? <Icon icon='vaadin:child' className='w-8 h-8' /> :
+                         type === 'infant' ? <Icon icon='cil:child' className='w-8 h-8' /> : ''}
+
+                         <div className="flex-1">
+                          Passenger {count+1} 
+                          {type === "adult" ? " (Adult over 12 years)" : 
+                          type === 'child' ? ' (Child 2 - 11 years)' :
+                          type === 'infant' ? ' (Infant 0 - 2 years)' : ''}
+                         </div>
+
+                         <div>
+                          <Button1 variant='outlined' onClick={() => setOpen(!open)} className='!flex !gap-2 !font-bold'><span>{open?'-':'+'}</span> Add passenger details</Button1>
+                         </div>
+                      </div>
+                      <div className="p-2 py-4">
+                        {open?
+                          <PrimaryPassenger
+                            config={{collapser: 'div'}}
+                            type={type}
+                            collapse={i + j !== 0}
+                            count={count}
+                            handleReturn={(newObj, count) => {
+                              handlePassengers(newObj, count);
+                            }}
+                            label={
+                              <div className="flex flex-1 items-center justify-between gap-4">
+                                {/* <h5>
+                                  {i + j > 0
+                                    ? "Primary Passenger"
+                                    : "Passenger " + (count + 1)}
+                                </h5> */}
+                                {/* <p className="capitalize">
+                                  {type} 
+                                  {type === "adult" ? " (over 12 years)" : 
+                                  type === 'child' ? ' (2 - 11 years)' :
+                                  type === 'infant' ? ' (0 - 2 years)' : ''}
+                                </p> */}
+                              </div>
+                            }
+                          />
+                        :null}
+                      </div>
+                    </div>
+                  )
                 }}
-                label={
-                  <div className="flex flex-1 items-center justify-between gap-4">
-                    <h5>
-                      {i + j === 0
-                        ? "Primary Passenger"
-                        : "Another Passenger " + count}
-                    </h5>
-                    <p className="capitalize">
-                      {type} {type === "adult" ? "(over 12 years)" : ""}
-                    </p>
-                  </div>
-                }
-              />
+              </ExpandWrapper>
             );
           }),
         )}
+
+      </div>
+
+      <EmailOrderConfirmation />
       {/* <div className='flex justify-end self-end'>
         <Button1 variant='text' className='!font-bold'>+ Add another passenger</Button1>
       </div> */}
@@ -258,7 +345,7 @@ function PassengerDetails({ offer }) {
         <div className="flex flex-col items-center p-8 gap-6">
           <h5>Booking was successful</h5>
           <p className="max-w-[400px] text-center">
-            your booking was successful. You can now add ancillaries or proceed
+            Your booking was successful. You can now add ancillaries or proceed
             to make payment.
           </p>
           <div className="flex gap-2 w-full">
@@ -281,6 +368,35 @@ function PassengerDetails({ offer }) {
   );
 }
 
+
+function EmailOrderConfirmation() {
+  const [emails,setEmails] = useState([''])
+
+  function handleEmail(val,i) {
+    let temp = [...emails];
+    temp[i] = val;
+    setEmails(temp);
+  }
+  console.log(emails)
+  return (
+    <div className="flex flex-col gap-4">
+      <h5>Send order confirmation to passenger (Optional)</h5>
+      
+      <div className="border border-gray-300 light-bg p-6 rounded-md flex flex-col gap-3">
+        {emails?.map((val,i) => (
+          <div key={i} className="flex gap-3 items-center">
+            <EmailInput value={val} onChange={(ev) => handleEmail(ev.target.value,i)} label='' className='bg-white w-full' />
+            {i !== 0 ? 
+              <Icon icon='ion:close-circle' className='cursor-pointer' onClick={() => setEmails(emails.filter((_,Index) => Index !== i))} />
+            :null}
+          </div>
+        ))}
+      </div>
+      <b className="text-sm text-theme1 cursor-pointer" onClick={() => setEmails([...emails,''])}>Add another</b>
+    </div>
+
+  )
+}
 export function PayTime({ callback }) {
   const options = [
     {

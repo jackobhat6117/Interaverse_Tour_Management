@@ -47,6 +47,7 @@ export default function convertFlightObject(newObj) {
 
     direction.forEach(function(flight) {
       var oldFlight = {
+        ...flight,
         carrierIcon: flight.airline.image.url,
         carrierName: flight.airline.image.description,
         marketingCarrier: flight.airline.marketing,
@@ -71,7 +72,7 @@ export default function convertFlightObject(newObj) {
         duration: flight.duration,
         numberOfStops: flight.numberOfStops || (direction.length - 1),
         baggage: flight.baggage,
-        amenities: flight?.amenities
+        amenities: flight?.amenities,
       };
 
       segment['duration'] = flight.duration
