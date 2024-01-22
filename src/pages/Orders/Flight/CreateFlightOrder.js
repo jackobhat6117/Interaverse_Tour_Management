@@ -48,7 +48,7 @@ export default function CreateFlightOrder({callback,data,returnData}) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   
-  // console.log(' -> ',data);
+  console.log(' -> ',qObj);
 
 
   useEffect(() => {
@@ -62,7 +62,7 @@ export default function CreateFlightOrder({callback,data,returnData}) {
 
       let type = 'oneway'
       if(obj.originDestinations?.length) {
-        if(obj.originDestinations?.at(0)?.from === obj?.originDestinations?.at(-1)?.to)
+        if(obj.originDestinations?.at(0)?.from?.iata === obj?.originDestinations?.at(-1)?.to?.iata)
           type = 'return'
         if(obj.originDestinations.length > 2)
           type = 'multiple'
@@ -148,8 +148,8 @@ export default function CreateFlightOrder({callback,data,returnData}) {
     // Backward Compatability
     searchObj['originDestinations']?.map(obj => {
       obj.departure.date = moment(obj.date).format('YYYY-MM-DD');
-      obj.from = obj.from?.iata || obj?.from
-      obj.to = obj.to?.iata || obj?.to
+      // obj.from = obj.from?.iata || obj?.from
+      // obj.to = obj.to?.iata || obj?.to
       
       return true
     })
@@ -161,10 +161,11 @@ export default function CreateFlightOrder({callback,data,returnData}) {
       };
     })
 
-    let valid = searchObj['destinations']?.map((obj,i) => {
-      if(obj.departureLocation === obj.arrivalLocation)
+    console.log(searchObj)
+    let valid = searchObj['originDestinations']?.map((obj,i) => {
+      if(!obj.from || !obj.to || !obj.from?.iata || !obj.to?.iata)
         return false;
-      if(!obj.departureLocation || !obj.arrivalLocation)
+      if(obj.from?.iata === obj.to?.iata)
         return false;
 
       // if(i > 0 && obj.departureLocation === searchObj['destinations'][i-1].departureLocation)

@@ -99,6 +99,13 @@ export default function OffersList({hide}) {
     if(!q && !test) return {return: false};
     let obj = req || clone(JSON.parse(decrypt(q))) || {};
 
+    obj['originDestinations']?.map(obj => {
+      obj.departure.date = moment(obj.date).format('YYYY-MM-DD');
+      obj.from = obj.from?.iata || obj?.from
+      obj.to = obj.to?.iata || obj?.to
+      
+      return true
+    })
 
     let path = parseInt(qIndex || 0)
     if(path) {
