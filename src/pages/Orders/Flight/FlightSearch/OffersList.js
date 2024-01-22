@@ -462,6 +462,7 @@ export default function OffersList({hide}) {
                   {/* <Link to={'/order'}>Orders</Link> */}
                   {/* <Link to='/order/new/flight'>New order</Link> */}
                   {searchPath.map((obj,i) => {
+                    console.log(obj)
                     if(i === searchPath.length-1)
                       return (
                         <b>{obj?.departureLocation} to {obj?.arrivalLocation}</b>

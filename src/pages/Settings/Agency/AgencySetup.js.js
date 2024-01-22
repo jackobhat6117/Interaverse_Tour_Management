@@ -64,6 +64,8 @@ export default function AgencySetupSetting() {
     })
   }
 
+  console.log(data)
+
   return (
     <form onSubmit={handleSubmit} className='content-max-w flex flex-col gap-4'>
       {/* <div className="inline-block self-start">
@@ -150,7 +152,7 @@ export default function AgencySetupSetting() {
         </TextInput> */}
         <TextInput label={'Company number'} 
           value={data?.detail?.legalInfo?.companyNumber}
-          onChange={(val) => setData({...data,detail: {...data.detail,legalInfo: {...data?.detail?.legalInfo,companyNumber: val}}})}
+          onChange={(ev) => setData({...data,detail: {...data.detail,legalInfo: {...data?.detail?.legalInfo,companyNumber: ev.target.value}}})}
         />
         <TextInput label='Tax identification number' tooltip='It can be called different names: VAT number or TVA number '
           value={data?.detail?.legalInfo?.taxIdentification}

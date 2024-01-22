@@ -313,8 +313,8 @@ export default function CreateFlightOrder({callback,data,returnData}) {
                 <CalendarInput1 ref={(el) => calendarRef.current[1] = el} label='Return Date' className='w-full border border-primary/20 rounded-md p-2'
                   value={date[1] || ''}
                   onChange={(value) => handleSetDate(value?.start || value,1)}
-                  defaultMonth={new Date(date[0])}
-                  config={{validDates: [date[0]]}}
+                  defaultMonth={new Date(date[0] || new Date())}
+                  config={{validDates: [date[0]||new Date()]}}
                   />
               </div>
             :null}
@@ -338,8 +338,8 @@ export default function CreateFlightOrder({callback,data,returnData}) {
                     <CalendarInput1 ref={el => calendarRef.current[i+1] = el} label='Departure Date' className='w-full border border-primary/20 rounded-md p-2'
                       value={d || ''}
                       onChange={(value) => handleSetDate(value?.start || value,i+1)}
-                      defaultMonth={new Date(date[i-1]||date[0])}
-                      config={{validDates: [date[i-1]||date[0]]}}
+                      defaultMonth={new Date(date[i-1]||date[0]) || new Date()}
+                      config={{validDates: [date[i-1]||date[0] || new Date()]}}
                     />
                   </div>
                   <div>

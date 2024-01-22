@@ -6,7 +6,7 @@ export default async function updateProfile(data) {
   await fetchServer({method: 'PATCH',url: '/main/v1/account/update?populate=detail',data})
   .then((res) => {
     if(res?.data && !res?.data?.error) {
-      result = {return: 1,msg: 'Successfull',data: res.data}
+      result = {return: 1,msg: 'Successfull',data: res.data.data}
     } else result['msg'] = res?.data?.error || result['msg']
   })
   .catch((err) => {

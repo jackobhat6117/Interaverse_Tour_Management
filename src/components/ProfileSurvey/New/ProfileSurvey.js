@@ -167,7 +167,7 @@ export default function ProfileSurvey() {
               ) : null}
 
               <div className="flex-1 flex flex-col gap-5 justify-center">
-                {!user?.detail?.requestedVerification ? 
+                {user?.detail?.requestedVerification ? 
                   <CurComp
                   data={data}
                   setData={setData}

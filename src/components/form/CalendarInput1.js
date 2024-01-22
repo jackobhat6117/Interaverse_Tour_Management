@@ -70,10 +70,10 @@ function CalendarInput1({value,label,multiple,onChange,config,...restProps},ref)
   const isDateDisabled = (date) => {
     if(config?.validDates) {
       let valid = false;
-      if(date >= new Date(config.validDates[0]))
+      if(date >= new Date(config.validDates[0]).setHours(0,0,0,0))
         valid = true;
       if(config.validDates[1])
-        valid = date <= new Date(config.validDates[1])
+        valid = date <= new Date(config.validDates[1]).setHours(0,0,0,0)
 
       return !valid;
     }
