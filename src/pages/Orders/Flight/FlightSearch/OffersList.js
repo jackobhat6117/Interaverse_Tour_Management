@@ -391,29 +391,6 @@ export default function OffersList({hide}) {
   return (
     <div className='w-full flex flex-col gap-2 py-4 flex-1'>
       <PriceTimeout />
-      {/* <CheckFlightTimeout /> */}
-      {/* <div className='bg-secondary px-4'>
-        <FlightSearchInput cur={searchType} />
-      </div> */}
-      {/* <div className='bg-secondary flex justify-center'>
-        <Tabs indicatorColor='inherit' textColor='inherit' value={curFlightDate} scrollButtons allowScrollButtonsMobile variant='scrollable' className='div_mid'>
-          {flightDate.map((obj,i) => (
-            // .sort((p,c) => moment(p.date).diff(moment(c.date)))
-            <Tab key={i} className='p-5 text-center div_targ' sx={{textTransform: 'capitalize'}}
-              onClick={() => search(obj.req)}
-             label={(
-              <div>
-                <h5>{obj.date && moment(obj.date).format("ddd DD MMM")}</h5>
-                <p>
-                  {obj.data && obj.data.totalAmount && def.currency}
-                  {obj.data && formatMoney(obj.data.totalAmount)}
-                </p>
-                <p>{obj.cost}</p>
-              </div>
-             )} />
-          ))}
-        </Tabs>
-      </div> */}
       
       <div className='flex gap-10 justify-between pd-md py-5'>
         <div className='flex gap-4 justify-between'>
@@ -462,7 +439,7 @@ export default function OffersList({hide}) {
 
         {/* Offers List */}
 
-        <div className='flex-1 flex flex-col gap-2 py-5 px-4 md:px-0 overflow-hidden'>
+        <div className='flex-1 flex flex-col gap-2 py-5 px-4 md:px-0 overflow-hidden sticky bottom-0 self-end min-h-screen'>
            {!hide || !hide?.includes('breadcrumb') ? 
               <div className='px-10 py-2 max-w-full'>
                 <BreadCrumb>

@@ -119,6 +119,10 @@ export default function CreateFlightOrder({callback,data,returnData}) {
 
     searchObj['passengers'] = passengers;
     searchObj['travelClass'] = travelClass;
+    searchObj['cabinClass'] = [travelClass];
+    if(travelClass === 'All')
+      searchObj['cabinClass'] = ['Economy','Business','PremiumEconomy','FirstClass']
+
     if(flightType !== 'Any') 
       searchObj['flightType'] = flightType;
     searchObj['requestedFlightTypes'] = noStops ? ['N'] : null;
@@ -364,10 +368,10 @@ export default function CreateFlightOrder({callback,data,returnData}) {
               <SelectInput value={travelClass} onChange={(ev) => setTravelClass(ev.target.value)} className='min-w-[100px]'
               select label="Travel Class" size='small'>
                 <MenuItem value='All'>All</MenuItem>
-                <MenuItem value='ECONOMY'>Economy</MenuItem>
-                <MenuItem value="PREMIUM">Premium Economy</MenuItem>
-                <MenuItem value="BUSINESS">Business</MenuItem>
-                <MenuItem value="FIRST_SUPERSONIC">First Class</MenuItem>
+                <MenuItem value='Economy'>Economy</MenuItem>
+                <MenuItem value="PremiumEconomy">Premium Economy</MenuItem>
+                <MenuItem value="Business">Business</MenuItem>
+                <MenuItem value="FirstClass">First Class</MenuItem>
               </SelectInput>
             </div>
           </div>

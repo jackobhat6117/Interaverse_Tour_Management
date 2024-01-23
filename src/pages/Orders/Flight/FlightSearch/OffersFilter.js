@@ -35,23 +35,14 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
 
   //   // )))
   // }
-  function filterByCabin(data,objs) {
+  function filterByCabin(data,objs,config) {
     if(!data) return [];
-
-    // let newData = data.filter(obj => {
-    //   if(objs.name === "") return true;
-    //   if(obj.segments) {
-    //     if(obj.segments[0].cabin)
-    //       return obj.segments[0].cabin.toLowerCase() === objs.name.toLowerCase();
-    //   }
-    //   return false;
-    // });
+    if(!config || !config?.target)
+      return data;
 
     let newQObj = qObj;
     newQObj.travelClass = objs.name
     newQObj.cabinClass = [objs.otherName || objs.name]
-    // console.log('cabin: ',objs);
-    // console.log('qObj: ',newQObj);
 
     let enc = encrypt(JSON.stringify(newQObj));
     navigate(`/order/new/flight/offers?q=${enc}`);
@@ -226,11 +217,11 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
     // return newData;
   }
 
-  function setFilteredData(filter) {
+  function setFilteredData(filter,config) {
     let datas = orgi;
     let res = Object.entries({...filters,...filter}).reduce((data,[key,val]) => {
       if(key === 'cabin')
-        return filterByCabin(data,val)
+        return filterByCabin(data,val,config)
       else if(key === 'stops')
         return filterByStops(data,val);
       else if(key === 'exCant')
@@ -285,7 +276,7 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
       <hr />
         <FilterSuplier cats={cats} orgi={orgi} returnData={(objs) => setFilteredData({suplier: objs})} />
       <hr />
-        <FilterCabin cats={cats} orgi={orgi} returnData={(objs) => setFilteredData({cabin: objs})} />
+        <FilterCabin cats={cats} orgi={orgi} returnData={(objs) => setFilteredData({cabin: objs},{target: true})} />
       <hr />
         <FilterStops cats={cats} orgi={orgi} returnData={(objs) => setFilteredData({stops: objs})} />
       <hr />
