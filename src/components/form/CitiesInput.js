@@ -37,8 +37,8 @@ export default function CitiesInput({
     }
   }
 
-  function handleChange(newVal) {
-    if (restProps.lockUpdate) return false;
+  function handleChange(newVal,fromKey) {
+    if (!fromKey && (restProps.lockUpdate && newVal.length > 4)) return false;
 
     if (onChange) onChange(newVal);
   }
@@ -65,7 +65,7 @@ export default function CitiesInput({
         setIsFocused(false);
       }}
       onInputChange={(ev, newVal) => {
-        handleChange(newVal);
+        handleChange(newVal,ev?.type === 'keydown' || ev?.type === 'keyup' || ev?.type === 'keypress');
         setIsFocused(true);
       }}
       renderInput={(params) => (

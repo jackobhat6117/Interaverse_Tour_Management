@@ -81,6 +81,7 @@ export default function FlightOfferDisplay({data,path,showDetail,select,offer}) 
   };
 
   // console.log(data.passengers)
+  const totalPassengers = Object.values(data?.passengers).reduce((p,c) => c.total + parseInt(p),[0])
 
   return (
     <div className='bg-secondary rounded-2xl overflow-clip border border-primary/10 hover:shadow-xl shadow-primary cursor-pointer transition-all' data-container={true} onClick={handleOpenDetail}>
@@ -103,7 +104,7 @@ export default function FlightOfferDisplay({data,path,showDetail,select,offer}) 
               {formatMoney(Math.abs((totalPrice) - (lastPath?.totalAmount || 0)))}
             </h5>
             {data?.segments?.length > 1 ? 
-              <small>Round trip /Person</small>
+              <small>Round trip /{totalPassengers > 0 ? ' Total ':''}Person</small>
             :null}
             <small className={'rounded-md px-2 uppercase font-bold tracking-widest '+getSupplierClass(data?.supplier)}>
               {data?.supplier}

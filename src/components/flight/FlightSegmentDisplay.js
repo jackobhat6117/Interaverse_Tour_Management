@@ -30,7 +30,7 @@ export default function FlightSegmentDisplay({changeRoute,data: og}) {
             <p>{data?.numberOfStops || data?.numberOfStops === 0 ? data?.numberOfStops+' stopover':''} </p>
           </div>
 
-          <div>
+          <div className="self-stretch flex flex-col justify-between">
             <h6><SkullLoad value={data?.duration} label={'Duration'} /></h6>
             <button className="text-sm" onClick={changeRoute}>{'Change flight'}</button>
           </div>

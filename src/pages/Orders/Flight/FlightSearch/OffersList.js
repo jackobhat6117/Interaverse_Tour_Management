@@ -387,6 +387,8 @@ export default function OffersList({hide}) {
 
   modData = rearrageFlight(data);
 
+  console.log(searchObj)
+
 
   return (
     <div className='w-full flex flex-col gap-2 py-4 flex-1'>
@@ -445,16 +447,19 @@ export default function OffersList({hide}) {
                 <BreadCrumb>
                   {/* <Link to={'/order'}>Orders</Link> */}
                   {/* <Link to='/order/new/flight'>New order</Link> */}
-                  {searchPath.map((obj,i) => {
+                  {searchObj.destinations.map((obj,i) => {
                     console.log(obj)
+                    let label = 'Choose departing flight';
+                    if(i === searchObj?.destinations?.length-1)
+                      label = 'Choose return flight'
                     if(i === searchPath.length-1)
                       return (
-                        <b>{obj?.departureLocation} to {obj?.arrivalLocation}</b>
+                        <b>{label} ({obj?.departureLocation} to {obj?.arrivalLocation})</b>
                       )
 
                     return (
                       <div onClick={() => handleSearchRoute(i)} className='cursor-pointer'>
-                        {obj.departureLocation} to {obj.arrivalLocation}
+                        {label} ({obj.departureLocation} to {obj.arrivalLocation})
                       </div>
                     )
                   })}

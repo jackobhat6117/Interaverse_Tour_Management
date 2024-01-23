@@ -128,7 +128,7 @@ export default function TeamMembers() {
   const [openUpdateRole,setOpenUpdateRole] = useState(false);
   
   useEffect(() => {
-    load();    
+    // load();    
     //eslint-disable-next-line
   },[filter])
 
@@ -189,7 +189,7 @@ export default function TeamMembers() {
 
   
   return (
-    <div className='flex flex-col gap-4'>
+    <div className={`flex flex-col gap-4 flex-1 ${!data?.length && !loading ? 'bg-emptypage justify-center ':''}`}>
       {loading ? 
         <div className='flex flex-col items-center justify-center'>
           <LoadingBar />
@@ -201,8 +201,8 @@ export default function TeamMembers() {
         </div>
       :
       !data.length && !loading ? (
-        <div className=' text-center flex flex-col items-center gap-8'>
-          <h5>You don't have any team members</h5>
+        <div className={` text-center flex flex-col items-center self-center gap-8`}>
+          <div>You don't have any team members</div>
           <div className='flex gap-2'>
             <LearnMoreButton label='Learn about team members' />
             <InviteTeam reload={load} label='Invite a team member' />

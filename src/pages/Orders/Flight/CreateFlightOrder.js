@@ -252,7 +252,7 @@ export default function CreateFlightOrder({callback,data,returnData}) {
     });
   }
 
-  function swipeLoc(i=0) {
+  function swapLoc(i=0) {
     let tempDestination = clone(destination);
     
     let from = tempDestination[i].from;
@@ -295,7 +295,7 @@ export default function CreateFlightOrder({callback,data,returnData}) {
             />
             <div className='relative flex items-center justify-center z-10 cursor-pointer'>
               <div className='absolute items-center justify-center flex'>
-                <span className='bg-secondary shadow-lg rounded-full p-1 hover:rotate-180 transition-all' onClick={() => swipeLoc()}>
+                <span className='bg-secondary shadow-lg rounded-full p-1 hover:rotate-180 transition-all' onClick={() => swapLoc()}>
                   <Icon icon='mdi:exchange' className='!w-5 !h-5' />
                 </span>
               </div>

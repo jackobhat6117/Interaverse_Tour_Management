@@ -40,7 +40,8 @@ export default function FilterCabin({returnData,cats,orgi}) {
       return data
     })
     setCabin(temp)
-  },[orgi])
+    //eslint-disable-next-line
+  },[orgi,cats])
 
 
   function handleChange(val) {
