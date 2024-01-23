@@ -21,12 +21,12 @@ export default function FlightDisplay({flight: data}) {
       <div className='flex flex-col gap-1 grow p-3 py-8'>
         {/* <p className=''>{flight?.flights[0].departureAirportName}</p> */}
         <div className='flex justify-between items-center relative gap-2'>
-          <div className='flex flex-col justify-center gap-1  items-between '>
+          <div className='flex flex-col justify-center gap-1 h-full  items-between '>
             <div className='flex gap-2'>
               <b>{flight?.departureTime}</b>
               <h6>{flight?.departureLocation}</h6>
             </div>
-            <div className='overflow-hidden max-w-[150px]'>{flight?.departureAirport},{flight?.departureCity}</div>
+            <div className='overflow-hidden flex-1  max-w-[150px]'>{flight?.departureAirport}, {flight?.departureCity}</div>
           </div>
           <div className='flex flex-col items-center justify-center '>
             <small className='whitespace-nowrap py-1 flex items-center gap-1'>
@@ -43,12 +43,12 @@ export default function FlightDisplay({flight: data}) {
               {flight?.numberOfStops || 0} stopover{flight?.numberOfStops > 1 ? 's':''}
             </small>
           </div>
-          <div className='flex flex-col justify-center gap-1 items-between '>
+          <div className='flex flex-col justify-center gap-1 h-full items-between '>
             <div className='flex gap-2'>
               <b>{flight?.arrivalTime}</b>
               <h6>{flight?.arrivalLocation}</h6>
             </div>
-            <div className='overflow-hidden max-w-[150px]'>{flight?.arrivalAirport},{flight?.arrivalCity}</div>
+            <div className='overflow-hidden flex-1  max-w-[150px]'>{flight?.arrivalAirport}, {flight?.arrivalCity}</div>
           </div>
         </div>
         <div className='p-1 flex gap-2'>

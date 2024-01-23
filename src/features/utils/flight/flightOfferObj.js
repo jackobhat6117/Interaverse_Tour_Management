@@ -36,9 +36,11 @@ export default function convertFlightObject(newObj) {
     var segment = {
       flights: [],
       departureLocation: direction[0].departure.location,
+      departureCity: direction[0].departure.city,
       departureAirport: direction[0].departure?.airport,
       arrivalLocation: direction[direction.length - 1].arrival.location,
       arrivalAirport: direction[direction.length - 1].arrival?.airport,
+      arrivalCity: direction[direction.length - 1].arrival?.city,
       departureDate: departureDate.format('YYYY-MM-DD'),
       departureTime: direction[0].departure.time,
       arrivalDate: arrivalDate.format('YYYY-MM-DD'),

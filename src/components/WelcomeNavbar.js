@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 export default function WelcomeNavbar(props) {
   const {user} = useSelector(state => state.user.userData);
   const profileComplete = user?.detail?.isProfileComplete;
+  const underReview = user?.detail?.requestedVerification;
   const navigate = useNavigate();
   const location = useLocation();
   const locations = location.pathname?.split('/');
@@ -46,10 +47,10 @@ export default function WelcomeNavbar(props) {
         <Tabs variant="scrollable" value={tabIndex} className="font-bold" 
           onChange={(ev,val) => handleChange(ev,val)}
           TabIndicatorProps={{sx: {height: '4px'}}}>
-            {profileComplete?
+            <Tab label='Getting Started' data-link="/welcome" icon={<Icon icon='heroicons:rocket-launch' className='!min-w-[20px] !h-6 -rotate-[43deg]' />} iconPosition="start" className='!capitalize !min-w-[150px] md:flex-1 !whitespace-nowrap' />
+            {profileComplete || underReview ?
               <Tab label='Home' data-link="/" icon={<HomeOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
             :null}
-            <Tab label='Getting Started' data-link="/welcome" icon={<Icon icon='heroicons:rocket-launch' className='!min-w-[20px] !h-6 -rotate-[43deg]' />} iconPosition="start" className='!capitalize !min-w-[150px] md:flex-1 !whitespace-nowrap' />
             <Tab label='Pricing' data-link="/welcome/pricing" icon={
               <div className={'flex justify-center items-center  w-5 h-5 rounded-full border '+(tabIndex === 1 ? 'border-theme1':'border-primary/40')}>
                 <Icon icon='tabler:currency-naira' className=' ' />
