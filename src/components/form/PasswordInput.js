@@ -56,7 +56,7 @@ export default function PasswordInput(props) {
         }}
       />
       {error && (
-        <div className='absolute z-10 top-full border my-1 border-red-500 p-4 bg-white text-red-500 text-xs left-0'>
+        <div className='absolute z-10 top-full border my-1 border-gray-300 p-4 bg-white text-xs left-0'>
           {error}
         </div>
       )}

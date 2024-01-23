@@ -10,7 +10,7 @@ export default function checkProfileComplete(user) {
 
     switch(temp.label) {
       case 'Business Detail':
-        if(detail?.agencyType)
+        if(detail?.agencyType && detail?.tradingName)
           temp.complete = true;
         break;
       

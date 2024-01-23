@@ -19,9 +19,9 @@ export default function SecuritySettings() {
     let futureDate = new Date(currentDate);
     if(typeof(data.passwordExpiry) === 'number')
       futureDate.setDate(currentDate.getDate() + data.passwordExpiry);
-    else futureDate = null;
+    else futureDate = data.passwordExpiry;
 
-    // console.log({...data,passwordExpiry: futureDate})
+    // return console.log({...data,passwordExpiry: futureDate})
     setLoading(true);
     const res = await updateProfile({...data,passwordExpiry: futureDate});
     setLoading(false);

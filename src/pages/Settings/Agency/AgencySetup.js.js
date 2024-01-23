@@ -8,10 +8,11 @@ import { profileSurveyData } from "../../../data/user/profileSurvey";
 import updateProfile from "../../../controllers/user/updateProfile";
 import { useSnackbar } from "notistack";
 import CountriesInput from "../../../components/form/CountriesInput";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Map from "../../../components/form/Map";
 import mergeRecursive from "../../../features/utils/mergeRecursive";
 import ToolTip from "../../../components/DIsplay/ToolTip";
+import { setUser } from "../../../redux/reducers/userSlice";
 
 export default function AgencySetupSetting() {
   const {user} = useSelector(state => state.user.userData);
@@ -20,6 +21,7 @@ export default function AgencySetupSetting() {
   })
   const [loading,setLoading] = useState(false);
   const {enqueueSnackbar} = useSnackbar();
+  const dispatch = useDispatch();
 
   function setData(val) {
     if(user?.detail?.requestedVerification)
@@ -43,6 +45,7 @@ export default function AgencySetupSetting() {
     const res = await updateProfile(restData)
     setLoading(false);
     if(res.return) {
+      dispatch(setUser(res.data))
       enqueueSnackbar('Profile Updated.',{variant: 'success'})
     } else enqueueSnackbar(res.msg,{variant: 'error'})
   }

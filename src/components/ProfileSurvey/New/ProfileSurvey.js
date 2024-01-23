@@ -53,8 +53,9 @@ export default function ProfileSurvey() {
 
       return true;
     });
+    console.log(cur,stop)
 
-    cur = stepq ? Math.max(0, Number(stepq) - 1) : cur;
+    cur = stepq ? Math.max(0, Math.min(cur,Number(stepq) - 1)) : cur;
     // if(user?.detail?.interestedIn.length)
     //   cur = 1;
     // if(user?.detail?.sizeOfOrganization)
@@ -100,7 +101,7 @@ export default function ProfileSurvey() {
         })
         // dispatch(setUser(res?.data?.data))
       }
-      res?.data?.data && dispatch(setUser(res?.data?.data));
+      res?.data && dispatch(setUser(res?.data));
       return true;
     } else enqueueSnackbar(res.msg, { variant: "error" });
 
@@ -123,6 +124,21 @@ export default function ProfileSurvey() {
       setStep(5);
     } else setStep((step) => (step > 0 ? step - 1 : 0));
   };
+
+  function handleSetStep(n) {
+    let cur = 0;
+    let stop = false;
+
+    completedSteps.map((obj) => {
+      if (!stop) obj.complete ? cur++ : (stop = true);
+
+      return true;
+    });
+
+    cur = Math.max(0, Math.min(cur,Number(n)));
+
+    setStep(cur)
+  }
 
   // function skip() {
   //   setOpen(false);
@@ -161,13 +177,13 @@ export default function ProfileSurvey() {
                   <ProfileStepperNav
                     activeStep={step}
                     steps={steps}
-                    setStep={setStep}
+                    setStep={handleSetStep}
                   />
                 </div>
               ) : null}
 
               <div className="flex-1 flex flex-col gap-5 justify-center">
-                {user?.detail?.requestedVerification ? 
+                {!user?.detail?.requestedVerification ? 
                   <CurComp
                   data={data}
                   setData={setData}
@@ -228,7 +244,7 @@ function ReviewBusinessProfile({ setStep, activate, completed }) {
     const res = await updateProfile({ requestedVerification: true });
     if (res.return) {
       activate && activate();
-      dispatch(setUser(res?.data?.data));
+      dispatch(setUser(res?.data));
     } else
       enqueueSnackbar("Failed requesting activation. Please contact support", {
         variant: "error",

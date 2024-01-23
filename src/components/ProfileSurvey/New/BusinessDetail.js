@@ -35,9 +35,9 @@ function BusinessDetail({updateProfile,back,next,review}) {
   }
 
   const stepBack = (edit) => {
-    if(edit)
-      back();
-    else
+    // if(edit)
+    //   back();
+    // else
       setStep(step => step > 0 ? step-1 : 0)
   }
 
