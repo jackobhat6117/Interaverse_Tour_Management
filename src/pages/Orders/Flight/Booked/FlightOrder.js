@@ -77,7 +77,7 @@ export default function FlightOrder() {
         setOrder(res.data);
       }
     };
-    // fetch();
+    fetch();
   }, [id]);
 
   const orderData = order?.booking?.flightBooking?.at(0)
