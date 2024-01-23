@@ -27,18 +27,16 @@ export default function AuthValidate() {
 
   return (
     <div className='flex justify-center'>
-      <div className='max-w-full'>
-        <div className='max-w-[1500px]'>
-          {loggedIn ? (
-            user?._id ?
-              <Outlet />
-            : 
-            <div className='flex flex-col gap-2 justify-center items-center h-screen w-full'>
-              <Logo />
-              <LoadingBar />
-            </div>
-          ):<Auth />}
-        </div>
+      <div className='max-w-full w-[1500px]'>
+        {loggedIn ? (
+          user?._id ?
+            <Outlet />
+          : 
+          <div className='flex flex-col gap-2 justify-center items-center h-screen w-full'>
+            <Logo />
+            <LoadingBar />
+          </div>
+        ):<Auth />}
       </div>
     </div>
   )
