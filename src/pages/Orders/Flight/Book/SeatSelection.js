@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setBookingData } from '../../../../redux/reducers/flight/flightBookingSlice'
 import Modal1 from '../../../../components/DIsplay/Modal/Modal1'
 
-export default function SeatSelection({offer,hide}) {
+export default function SeatSelection({offer,callback,hide}) {
   const flights = (offer || {})?.directions?.flat()
 
   return (
@@ -20,7 +20,7 @@ export default function SeatSelection({offer,hide}) {
         <SeatInfo />
       :null}
       {(flights || [...Array(2)]).map((obj,i) => (
-        <FlightSeatDisplay obj={obj} key={i} routeIndex={i} />
+        <FlightSeatDisplay callback={callback} obj={obj} key={i} routeIndex={i} />
       ))}
       {/* <FlightSeatDisplay offers={offer} data={obj} key={i} /> */}
     </div>

@@ -1,19 +1,33 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Icon from '../HOC/Icon'
 import { formatMoney } from '../../features/utils/formatMoney'
 
-export default function CheckedBags({data}) {
+export default function CheckedBags({data,selected:gotSelected,callback}) {
     const items = [
         {icon: 'game-icons:school-bag', name: 'Personal Item', quantity: "x1", status: 'included in ticket'},
         {icon: 'mdi:bag-carry-on', name: 'Carry-on bag', quantity: "x1", status: 'included in ticket'},
         {icon: 'material-symbols:checked-bag', name: 'Checked bag', quantity: '1x 23kg', status: 'included in ticket'},
     ]
+    const init = '{"price":0,"label": "Select a bag to add"}';
+
     const [selected,setSelected] = useState();
 
-    const obj = JSON.parse(selected || '{"price":0,"label": "Select a bag to add"}')
+    useEffect(() => {
+        // console.log(' -> ',gotSelected ? JSON.stringify(gotSelected) : init)
+        const {label,quantity,weight,price} = gotSelected || {};
+        setSelected(gotSelected ? JSON.stringify({label,quantity,weight,price}) : init)
+    },[gotSelected])
+
+    function handleSelect(obj) {
+        setSelected(obj)
+        callback && callback(JSON.parse(obj||"{}"));
+    }
+
+    const obj = JSON.parse(selected || init)
+    console.log(' -> ',obj)
   return (
-    <div className='flex w-full flex-col gap-4'>
-        <b>{data.from} to {data.to}</b>
+    <div className='flex w-full min-w-[300px] flex-col gap-4'>
+        <b>{data?.departure?.location} to {data?.arrival?.location}</b>
         <p>Included (per person)</p>
 
         <div className='border border-theme1 rounded-md bg-theme1/5 text-theme1'>
@@ -41,11 +55,11 @@ export default function CheckedBags({data}) {
             <div className='flex flex-1 items-center justify-between gap-4'>
                 <div className=' flex flex-col self-start'>
                     <span>{obj?.price ? 'Checked bag' : obj?.label}</span>
-                    <select className='bg-transparent w-full' onChange={(ev) => setSelected(ev.target.value)}>
+                    <select className='bg-transparent w-full' value={selected} onChange={(ev) => handleSelect(ev.target.value)}>
                         <option value=''></option>
                         {[
-                            {label: '1x 23kg',price: 20000},
-                            {label: '2x 46kg',price: 40000},
+                            {label: '1x 23kg',quantity: 1,weight: 23,price: 20000},
+                            {label: '2x 46kg',quantity: 2,weight: 46,price: 40000},
                         ].map((obj,i) => (
                             <option key={i} value={JSON.stringify(obj)}>{obj.label}</option>
                         ))}

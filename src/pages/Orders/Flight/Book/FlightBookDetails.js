@@ -24,6 +24,7 @@ import CheckedBags from "../../../../components/flight/CheckedBags";
 import SeatSelection from "./SeatSelection";
 import ExpandWrapper from "../../../../components/DIsplay/ExpandWrapper";
 import PriceTimeout from "../../../../components/flight/PriceTimeout";
+import { def } from "../../../../config";
 
 export default function FlightBookDetails() {
   const { id } = useParams();
@@ -42,7 +43,7 @@ export default function FlightBookDetails() {
   // }
   return (
     <div className="pd-md py-4 flex flex-col gap-4">
-      <PriceTimeout onBook />
+      {/* <PriceTimeout onBook /> */}
 
       <BreadCrumb>
         <Link to={"/order"}>Orders</Link>
@@ -61,7 +62,7 @@ export default function FlightBookDetails() {
         <b>Details</b>
       </BreadCrumb>
       <div className="flex gap-10 flex-wrap-reverse ">
-        <div className="flex flex-col gap-6 flex-[2]">
+        <div className="flex flex-col gap-6 flex-[2] max-w-full">
           {/* <PayTime callback={(val) => handlePayTime(val)} /> */}
           <ContentInfo icon={<Icon icon={"ic:sharp-lock"} className="w-7 h-7" />}>
             We take privacy issues seriously. You can be sure that your personal
@@ -89,10 +90,9 @@ function PassengerDetails({ offer }) {
   const { id } = useParams();
   const { bookingData } = useSelector((state) => state.flightBooking);
   const segments = bookingData?.offer?.at(-1)?.segments || [];
-  // const departure = segments[0]?.departureLocation;
-  // let arrival =
-  //   segments[segments.length - 1]?.arrivalLocation ||
-  //   segments[0]?.arrivalLocation;
+
+  const [bags,setBags] = useState([...offer.directions.map(seg => seg.map(f => null))])
+
   const [open, setOpen] = useState(false);
   const [bookingDone, setBookingDone] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -108,9 +108,43 @@ function PassengerDetails({ offer }) {
         (c, p) => parseInt(c.total) + parseInt(p.total),
         { total: 0 },
       );
+    let modOffer = clone(offer);
+    modOffer.directions.map((seg,i) => seg.map((flight,j) => {
+    //   "additionalServices": {
+    //     "chargeableCheckedBags": {
+    //         "quantity": 1,
+    //         "weight": 20
+    //     },
+    //     "chargeableSeatNumber": "13f"
+    // }
+
+
+      // Adding additional bags
+      try {
+        if(bags[i][j]) {
+          try {
+            flight.additionalServices.chargeableCheckedBags.push(bags[i][j])
+          } catch(ex) {
+            console.log('0XbagsPush')
+            try {
+              flight.additionalServices.chargeableCheckedBags = [bags[i][j]]
+            } catch(ex) {
+              console.log('0XbagsCreate')
+              try {
+                flight.additionalServices = {chargeableCheckedBags: [bags[i][j]]}
+              } catch(ex) {
+                console.log('0XadditionalServiceCreate')
+              }
+            }
+          }
+        }
+      } catch(ex) {console.log(ex)}
+      return true;
+    }))
+    // return console.log(" ==>>> ",modOffer,bags)
     let req = {
       supplier: offer?.supplier,
-      offers: [offer],
+      offers: [modOffer],
       travelersInfo: clone(data?.passengers)?.slice(0, passengerCount || 1),
     };
     let pn = data?.phone?.toString()?.split("-");
@@ -151,11 +185,53 @@ function PassengerDetails({ offer }) {
     setOpen(false);
   }
 
-  function handlePassengers(obj, i = 0) {
-    let temp = data;
+  function handlePassengers(obj, i = 0,fill) {
+    let temp = {...data};
     temp.passengers[i] = obj;
+
+    let tempObj = {
+      "lastName": "Doe",
+      "firstName": "John",
+      "birthDate": "1/24/2010",
+      "gender": "Male",
+      "type": "ADT",
+      "phone": [
+          {
+              "countryCode": "251",
+              "location": "Ethiopia",
+              "number": "912341234"
+          }
+      ],
+      "email": "abebe@yopmail.com",
+      "document": {
+          "documentType": "Passport",
+          "birthPlace": "ET",
+          "issuanceLocation": "ET",
+          "issuanceDate": "1/24/2024",
+          "number": "1111",
+          "expiryDate": "2030-01-01",
+          "issuanceCountry": "ET",
+          "validityCountry": "ET",
+          "nationality": "ET",
+          "holder": true
+      }
+    }
+
+    if(fill) temp.passengers[i] = tempObj;
     setData(temp);
-    // console.log(' => ',temp,i)
+  }
+
+  function handleBag(obj,[segment,j]) {
+    try {
+      const {quantity,weight,i:passenger,price,label} = obj;
+      let temp = clone(bags);
+      temp[segment][j] = {quantity,weight,price,label,passenger}
+      setBags(temp);
+    } catch(ex) {}
+  }
+
+  function handleSeat(obj,i) {
+    console.log(" => ",obj,i)
   }
 
   async function handleSubmit(ev) {
@@ -175,11 +251,9 @@ function PassengerDetails({ offer }) {
 
   let totalPassenger = Object.values(offer.passengers).map(o => o.total).reduce((p,c) => p+c);
 
-  console.log(" -> ",offer)
-  let count = 0;
   const [expands,setExpands] = useState([...Array(totalPassenger)].map((_,i) => i===0))
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6 pb-10">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-6 pb-10 max-w-full">
       <h5>Contact Details</h5>
       <div className="flex gap-4">
         <div className="flex-1">
@@ -202,30 +276,6 @@ function PassengerDetails({ offer }) {
         Use all given names and surnames exactly as they appear in your passport/ID to avoid boarding complications
       </ContentInfo>
 
-      {/* <PrimaryPassenger
-        type={'adult'}
-        // collapse={i + j !== 0}
-        count={count}
-        handleReturn={(newObj, count) => {
-          handlePassengers(newObj, count);
-        }}
-        label={
-          <div className="flex flex-1 items-center justify-between gap-4">
-            <h5>
-              {
-              // i + j === 0
-              //   ? 
-                "Primary Passenger"
-                // : "Another Passenger " + count
-                }
-            </h5>
-            <p className="capitalize">
-              Adult (over 12 years)
-            </p>
-          </div>
-        }
-      /> */}
-      
       <div>
       {offer?.passengers &&
         // Object.entries(offer?.passengers)?.map(([type, obj], i) =>
@@ -235,18 +285,24 @@ function PassengerDetails({ offer }) {
               <ExpandWrapper open={expands[i]} key={i}>
                 {(value) => {
                   const {open,setOpen} = value || {}
-                  const handleOpen = () => {
+                  const handleOpen = (id) => {
+                    const element = document.getElementById(id);
+                    if(element)
+                      setTimeout(() => 
+                        element?.scrollIntoView({behavior: 'instant'})
+                      ,500)
+                    console.log(element)
                     setOpen(!open)
                     setExpands([...Array(totalPassenger)].map((_,j) => j===i && !open))
                   }
                   return (
-                    <div className="my-4">
+                    <div className="my-4 max-w-full" id={'pass'+i}>
                       <div className="rounded-md border border-gray-300 light-bg flex gap-4 p-4 items-center">
                         {type === "adult" ? <Icon icon='el:person' className='w-8 h-8' /> : 
                          type === 'child' ? <Icon icon='vaadin:child' className='w-8 h-8' /> :
                          type === 'infant' ? <Icon icon='cil:child' className='w-8 h-8' /> : ''}
 
-                         <div className="flex-1">
+                         <div className="flex-1" onDoubleClick={() => def.devTest && handlePassengers(null,i,true)}>
                           {i === 0 ? 'Primary Passenger' : `
                             Passenger ${i+1} 
                           `}
@@ -256,17 +312,18 @@ function PassengerDetails({ offer }) {
                          </div>
 
                          <div>
-                          <Button1 variant='outlined' onClick={() => handleOpen()} className='!flex !gap-2 !font-bold'><span>{open?'-':'+'}</span> Add passenger details</Button1>
+                          <Button1 variant='outlined' onClick={() => handleOpen('pass'+i)} className='!flex !gap-2 !font-bold'><span>{open?'-':'+'}</span> Add passenger details</Button1>
                          </div>
                       </div>
                       {open?
-                        <div className="p-2 py-4 flex flex-col gap-6">
+                        <div className="p-2 py-4 flex flex-col gap-6 max-w-full" >
                           <PrimaryPassenger
+                            data={data.passengers[i]}
                             config={{collapser: 'div'}}
                             type={type}
-                            count={count}
-                            handleReturn={(newObj, count) => {
-                              handlePassengers(newObj, count);
+                            count={i}
+                            handleReturn={(newObj) => {
+                              handlePassengers(newObj, i);
                             }}
                             label={
                               <div className="flex flex-1 items-center justify-between gap-4">
@@ -289,17 +346,20 @@ function PassengerDetails({ offer }) {
                           <div className="flex flex-col gap-4 ">
                             <h5>Flight extras</h5>
 
-                            <div className="flex gap-4 justify-between">
-                              {offer?.destinations?.map((obj,i) => (
-                                <CheckedBags key={i} data={obj} />
-                              ))}
+                            <div className="flex gap-4 justify-between max-w-full overflow-auto snap-x">
+                              {offer?.directions?.map((direction,index) => 
+                                direction.map((obj,j) => (
+                                  <div key={i+""+j} className="snap-mandatory snap-center pb-3">
+                                    <CheckedBags selected={bags[i]?.[j]} data={obj} callback={(obj) => handleBag({...obj,i},[index,j])} />
+                                  </div>
+                              )))}
                             </div>
                           </div>
 
 
                           <div className="flex flex-col gap-4 ">
                             <div className="flex gap-4 justify-between">
-                              <SeatSelection offer={offer} hide={['info']} />
+                              <SeatSelection callback={(obj) => handleSeat(obj,i)} offer={offer} hide={['info']} />
                             </div>
                           </div>
 

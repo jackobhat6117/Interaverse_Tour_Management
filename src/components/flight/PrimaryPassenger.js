@@ -27,23 +27,28 @@ export function validateAge(birthDate,type) {
   return [valid,msg];
 }
 
-export default function PrimaryPassenger({label,type,handleReturn,count=0,collapse=false,config:gotConfig}) {
+export default function PrimaryPassenger({data:gotData,label,type,handleReturn,count=0,collapse=false,config:gotConfig}) {
 
-  const [data,setData] = useState(clone(travelersInfo))
+  const [data,setData] = useState(clone(gotData || travelersInfo))
 
   const config = {
     collapser: Collapse,
     ...(gotConfig||{})
   }
+
   useEffect(() => {
-    let {email,phone,birthDate,expiryDate,...rest} = data
+    if(gotData)
+      setData(gotData)
+  },[gotData])
+  
+  function handleData(obj) {
+    setData(obj)
+    let {email,phone,birthDate,expiryDate,...rest} = clone(obj)
     birthDate = moment(birthDate).format('YYYY-MM-DD')
     expiryDate = moment(expiryDate).format('YYYY-MM-DD')
     console.log('data: ',{...rest,birthDate,expiryDate,gotType: type})
     handleReturn && handleReturn({...rest,birthDate,expiryDate,gotType: type},count)
-    //eslint-disable-next-line
-  },[data])
-
+  }
 
   const expiredPassport = data.document.expiryDate && moment(data.document.expiryDate).isBefore(moment(),'day');
 
@@ -58,24 +63,24 @@ export default function PrimaryPassenger({label,type,handleReturn,count=0,collap
           <div className='flex gap-4 flex-wrap md:flex-nowrap'>
             <TextInput label={'Given name'} required placeholder={'e.g John Doe'}
               value={data.firstName}
-              onChange={(ev) => setData({...data,firstName: ev.target.value})}
+              onChange={(ev) => handleData({...data,firstName: ev.target.value})}
             />
             <TextInput label={'Surname'} required placeholder={'e.g Ike'}
               value={data.lastName}
-              onChange={(ev) => setData({...data,lastName: ev.target.value})}
+              onChange={(ev) => handleData({...data,lastName: ev.target.value})}
             />
           </div>
           <div className='flex gap-4 flex-wrap md:flex-nowrap'>
             <div className='flex-1'>
               <CountriesInput label={'Nationality'} required
                 value={data?.document?.nationality}
-                onChange={(val) => setData({...data,document:{...data.document,nationality: val?.alpha2 || val}})}
+                onChange={(val) => handleData({...data,document:{...data.document,nationality: val?.alpha2 || val}})}
               />
             </div>
             <div className='flex-1'>
               <SelectInput label='Gender' required
                 value={data.gender}
-                onChange={(ev) => setData({...data,gender: ev.target.value})}
+                onChange={(ev) => handleData({...data,gender: ev.target.value})}
               >
                 <MenuItem value='Male'>Male</MenuItem>
                 <MenuItem value='Female'>Female</MenuItem>
@@ -86,7 +91,7 @@ export default function PrimaryPassenger({label,type,handleReturn,count=0,collap
                 error={data.birthDate && !validateAge(data.birthDate,type)[0]}
                 helperText={data.birthDate && <span className='text-red-500'>{validateAge(data.birthDate,type)[1]}</span>}
                 value={data.birthDate}
-                onChange={(ev) => setData({...data,birthDate: ev.target.value})}
+                onChange={(ev) => handleData({...data,birthDate: ev.target.value})}
               />
             </div>
           </div>
@@ -94,7 +99,7 @@ export default function PrimaryPassenger({label,type,handleReturn,count=0,collap
             <div className='flex-1'>
               <TextInput label='Passport or ID number' required
                 value={data.document.number}
-                onChange={(ev) => setData({...data,document:{...data.document,number: ev.target.value}})}
+                onChange={(ev) => handleData({...data,document:{...data.document,number: ev.target.value}})}
                />
             </div>
             <div className='flex-1'>
@@ -102,7 +107,7 @@ export default function PrimaryPassenger({label,type,handleReturn,count=0,collap
                 error={expiredPassport}
                 helperText={<span className='text-red-500'>{expiredPassport ? 'Expired Passport!':''}</span>}
                 value={data.document.expiryDate}
-                onChange={(ev) => setData({...data,document: {...data.document,expiryDate: ev.target.value}})}
+                onChange={(ev) => handleData({...data,document: {...data.document,expiryDate: ev.target.value}})}
               />
             </div>
           </div>
@@ -110,13 +115,13 @@ export default function PrimaryPassenger({label,type,handleReturn,count=0,collap
             <div className='flex-1'>
               <CountriesInput label={'Issuance Location'}
                 value={data?.document?.issuanceLocation}
-                onChange={(val) => setData({...data,document:{...data.document,issuanceLocation: val?.alpha2 || val}})}
+                onChange={(val) => handleData({...data,document:{...data.document,issuanceLocation: val?.alpha2 || val}})}
               />
             </div>
             <div className='flex-1'>
               <TextInput type='date' label='Issuance Date' 
                 value={data.document.issuanceDate}
-                onChange={(ev) => setData({...data,document: {...data.document,issuanceDate: ev.target.value}})}
+                onChange={(ev) => handleData({...data,document: {...data.document,issuanceDate: ev.target.value}})}
               />
             </div>
           </div> */}

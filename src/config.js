@@ -18,6 +18,7 @@ export const def = {
     return cur;
   },
   devStatus: 'test',
+  devTest: true,
   siteName: 'miles',
   logo: require('./assets/icons/textlogo.svg')
 }
