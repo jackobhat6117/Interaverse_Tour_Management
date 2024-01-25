@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux'
 import mergeRecursive from '../../../features/utils/mergeRecursive'
 import { clone } from '../../../features/utils/objClone'
 import { useLocation } from 'react-router-dom'
+import { useSnackbar } from 'notistack'
 
 
 function KeyContact({updateProfile,back,next,review}) {
@@ -22,8 +23,16 @@ function KeyContact({updateProfile,back,next,review}) {
   const qedit = searchParams.get('edit')
   const [edit,setEdit] = useState(false);
 
+  const {enqueueSnackbar} = useSnackbar();
+
   async function handleSubmit(ev) {
     ev?.preventDefault();
+
+    try {
+      const pn = data?.contact?.phoneNumber?.split('-');
+      if(pn[1]?.length < 9)
+        return enqueueSnackbar('Invalid phone number!',{variant: 'warning'})
+    } catch(ex) {}
     
     if(updateProfile) {
       const {contact} = data;

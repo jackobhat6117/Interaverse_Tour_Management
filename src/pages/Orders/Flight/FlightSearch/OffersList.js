@@ -27,6 +27,8 @@ import CreateFlightOrder from '../CreateFlightOrder';
 import LoadingBar from '../../../../components/animation/LoadingBar';
 import SelectInput from '../../../../components/form/SelectInput';
 import IOSSwitch from '../../../../components/form/IOSSwitch';
+import EmailInput from '../../../../components/form/EmailInput';
+import PriceAlert from '../../../../components/flight/PriceAlert';
 // import getCalendarSearch from '../../../controllers/search/getCalendarSearch';
 
 
@@ -389,6 +391,8 @@ export default function OffersList({hide}) {
 
   console.log(searchObj)
 
+  const [openPriceAlert,setOpenPriceAlert] = useState();
+
 
   return (
     <div className='w-full flex flex-col gap-2 py-4 flex-1'>
@@ -418,22 +422,8 @@ export default function OffersList({hide}) {
         
           //  Filter  Part 
 
-          <div className='hidden md:block self-end sticky bottom-0 rounded-2xl max-w-[300px]'>
-            <div className='pt-4 px-6 flex flex-col gap-1'>
-              <div>
-                <div className='flex gap-2 justify-between'>
-                  <b>Setup price alerts</b>
-                  <ThemeProvider theme={createTheme({
-                    palette: {
-                      mode: 'dark'
-                    }
-                  })}>
-                    <IOSSwitch />
-                  </ThemeProvider>
-                </div>
-                <p>Receive alerts when the prices for this route change.</p>
-              </div>
-            </div>
+          <div className='hidden md:block self-end sticky bottom-0 rounded-2xl max-w-[300px] z-[90]'>
+            <PriceAlert />
             <FlightOfferFilter cats={cat} orgi={fetchedData.current} data={data} setData={setData} />
           </div>
         :null}

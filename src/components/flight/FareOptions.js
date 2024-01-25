@@ -38,7 +38,7 @@ export default function FareOptions({data,handleReturn}) {
       <h4>Select your prefered fare options</h4>
       <div className='flex gap-4 flex-wrap'>
         {loading ? 
-          <LoadingBar />
+          <LoadingBar duration={8} />
         : !options ?
           <p className='text-center self-center w-full'>No Fare Options Available</p>
         : 
