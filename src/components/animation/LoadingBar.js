@@ -39,6 +39,6 @@ export default function LoadingBar({config={},className,duration}) {
   },[config,duration])
 
   return (
-    <div ref={animationContainer} className={'h-[200px] '+className}></div>
+    <div ref={animationContainer} className={'h-[100px] '+className}></div>
   )
 }

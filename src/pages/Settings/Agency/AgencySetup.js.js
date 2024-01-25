@@ -13,6 +13,7 @@ import Map from "../../../components/form/Map";
 import mergeRecursive from "../../../features/utils/mergeRecursive";
 import ToolTip from "../../../components/DIsplay/ToolTip";
 import { setUser } from "../../../redux/reducers/userSlice";
+import MapAutoComplete from "../../../components/form/MapAutoComplete";
 
 export default function AgencySetupSetting() {
   const {user} = useSelector(state => state.user.userData);
@@ -51,6 +52,10 @@ export default function AgencySetupSetting() {
   }
 
   function handleLocation(place) {
+    console.log(place)
+    if(!place?.lng?.toString())
+      return enqueueSnackbar('Location details missing. Please try similar locations',{variant: 'warning'})
+
     setData({
       ...data,
       detail: {
@@ -107,7 +112,15 @@ export default function AgencySetupSetting() {
       <div className='flex flex-col gap-3 py-3'>
         <h5>Address</h5>
         <div className="flex flex-wrap sm:flex-nowrap gap-4">
-          <Map label='Registered business address' className={'w-full'} handleReturn={(obj) => handleLocation(obj)} />
+          <MapAutoComplete handleReturn={handleLocation}>
+            <TextInput key='regName' label={'Business Address'} required
+              placeholder={data?.detail?.address?.businessLocation || 'e.g 14b wole ariyo street, Lekki, Lagos'}
+              // value={data?.address?.location[0] || ''}
+              // onChange={(ev) => setData({...data,address:{location: [Number(ev.target.value),Number(ev.target.value)]}})}
+              />
+          </MapAutoComplete>
+
+          {/* <Map label='Registered business address' className={'w-full'} handleReturn={(obj) => handleLocation(obj)} /> */}
           {/* <TextInput label={'Registered business address'} 
             value={data?.detail?.address?.businessLocation}
             onChange={(ev) => setData({...data,detail: {...data.detail,address: {...data?.detail?.address,businessLocation: ev.target.value}}})}

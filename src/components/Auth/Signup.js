@@ -64,10 +64,12 @@ export default function Signup() {
               Search, book and issue tickets - without the need for accreditation or industry expertise.
             </Service>
             <Service title={'Sell stays at over 1m hotels globally'} icon={hotelCheckedIcon}>
-              Earn commissions by promoting accommodations at more than 1 million properties globally.
+              {/* Earn commissions by promoting accommodations at more than 1 million properties globally. */}
+              Earn commissions more than 1 million properties globally.
             </Service>
             <Service title={'Upsell your customers with tour packages'} icon={packageCheckedIcon}>
-              Give your customers the flexibility they want. Offer them tours, events and activities from around the globe.
+              {/* Give your customers the flexibility they want. Offer them tours, events and activities from around the globe. */}
+              Offer them tours, events and activities from around the globe.
             </Service>
           </div>
         </div>

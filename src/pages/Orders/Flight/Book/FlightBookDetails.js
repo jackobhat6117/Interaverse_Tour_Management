@@ -91,7 +91,12 @@ function PassengerDetails({ offer }) {
   const { bookingData } = useSelector((state) => state.flightBooking);
   const segments = bookingData?.offer?.at(-1)?.segments || [];
 
-  const [bags,setBags] = useState([...offer.directions.map(seg => seg.map(f => null))])
+  let totalPassenger = Object.values(offer.passengers).map(o => o.total).reduce((p,c) => p+c);
+  
+  const [bags,setBags] = useState([...offer.directions.map(seg => seg.map(f => [...Array(totalPassenger)]))])
+  const [seats,setSeats] = useState([...offer.directions.map(seg => seg.map(f => [...Array(totalPassenger)]))]);
+
+  const [expands,setExpands] = useState([...Array(totalPassenger)].map((_,i) => i===0))
 
   const [open, setOpen] = useState(false);
   const [bookingDone, setBookingDone] = useState(false);
@@ -99,9 +104,22 @@ function PassengerDetails({ offer }) {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
-  const [data, setData] = useState({ ...clone(travelersInfo), passengers: [] });
+  console.log(bags,seats)
+
+  const [data, setData] = useState({ ...clone(travelersInfo), passengers: [...Array(totalPassenger)] });
 
   async function book() {
+    const valids = data.passengers?.map(obj => {
+      if(!obj?.firstName || !obj?.lastName || !obj?.birthDate || !obj?.gender) {
+        return false;
+      }
+      return true  
+    })
+    if(valids.some(val => !val)) {
+      setExpands(valids?.map(val => !val))
+      return enqueueSnackbar('Some Passenger informations are empty!',{variant: 'error'})
+    }
+
     let passengerCount =
       offer?.passengers &&
       Object.values(offer?.passengers)?.reduce(
@@ -118,27 +136,50 @@ function PassengerDetails({ offer }) {
     //     "chargeableSeatNumber": "13f"
     // }
 
-
-      // Adding additional bags
+      // Adding seats
       try {
-        if(bags[i][j]) {
+        const passengersSeat = seats[i][j]?.filter(obj => obj);
+        if(passengersSeat) {
           try {
-            flight.additionalServices.chargeableCheckedBags.push(bags[i][j])
+            // flight.additionalServices.chargeableSeatNumber.push(seats[i][j])
+            flight.additionalServices.chargeableSeatNumber = passengersSeat
           } catch(ex) {
-            console.log('0XbagsPush')
-            try {
-              flight.additionalServices.chargeableCheckedBags = [bags[i][j]]
-            } catch(ex) {
-              console.log('0XbagsCreate')
+            // console.log('0XseatsPush')
+            // try {
+            // } catch(ex) {
+              console.log('0XseatsCreate')
               try {
-                flight.additionalServices = {chargeableCheckedBags: [bags[i][j]]}
+                flight.additionalServices = {chargeableSeatNumber: passengersSeat}
               } catch(ex) {
                 console.log('0XadditionalServiceCreate')
               }
+            // }
+          }
+        }
+      } catch(ex) {console.log(ex)}
+
+
+      // Adding additional bags
+      try {
+        const passengerBag = bags[i][j]?.filter(obj => obj);
+        if(passengerBag) {
+          try {
+              flight.additionalServices.chargeableCheckedBags = passengerBag
+              // flight.additionalServices.chargeableCheckedBags.push(bags[i][j])
+          } catch(ex) {
+            // console.log('0XbagsPush')
+              // flight.additionalServices.chargeableCheckedBags = [bags[i][j]]
+            console.log('0XbagsCreate')
+            try {
+              flight.additionalServices = {chargeableCheckedBags: passengerBag}
+            } catch(ex) {
+              console.log('0XadditionalServiceCreate')
             }
           }
         }
       } catch(ex) {console.log(ex)}
+
+
       return true;
     }))
     // return console.log(" ==>>> ",modOffer,bags)
@@ -225,33 +266,51 @@ function PassengerDetails({ offer }) {
     try {
       const {quantity,weight,i:passenger,price,label} = obj;
       let temp = clone(bags);
-      temp[segment][j] = {quantity,weight,price,label,passenger}
+      // console.log(bags,segment,j)
+      // console.log(bags[segment][j])
+      const newObj = {quantity,weight,price,label,passenger};
+      if(price)
+        temp[segment][j][passenger] = newObj
+
+      console.log(temp,'--------')
       setBags(temp);
-    } catch(ex) {}
+    } catch(ex) {console.log(ex)}
   }
 
-  function handleSeat(obj,i) {
+  function handleSeat(obj,{i,j,seg}) {
     console.log(" => ",obj,i)
+    try {
+      const {seatNumber} = obj[0];
+      let temp = clone(seats);
+      // console.log(temp,seg,i,j)
+      const newObj = {seatNumber,passenger: i};
+      if(seatNumber)
+        temp[seg][j][i] = newObj;
+      setSeats(temp);
+    } catch(ex) {console.log(ex)}
   }
 
   async function handleSubmit(ev) {
     ev.preventDefault();
     setTimeout(() => true,700)
     console.log(data)
-    const validAges = data.passengers.map(passenger => validateAge(passenger.birthDate,passenger?.gotType));
-    if(!validAges?.every(val => val[0]))
-      return false;
+    const validAges = data.passengers.map(passenger => validateAge(passenger?.birthDate,passenger?.gotType));
+    if(!validAges?.every(val => val[0])) {
+      setExpands(validAges?.map(val => !val[0]))
+      return enqueueSnackbar('Some Passenger fields are empty or invalid!',{variant: 'warning'});
+    }
     
     const expiredPassport = data.passengers.map(passenger => moment(passenger.document.expiryDate).isBefore(moment(),'day'));
-    if(expiredPassport?.some(val => val))
-      return false;
+    if(expiredPassport?.some(val => val)) {
+      setExpands(expiredPassport?.map(val => !val))
+      return enqueueSnackbar('Some Passenger fields are empty or invalid!',{variant: 'warning'});
+    }
 
     setOpen(true);
   }
 
-  let totalPassenger = Object.values(offer.passengers).map(o => o.total).reduce((p,c) => p+c);
+  console.log(' ----> ',expands)
 
-  const [expands,setExpands] = useState([...Array(totalPassenger)].map((_,i) => i===0))
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6 pb-10 max-w-full">
       <h5>Contact Details</h5>
@@ -350,7 +409,7 @@ function PassengerDetails({ offer }) {
                               {offer?.directions?.map((direction,index) => 
                                 direction.map((obj,j) => (
                                   <div key={i+""+j} className="snap-mandatory snap-center pb-3">
-                                    <CheckedBags selected={bags[i]?.[j]} data={obj} callback={(obj) => handleBag({...obj,i},[index,j])} />
+                                    <CheckedBags selected={bags[i]?.[j][i]} data={obj} callback={(obj) => handleBag({...obj,i},[index,j])} />
                                   </div>
                               )))}
                             </div>
@@ -359,7 +418,7 @@ function PassengerDetails({ offer }) {
 
                           <div className="flex flex-col gap-4 ">
                             <div className="flex gap-4 justify-between">
-                              <SeatSelection callback={(obj) => handleSeat(obj,i)} offer={offer} hide={['info']} />
+                              <SeatSelection callback={(obj,{i:seg,j}) => handleSeat(obj,{i,j,seg})} offer={offer} hide={['info']} />
                             </div>
                           </div>
 

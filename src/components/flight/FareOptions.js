@@ -6,6 +6,7 @@ import { convertBrandedFareObject } from '../../features/utils/flight/flightOffe
 import { formatMoney, getNumber } from '../../features/utils/formatMoney';
 import { useSelector } from 'react-redux';
 import Icon from '../HOC/Icon';
+import LoadingBar from '../animation/LoadingBar';
 
 
 export default function FareOptions({data,handleReturn}) {
@@ -32,21 +33,19 @@ export default function FareOptions({data,handleReturn}) {
     handleReturn && handleReturn(options[i])
   }
 
-  return !loading ? (
-    <div className='flex flex-col gap-2 p-4 max-w-[1000px]'>
+  return (
+    <div className='flex flex-col gap-2 p-6 max-w-[1000px] items-center'>
       <h4>Select your prefered fare options</h4>
       <div className='flex gap-4 flex-wrap'>
-        {!options ?
+        {loading ? 
+          <LoadingBar />
+        : !options ?
           <p className='text-center self-center w-full'>No Fare Options Available</p>
         : 
           options?.map((obj,i) => (
             <FareOption key={i} data={convertBrandedFareObject(obj)} activate={() => setSelected(i)} selected={selected===i} select={() => handleSelect(i)} />
         ))}
       </div>
-    </div>
-  ) : (
-    <div className='flex flex-col gap-2 p-4 max-w-[1000px]'>
-      <p>Loading...</p>
     </div>
   )
 }

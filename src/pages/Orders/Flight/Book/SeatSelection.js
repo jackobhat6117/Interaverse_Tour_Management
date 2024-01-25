@@ -10,7 +10,8 @@ import { setBookingData } from '../../../../redux/reducers/flight/flightBookingS
 import Modal1 from '../../../../components/DIsplay/Modal/Modal1'
 
 export default function SeatSelection({offer,callback,hide}) {
-  const flights = (offer || {})?.directions?.flat()
+  // const flights = (offer || {})?.directions?.flat()
+  const flights = (offer || {})?.directions?.flatMap((arr,i) => arr.map((f,j) => ({...f,i,j})))
 
   return (
     <div className='flex flex-col gap-4 w-full'>
@@ -20,12 +21,13 @@ export default function SeatSelection({offer,callback,hide}) {
         <SeatInfo />
       :null}
       {(flights || [...Array(2)]).map((obj,i) => (
-        <FlightSeatDisplay callback={callback} obj={obj} key={i} routeIndex={i} />
+        <FlightSeatDisplay callback={(seats) => callback(seats,{i:obj.i,j:obj.j})} obj={obj} key={i} routeIndex={i} />
       ))}
       {/* <FlightSeatDisplay offers={offer} data={obj} key={i} /> */}
     </div>
   )
 }
+
 
 function SeatInfo() {
   return (

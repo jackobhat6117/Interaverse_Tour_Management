@@ -128,7 +128,7 @@ export default function TeamMembers() {
   const [openUpdateRole,setOpenUpdateRole] = useState(false);
   
   useEffect(() => {
-    // load();    
+    load();    
     //eslint-disable-next-line
   },[filter])
 

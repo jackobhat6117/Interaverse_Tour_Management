@@ -10,6 +10,7 @@ import mergeRecursive from '../../../features/utils/mergeRecursive'
 import { clone } from '../../../features/utils/objClone'
 import MapAutoComplete from '../../form/MapAutoComplete'
 import { useLocation } from 'react-router-dom'
+import { useSnackbar } from 'notistack'
 
 
 const steps = [
@@ -130,6 +131,8 @@ function DetailInfo({next,back,updateProfile}) {
   const searchParams = new URLSearchParams(location.search);
   const edit = searchParams.get('edit')
 
+  const {enqueueSnackbar} = useSnackbar();
+
   useEffect(() => {
     if(!user?.detail?.agencyType)
       back();
@@ -148,6 +151,9 @@ function DetailInfo({next,back,updateProfile}) {
   }
 
   function handleLocation(place) {
+    if(!place?.lng?.toString())
+      return enqueueSnackbar('Location details missing. Please try similar locations',{variant: 'warning'})
+
     setData({
       ...data,
       address: {
