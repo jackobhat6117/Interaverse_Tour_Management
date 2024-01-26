@@ -35,7 +35,7 @@ export default function FareOptions({data,handleReturn}) {
 
   return (
     <div className='flex flex-col gap-2 p-6 max-w-[1000px] items-center'>
-      <h4>Select your prefered fare options</h4>
+      <h5>Select your prefered fare options</h5>
       <div className='flex gap-4 flex-wrap'>
         {loading ? 
           <LoadingBar duration={8} />

@@ -6,6 +6,7 @@ import getAccount from '../../controllers/user/getAccount';
 import { setUser } from '../../redux/reducers/userSlice';
 import LoadingBar from '../animation/LoadingBar';
 import Logo from '../Logo/Logo';
+import updateProfile from '../../controllers/user/updateProfile';
 
 
 export default function AuthValidate() {
@@ -19,8 +20,16 @@ export default function AuthValidate() {
 
   async function loadUser() {
     const res = await getAccount();
-    if(res.return)
+    if(res.return) {
+      if(!res?.data?.account?.detail) {
+        const updRes = await updateProfile({userType: 'Agent'})
+        if(updRes.return) {
+          return dispatch(setUser(updRes?.data))
+        } 
+      }
+
       dispatch(setUser(res?.data?.account))
+    }
   }
 
   const {loggedIn,user} = userData;

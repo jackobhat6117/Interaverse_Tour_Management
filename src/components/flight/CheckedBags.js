@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Icon from '../HOC/Icon'
 import { formatMoney } from '../../features/utils/formatMoney'
 
-export default function CheckedBags({data,selected:gotSelected,callback}) {
+export default function CheckedBags({data,selected:gotSelected,callback,hide}) {
     const items = [
         {icon: 'game-icons:school-bag', name: 'Personal Item', quantity: "x1", status: 'included in ticket'},
         {icon: 'mdi:bag-carry-on', name: 'Carry-on bag', quantity: "x1", status: 'included in ticket'},
@@ -45,10 +45,14 @@ export default function CheckedBags({data,selected:gotSelected,callback}) {
             ))}
         </div>
 
-        <div>
-            <h5>Want More?</h5>
-            <p>Increase your checked bags below</p>
-        </div>
+        {hide?.includes('wantMore') ? 
+            <div><h5>&nbsp;</h5><p>&nbsp;</p></div>
+        :
+            <div>
+                <h5>Want More?</h5>
+                <p>Increase your checked bags below</p>
+            </div>
+        }
 
         <div className={'border border-theme1 rounded-md text-theme1 flex gap-4 items-center px-4 py-2 '+(obj?.price?'bg-theme1/5':'')}>
             <Icon icon={'material-symbols:checked-bag'} />

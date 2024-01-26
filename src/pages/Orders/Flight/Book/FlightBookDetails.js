@@ -405,11 +405,11 @@ function PassengerDetails({ offer }) {
                           <div className="flex flex-col gap-4 ">
                             <h5>Flight extras</h5>
 
-                            <div className="flex gap-4 justify-between max-w-full overflow-auto snap-x">
+                            <div className="flex gap-4 justify-between max-w-full w-[500px] overflow-auto snap-x">
                               {offer?.directions?.map((direction,index) => 
                                 direction.map((obj,j) => (
-                                  <div key={i+""+j} className="snap-mandatory snap-center pb-3">
-                                    <CheckedBags selected={bags[i]?.[j][i]} data={obj} callback={(obj) => handleBag({...obj,i},[index,j])} />
+                                  <div key={index+""+j} className="snap-mandatory snap-center pb-3">
+                                    <CheckedBags hide={(index+j !== 0) ? ['wantMore']:null} selected={bags[i]?.[j][i]} data={obj} callback={(obj) => handleBag({...obj,i},[index,j])} />
                                   </div>
                               )))}
                             </div>
