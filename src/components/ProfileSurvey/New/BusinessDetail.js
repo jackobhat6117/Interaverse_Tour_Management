@@ -140,6 +140,11 @@ function DetailInfo({next,back,updateProfile}) {
 
   async function handleSubmit(ev) {
     ev.preventDefault();
+    try {
+      if(!data?.address?.location[0]?.toString())
+        return enqueueSnackbar('Location details missing. Please try similar locations',{variant: 'warning'})
+    } catch(ex) {}
+
 
     let {tradingName,address,businessEmail,businessPhone} = data;
     
