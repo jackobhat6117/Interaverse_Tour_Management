@@ -21,12 +21,12 @@ export default function AuthValidate() {
   async function loadUser() {
     const res = await getAccount();
     if(res.return) {
-      if(!res?.data?.account?.detail) {
-        const updRes = await updateProfile({userType: 'Agent'})
-        if(updRes.return) {
-          return dispatch(setUser(updRes?.data))
-        } 
-      }
+      // if(!res?.data?.account?.detail) {
+      //   const updRes = await updateProfile({userType: 'Agent'})
+      //   if(updRes.return) {
+      //     return dispatch(setUser(updRes?.data))
+      //   } 
+      // }
 
       dispatch(setUser(res?.data?.account))
     }
