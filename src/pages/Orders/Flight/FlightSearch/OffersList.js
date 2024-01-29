@@ -177,6 +177,7 @@ export default function OffersList({hide}) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[dispatch,handleSetCat,q,qIndex])
 
+  
   async function load() {
     setLoading(true);
     // let obj = JSON.parse(decrypt(q));
@@ -566,7 +567,8 @@ export const SortedOffers = ({obj,offer,params:{qIndex,showDetail,handleOfferSel
   <div className='px-4'>
     <FlightOfferDisplay path={qIndex} offer={offer} data={obj?.objects[0]} showDetail={async () => await showDetail(obj)} select={handleOfferSelect} />
     {obj.objects.length > 1 ? (
-      <div className={'flex flex-col gap-4 relative  '+(view?'bg-[#F3F7FF] -translate-y-[12px] shadow-inner':'')}>
+      <div className={'flex flex-col gap-4 relative  '+(view?'bg-[#F3F7FF] ':'')}>
+        <div className={'absolute -translate-y-[12px] p-2 w-full -z-10 '+(view?'bg-[#f3f7ff]':'')}></div>
         <div className='relative flex flex-col gap-2 mb-4'>
           <button className={'text-sm text-theme1 font-bold self-center shadow-inner border border-b-0 absolute bottom-0 max-h-[1.3rem] rounded-t-lg  pt-2 w-[50%] '+(view?'bg-[#F3F7FF]':'bg-secondary')} 
             onClick={() => setView(!view)}>

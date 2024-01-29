@@ -11,6 +11,7 @@ import seat2 from '../../assets/icons/amenities/seat-1.svg'
 import seat from '../../assets/icons/amenities/seat.svg'
 import { Tooltip } from '@mui/material';
 
+
 export default function FlightInfoCard({data,label='Depart'}) {
   // let tdata = offerDataTemp.segments[0];
   // const departureDateTime = moment(`${data?.departureDate} ${data?.departureTime}`, "YYYY-MM-DD HH:mm");
@@ -18,10 +19,10 @@ export default function FlightInfoCard({data,label='Depart'}) {
   const amenities = [
     {icon: seat,description: 'EXTRA LARGE SEAT',value: false, name: 'Extra large seat'},
     {icon: food,description: 'MEALS AND DRINKS',value: false, name: ''},
-    {icon: seat2,description: '',value: true, name: ''},
-    {icon: cabin,description: '',value: true, name: ''},
-    {icon: stopwatch,description: '',value: true, name: ''},
-    {icon: wifi,description: '',value: true, name: 'WIFI'},
+    {icon: seat2,description: '',value: false, name: ''},
+    {icon: cabin,description: '',value: false, name: ''},
+    {icon: stopwatch,description: '',value: false, name: ''},
+    {icon: wifi,description: '',value: false, name: 'WIFI'},
   ]
 
   // console.log(data?.flights?.map(flight => flight?.amenities)?.flat())

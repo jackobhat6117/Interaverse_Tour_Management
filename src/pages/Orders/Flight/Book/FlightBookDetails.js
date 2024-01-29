@@ -34,6 +34,7 @@ export default function FlightBookDetails() {
   // const dispatch = useDispatch();
 
   const navigate = useNavigate();
+
   function handleSearchRoute(i) {
     navigate("/order/new/flight/offers?q=" + id + "&path=" + i);
   }
@@ -90,7 +91,6 @@ function PassengerDetails({ offer }) {
   const { id } = useParams();
   const { bookingData } = useSelector((state) => state.flightBooking);
   const segments = bookingData?.offer?.at(-1)?.segments || [];
-
   let totalPassenger = Object.values(offer.passengers).map(o => o.total).reduce((p,c) => p+c);
   
   const [bags,setBags] = useState([...offer.directions.map(seg => seg.map(f => [...Array(totalPassenger)]))])
@@ -104,9 +104,16 @@ function PassengerDetails({ offer }) {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
+  const navigate = useNavigate();
+
   console.log(bags,seats)
 
   const [data, setData] = useState({ ...clone(travelersInfo), passengers: [...Array(totalPassenger)] });
+
+  if(bookingData.orderData && !bookingDone)
+    navigate({
+      pathname: '/order/new/flight/book/payment/'+id
+    })
 
   async function book() {
     const valids = data.passengers?.map(obj => {
@@ -481,15 +488,15 @@ function PassengerDetails({ offer }) {
         <div className="flex flex-col items-center p-8 gap-6">
           <h5>Booking was successful</h5>
           <p className="max-w-[400px] text-center">
-            Your booking was successful. You can now add ancillaries or proceed
+            Your booking was successful. You can now add hold or proceed
             to make payment.
           </p>
           <div className="flex gap-2 w-full">
             <Link
-              to={`/order/new/flight/book/ancillaries/${id}`}
+              to={`/order/flight/${bookingData?.orderData?.booking?._id}`}
               className="flex-1 text-center justify-center btn !bg-primary text-secondary"
             >
-              Add Ancillaries
+              Hold Booking
             </Link>
             <Link
               to={`/order/new/flight/book/payment/${id}`}
