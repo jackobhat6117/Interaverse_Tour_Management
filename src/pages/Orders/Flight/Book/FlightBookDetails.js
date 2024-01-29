@@ -120,12 +120,6 @@ function PassengerDetails({ offer }) {
       return enqueueSnackbar('Some Passenger informations are empty!',{variant: 'error'})
     }
 
-    let passengerCount =
-      offer?.passengers &&
-      Object.values(offer?.passengers)?.reduce(
-        (c, p) => parseInt(c.total) + parseInt(p.total),
-        { total: 0 },
-      );
     let modOffer = clone(offer);
     modOffer.directions.map((seg,i) => seg.map((flight,j) => {
     //   "additionalServices": {
@@ -138,8 +132,8 @@ function PassengerDetails({ offer }) {
 
       // Adding seats
       try {
-        const passengersSeat = seats[i][j]?.filter(obj => obj);
-        if(passengersSeat) {
+        const passengersSeat = seats[i][j]?.filter(obj => obj)?.map(obj => ({...obj,passenger: obj?.passenger + 1}));
+        if(passengersSeat && passengersSeat?.length) {
           try {
             // flight.additionalServices.chargeableSeatNumber.push(seats[i][j])
             flight.additionalServices.chargeableSeatNumber = passengersSeat
@@ -161,8 +155,8 @@ function PassengerDetails({ offer }) {
 
       // Adding additional bags
       try {
-        const passengerBag = bags[i][j]?.filter(obj => obj);
-        if(passengerBag) {
+        const passengerBag = bags[i][j]?.filter(obj => obj)?.map(obj => ({...obj,passenger: obj?.passenger + 1}));
+        if(passengerBag && passengerBag?.length) {
           try {
               flight.additionalServices.chargeableCheckedBags = passengerBag
               // flight.additionalServices.chargeableCheckedBags.push(bags[i][j])
@@ -186,7 +180,7 @@ function PassengerDetails({ offer }) {
     let req = {
       supplier: offer?.supplier,
       offers: [modOffer],
-      travelersInfo: clone(data?.passengers)?.slice(0, passengerCount || 1),
+      travelersInfo: clone(data?.passengers)?.slice(0, totalPassenger || 1),
     };
     let pn = data?.phone?.toString()?.split("-");
     let countryObj = Object.values(countries)?.find((obj) =>
@@ -262,19 +256,25 @@ function PassengerDetails({ offer }) {
     setData(temp);
   }
 
-  function handleBag(obj,[segment,j]) {
+  function handleBag(obj,[segment]) {
     try {
       const {quantity,weight,i:passenger,price,label} = obj;
       let temp = clone(bags);
       // console.log(bags,segment,j)
       // console.log(bags[segment][j])
       const newObj = {quantity,weight,price,label,passenger};
-      if(price)
-        temp[segment][j][passenger] = newObj
+      temp[segment]?.map((flight) => {
+        if(price) {
+          flight[passenger] = newObj;
+        } else flight[passenger] = null;
+        return true;
+      })
+        // temp[segment][j][passenger] = newObj
 
       console.log(temp,'--------')
       setBags(temp);
     } catch(ex) {console.log(ex)}
+    console.log(obj,segment,bags)  
   }
 
   function handleSeat(obj,{i,j,seg}) {
@@ -405,13 +405,15 @@ function PassengerDetails({ offer }) {
                           <div className="flex flex-col gap-4 ">
                             <h5>Flight extras</h5>
 
-                            <div className="flex gap-4 justify-between max-w-full w-[500px] overflow-auto snap-x">
-                              {offer?.directions?.map((direction,index) => 
-                                direction.map((obj,j) => (
-                                  <div key={index+""+j} className="snap-mandatory snap-center pb-3">
-                                    <CheckedBags hide={(index+j !== 0) ? ['wantMore']:null} selected={bags[i]?.[j][i]} data={obj} callback={(obj) => handleBag({...obj,i},[index,j])} />
+                            <div className="flex gap-4 justify-between max-w-full w-[700px] overflow-auto snap-x">
+                              {offer?.directions?.map((direction,index) => {
+                                let obj = {departure: direction[0].departure,arrival: direction?.at(-1)?.arrival};
+                                return (
+                                  <div key={index} className="snap-mandatory snap-center pb-3">
+                                    <CheckedBags hide={(index !== 0) ? ['wantMore']:null} selected={bags[index]?.[0][i]} data={obj} callback={(obj) => handleBag({...obj,i},[index,0])} />
                                   </div>
-                              )))}
+                                )
+                              })}
                             </div>
                           </div>
 

@@ -1,7 +1,7 @@
 import { Clear } from '@mui/icons-material'
 import React from 'react'
 
-export default function Modal1({open,setOpen,children,className}) {
+export default function Modal1({open,setOpen,children,className,config={bg: true}}) {
   function handleCLickAway(ev) {
     ev?.stopPropagation();
     if(ev.target.parentElement.getAttribute('name') && (ev.target.getAttribute('name') !== 'modalChild'))
@@ -15,10 +15,10 @@ export default function Modal1({open,setOpen,children,className}) {
       <div className={'flex flex-col relative items-center justify-center h-full p-4 '+className} >
         {/* <ClickAwayListener onClickAway={() => setOpen(false)}> */}
           <div className='flex flex-col gap-3 max-h-screen p-4 relative max-w-full' name='modalChild'>
-            <div className='block sm:hidden bg-secondary text-primary p-2 rounded-md self-end cursor-pointer hover:scale-[.9] ' onClick={() => setOpen(false)}>
+            <div className={'block sm:hidden  text-primary p-2 rounded-md self-end cursor-pointer hover:scale-[.9] '+(config.bg === true?'bg-secondary':config.bg||'')} onClick={() => setOpen(false)}>
               <Clear />
             </div>
-            <div className='bg-secondary rounded-md overflow-hidden overflow-y-auto'>
+            <div className={' rounded-md overflow-hidden overflow-y-auto'+(config.bg === true?'bg-secondary':config.bg||'')}>
               {children}
             </div>
           </div>

@@ -28,7 +28,12 @@ export default function FlightBook() {
 
   async function getPrice() {
     setOffer([{segments: [{},{}]}])
-    let flightOffers = bookingData.offer?.at(-1)
+    let flightOffers = clone(bookingData.offer?.at(-1))
+    bookingData.offer?.map((obj,i) => {
+      flightOffers.directions[i] = obj.directions[i];
+      flightOffers.segments[i] = obj.segments[i];
+      return true;
+    })
     // .map(obj => {
     //   let temp = clone(obj);
     //   // temp.directions = [temp.directions[0]]

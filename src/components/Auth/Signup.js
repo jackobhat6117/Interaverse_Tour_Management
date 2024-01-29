@@ -63,11 +63,11 @@ export default function Signup() {
             <Service title={'Get instant connection to top flight GDS'} icon={flightCheckedIcon}>
               Search, book and issue tickets - without the need for accreditation or industry expertise.
             </Service>
-            <Service title={'Sell stays at over 1m hotels globally'} icon={hotelCheckedIcon}>
+            <Service title={'Offer accommodation to your customers'} icon={hotelCheckedIcon}>
               {/* Earn commissions by promoting accommodations at more than 1 million properties globally. */}
               Earn commissions more than 1 million properties globally.
             </Service>
-            <Service title={'Upsell your customers with tour packages'} icon={packageCheckedIcon}>
+            <Service title={'Upsell your customers with tours'} icon={packageCheckedIcon}>
               {/* Give your customers the flexibility they want. Offer them tours, events and activities from around the globe. */}
               Offer them tours, events and activities from around the globe.
             </Service>
