@@ -30,7 +30,7 @@ export default function Auth() {
     
     setLoading(true);
     setTimeout(() => setLoading(false),4000)
-    dispatch(setUserData({loggedIn: true,accessToken,id: id,user: {}}))
+    dispatch(setUserData({loggedIn: true,accessToken,id: id,user: {},googleUser: true}))
 
     navigate({
       pathname: '/',

@@ -12,18 +12,30 @@ import seat from '../../assets/icons/amenities/seat.svg'
 import { Tooltip } from '@mui/material';
 
 
+export const amenities = [
+  {icon: seat,description: 'EXTRA LARGE SEAT',value: false, name: 'Extra large seat'},
+  {icon: food,description: 'MEALS AND DRINKS',value: false, name: ''},
+  {icon: seat2,description: '',value: false, name: ''},
+  {icon: cabin,description: '',value: false, name: ''},
+  {icon: stopwatch,description: '',value: false, name: ''},
+  {icon: wifi,description: '',value: false, name: 'WIFI'},
+]
+
+export function FlightAmenities({flight}) {
+  return (
+    amenities.map((obj,i) => 
+      flight?.amenities?.find(amen => (amen.description === obj.description)) || obj.value ?
+      <Tooltip title={obj.name || obj.description} key={i}>
+        <img alt='' src={obj.icon} />
+      </Tooltip>
+      :null
+    )
+  )
+}
 export default function FlightInfoCard({data,label='Depart'}) {
   // let tdata = offerDataTemp.segments[0];
   // const departureDateTime = moment(`${data?.departureDate} ${data?.departureTime}`, "YYYY-MM-DD HH:mm");
   // const arrivalDateTime = moment(`${data?.arrivalDate} ${data?.arrivalTime}`, "YYYY-MM-DD HH:mm");
-  const amenities = [
-    {icon: seat,description: 'EXTRA LARGE SEAT',value: false, name: 'Extra large seat'},
-    {icon: food,description: 'MEALS AND DRINKS',value: false, name: ''},
-    {icon: seat2,description: '',value: false, name: ''},
-    {icon: cabin,description: '',value: false, name: ''},
-    {icon: stopwatch,description: '',value: false, name: ''},
-    {icon: wifi,description: '',value: false, name: 'WIFI'},
-  ]
 
   // console.log(data?.flights?.map(flight => flight?.amenities)?.flat())
   console.log(data)
@@ -100,13 +112,7 @@ export default function FlightInfoCard({data,label='Depart'}) {
                 <label className={`${!changable?'error':'triumph'} text-xs bg-opacity-30`}>{!changable ? 'Non Changable Ticket' : 'Changable Ticket'}</label>
                 <label className={`${!refundable?'error':'triumph'} text-xs bg-opacity-30`}>{!refundable ? 'Non refundable Ticket':'Refundable Ticket'}</label>
                 <div className='flex gap-4'>
-                  {amenities.map((obj,i) => 
-                    flight?.amenities?.find(amen => (amen.description === obj.description)) || obj.value ?
-                    <Tooltip title={obj.name || obj.description} key={i}>
-                      <img alt='' src={obj.icon} />
-                    </Tooltip>
-                    :null
-                  )}
+                  <FlightAmenities flight={flight} />
                 </div>
               </div>
             </div>

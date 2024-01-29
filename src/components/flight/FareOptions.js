@@ -35,16 +35,25 @@ export default function FareOptions({data,handleReturn}) {
 
   return (
     <div className='flex flex-col gap-2 p-6 max-w-[1000px] items-center'>
-      <h5>Select your prefered fare options</h5>
       <div className='flex gap-4 flex-wrap'>
         {loading ? 
-          <LoadingBar duration={8} />
+          <div className=''>
+            <div>
+              Please wait, we are searching.
+            </div>
+            <LoadingBar duration={8} />
+          </div>
         : !options ?
           <p className='text-center self-center w-full'>No Fare Options Available</p>
         : 
+        <div>
+          {
           options?.map((obj,i) => (
             <FareOption key={i} data={convertBrandedFareObject(obj)} activate={() => setSelected(i)} selected={selected===i} select={() => handleSelect(i)} />
-        ))}
+            ))
+          }
+        </div>
+        }
       </div>
     </div>
   )

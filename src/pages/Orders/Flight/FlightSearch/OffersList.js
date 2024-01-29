@@ -478,7 +478,10 @@ export default function OffersList({hide}) {
             :null}
           {
             loading ?
-              <LoadingBar duration={8} />
+              <div className='py-6 flex flex-col items-center justify-center gap-1'>
+                {/* <div>Please wait, we are searching.</div> */}
+                <LoadingBar duration={8} />
+              </div>
               // <h5 className='bg-secondary p-5 rounded-md flex items-center justify-center text-primary/30 '>{progress}% Loading...</h5>
             : data?.length < 1 ?
               <div className='bg-secondary p-5 rounded-md flex items-center justify-center flex-col gap-2'>

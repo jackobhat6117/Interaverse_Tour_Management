@@ -1,6 +1,7 @@
 import Icon from "../../../../components/HOC/Icon";
 import { useEffect, useState } from "react";
 import moment from "moment";
+import { FlightAmenities } from "../../../../components/flight/FlightInfoCard";
 
 export default function FlightInfo({ minify, data }) {
   const [formattedOrder, setFormattedOrder] = useState();
@@ -56,6 +57,7 @@ export default function FlightInfo({ minify, data }) {
       setFormattedOrder(formatted);
     }
   }, [data, formattedOrder]);
+
   return (
     <>
       {formattedOrder?.map((formatted, index) => (
@@ -108,15 +110,16 @@ export default function FlightInfo({ minify, data }) {
               <span>{formatted?.flightNumber}</span>
             </div>
 
-            <div className="bg-primary/10 rounded-md p-4 flex gap-4 text-theme1">
-              <Icon icon="el:plane" className="!w-4 !h-4" />
+            <div className="bg-primary/10 rounded-md px-4 py-2 flex gap-4 text-theme1">
+              <FlightAmenities flight={formattedOrder} />
+              {/* <Icon icon="el:plane" className="!w-4 !h-4" />
               <Icon icon="streamline:wifi-solid" className="!w-4 !h-4" />
               <Icon icon="ion:stopwatch" className="!w-4 !h-4" />
               <Icon icon="ion:fast-food" className="!w-4 !h-4" />
               <Icon
                 icon="ic:round-airline-seat-recline-normal"
                 className="!w-4 !h-4"
-              />
+              /> */}
             </div>
           </div>
         </div>

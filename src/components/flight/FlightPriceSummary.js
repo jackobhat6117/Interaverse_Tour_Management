@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { formatMoney } from "../../features/utils/formatMoney";
+import Button1 from "../form/Button1";
 
 export default function FlightPriceSummary({data,onBook,footer}) {
   const {id} = useParams();
@@ -34,7 +35,7 @@ export default function FlightPriceSummary({data,onBook,footer}) {
         <h5>{formatMoney(data?.totalAmount)}</h5>
       </div>
       {!onBook ? 
-        <Link className='btn-theme rounded-md flex justify-center' to={`/order/new/flight/book/details/${id}`}>Proceed to checkout</Link>
+        <Button1 disabled={!data?.totalAmount} className={'btn-theme rounded-md flex justify-center '+(!data?.totalAmount ? '!cursor-not-allowed':'')} to={`/order/new/flight/book/details/${id}`}>Proceed to checkout</Button1>
       :null}
       {footer}
     </div>

@@ -5,6 +5,7 @@ let initialState = {
     loggedIn: false,
     accessToken: null,
     id: null,
+    googleUser: null,
     user: {
       id: null,
       username: null,

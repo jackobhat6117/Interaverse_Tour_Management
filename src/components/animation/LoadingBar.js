@@ -14,9 +14,9 @@ export default function LoadingBar({config={},className,duration}) {
       loop: false,
       autoplay: true,
       animationData: loadingBar,
-      // rendererSettings: {
-      //   preserveAspectRatio: 'xMidYMid slice',
-      // },
+      rendererSettings: {
+        preserveAspectRatio: 'xMidYMid slice',
+      },
       ...config
     })
 
@@ -39,6 +39,8 @@ export default function LoadingBar({config={},className,duration}) {
   },[config,duration])
 
   return (
-    <div ref={animationContainer} className={'h-[100px] '+className}></div>
+    <div className='flex items-center justify-center'>
+      <div ref={animationContainer} className={'h-[60px] max-w-full w-[200px] flex items-center justify-center '+className}></div>
+    </div>
   )
 }

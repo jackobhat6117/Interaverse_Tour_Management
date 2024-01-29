@@ -1,5 +1,6 @@
 import moment from "moment";
 import { getCurrencySymbol } from "../../features/utils/countires";
+import { flightStatusMap } from "../../pages/Orders/OrdersData";
 
 export function templateFlightOrderData(obj) {
   // let data = mergeRecursive({...obj},ordersDataTemplate)
@@ -16,7 +17,7 @@ export function templateFlightOrderData(obj) {
     commission: obj?.flightBooking?.at(0)?.expectedCommission,
     updatedDate: moment(obj?.updatedAt)?.format("DD/MM/YYYY"),
     bookRef: obj?.flightBooking?.at(0)?.pnr,
-    status: obj?.flightBooking?.at(0)?.status,
+    status: flightStatusMap(obj?.flightBooking?.at(0)?.status),
   };
 
   return data;

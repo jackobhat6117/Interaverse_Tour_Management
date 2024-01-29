@@ -113,11 +113,7 @@ export function OrderMenus({callback,data:{status,id,orderType},actions,inDetail
   )
 }
 
-function StatusCol({ params }) {
-  const status = params.value || "";
-  
-  const orderType = params?.row?.type?.toLowerCase() || "type";
-  
+export function flightStatusMap(status) {
   // export enum BOOKING_STATUS {
   //   Pending = "Pending",
   //   Issuable = "Issuable",
@@ -125,6 +121,22 @@ function StatusCol({ params }) {
   //   Booked = "Booked",
   //   Issued = "Issued",
   // }
+
+  let map = {
+    'booked': 'Not Paid',
+    'issuable': 'Paid',
+    'issued': 'Completed'
+  }
+
+  try {
+    return map[status?.toLowerCase()]
+  } catch(ex) {return status}
+}
+function StatusCol({ params }) {
+  const status = params.value || "";
+  
+  const orderType = params?.row?.type?.toLowerCase() || "type";
+  
   return (
     <div className="flex justify-between items-center gap-2 w-full ">
       <span className={`${alertType[status]}`}>{status}</span>

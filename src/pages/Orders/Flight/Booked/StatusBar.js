@@ -6,11 +6,14 @@ import AddFlightSeats from "../../../../components/flight/Seats";
 import Button1 from "../../../../components/form/Button1";
 import { alertType } from "../../../../data/constants";
 import moment from "moment";
+import { flightStatusMap } from "../../OrdersData";
 
 export default function StatusBar({ data,needsReview }) {
   const [openBaggage, setOpenBaggage] = useState(false);
   const [openSeats, setOpenSeats] = useState(false);
   const [cancelBooking, setCancelBooking] = useState(false);
+
+  const status = data?.booking?.flightBooking?.at(0)?.status;
 
   return (
     <div className="border rounded-md p-4 flex flex-col gap-6 max-w-[400px]">
@@ -22,8 +25,8 @@ export default function StatusBar({ data,needsReview }) {
       <div className="flex flex-col gap-2">
         <p>Status</p>
         <div>
-          <button className={`btn ${alertType["success"]}`}>
-            {data?.booking?.flightBooking[0]?.status}
+          <button className={`btn ${alertType[status?.toLowerCase()]}`}>
+            {flightStatusMap(status)}
           </button>
         </div>
       </div>
@@ -91,7 +94,7 @@ export default function StatusBar({ data,needsReview }) {
         >
           Request Change
         </Button1>
-        <Button1>Accept Changes</Button1>
+        {/* <Button1>Accept Changes</Button1> */}
       </div>
       }
 

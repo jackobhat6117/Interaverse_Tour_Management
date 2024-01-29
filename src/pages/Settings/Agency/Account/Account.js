@@ -11,11 +11,13 @@ import updateProfile from '../../../../controllers/user/updateProfile'
 import resendVerifyEmail from '../../../../controllers/Auth/resendVerifyEmail'
 
 export default function AccountSettings() {
-  const {user} = useSelector(state => state.user.userData);
+  const {userData:{user}} = useSelector(state => state.user);
   const [data,setData] = useState({firstName: '',lastName: '',email: ''});
   const [loading,setLoading] = useState(false);
   const [resent,setResent] = useState(false);
   const {enqueueSnackbar} = useSnackbar();
+  const [haveAccountPassword,setHaveAccountPassword] = useState(!user?.googleId);
+
 
   useEffect(() => {
     setData(data => ({...data,firstName: user?.firstName || '',lastName: user?.lastName || '',email: user?.email || ''}))
@@ -75,7 +77,11 @@ export default function AccountSettings() {
           <Button1 type='submit' loading={loading} className='sm:!w-auto'>Save Changes</Button1>
         </div>
       </form>
-      <ChangePassword />
+      {haveAccountPassword ? 
+        <ChangePassword hasPassword={!user?.googleId} />
+      :
+        <button className='btn-outlined border-primary text-primary' onClick={() => setHaveAccountPassword(true)}>Create an account with your email</button>
+      }
       <div className='bg-red-300/50 text-gray-600 flex flex-col gap-3 p-4 mt-10 rounded-lg'>
         <h5>Delete Account</h5>
         <p className='text-red-500 font-bold'>
@@ -87,7 +93,7 @@ export default function AccountSettings() {
   )
 }
 
-function ChangePassword() {
+function ChangePassword({hasPassword}) {
   const [data,setData] = useState({oldPassword: '',newPassword: '',confirmPassword: ''});
   const {enqueueSnackbar} = useSnackbar();
   const [loading,setLoading] = useState(false);
@@ -109,12 +115,14 @@ function ChangePassword() {
   return (
     <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
       <h5>Password</h5>
-      <PasswordInput label='Old Password'required
-        value={data.oldPassword}
-        onChange={(ev) => setData({...data,oldPassword: ev.target.value})}
-      />
+      {hasPassword ? 
+        <PasswordInput label='Old Password'required
+          value={data.oldPassword}
+          onChange={(ev) => setData({...data,oldPassword: ev.target.value})}
+        />
+      :null}
       <div className='flex gap-4'>
-        <PasswordInput className='flex-1' label='New Password' required
+        <PasswordInput className='flex-1' label={hasPassword?'New Password':'Enter Password'} required
           value={data.newPassword}
           onChange={(ev) => setData({...data,newPassword: ev.target.value})}
         />
