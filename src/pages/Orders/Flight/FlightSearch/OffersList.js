@@ -432,7 +432,7 @@ export default function OffersList({hide}) {
 
         {/* Offers List */}
 
-        <div className='flex-1 flex flex-col gap-2 py-5 px-4 md:px-0 overflow-hidden sticky bottom-0 self-end min-h-screen'>
+        <div className='flex-1 flex flex-col gap-2 py-5 px-4 md:px-0 overflow-hidden sticky bottom-0 self-end min-h-screen z-[99]'>
            {!hide || !hide?.includes('breadcrumb') ? 
               <div className='px-10 py-2 max-w-full'>
                 <BreadCrumb>

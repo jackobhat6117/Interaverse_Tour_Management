@@ -9,6 +9,7 @@ import FareOptions from './FareOptions';
 import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import Icon from '../HOC/Icon';
+import convertFlightObject from '../../features/utils/flight/flightOfferObj';
 // import { offerDataTemp } from '../../data/flight/offerData';
 
 export default function FlightOfferDisplay({data,path,showDetail,select,offer}) {
@@ -65,7 +66,7 @@ export default function FlightOfferDisplay({data,path,showDetail,select,offer}) 
   function handleFareSelect(obj) {
     setOpenDetail(false);
     setOpenFareOptions(false);
-    select && select(obj)
+    select && select(convertFlightObject(obj))
   }
 
   const getSupplierClass = (sup) => {
