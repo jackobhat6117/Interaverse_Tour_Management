@@ -120,7 +120,7 @@ export default function CreateMarkup({
             label="Markup Method"
             onChange={(e) => setData({ ...data, method: e.target.value })}
           >
-            <MenuItem value="Value">Value</MenuItem>
+            <MenuItem value="Fixed">Fixed</MenuItem>
             <MenuItem value="Percentage">Percentage</MenuItem>
           </TextInput>
 
@@ -168,10 +168,7 @@ export default function CreateMarkup({
             value={data?.amount || ""}
             label="Value"
             onChange={(e) => setData({ ...data, amount: e.target.value })}
-          >
-            <MenuItem value="Value">Value</MenuItem>
-            <MenuItem value="Percentage">Percentage</MenuItem>
-          </TextInput>
+          />
         </div>
         <div>
           <small>Applied To *</small>
