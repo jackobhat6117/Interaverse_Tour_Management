@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Outlet } from 'react-router-dom';
 // import ProfileSurvey from './ProfileSurvey/ProfileSurvey';
 import Header from './Header';
@@ -15,6 +15,10 @@ function Navbar() {
   const profileCompleteCheck = checkProfileComplete(user);
   const completed = profileCompleteCheck?.every(obj => obj.complete);
   const verified = user?.detail?.isVerified;
+
+  useEffect(() => {
+    window?.Intercom('update')
+  },[])
 
   // enqueueSnackbar('your welcom',{variant: 'success'})
 
