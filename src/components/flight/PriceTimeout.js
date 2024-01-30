@@ -53,7 +53,7 @@ export default function PriceTimeout({returnData,gotTime,onBook}) {
   }
   return (
     <Modal1 open={open} setOpen={handleOpen}>
-      <div className="self-center max-w-[600px]">
+      <div className="self-center max-w-[600px] ">
         {onBook ? (
           <div className='bg-secondary p-10 m-2 rounded-md flex flex-col gap-4 items-center'>
             <h4>This ticket is no longer available!</h4>
