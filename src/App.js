@@ -62,7 +62,7 @@ const CustomThemeProvider = ({ children }) => {
   const theme = createTheme({
     palette: {
       primary: {
-        main: '#1E61DC',
+        main: '#0067FF',
       },
       // secondary: {
       //   main: '#1E61DC',

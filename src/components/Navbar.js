@@ -17,7 +17,8 @@ function Navbar() {
   const verified = user?.detail?.isVerified;
 
   useEffect(() => {
-    window?.Intercom('update')
+    if(window?.Intercom)
+      window?.Intercom('update')
   },[])
 
   // enqueueSnackbar('your welcom',{variant: 'success'})
