@@ -22,7 +22,7 @@ export default function FlightPriceCommission({
         tax:
           data?.booking?.flightBooking?.at(0)?.grandTotal -
           data?.booking?.flightBooking?.at(0)?.basePrice,
-        commission: data?.expectedCommission?.commission,
+        commission: data?.booking?.flightBooking?.at(0)?.expectedCommission,
         ticketingFee: data?.booking?.flightBooking?.at(0)?.ticketingFee || 0,
       };
       setPayable(formattedData.grandTotal + formattedData.ticketingFee);

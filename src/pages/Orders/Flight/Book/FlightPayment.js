@@ -9,6 +9,7 @@ import { formatMoney } from "../../../../features/utils/formatMoney";
 import FlightPriceCommission from "../../../../components/flight/FlightPriceCommission";
 import getBooking from "../../../../controllers/booking/getBooking";
 import { LinearProgress } from "@mui/material";
+import { getCurrencySymbol } from "../../../../features/utils/currency";
 
 export default function FlightPayment() {
   const { id } = useParams();
@@ -81,12 +82,21 @@ export default function FlightPayment() {
               <h5>Airline Commission</h5>
               <div className="flex gap-2">
                 <Icon icon="ep:success-filled" className="text-green-500" />
-                {paymentData.expectedCommission &&
-                paymentData.expectedCommission > 0 ? (
+                {booking?.booking?.flightBooking?.at(0)?.expectedCommission &&
+                booking?.booking?.flightBooking?.at(0)?.expectedCommission >
+                  0 ? (
                   <p>
-                    You qualify for a
-                    <b className="font-bold">{formatMoney(80000)}</b> commission
-                    on this order
+                    You qualify for a &nbsp;
+                    <b className="font-bold">
+                      {formatMoney(
+                        booking?.booking?.flightBooking?.at(0)
+                          ?.expectedCommission,
+                        getCurrencySymbol(
+                          booking?.booking?.flightBooking?.at(0)?.currency,
+                        ),
+                      )}
+                    </b>
+                    &nbsp; commission on this order
                   </p>
                 ) : (
                   <p>You qualify for Zero commission on this order</p>
