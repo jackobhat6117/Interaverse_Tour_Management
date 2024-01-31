@@ -23,14 +23,13 @@ import ContentInfo from "../../../../components/DIsplay/ContentInfo";
 import CheckedBags from "../../../../components/flight/CheckedBags";
 import SeatSelection from "./SeatSelection";
 import ExpandWrapper from "../../../../components/DIsplay/ExpandWrapper";
-import PriceTimeout from "../../../../components/flight/PriceTimeout";
 import { def } from "../../../../config";
 
 export default function FlightBookDetails() {
   const { id } = useParams();
   const qObj = JSON.parse(decrypt(id));
   const { bookingData } = useSelector((state) => state.flightBooking);
-  const offer = bookingData?.offer && bookingData?.offer?.at(-1);
+  const offer = bookingData?.offersPrice?.at(-1) || bookingData?.offers?.at(-1);
   // const dispatch = useDispatch();
 
   const navigate = useNavigate();
@@ -42,6 +41,7 @@ export default function FlightBookDetails() {
   // function handlePayTime(val) {
   //   dispatch(setBookingData({ ...bookingData, payTime: val }));
   // }
+
   return (
     <div className="pd-md py-4 flex flex-col gap-4">
       {/* <PriceTimeout onBook /> */}
@@ -75,7 +75,7 @@ export default function FlightBookDetails() {
         <div className="flex flex-col gap-4 flex-1">
           {offer?.segments?.map((obj, i) => (
             <div key={i} className="w-full">
-              <FlightSegmentDisplay data={obj} />
+              <FlightSegmentDisplay changeRoute={() => handleSearchRoute(i)} data={obj} />
             </div>
           ))}
           <div className="sticky top-5">

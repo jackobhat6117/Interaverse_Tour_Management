@@ -1,13 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Collapse from "../../mini/Collapse";
-import { def } from "../../../config";
 import { Slider, Tab, Tabs } from "@mui/material";
 
-export default function FilterTime({returnData}) {
+
+export default function FilterTime({returnData,clear}) {
   const [departureTime,setDepartureTime] = useState([0,1440]);
   const [arrivalTime,setArrivalTime] = useState([0,1440]);
   const [selectedValue,setSelectedValue] = useState('Departure');
 
+  useEffect(() => {
+    setSelectedValue('Departure')
+    setDepartureTime([0,1440])
+    setArrivalTime([0,1440])
+  },[clear])
   
   const formatTime = (time) => {
     const hours = Math.floor(time / 60);
@@ -16,20 +21,6 @@ export default function FilterTime({returnData}) {
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
   };
 
-  const marks = [
-    {
-      value: 0,
-      label: '00:00',
-    },
-    {
-      value: 720, // 12:00 PM
-      label: '12:00 PM',
-    },
-    {
-      value: 1440, // 12:00 AM
-      label: '12:00 AM',
-    },
-  ];
 
   function handleDeparture(val) {
     try {

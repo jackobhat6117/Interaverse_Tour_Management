@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Collapse from "../../mini/Collapse";
 import AirlinesInput from "../../form/AirlinesInput";
 
-export default function FilterAirlines({returnData,orgi}) {
+export default function FilterAirlines({returnData,orgi,clear}) {
   const [airlines,setAirlines] = useState([
     // {
     //   "name": "Ethiopian Airlines",
@@ -17,14 +17,18 @@ export default function FilterAirlines({returnData,orgi}) {
   ])
 
   useEffect(() => {
+    setAirlines(airlines => airlines.map(obj => ({...obj,value: false})))
+  },[clear])
+
+  useEffect(() => {
     if(orgi) {
-      let airlineObjs = orgi.map(obj => obj.segments)?.flat()?.map(obj => obj.flights)?.flat()
-      airlineObjs = [...new Set(airlineObjs.map(obj => JSON.stringify({name: obj.carrierName,id: obj.marketingCarrier,value: false})))]
+      let airlineObjs = orgi.map(obj => obj?.segments)?.flat()?.map(obj => obj?.flights)?.flat()
+      airlineObjs = [...new Set(airlineObjs.map(obj => JSON.stringify({name: obj?.carrierName,id: obj?.marketingCarrier,value: false})))]
       setAirlines(airlineObjs.map(obj => JSON.parse(obj)))
     }
   },[orgi])
   
-  console.log(airlines)
+  // console.log(airlines)
 
   function handleChange(val) {
     if(val === null) return false;

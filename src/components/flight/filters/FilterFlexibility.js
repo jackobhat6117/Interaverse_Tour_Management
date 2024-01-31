@@ -3,7 +3,7 @@ import Collapse from "../../mini/Collapse";
 import { clone } from "../../../features/utils/objClone";
 import { formatMoney } from "../../../features/utils/formatMoney";
 
-export default function FilterFlexibility({returnData,orgi,cats}) {
+export default function FilterFlexibility({returnData,orgi,cats,clear}) {
   const [flexibility,setFlexibility] = useState([
     {
       "name": "Any",
@@ -18,12 +18,12 @@ export default function FilterFlexibility({returnData,orgi,cats}) {
       "value": 0
     },
   ])
+  const [selected,setSelected] = useState();
 
-  // useEffect(() => {
-  //   if(returnData)
-  //     returnData(luggage);
-  // },[luggage,returnData])
-  // console.log(orgi)
+  useEffect(() => {
+    setSelected();
+  },[clear])
+
   useEffect(() => {
     let temp = clone(flexibility);
     
@@ -51,19 +51,22 @@ export default function FilterFlexibility({returnData,orgi,cats}) {
 
 
   function handleChange(val) {
+    setSelected(val);
     returnData(flexibility.find(d => d.name === val));
   }
   return (
     <Collapse show label={<h5>Flexibility</h5>}>
-      {flexibility.map((data,i) => (
-        <label key={i} className='flex gap-4 justify-between'>
-          <span className='flex gap-2'>
-            <input name='flexibility' type='radio' value={data.name} onChange={(ev) => handleChange(ev.target.value)} />
-            <span>{data.name}</span>
-          </span>
-          {data.value ? formatMoney(data.value) : '-'}
-        </label>
-      ))}
+      <form onSubmit={(ev) => ev?.preventDefault()} className="flex flex-col gap-3">
+        {flexibility.map((data,i) => (
+          <label key={i} className='flex gap-4 justify-between'>
+            <span className='flex gap-2'>
+              <input name='flexibility' type='radio' checked={data.name === selected} value={data.name} onChange={(ev) => handleChange(ev.target.value)} />
+              <span>{data.name}</span>
+            </span>
+            {data.value ? formatMoney(data.value) : '-'}
+          </label>
+        ))}
+      </form>
     </Collapse>
   )
 }

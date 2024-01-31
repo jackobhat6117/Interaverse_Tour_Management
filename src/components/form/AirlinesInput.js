@@ -88,7 +88,7 @@ export default function AirlinesInput({
             className="flex flex-col !p-2 !cursor-pointer"
             style={{ padding: 10, cursor: "pointer" }}
           >
-            <h4>{opt.id}</h4>
+            <h5>{opt.id}</h5>
             <small
               className="!whitespace-nowrap !text-ellipsis !block"
               title={opt.name}

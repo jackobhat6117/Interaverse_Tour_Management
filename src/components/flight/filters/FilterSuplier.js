@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Collapse from "../../mini/Collapse";
 
-export default function FilterSuplier({ returnData, cats, orgi }) {
+export default function FilterSuplier({ returnData, clear, orgi }) {
   const [suplier, setSuplier] = useState([
     // {
     //   name: "Travelport",
@@ -19,6 +19,10 @@ export default function FilterSuplier({ returnData, cats, orgi }) {
     //   value: true,
     // },
   ]);
+
+  useEffect(() => {
+    setSuplier(suplier => suplier?.map(obj => ({...obj,value:false})))
+  },[clear])
 
   useEffect(() => {
     let suppliers = [...new Set(orgi?.map(obj => obj.supplier))]?.map(supplier => ({name: supplier?.replace('_',' '),id: supplier,value: false}))

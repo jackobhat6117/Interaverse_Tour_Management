@@ -10,6 +10,7 @@ import updateFlightPriceAdjustment from "../../../../controllers/flightPriceAdju
 import AirlinesInput from "../../../../components/form/AirlinesInput";
 import ToolTip from "../../../../components/DIsplay/ToolTip";
 import Checkbox from "../../../../components/form/Checkbox";
+import filterTruthyValues from "../../../../features/utils/filterTruthyObjectValues";
 
 export default function CreateMarkup({
   reload,
@@ -52,8 +53,9 @@ export default function CreateMarkup({
 
     setLoading(true);
     let res = { return: false, msg: "Error", data: [] };
-    if (!update) res = await createFlightPriceAdjustment({ ...data, currency });
-    else await updateFlightPriceAdjustment({ ...data });
+    let modData = filterTruthyValues({...data})
+    if (!update) res = await createFlightPriceAdjustment({ ...modData, currency });
+    else await updateFlightPriceAdjustment(data?._id,{ ...modData });
 
     setLoading(false);
     if (res.return) {
@@ -385,7 +387,8 @@ export default function CreateMarkup({
               >
                 <MenuItem value={undefined}></MenuItem>
                 <MenuItem value="Economy">Economy</MenuItem>
-                <MenuItem value="BusinessEconomy">Business</MenuItem>
+                <MenuItem value="Business">Business</MenuItem>
+                <MenuItem value="PremiumEconomy">Premium Economy</MenuItem>
                 <MenuItem value="FistClass">First Class</MenuItem>
               </TextInput>
               <TextInput

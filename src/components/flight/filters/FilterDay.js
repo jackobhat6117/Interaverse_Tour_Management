@@ -1,17 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Collapse from "../../mini/Collapse";
 import { Tab, Tabs } from "@mui/material";
 
-export default function FilterDay({returnData}) {
+export default function FilterDay({returnData,clear}) {
   const [selectedValue,setSelectedValue] = useState('Departure');
   const [day,setDay] = useState();
 
+  useEffect(() => {
+    setDay();
+    setSelectedValue('Departure')
+  },[clear])
 
   function handleReturn(val) {
+    let value = val;
     try {
-      setDay(val);
+      if(day === val)
+        value = null;
 
-      returnData({day: val,selectedValue})
+      setDay(value);
+
+      returnData({day: value,selectedValue})
     } catch(ex) {}
   }
   function handleTab(val) {
@@ -45,51 +53,5 @@ export default function FilterDay({returnData}) {
       </div>
     </div>
   </Collapse>
-      // <Collapse show label={<h5>Time</h5>}>
-    //   <Tabs value={selectedValue} indicatorColor='secondary' textColor='secondary'
-    //    variant='scrollable'
-    //    onChange={(ev,val) => handleTab(val)}
-    //    scrollButtons={false}
-    //    className='shadow-md'>
-    //     <Tab label="Departure" value='Departure' />
-    //     <Tab label="Return" value='Return' />
-    //   </Tabs>
-    //   <div>
-    //     <h6>Departure</h6>
-    //     <p>All Day</p>
-    //     <Slider defaultValue={[0,1440]}
-    //      value={departureTime}
-    //     //  aria-labelledby="range-slider"
-    //     //  marks={marks}
-    //      onChange={(ev,value) => handleDeparture(value)}
-    //      min={0}
-    //      step={15}
-    //      max={1440}
-    //      getAriaValueText={formatTime}
-    //      color='secondary' size='small' />
-    //     <div className='flex justify-between gap-4'>
-    //       <span>{formatTime(departureTime[0])}</span>
-    //       <span>{formatTime(departureTime[1])}</span>
-    //     </div>
-    //   </div>
-    //   <div>
-    //     <h6>Arrival</h6>
-    //     <p>All Day</p>
-    //     <Slider defaultValue={[0,1440]}
-    //      value={arrivalTime}
-    //     //  aria-labelledby="range-slider"
-    //     //  marks={marks}
-    //      onChange={(ev,value) => handleReturn(value)}
-    //      min={0}
-    //      step={15}
-    //      max={1440}
-    //      getAriaValueText={formatTime}
-    //      color='secondary' size='small' />
-    //     <div className='flex justify-between gap-4'>
-    //       <span>{formatTime(arrivalTime[0])}</span>
-    //       <span>{formatTime(arrivalTime[1])}</span>
-    //     </div>
-    //   </div>
-    // </Collapse>
   )
 }

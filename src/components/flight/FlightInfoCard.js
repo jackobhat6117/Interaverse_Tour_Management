@@ -117,7 +117,7 @@ export default function FlightInfoCard({data,label='Depart'}) {
               </div>
             </div>
             {i < data?.flights.length-1 ? (() => {
-              const duration = getFlightDuration(moment(`${flight?.departureDate} ${flight?.departureTime}`),moment(`${data?.flights[i+1]?.arrivalDate} ${data?.flights[i+1]?.arrivalTime}`),'short');
+              const duration = getFlightDuration(moment(`${flight?.arrivalDate} ${flight?.arrivalTime}`),moment(`${data?.flights[i+1]?.departureDate} ${data?.flights[i+1]?.departureTime}`),'short');
 
               const [hours] = duration.split("H");
               const hour = parseInt(hours);

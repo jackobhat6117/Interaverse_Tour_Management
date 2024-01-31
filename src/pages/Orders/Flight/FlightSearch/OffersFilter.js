@@ -1,5 +1,5 @@
 import { Cancel } from "@mui/icons-material";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import FilterCabin from "../../../../components/flight/filters/FilterCabin";
 import FilterStops from "../../../../components/flight/filters/FilterStops";
 import FilterExCountries from "../../../../components/flight/filters/FilterExCountries";
@@ -15,15 +15,18 @@ import FilterSuplier from "../../../../components/flight/filters/FilterSuplier";
 import FilterFlexibility from "../../../../components/flight/filters/FilterFlexibility";
 
 
-export default function FlightOfferFilter({orgi,data,cats,setData}) {
+export default function FlightOfferFilter({orgi:defOrgi,data,cats,setData}) {
   const [filters,setFilters] = useState({});
   let count = Object.entries(filters).filter(([key,val]) => val).length;
   const navigate = useNavigate();
   const [searchParam] = useSearchParams();
   const q = useMemo(() => searchParam.get('q'),[searchParam]);
   const qObj = q && JSON.parse(decrypt(clone(q)));
-
+  const [orgi,setOrgi] = useState(defOrgi);
   
+  useEffect(() => {
+    setOrgi(defOrgi)
+  },[defOrgi])
   // useEffect(() => {
   //   console.log('filters: ',filters)
   // },[filters])
@@ -189,6 +192,9 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
   function filterByDay(data,obj) {
     if(!data) return [];
 
+    if(!obj?.day)
+      return data;
+
     let newData = data.filter(offer => {
       let time;
       if(obj.selectedValue === 'Departure') {
@@ -247,9 +253,12 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
     return res;
   }
 
+  const [clear,setClear] = useState(0);
+  
   function clearFilter() {
     setFilters({})
     setData(orgi);
+    setClear(clear+1)
   }
 
 
@@ -274,24 +283,24 @@ export default function FlightOfferFilter({orgi,data,cats,setData}) {
       {/* <hr />
         <FilterTravelLuggage returnData={(objs) => filterByBags(objs)} /> */}
       <hr />
-        <FilterSuplier cats={cats} orgi={orgi} returnData={(objs) => setFilteredData({suplier: objs})} />
+        <FilterSuplier clear={clear} cats={cats} orgi={orgi} returnData={(objs) => setFilteredData({suplier: objs})} />
       <hr />
-        <FilterCabin cats={cats} orgi={orgi} returnData={(objs) => setFilteredData({cabin: objs},{target: true})} />
+        <FilterCabin clear={clear} cats={cats} orgi={orgi} returnData={(objs) => setFilteredData({cabin: objs},{target: true})} />
       <hr />
-        <FilterStops cats={cats} orgi={orgi} returnData={(objs) => setFilteredData({stops: objs})} />
+        <FilterStops clear={clear} cats={cats} orgi={orgi} returnData={(objs) => setFilteredData({stops: objs})} />
       <hr />
-        <FilterAirlines orgi={orgi} returnData={(objs) => setFilteredData({airlines: objs})} />
+        <FilterAirlines clear={clear} orgi={orgi} returnData={(objs) => setFilteredData({airlines: objs})} />
       <hr />
-        <FilterFlexibility cats={cats} orgi={orgi} returnData={(objs) => setFilteredData({flexibility: objs})} />
+        <FilterFlexibility clear={clear} cats={cats} orgi={orgi} returnData={(objs) => setFilteredData({flexibility: objs})} />
         
       {/* <hr />
-        <FilterExCountries returnData={(objs) => setFilteredData({exCant: objs})} /> */}
+        <FilterExCountries clear={clear} returnData={(objs) => setFilteredData({exCant: objs})} /> */}
       <hr />
-        <FilterTime returnData={((objs) => setFilteredData({time: objs}))} />
+        <FilterTime clear={clear} returnData={((objs) => setFilteredData({time: objs}))} />
       <hr />
-        <FilterPrice min={minPrice} max={maxPrice} returnData={(obj) => setFilteredData({price: obj})} />
+        <FilterPrice clear={clear} min={minPrice} max={maxPrice} returnData={(obj) => setFilteredData({price: obj})} />
       <hr />
-      <FilterDay returnData={obj => setFilteredData({day: obj})} />
+      <FilterDay clear={clear} returnData={obj => setFilteredData({day: obj})} />
     </div>
   )
 }

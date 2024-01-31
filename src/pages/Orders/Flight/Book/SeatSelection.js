@@ -83,8 +83,10 @@ export function FlightSeatDisplay({obj,offers:gotOffers,routeIndex,readOnly,call
     // const flight = flights?.find((ob,i) => JSON.stringify(ob) === JSON.stringify(obj))
 
     let modOffer = clone(offer);
-    if(modOffer)
+    if(modOffer) {
       modOffer.directions = [[flight]]
+      modOffer.segments = null;
+    }
 
     const reqData = {
       offers: [modOffer],

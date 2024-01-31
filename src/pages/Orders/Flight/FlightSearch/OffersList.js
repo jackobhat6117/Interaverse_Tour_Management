@@ -392,9 +392,6 @@ export default function OffersList({hide}) {
 
   console.log(searchObj)
 
-  const [openPriceAlert,setOpenPriceAlert] = useState();
-
-
   return (
     <div className='w-full flex flex-col gap-2 py-4 flex-1'>
       <PriceTimeout />
