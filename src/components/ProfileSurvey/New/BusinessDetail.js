@@ -78,7 +78,7 @@ function BusinessType({next,updateProfile}) {
   return (
     <div>
       <div className='flex flex-col gap-2'>
-        <h4 className=''>{user.firstName} {user.lastName}, Welcome to Miles!</h4>
+        <h4 className=''>{user.firstName} {user.lastName}, Welcome to Intraverse!</h4>
         <p className=''>What type of business are you selling travel with?</p>
       </div>
       <div className='flex flex-col flex-wrap gap-4 justify-between self-stretch py-4'>

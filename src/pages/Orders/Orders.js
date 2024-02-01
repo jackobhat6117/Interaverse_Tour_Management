@@ -60,6 +60,6 @@ export default function Orders() {
 
 
   ) : ( // data table list
-    <OrdersData data={data} setData={setData} />
+    <OrdersData data={data} reload={load} setData={setData} />
   )
 }

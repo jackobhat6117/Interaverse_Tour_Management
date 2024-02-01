@@ -23,6 +23,7 @@ import { getPassengerCategory } from "../../../../utils/getPassengerCategory";
 import PolicyStatus from "../../../../components/flight/PolicyStatus";
 import CustomMenu from "../../../../components/utils/CustomMenu";
 import Icon from "../../../../components/HOC/Icon";
+import PaymentMethod from "../../../../components/flight/PaymentMethod";
 
 export default function FlightOrder() {
   const { id } = useParams();
@@ -31,9 +32,11 @@ export default function FlightOrder() {
   const [openEmailExport, setOpenEmailExport] = useState(false);
   const [openPDFExport, setOpenPDFExport] = useState(false);
   const [openInsurance, setOpenInsurance] = useState(false);
+  const [openPayment,setOpenPayment] = useState(false);
   const [selectedOption, setSelectedOption] = useState();
   const [order, setOrder] = useState();
   const [loading, setLoading] = useState(false);
+  
 
   function handleOption() {
     if (selectedOption === "email") setOpenEmailExport(true);
@@ -69,16 +72,18 @@ export default function FlightOrder() {
   }
 
   useEffect(() => {
-    const fetch = async () => {
-      setLoading(true);
-      const res = await getBooking(id);
-      setLoading(false);
-      if (res.return) {
-        setOrder(res.data);
-      }
-    };
     fetch();
+    //eslint-disable-next-line
   }, [id]);
+
+  const fetch = async () => {
+    setLoading(true);
+    const res = await getBooking(id);
+    setLoading(false);
+    if (res.return) {
+      setOrder(res.data);
+    }
+  };
 
   const orderData = order?.booking?.flightBooking?.at(0)
   let orderType = (orderData) ? 'flight' : ''
@@ -130,7 +135,8 @@ export default function FlightOrder() {
 
                     <OrderMenus data={{id,status: orderData?.status,orderType}} inDetail
                       actions={{
-                        addInsurance: (id) => setOpenInsurance(id)
+                        addInsurance: (id) => setOpenInsurance(id),
+                        pay: () => setOpenPayment(order?.booking?.flightBooking?.at(0)?._id)
                       }}
                     />
                     </CustomMenu>
@@ -257,6 +263,11 @@ export default function FlightOrder() {
       <Modal1 open={openInsurance} setOpen={setOpenInsurance}>
         <Insurance cancel={() => setOpenInsurance(false)} />
       </Modal1>
+
+      <Modal1 open={openPayment} setOpen={setOpenPayment}>
+        <PaymentMethod callback={() => {fetch();setOpenPayment(false)}} flightBookingId={openPayment} hide={['booklater']} expand />
+      </Modal1>
+
     </div>
   );
 }

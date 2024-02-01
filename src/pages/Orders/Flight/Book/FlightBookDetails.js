@@ -414,10 +414,10 @@ function PassengerDetails({ offer }) {
 
                             <div className="flex gap-4 justify-between max-w-full w-[700px] overflow-auto snap-x">
                               {offer?.directions?.map((direction,index) => {
-                                let obj = {departure: direction[0].departure,arrival: direction?.at(-1)?.arrival};
+                                let obj = {departure: direction[0].departure,arrival: direction?.at(-1)?.arrival,baggage: direction[0]?.baggage,direction,index,passenger: i};
                                 return (
                                   <div key={index} className="snap-mandatory snap-center pb-3">
-                                    <CheckedBags hide={(index !== 0) ? ['wantMore']:null} selected={bags[index]?.[0][i]} data={obj} callback={(obj) => handleBag({...obj,i},[index,0])} />
+                                    <CheckedBags offer={offer} hide={(index !== 0) ? ['wantMore']:null} selected={bags[index]?.[0][i]} data={obj} callback={(obj) => handleBag({...obj,i},[index,0])} />
                                   </div>
                                 )
                               })}

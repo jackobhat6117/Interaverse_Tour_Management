@@ -4,6 +4,7 @@ import { PassengerInputs } from './PassengersInput';
 import Button1 from '../../components/form/Button1';
 
 export default function AddSeats({open,setOpen}) {
+  console.log('seats: ',open)
   return (
     <div>
       <Modal1 open={open} setOpen={setOpen}>

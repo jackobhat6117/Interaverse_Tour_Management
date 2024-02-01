@@ -123,7 +123,7 @@ export default function FlightBook() {
           </div>
         </div>
         <div>
-          <FlightPriceSummary data={offer?.at(0) || bookingData?.offer?.at(-1)} />
+          <FlightPriceSummary data={offer?.at(0)} />
         </div>
       </div>
     </div>

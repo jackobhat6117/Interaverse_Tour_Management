@@ -15,7 +15,7 @@ export default function FlightPriceSummary({data,onBook,footer}) {
       <h5>Price Summary</h5>
       <div>{tripType} flight</div>
       {Object.entries(data?.passengers || {})?.map(([key,obj],i) => 
-        <div className='text-theme1 flex flex-col '>
+        <div className='text-theme1 flex flex-col ' key={i}>
           <div className='flex gap-4 justify-between font-bold'>
             <div>Traveler {i+1}: {key}</div>
             <div>{formatMoney(obj.totalAmount)}</div>

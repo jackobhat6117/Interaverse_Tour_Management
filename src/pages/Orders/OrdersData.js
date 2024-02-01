@@ -14,18 +14,21 @@ import AddSeats from "./AddSeats";
 import CancelOrder from "./cancelOrder";
 import { formatMoney } from "../../features/utils/formatMoney";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import OrderDataChanges from "./OrderDataChanges";
+import { def } from "../../config";
+import PaymentMethod from "../../components/flight/PaymentMethod";
+import Modal1 from "../../components/DIsplay/Modal/Modal1";
+
 
 const ActionContext = createContext();
 
 export const Menu = (props) => {
   const { className, label, value, showFor, hideFor, ...extraProps } = props;
-  const ShowerClass = showFor?.includes(value?.toLowerCase() || value)
+  const ShowerClass = showFor?.find(val => val?.toLowerCase() === (value?.toLowerCase() || value))
     ? ""
     : !showFor
     ? ""
     : "!hidden";
-  const hiderClass = !hideFor?.includes(value?.toLowerCase() || value)
+  const hiderClass = !hideFor?.find(val => val?.toLowerCase() === (value?.toLowerCase() || value))
     ? ""
     : !hideFor
     ? ""
@@ -42,10 +45,14 @@ export const Menu = (props) => {
   );
 };
 
-export function OrderMenus({callback,data:{status,id,orderType},actions,inDetail}) {
-  const {addBags,addSeats,addInsurance,cancelOrder} = actions || {}
+export function OrderMenus({callback,data:{status,id,bookingID,orderType,row},actions,inDetail}) {
+  const {addBags,addSeats,addInsurance,cancelOrder,pay} = actions || {}
   const navigate = useNavigate();
   
+  // 'booked': 'Not Paid',
+  // 'issuable': 'Paid',
+  // 'issued': 'Completed'
+
   return (
     <div>
       <div className="menuItem" onClick={() => callback && callback()}>
@@ -61,37 +68,42 @@ export function OrderMenus({callback,data:{status,id,orderType},actions,inDetail
         <Menu
           value={status}
           label="Make Payment"
-          showFor={["booked"]}
+          showFor={["Not Paid","booked"]}
+          onClick={() => pay && pay(bookingID)}
         />
         <Menu
           value={status}
           label="Issue Ticket"
-          showFor={["issuable"]}
+          showFor={["Paid","issuable"]}
           className="!btn disabled"
         />
         <Menu
           value={status}
           label="Manage Ticket"
-          showFor={["issued"]}
+          showFor={["Completed","issued"]}
         />
         <Menu
           value={status}
           label="Add Seats"
-          showFor={["booked"]}
-          onClick={() => addSeats && addSeats(id)}
+          showFor={["Not Paid","booked"]}
+          onClick={() => navigate('/order/flight/change/'+id+'?property=seat')}
+          // onClick={() => addSeats && addSeats(row)}
           />
         <Menu
           value={status}
           label="Add Bags"
-          showFor={["booked"]}
-          onClick={() => addBags && addBags(id)}
+          showFor={["Not Paid","booked"]}
+          onClick={() => navigate('/order/flight/change/'+id+'?property=bags')}
+          // onClick={() => addBags && addBags(id)}
         />
-        <Menu
-          value={"pending"}
-          label="Add Insurance"
-          hideFor={["confirmed"]}
-          onClick={() => addInsurance && addInsurance(id)}
-        />
+        {def.devTest ? 
+          <Menu
+            value={"pending"}
+            label="Add Insurance"
+            hideFor={["Completed","issued"]}
+            onClick={() => addInsurance && addInsurance(id)}
+          />
+        :null}
 
         {/* <Menu
           value={status}
@@ -103,7 +115,7 @@ export function OrderMenus({callback,data:{status,id,orderType},actions,inDetail
         <Menu
           value={status}
           label="Cancel Order"
-          showFor={['issuable']}
+          showFor={['Paid','issuable']}
           className="!bg-red-500 !text-white !rounded-md"
           onClick={() => cancelOrder && cancelOrder(id)}
           />
@@ -136,6 +148,9 @@ function StatusCol({ params }) {
   const status = params.value || "";
   
   const orderType = params?.row?.type?.toLowerCase() || "type";
+  const bookingID = params?.row?.flightObj?._id;
+
+  console.log(' --> ',params.row)
   
   return (
     <div className="flex justify-between items-center gap-2 w-full ">
@@ -149,12 +164,13 @@ function StatusCol({ params }) {
       >
         <ActionContext.Consumer>
           {(value) => {
-            const {bags,seats,cancel} = value || {}
+            const {bags,seats,cancel,payment} = value || {}
             return (
-              <OrderMenus data={{id: params.id,status,orderType}} actions={{
+              <OrderMenus data={{row: params.row,id: params.id,bookingID,status,orderType}} actions={{
                 addBags: bags?.open,
                 addSeats: seats?.open,
-                cancelOrder: cancel?.open
+                cancelOrder: cancel?.open,
+                pay: payment?.open,
               }} />
             )
           }}
@@ -164,7 +180,7 @@ function StatusCol({ params }) {
   );
 }
 
-export default function OrdersData({ data: gotData, setData: setOrig }) {
+export default function OrdersData({ data: gotData, setData: setOrig, reload }) {
   const tempObj = {
     date: "22, Jan",
     name: "John Doe",
@@ -187,6 +203,7 @@ export default function OrdersData({ data: gotData, setData: setOrig }) {
   const [openAddBags, setOpenAddBags] = useState(false);
   const [openAddSeats, setOpenAddSeats] = useState(false);
   const [openCancelOrder, setOpenCancelOrder] = useState(false);
+  const [openPayment,setOpenPayment] = useState(false);
 
   let countObj = {
     all: gotData?.length,
@@ -344,6 +361,9 @@ export default function OrdersData({ data: gotData, setData: setOrig }) {
             setOpenCancelOrder,
             open: (val) => setOpenCancelOrder(val),
           },
+          payment: {
+            open: (val) => setOpenPayment(val)
+          }
         }}
       >
         {/* {status === 'needsReview' ? 
@@ -356,6 +376,9 @@ export default function OrdersData({ data: gotData, setData: setOrig }) {
       <AddBags open={openAddBags} setOpen={setOpenAddBags} />
       <AddSeats open={openAddSeats} setOpen={setOpenAddSeats} />
       <CancelOrder open={openCancelOrder} setOpen={setOpenCancelOrder} />
+      <Modal1 open={openPayment} setOpen={setOpenPayment}>
+        <PaymentMethod callback={() => {reload();setOpenPayment(false)}} flightBookingId={openPayment} hide={['booklater']} expand />
+      </Modal1>
     </div>
   );
 }

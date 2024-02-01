@@ -376,6 +376,8 @@ export default function OffersList({hide}) {
   function handleSearchRoute(i) {
     // let temp = clone(searchObj);
     // temp['destinations'] = [searchPath[i]];
+    if(i > 0 && !bookingData?.offers?.at(i-1))
+      return false;
 
     navigate('?q='+q+'&path='+i)
   }
@@ -435,7 +437,7 @@ export default function OffersList({hide}) {
                 <BreadCrumb>
                   {/* <Link to={'/order'}>Orders</Link> */}
                   {/* <Link to='/order/new/flight'>New order</Link> */}
-                  {searchObj.destinations.map((obj,i) => {
+                  {searchObj?.destinations.map((obj,i) => {
                     console.log(obj)
                     let label = 'Choose departing flight';
                     if(i === searchObj?.destinations?.length-1)
@@ -444,6 +446,10 @@ export default function OffersList({hide}) {
                       return (
                         <b>{label} ({obj?.departureLocation} to {obj?.arrivalLocation})</b>
                       )
+                    if(!bookingData?.offers?.at(i-1) && i > 0)
+                        return (
+                          <p>{label} ({obj?.departureLocation} to {obj?.arrivalLocation})</p>
+                        )
 
                     return (
                       <div onClick={() => handleSearchRoute(i)} className='cursor-pointer'>
