@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import BreadCrumb from "../../../../components/DIsplay/Nav/BreadCrumb";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { decrypt } from "../../../../features/utils/crypto";
 import { useSelector } from "react-redux";
 import PaymentMethod from "../../../../components/flight/PaymentMethod";
@@ -32,9 +32,23 @@ export default function FlightPayment() {
   const [booking, setBooking] = useState();
   const navigate = useNavigate();
 
+  const location = useLocation();
+  const searchParam = new URLSearchParams(location.search);
+  const canceled = searchParam.get('canceled')
+
   function handleSearchRoute(i) {
     navigate("/order/new/flight/offers?q=" + id + "&path=" + i);
   }
+
+  const url = new URL(window.location.href);
+
+  const searchParams = url.searchParams;
+  searchParams.set('canceled', true);
+  url.search = searchParams.toString();
+  const newUrl = url.toString();
+
+  if(!canceled)
+    window.location.href = newUrl
 
   useEffect(() => {
     if (bookingData?.orderData?.booking?._id) {
@@ -45,11 +59,15 @@ export default function FlightPayment() {
         setLoading(false);
         if (res.return) {
           setBooking(res.data);
+          if(res?.data?.booking?.flightBooking?.at(0)?.status === 'Issuable')
+            navigate(`/order/flight/${res?.data?.booking?._id}`)
         }
       };
       fetch();
     }
+    //eslint-disable-next-line
   }, [bookingData]);
+  console.log(window.location.href)
 
   return (
     <div className="pd-md py-4 flex flex-col gap-4">

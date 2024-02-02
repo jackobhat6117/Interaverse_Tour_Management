@@ -47,10 +47,18 @@ export default function PaymentMethod({
   const [paymentUrl, setPaymentUrl] = useState();
 
   async function handlePay() {
+    const url = new URL(window.location.href);
+
+    const searchParams = url.searchParams;
+    searchParams.set('payed', 'true');
+    url.search = searchParams.toString();
+    const newUrl = url.toString();
+
     let obj = {
       flightBookingId,
       paymentMode: method,
-      callback: window.location.href,
+      callback: newUrl,
+      onClose: callback && callback,
       deductCommission,
     };
     setLoading(true);
@@ -58,8 +66,25 @@ export default function PaymentMethod({
     setLoading(false);
     if(handleReturn) return handleReturn(res);
     if (res.return) {
-      setPaymentUrl(res?.data?.data?.authorization_url);
-      // navigate(data.link)
+      const url = res?.data?.data?.authorization_url;
+      // setPaymentUrl(res?.data?.data?.authorization_url);
+      // const width = 600; // Desired width of the popup window
+      // const height = 400; // Desired height of the popup window
+
+      // const left = window.screen.width / 2 - width / 2;
+      // const top = window.screen.height / 2 - height / 2;
+
+      // const options = `width=${width}, height=${height}, left=${left}, top=${top}`;
+
+      setPaymentUrl(url);
+      const popup = window.open(url,'popupWindow')
+      const checkPopupClosed = setInterval(() => {
+        if (popup.closed) {
+          clearInterval(checkPopupClosed);
+          setPaymentUrl(undefined)
+          callback && callback();
+        }
+      }, 1000);
     } else enqueueSnackbar(res?.msg, { variant: "error" });
   }
   return (
@@ -116,8 +141,12 @@ export default function PaymentMethod({
         open={Boolean(paymentUrl)}
         onClose={() => setPaymentUrl(undefined)}
       >
-        <div className="h-full max-w-[100%] overflow-y-scroll md:overflow-y-hidden">
-          <iframe src={paymentUrl} title="Payment" className="w-full h-full" />
+        <div className="h-full max-w-[100%] flex flex-col text-secondary bg-primary/80 items-center justify-center overflow-y-scroll md:overflow-y-hidden">
+          {/* <iframe src={paymentUrl} title="Payment" className="w-full h-full" /> */}
+          <div className="text-center">
+            <div className="text-2xl">Waiting for payment</div>
+            <p className="text-secondary">Close the payment window to continue</p>
+          </div>
         </div>
       </Modal>
     </div>

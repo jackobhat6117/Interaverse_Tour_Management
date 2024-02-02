@@ -4,6 +4,7 @@ import PhoneNumberInput from '../../../../../../components/form/PhoneNumberInput
 import Button1 from '../../../../../../components/form/Button1'
 import ConfirmChangeModal from './ConfirmChangeModal';
 import updateBooking from '../../../../../../controllers/booking/updateBooking';
+import { clone } from '../../../../../../features/utils/objClone';
 
 export default function ChangeContact({orgi,callback}) {
   const pnr = orgi?.booking?.flightBooking?.at(0)?.pnr;
@@ -16,14 +17,39 @@ export default function ChangeContact({orgi,callback}) {
   const [open,setOpen] = useState(false);
   const [loading,setLoading] =  useState(false);
 
-  // console.log('contact: ',orgi)
+  console.log('contact: ',orgi)
   // @fix phone and contact are considered only from first array
 
   async function handleSubmit() {
+    try {
+
+    const reqBody = clone({
+      supplier: orgi?.orderDetail?.offers?.at(0)?.supplier,
+      // offers: orgi?.orderDetail?.offers,
+      travelersInfo: orgi?.orderDetail?.travelers?.map(obj => ({
+        id: obj.id,
+        phone: obj?.contact?.phones?.at(0),
+        email: obj?.contact?.emailAddress
+      }))
+      // orgi?.orderDetail?.travelers
+    });
+
+    reqBody?.travelersInfo?.map(traveler => {
+      traveler.email = data?.email;
+      let phone = data.phone.split('-');
+      traveler.phone = {
+        countryCallingCode: phone[0],
+        deviceType : "MOBILE",
+        number : phone[1],
+      }
+      return true;
+    })
     setLoading(true);
-    const res = await updateBooking(pnr,data);
+    const res = await updateBooking(pnr,reqBody);
     setLoading(false);
     callback && callback({...res,payment:false})
+
+    } catch(ex) {console.log(ex)}
   }
   
   return (

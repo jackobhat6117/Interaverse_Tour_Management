@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Icon from '../HOC/Icon'
-import { formatMoney } from '../../features/utils/formatMoney'
-import { clone } from '../../features/utils/objClone';
-import getFlightOfferPrice from '../../controllers/Flight/getOfferPrice';
+import { formatMoney, getNumber } from '../../features/utils/formatMoney'
+
 
 export default function CheckedBags({data,selected:gotSelected,callback,offer,hide}) {
     const items = [
@@ -14,64 +13,72 @@ export default function CheckedBags({data,selected:gotSelected,callback,offer,hi
 
     const [selected,setSelected] = useState();
 
+    let price = 0;
+    offer?.pricingInformation?.price?.additionalServices?.map(obj => {
+        if(obj?.service === 'CHECKED_BAGS')
+            price = getNumber(obj?.price)
+        return true;
+    })
+
     useEffect(() => {
         // console.log(' -> ',gotSelected ? JSON.stringify(gotSelected) : init)
         const {label,quantity,weight,price} = gotSelected || {};
-        setSelected(gotSelected ? JSON.stringify({label,quantity,weight,price}) : init)
+        if(weight)
+            setSelected(gotSelected ? JSON.stringify({label,quantity,weight,price}) : init)
     },[gotSelected])
 
     async function handleSelect(bag) {
         setSelected(bag)
-
-        let price = 0;
         
-        let modDirection = clone(data?.direction);
-        modDirection?.map((flight,i) => {
-            let passengerBag = [];
-            let {quantity,weight} = JSON.parse(bag || '{}');
-            try {
-                passengerBag = [...flight.additionalServices.chargeableCheckedBags];
-            } catch(ex) {}
-
-            const w = weight.match(/\d+/)[0];
-
-            passengerBag.push({quantity,weight:parseInt(w),passenger: data.passenger + 1})
-
-            // bags[i][j]?.filter(obj => obj)?.map(obj => ({...obj,passenger: obj?.passenger + 1}));
-            try {
-                flight.additionalServices.chargeableCheckedBags = passengerBag
-                // flight.additionalServices.chargeableCheckedBags.push(bags[i][j])
-            } catch(ex) {
-                // console.log('0XbagsPush')
-                // flight.additionalServices.chargeableCheckedBags = [bags[i][j]]
-                console.log('0XbagsCreate')
-                try {
-                flight.additionalServices = {chargeableCheckedBags: passengerBag}
-                } catch(ex) {
-                console.log('0XadditionalServiceCreate')
-                }
-            }
-            return true;
-        })
-
-        let modOffer = clone(offer);
-        modOffer.directions.map((_,i) => {
-            if(i === data.index)
-                modOffer.directions[i] = modDirection
-            return true;
-        })
-
-        console.log(' --> ',data.index,modDirection,modOffer.directions[data.index])
-
-        const req = {
-            supplier: modOffer?.supplier,
-            offers: [modOffer]
-        }
-        const res = await getFlightOfferPrice(req);
-        if(res.return)
-            console.log(res.data.data)
-            
         callback && callback(JSON.parse(bag||"{}"));
+        // let price = 0;
+        
+        // let modDirection = clone(data?.direction);
+        // modDirection?.map((flight,i) => {
+        //     let passengerBag = [];
+        //     let {quantity,weight} = JSON.parse(bag || '{}');
+        //     try {
+        //         passengerBag = [...flight.additionalServices.chargeableCheckedBags];
+        //     } catch(ex) {}
+
+        //     const w = weight.match(/\d+/)[0];
+
+        //     passengerBag.push({quantity,weight:parseInt(w),passenger: data.passenger + 1})
+
+        //     // bags[i][j]?.filter(obj => obj)?.map(obj => ({...obj,passenger: obj?.passenger + 1}));
+        //     try {
+        //         flight.additionalServices.chargeableCheckedBags = passengerBag
+        //         // flight.additionalServices.chargeableCheckedBags.push(bags[i][j])
+        //     } catch(ex) {
+        //         // console.log('0XbagsPush')
+        //         // flight.additionalServices.chargeableCheckedBags = [bags[i][j]]
+        //         console.log('0XbagsCreate')
+        //         try {
+        //         flight.additionalServices = {chargeableCheckedBags: passengerBag}
+        //         } catch(ex) {
+        //         console.log('0XadditionalServiceCreate')
+        //         }
+        //     }
+        //     return true;
+        // })
+
+        // let modOffer = clone(offer);
+        // modOffer.directions.map((_,i) => {
+        //     if(i === data.index)
+        //         modOffer.directions[i] = modDirection
+        //     return true;
+        // })
+
+        // console.log(' --> ',data.index,modDirection,modOffer.directions[data.index])
+
+        // const req = {
+        //     supplier: modOffer?.supplier,
+        //     offers: [modOffer]
+        // }
+        // const res = await getFlightOfferPrice(req);
+        // if(res.return)
+        //     console.log(res.data.data)
+            
     }
 
     const obj = JSON.parse(selected || init)
@@ -113,9 +120,9 @@ export default function CheckedBags({data,selected:gotSelected,callback,offer,hi
                     <select className='bg-transparent w-full' value={selected} onChange={(ev) => handleSelect(ev.target.value)}>
                         <option value=''></option>
                         {[
-                            {label: '1x '+data?.baggage,quantity: 1,weight: data?.baggage,price: 0},
-                            {label: '2x '+data?.baggage,quantity: 2,weight: data?.baggage,price: 0},
-                            {label: '3x '+data?.baggage,quantity: 3,weight: data?.baggage,price: 0},
+                            {label: '1x '+data?.baggage,quantity: 1,weight: data?.baggage,price},
+                            {label: '2x '+data?.baggage,quantity: 2,weight: data?.baggage,price: price*2},
+                            {label: '3x '+data?.baggage,quantity: 3,weight: data?.baggage,price: price*3},
                         ].map((obj,i) => (
                             <option key={i} value={JSON.stringify(obj)}>{obj.label}</option>
                         ))}

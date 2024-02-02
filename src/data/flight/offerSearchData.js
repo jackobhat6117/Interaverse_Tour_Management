@@ -7,7 +7,7 @@ export const offerSearchTemp = {
     //   "Sabre"
   ],
   currency: "NGN",
-  maxSolutions: 20,
+  maxSolutions: 200,
   originDestinations: [
     {
       from: "",

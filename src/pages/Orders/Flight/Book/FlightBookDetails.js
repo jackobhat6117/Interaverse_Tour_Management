@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import BreadCrumb from "../../../../components/DIsplay/Nav/BreadCrumb";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { decrypt } from "../../../../features/utils/crypto";
 import { useDispatch, useSelector } from "react-redux";
 import FlightPriceSummary from "../../../../components/flight/FlightPriceSummary";
@@ -104,18 +104,27 @@ function PassengerDetails({ offer }) {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search)
+  const justBooked = searchParams.get('justBooked')
+  const payed = searchParams.get('payed')
+
   const navigate = useNavigate();
 
   console.log(bags,seats)
 
   const [data, setData] = useState({ ...clone(travelersInfo), passengers: [...Array(totalPassenger)] });
 
-  if(bookingData.orderData && !bookingDone)
+  if(bookingData.orderData && !bookingDone && !justBooked)
     navigate({
       pathname: '/order/new/flight/book/payment/'+id
     })
+    
 
   async function book() {
+    if(!data.email || data.phone?.length < 10)
+      return enqueueSnackbar('Email and Phone number fields are required!')
+
     const valids = data.passengers?.map(obj => {
       if(!obj?.firstName || !obj?.lastName || !obj?.birthDate || !obj?.gender) {
         return false;
@@ -160,9 +169,15 @@ function PassengerDetails({ offer }) {
       } catch(ex) {console.log(ex)}
 
 
+      const getWeightNum = (weight) => {
+        try {
+          const w = weight.match(/\d+/)[0];
+          return parseInt(w)
+        } catch(ex) {}
+      }
       // Adding additional bags
       try {
-        const passengerBag = bags[i][j]?.filter(obj => obj)?.map(obj => ({...obj,passenger: obj?.passenger + 1}));
+        const passengerBag = bags[i][j]?.filter(obj => obj)?.map(obj => ({...obj,weight: getWeightNum(obj?.weight),passenger: obj?.passenger + 1}));
         if(passengerBag && passengerBag?.length) {
           try {
               flight.additionalServices.chargeableCheckedBags = passengerBag
@@ -221,8 +236,11 @@ function PassengerDetails({ offer }) {
     setLoading(false);
 
     if (res.return) {
-      setBookingDone(true);
       dispatch(setBookingData({ ...bookingData, orderData: res?.data }));
+      navigate({
+        search: 'justBooked=true'
+      })
+      setBookingDone(true);
     } else enqueueSnackbar(res.msg, { variant: "error" });
     setOpen(false);
   }
@@ -271,7 +289,7 @@ function PassengerDetails({ offer }) {
       // console.log(bags[segment][j])
       const newObj = {quantity,weight,price,label,passenger};
       temp[segment]?.map((flight) => {
-        if(price) {
+        if(weight) {
           flight[passenger] = newObj;
         } else flight[passenger] = null;
         return true;
@@ -299,6 +317,12 @@ function PassengerDetails({ offer }) {
 
   async function handleSubmit(ev) {
     ev.preventDefault();
+  
+    if(!data.email)
+      return enqueueSnackbar('Email and Phone number fields are required!',{variant: 'error'})
+    else if(data.phone?.length < 10)
+      return enqueueSnackbar('Invalid phone number!',{variant: 'error'})
+
     setTimeout(() => true,700)
     console.log(data)
     const validAges = data.passengers.map(passenger => validateAge(passenger?.birthDate,passenger?.gotType));
@@ -323,14 +347,14 @@ function PassengerDetails({ offer }) {
       <h5>Contact Details</h5>
       <div className="flex gap-4">
         <div className="flex-1">
-          <EmailInput size='large'
+          <EmailInput size='large' required
             label="Enter your email"
             value={data.email}
             onChange={(ev) => setData({ ...data, email: ev.target.value })}
           />
         </div>
         <div className="flex-1">
-          <PhoneNumberInput
+          <PhoneNumberInput required
             label="Enter your phone number"
             value={data.phone}
             onChange={(val) => setData({ ...data, phone: val })}
@@ -417,7 +441,7 @@ function PassengerDetails({ offer }) {
                                 let obj = {departure: direction[0].departure,arrival: direction?.at(-1)?.arrival,baggage: direction[0]?.baggage,direction,index,passenger: i};
                                 return (
                                   <div key={index} className="snap-mandatory snap-center pb-3">
-                                    <CheckedBags offer={offer} hide={(index !== 0) ? ['wantMore']:null} selected={bags[index]?.[0][i]} data={obj} callback={(obj) => handleBag({...obj,i},[index,0])} />
+                                    <CheckedBags offer={bookingData?.offer?.at(-1)} hide={(index !== 0) ? ['wantMore']:null} selected={bags[index]?.[0][i]} data={obj} callback={(obj) => handleBag({...obj,i},[index,0])} />
                                   </div>
                                 )
                               })}
