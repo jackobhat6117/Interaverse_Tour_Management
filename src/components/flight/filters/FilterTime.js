@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import Collapse from "../../mini/Collapse";
-import { Slider, Tab, Tabs } from "@mui/material";
+import { Slider} from "@mui/material";
 
 
 export default function FilterTime({returnData,clear}) {
   const [departureTime,setDepartureTime] = useState([0,1440]);
   const [arrivalTime,setArrivalTime] = useState([0,1440]);
-  const [selectedValue,setSelectedValue] = useState('Departure');
+  // const [selectedValue,setSelectedValue] = useState('Departure');
 
   useEffect(() => {
-    setSelectedValue('Departure')
+    // setSelectedValue('Departure')
     setDepartureTime([0,1440])
     setArrivalTime([0,1440])
   },[clear])
@@ -30,7 +30,8 @@ export default function FilterTime({returnData,clear}) {
       let arrivalFrom = formatTime(arrivalTime[0])
       let arrivalTo = formatTime(arrivalTime[1])
 
-      returnData({departureTime: [from,to],arrivalTime: [arrivalFrom,arrivalTo],selectedValue})
+      returnData({departureTime: [from,to],arrivalTime: [arrivalFrom,arrivalTo]})
+      // returnData({departureTime: [from,to],arrivalTime: [arrivalFrom,arrivalTo],selectedValue})
     } catch(ex) {}
   }
   function handleReturn(val) {
@@ -40,30 +41,31 @@ export default function FilterTime({returnData,clear}) {
       setArrivalTime(val);
       let depFrom = formatTime(departureTime[0])
       let depTo = formatTime(departureTime[1])
-      returnData({arrivalTime: [from,to],departureTime: [depFrom,depTo],selectedValue})
+      returnData({arrivalTime: [from,to],departureTime: [depFrom,depTo]})
+      // returnData({arrivalTime: [from,to],departureTime: [depFrom,depTo],selectedValue})
     } catch(ex) {}
   }
-  function handleTab(val) {
-    try {
-      setSelectedValue(val);
-      let depFrom = formatTime(departureTime[0])
-      let depTo = formatTime(departureTime[1])
-      let arrivalFrom = formatTime(arrivalTime[0])
-      let arrivalTo = formatTime(arrivalTime[1])
+  // function handleTab(val) {
+  //   try {
+  //     setSelectedValue(val);
+  //     let depFrom = formatTime(departureTime[0])
+  //     let depTo = formatTime(departureTime[1])
+  //     let arrivalFrom = formatTime(arrivalTime[0])
+  //     let arrivalTo = formatTime(arrivalTime[1])
 
-      returnData({arrivalTime: [arrivalFrom,arrivalTo],departureTime: [depFrom,depTo],selectedValue: val})
-    } catch(ex) {}
-  }
+  //     returnData({arrivalTime: [arrivalFrom,arrivalTo],departureTime: [depFrom,depTo],selectedValue: val})
+  //   } catch(ex) {}
+  // }
   return (
     <Collapse show label={<h5>Time</h5>}>
-      <Tabs value={selectedValue} indicatorColor='primary' textColor='primary'
+      {/* <Tabs value={selectedValue} indicatorColor='primary' textColor='primary'
        variant='scrollable'
        onChange={(ev,val) => handleTab(val)}
        scrollButtons={false}
        className='shadow-md'>
         <Tab label="Departure" value='Departure' />
         <Tab label="Return" value='Return' />
-      </Tabs>
+      </Tabs> */}
       <div>
         <h6>Departure</h6>
         <p>All Day</p>

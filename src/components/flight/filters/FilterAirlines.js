@@ -22,8 +22,9 @@ export default function FilterAirlines({returnData,orgi,clear}) {
 
   useEffect(() => {
     if(orgi) {
-      let airlineObjs = orgi.map(obj => obj?.segments)?.flat()?.map(obj => obj?.flights)?.flat()
+      let airlineObjs = orgi.map(obj => obj?.segments)?.flatMap(arr => arr?.map(obj => obj?.flights))?.flat()
       airlineObjs = [...new Set(airlineObjs.map(obj => JSON.stringify({name: obj?.carrierName,id: obj?.marketingCarrier,value: false})))]
+      // airlineObjs = airlineObjs.map(obj => ({name: obj?.carrierName,id: obj?.marketingCarrier,value: false}))
       setAirlines(airlineObjs.map(obj => JSON.parse(obj)))
     }
   },[orgi])

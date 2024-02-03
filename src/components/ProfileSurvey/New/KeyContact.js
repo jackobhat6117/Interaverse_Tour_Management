@@ -13,7 +13,7 @@ import { useLocation } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 
 
-function KeyContact({updateProfile,back,next,review}) {
+function KeyContact({updateProfile,back,next,review,user: defUser}) {
   const {user} = useSelector(state => state.user.userData);
   const userDetails = mergeRecursive(clone(profileSurveyData),user?.detail || {},{createNew: false})
   const [data,setData] = useState({...profileSurveyData,...userDetails});
@@ -45,7 +45,7 @@ function KeyContact({updateProfile,back,next,review}) {
   }
 
   if(review && !edit)
-    return <ReviewDisplay data={user?.detail} review={review} setEdit={setEdit} />
+    return <ReviewDisplay data={defUser?.detail || user?.detail} review={review} setEdit={setEdit} />
 
 
   return (

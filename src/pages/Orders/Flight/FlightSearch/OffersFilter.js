@@ -23,6 +23,7 @@ export default function FlightOfferFilter({orgi:defOrgi,data,cats,setData}) {
   const q = useMemo(() => searchParam.get('q'),[searchParam]);
   const qObj = q && JSON.parse(decrypt(clone(q)));
   const [orgi,setOrgi] = useState(defOrgi);
+  const segIndex = searchParam.get('path')
   
   useEffect(() => {
     setOrgi(defOrgi)
@@ -111,8 +112,12 @@ export default function FlightOfferFilter({orgi:defOrgi,data,cats,setData}) {
     
     let newData = data?.filter(obj => {
       if(obj.segments)
-        if(obj.segments.every(item => item.flights.some((flight) => objs.filter(obj => obj.value).some((d) => (d.id === flight.marketingCarrier)))))
-          return true;
+        if(([obj.segments[segIndex || 0]]).every((item,i) => 
+          // (segIndex && i === segIndex) || 
+          item.flights.some((flight) => 
+            objs.filter(obj => obj.value).some((d) => (d.id === flight.marketingCarrier))
+        )))
+        return true;
       
       return false;
     })
@@ -160,27 +165,28 @@ export default function FlightOfferFilter({orgi:defOrgi,data,cats,setData}) {
     if(!data) return [];
     // console.log(' filte by time --------')
     let newData = data.filter(offer => {
-      if(obj.selectedValue === 'Departure') {
-        if(offer.segments) {
-          if((offer.segments[0].departureTime >= obj.departureTime[0] &&
-            offer.segments[0].departureTime <= obj.departureTime[1])
-            &&
-            (offer.segments[0].arrivalTime >= obj.arrivalTime[0] &&
-            offer.segments[0].arrivalTime <= obj.arrivalTime[1])) return true;
-        }
-      }
-      else if(obj.selectedValue === 'Return') {
+      // if(obj.selectedValue === 'Departure') {
+      //   if(offer.segments) {
+      //     if((offer.segments[0].departureTime >= obj.departureTime[0] &&
+      //       offer.segments[0].departureTime <= obj.departureTime[1])
+      //       &&
+      //       (offer.segments[0].arrivalTime >= obj.arrivalTime[0] &&
+      //       offer.segments[0].arrivalTime <= obj.arrivalTime[1])) return true;
+      //   }
+      // }
+      // else if(obj.selectedValue === 'Return') {
         // console.log(obj.selectedValue)
         // console.log(offer.segments)
         if(offer.segments) {
-          let len = offer.segments.length - 1;
+          let len = segIndex || 0;
+          // let len = offer.segments.length - 1;
           if((offer.segments[len].departureTime >= obj.departureTime[0] &&
             offer.segments[len].departureTime <= obj.departureTime[1])
             &&
             (offer.segments[len].arrivalTime >= obj.arrivalTime[0] &&
             offer.segments[len].arrivalTime <= obj.arrivalTime[1])) return true;
         } else console.log('cherash --------- ')
-      }
+      // }
 
       return false;
     })
@@ -197,16 +203,17 @@ export default function FlightOfferFilter({orgi:defOrgi,data,cats,setData}) {
 
     let newData = data.filter(offer => {
       let time;
-      if(obj.selectedValue === 'Departure') {
+      // if(obj.selectedValue === 'Departure') {
+      //   if(offer.segments) {
+      //     time = offer.segments[0].departureDate;
+      //   }
+      // } else if(obj.selectedValue === 'Return') {
         if(offer.segments) {
-          time = offer.segments[0].departureDate;
-        }
-      } else if(obj.selectedValue === 'Return') {
-        if(offer.segments) {
-          let len = offer.segments.length - 1;
+          let len = segIndex || 0;
+          // let len = offer.segments.length - 1;
           time = offer.segments[len].arrivalDate
         }
-      }
+      // }
 
       if(time) {
         // console.log('dep : ', time,moment(time).format("dddd"))

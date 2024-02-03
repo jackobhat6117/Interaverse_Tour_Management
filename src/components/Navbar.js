@@ -27,18 +27,18 @@ function Navbar() {
     <div className='flex flex-col min-h-screen'>
       <Header />
       <div className='w-full px-md shadow-sm bg-secondary border-b'>
-        <NavLinks profileCompleted={completed} />
+        <NavLinks profileCompleted={true} />
       </div>
       {/* <ProfileSurvey /> */}
       <div className='bg-secondary flex flex-col h-full flex-1'>
-        {completed && !verified ? (
+        {/* {completed && !verified ? ( */}
           <Outlet />
-        ):(
+        {/* ):(
           <WelcomeNavbar>
             <GettingStarted />
-            {/* <ProfileStatusCheck data={profileCompleteCheck} /> */}
+            <ProfileStatusCheck data={profileCompleteCheck} />
           </WelcomeNavbar>
-        )}
+        )} */}
       </div>
     </div>
   )

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import SearchInput from "../../components/form/SearchInput";
 import Button1 from "../../components/form/Button1";
 import CustomTable from "../../components/Table/CustomTable";
@@ -13,6 +13,7 @@ import SelectInput from "../../components/form/SelectInput";
 import { MenuItem } from "@mui/material";
 import getAccounts from "../../controllers/user/getAccounts";
 import { enqueueSnackbar } from "notistack";
+import { ReviewBusinessProfile } from "../../components/ProfileSurvey/New/ProfileSurvey";
 
 const temp = [
   {
@@ -46,14 +47,23 @@ function UserManagement() {
   const [selected, setSelected] = useState();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const detailRef = useRef();
 
   useEffect(() => {
     load();
   }, []);
 
+  useEffect(() => {
+    if(selected && detailRef.current)
+      detailRef.current?.scrollIntoView({behavior: 'smooth'})
+  },[selected])
+
   async function load() {
     setLoading(true);
-    const res = await getAccounts();
+    const params = {
+      populate: 'detail'
+    }
+    const res = await getAccounts((new URLSearchParams(params))?.toString());
     setLoading(false);
     if (res.return) {
       let dataMod = res.data?.data.map((data) => ({
@@ -106,9 +116,9 @@ function UserManagement() {
           onRowSelectionModelChange={(val) => handleRowSelect(val)}
         />
       </div>
-      <div className="flex justify-center">
+      <div className="flex justify-center" ref={detailRef}>
         {selected ? (
-          <Detail data={selected} close={() => setSelected()} />
+          <Detail data={selected} close={() => setSelected()} reload={() => {setSelected(); console.log('hereeee'); load()}} />
         ) : null}
       </div>
     </div>
@@ -122,14 +132,16 @@ const Row = ({ name, value }) => (
   </div>
 );
 
-function Detail({ data, close }) {
+function Detail({ data, close, reload }) {
   const [openRemove, setOpenRemove] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
+  const [openBusiness,setOpenBusiness] = useState(false);
 
+  console.log(" -> ",data)
   const Component = () => (
     <div className="p-4 rounded-lg light-bg flex flex-col gap-4 flex-1">
       <div className="flex gap-4 justify-between items-center py-4">
-        {data.active ? (
+        {data.accountStatus === 'Active' ? (
           <span className="success">Active</span>
         ) : (
           <span className="error">Inactive</span>
@@ -179,6 +191,12 @@ function Detail({ data, close }) {
           </Button1>
         </div>
         <Button1
+          className={"flex gap-2 !items-center "+(data?.detail?.isVerified?'!bg-red-500 !text-white':'')}
+          onClick={() => setOpenBusiness(true)}
+        >
+          {data?.detail?.isVerified ? 'Deactivate Business' : 'Activate Business'}
+        </Button1>
+        <Button1
           className="flex gap-2 !items-center !bg-red-500"
           onClick={setOpenRemove}
         >
@@ -213,6 +231,11 @@ function Detail({ data, close }) {
             </Button1>
             <Button1 className="btn !bg-red-500 ">Delete</Button1>
           </div>
+        </div>
+      </Modal1>
+      <Modal1 open={openBusiness} setOpen={setOpenBusiness}>
+        <div className="card p-10">
+          <ReviewBusinessProfile user={data} callback={(res) => {res && setOpenBusiness(false); reload && reload()}} />
         </div>
       </Modal1>
       <div className="md:hidden">

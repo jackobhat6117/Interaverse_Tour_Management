@@ -21,7 +21,7 @@ const CurComp = (props) => {
   return React.cloneElement(props.component || <></>,props)
 }
 
-function BusinessDetail({updateProfile,back,next,review}) {
+function BusinessDetail({updateProfile,back,next,review,user: defUser}) {
   // const [obj,setObj] = useState({...profileSurveyData,...data})
   const {user} = useSelector(state => state.user.userData);
   const [step,setStep] = useState(user?.detail?.agencyType ? 1 : 0);
@@ -52,7 +52,7 @@ function BusinessDetail({updateProfile,back,next,review}) {
       <CurComp key={'editor'} component={steps[step]} next={stepNext} back={stepBack} updateProfile={updateProfile} />
     </div>
   ) : (
-    <ReviewDisplay data={user?.detail} setEdit={(val) => setEdit(val)} review={review} />
+    <ReviewDisplay data={defUser?.detail || user?.detail} setEdit={(val) => setEdit(val)} review={review} />
   )
 }
 

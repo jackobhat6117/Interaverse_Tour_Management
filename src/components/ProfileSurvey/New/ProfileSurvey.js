@@ -14,6 +14,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import checkProfileComplete from "../../../features/profile/checkProfileComplete";
 import Button1 from "../../form/Button1";
 import Logo from "../../Logo/Logo";
+import verifyBusiness from "../../../controllers/user/verifyBusiness";
+import verifyBusinessRemove from "../../../controllers/user/verifyBusinessRemove";
 
 export const profileSteps = [
   { label: "Business Detail", elem: <BusinessDetail /> },
@@ -227,7 +229,7 @@ export default function ProfileSurvey() {
   );
 }
 
-function ReviewBusinessProfile({ setStep, activate, completed }) {
+export function ReviewBusinessProfile({ setStep, activate, completed, user, callback }) {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -252,10 +254,35 @@ function ReviewBusinessProfile({ setStep, activate, completed }) {
     setLoading(false);
   }
 
+  async function handleVerify() {
+    setLoading(true);
+    const res = await verifyBusiness(user?._id)
+    setLoading(false);
+    if(res.return) {
+      enqueueSnackbar('Bussiness Approved',{variant: 'success'})
+    } else 
+      enqueueSnackbar(res.msg,{variant: 'error'})
+
+    callback && callback(res.return)
+  }
+
+  async function handleRemoveVerify() {
+    setLoading(true);
+    const res = await verifyBusinessRemove(user?._id)
+    setLoading(false);
+    if(res.return) {
+      enqueueSnackbar('Bussiness Approved',{variant: 'success'})
+    } else 
+      enqueueSnackbar(res.msg,{variant: 'error'})
+
+    callback && callback(res.return)
+  }
+
   const EditDetail = ({ n }) => (
-    <button className="p-1 text-theme1 bg-theme1/5" onClick={() => setStep(n)}>
-      Edit Details
-    </button>
+    false
+    // <button className="p-1 text-theme1 bg-theme1/5" onClick={() => setStep(n)}>
+    //   Edit Details
+    // </button>
   );
   return (
     <div className="flex flex-col gap-5 w-[600px] min-h-[85%] max-w-full py-10">
@@ -266,7 +293,7 @@ function ReviewBusinessProfile({ setStep, activate, completed }) {
         <div className="flex flex-col gap-5">
           <div className="p-4 bg-primary/10">Business Detail</div>
           <div>
-            <BusinessDetail review={<EditDetail n={0} />} />
+            <BusinessDetail user={user} review={<EditDetail n={0} />} />
           </div>
         </div>
       ) : null}
@@ -274,7 +301,7 @@ function ReviewBusinessProfile({ setStep, activate, completed }) {
         <div className="flex flex-col gap-5">
           <div className="p-4 bg-primary/10">Legal Entity</div>
           <div>
-            <LegalEntity review={<EditDetail n={1} />} />
+            <LegalEntity user={user} review={<EditDetail n={1} />} />
           </div>
         </div>
       ) : null}
@@ -282,10 +309,18 @@ function ReviewBusinessProfile({ setStep, activate, completed }) {
         <div className="flex flex-col gap-5">
           <div className="p-4 bg-primary/10">Key Contact</div>
           <div>
-            <KeyContact review={<EditDetail n={2} />} />
+            <KeyContact user={user} review={<EditDetail n={2} />} />
           </div>
         </div>
       ) : null}
+
+      <div>
+        {user?.detail?.isVerified ? 
+          <Button1 loading={loading} className='!bg-red-500 !text-white' onClick={handleRemoveVerify}>Remove Business Verification</Button1>
+        :
+          <Button1 loading={loading} onClick={handleVerify}>Verify Business</Button1>
+        }
+      </div>
 
       {edit && Number(edit) <= steps.length ? (
         <div>

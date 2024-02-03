@@ -63,10 +63,11 @@ export default function OffersList({hide}) {
   const [resMsg,setResMsg] = useState("No Result");
   const [searchParam] = useSearchParams();
   const q = useMemo(() => searchParam.get('q'),[searchParam]);
-  const qIndex = useMemo(() => searchParam.get('path'),[searchParam]);
+  const qIndex = searchParam.get('path');
   const [openFilter,setOpenFilter] = useState(false);
   const [openSearch,setOpenSearch] = useState(false);
   const [openSort,setOpenSort] = useState(false);
+  const [orgiData,setOrgiData] = useState([]);
 
   const [sortby,setSortBy] = useState('price');
   
@@ -78,20 +79,48 @@ export default function OffersList({hide}) {
   
   const [searchPath,setSearchPath] = useState([searchObj?.destinations[0]])
 
+  // console.log(' ---> ',searchPath,searchObj)
+
   // const curFlightDate = flightDate.findIndex(f => f.active)
   
   const dispatch = useDispatch();
 
-
+  console.log('fetchedData: ',fetchedData)
   useEffect(() => {
     let path = [];
     for(let i = 0;i<=qIndex||0;i++) {
       path.push(searchObj?.destinations[i])
     }
     setSearchPath(path)
+    console.log('path changed')
+    filterForNextRoute();
     //eslint-disable-next-line
   },[qIndex])
 
+  function filterForNextRoute() {
+    console.log("also here")    
+    if(!parseInt(qIndex)) {
+      setData(fetchedData.current || [])
+      dispatch(setBookingData({...bookingData,offer: []}))
+      return false; 
+    };
+
+    console.log('here')
+    let airline = bookingData?.offer?.at(Math.max(0,qIndex-1))?.segments[0].flights[0].marketingCarrier
+    let supplier = bookingData?.offer?.at(Math.max(0,qIndex-1))?.supplier;
+    let newData = (fetchedData.current)?.filter(obj => {
+      if(obj.segments)
+        return obj.segments[qIndex-1]?.flights?.every((flight) => (flight.marketingCarrier === airline) && obj.supplier === supplier)
+              
+      return false;
+    })
+    console.log((qIndex),'here',airline,supplier,orgiData,newData)
+
+    setOrgiData(newData);
+    setData(newData)
+  }
+  console.log('data now: ',data)
+  
   function onDownloadProgress(progressEvent) {
     // const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
     // setProgress(percentCompleted);
@@ -175,7 +204,7 @@ export default function OffersList({hide}) {
     return () => clearTimeout(t);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[dispatch,handleSetCat,q,qIndex])
+  },[dispatch,handleSetCat,q])
 
   
   async function load() {
@@ -194,6 +223,7 @@ export default function OffersList({hide}) {
 
     if(res.return) {
 
+      setOrgiData(res.data)
       fetchedData.current = res.data;
       // console.log(res.cat)
       if(res.cat)
@@ -392,8 +422,6 @@ export default function OffersList({hide}) {
 
   modData = rearrageFlight(data);
 
-  console.log(searchObj)
-
   return (
     <div className='w-full flex flex-col gap-2 py-4 flex-1'>
       <PriceTimeout />
@@ -424,7 +452,7 @@ export default function OffersList({hide}) {
 
           <div className='hidden md:block self-end sticky bottom-0 rounded-2xl max-w-[300px] z-[90]'>
             <PriceAlert />
-            <FlightOfferFilter cats={cat} orgi={fetchedData.current} data={data} setData={setData} />
+            <FlightOfferFilter cats={cat} orgi={orgiData} data={data} setData={setData} />
           </div>
         :null}
 
@@ -438,7 +466,6 @@ export default function OffersList({hide}) {
                   <Link to={'/order'}>Orders</Link>
                   {/* <Link to='/order/new/flight'>New order</Link> */}
                   {searchObj?.destinations.map((obj,i) => {
-                    console.log(obj)
                     let label = 'Choose departing flight';
                     if(i === searchObj?.destinations?.length-1 && i > 0)
                       label = 'Choose return flight'
@@ -610,7 +637,7 @@ export function rearrageFlight(array) {
 
     return false;
   }
-  const result = array.reduce((acc,cur,ind) => {
+  const result = array?.reduce((acc,cur,ind) => {
     if(ind > 0 && (cur.totalAmount === array[ind - 1].totalAmount &&
                    airlinesMatch(cur,array[ind - 1]))) {
       const prev = acc?.at(-1);

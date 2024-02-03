@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import Collapse from "../../mini/Collapse";
-import { Tab, Tabs } from "@mui/material";
+
 
 export default function FilterDay({returnData,clear}) {
-  const [selectedValue,setSelectedValue] = useState('Departure');
+  // const [selectedValue,setSelectedValue] = useState('Departure');
   const [day,setDay] = useState();
 
   useEffect(() => {
     setDay();
-    setSelectedValue('Departure')
+    // setSelectedValue('Departure')
   },[clear])
 
   function handleReturn(val) {
@@ -19,20 +19,21 @@ export default function FilterDay({returnData,clear}) {
 
       setDay(value);
 
-      returnData({day: value,selectedValue})
+      returnData({day: value})
+      // returnData({day: value,selectedValue})
     } catch(ex) {}
   }
-  function handleTab(val) {
-    try {
-      setSelectedValue(val);
+  // function handleTab(val) {
+  //   try {
+  //     setSelectedValue(val);
 
-      returnData({day,selectedValue: val})
-    } catch(ex) {}
-  }
+  //     returnData({day,selectedValue: val})
+  //   } catch(ex) {}
+  // }
   return (
     <Collapse show label={<h5>Day</h5>}>
     <div>
-      <Tabs indicatorColor='primary' textColor='primary'
+      {/* <Tabs indicatorColor='primary' textColor='primary'
       value={selectedValue}
       onChange={(ev,val) => handleTab(val)}
       variant='scrollable'
@@ -40,7 +41,7 @@ export default function FilterDay({returnData,clear}) {
       className='shadow-md'>
         <Tab value='Departure' label="Departure" />
         <Tab value='Return' label="Return" />
-      </Tabs>
+      </Tabs> */}
 
       <div className='flex gap-3 py-4'>
         <div className={`rounded-full flex items-center justify-center !w-7 !h-7 overflow-hidden cursor-pointer ${day==='Monday'?' bg-theme1 ':' bg-gray-300 '}`} onClick={() => handleReturn('Monday')}>M</div>
