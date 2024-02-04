@@ -1,0 +1,244 @@
+:root {
+  --primary-color: 0, 0, 0;
+  --theme-color: 0, 103, 255; /* Default theme color */
+  --theme-color2: 30, 169, 153;
+}
+
+hr {
+  border-color: rgba(var(--primary-color),.09);
+}
+
+* {
+  outline: none;
+}
+
+
+.dot {
+  @apply bg-primary rounded-full w-2 h-2;
+}
+
+
+.shad-hover:hover {
+  box-shadow: 0 5px 10px 0 #aaa;
+  transition: all .3s;
+}
+
+.sqr1 {
+  @apply !w-1 !h-1;
+}
+.sqr2 {
+  @apply !w-2 !h-2;
+}
+.sqr3 {
+  @apply !w-3 !h-3;
+}
+.sqr4 {
+  @apply !w-4 !h-4;
+}
+.sqr5 {
+  @apply !w-5 !h-5;
+}
+.sqr6 {
+  @apply !w-6 !h-6;
+}
+.sqr8 {
+  @apply !w-8 !h-8;
+}
+.sqr10 {
+  @apply !w-10 !h-10;
+}
+
+
+
+.vr {
+  @apply border-l-[3px] border-[#aaa] self-center min-h-[20px] inline-block;
+}
+
+
+
+.slide {
+  animation: slide-in .2s;
+}
+.slide.slide-slow {
+  animation-duration: 1s;
+}
+.slide-out {
+  animation: slide-out .2s;
+}
+.slide-out.slide-slow {
+  animation-duration: 1s;
+}
+.slide-down {
+  animation: slide-down 1s;
+}
+.slidex {
+  animation: none;
+}
+.zoom-in {
+  animation: zoom-in .1s;
+}
+
+.swing-in-top-fwd {
+	-webkit-animation: swing-in-top-fwd 2s cubic-bezier(0.175, 0.885, 0.320, 1.275) both;
+	        animation: swing-in-top-fwd 2s cubic-bezier(0.175, 0.885, 0.320, 1.275) both;
+}
+
+.swipe-animation {
+  animation: swipe ease-out forwards;
+  clip-path: polygon(0 0, 0 100%, 0 100%, 0 0);
+}
+
+
+.duration-200 {
+  animation-duration: .2s;
+}
+.duration-400 {
+  animation-duration: .4s;
+}
+.duration-600 {
+  animation-duration: .6s;
+}
+.duration-800 {
+  animation-duration: .8s;
+}
+.duration-1000 {
+  animation-duration: 1s;
+}
+
+
+/* Animations */
+
+@keyframes swipe {
+  0% {
+    clip-path: polygon(0 0, 0 100%, 0 100%, 0 0);
+  }
+  100% {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+}
+
+@keyframes slide-in {
+  0% {
+    transform: translateX(50%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-out {
+  0% {
+    transform: translateX(-50%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-down {
+  0% {
+    transform: translatey(-50%);
+    opacity: 0;
+  }
+  100% {
+    transform: translatey(0);
+    opacity: 1;
+  }
+}
+
+@keyframes zoom-in {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes rotate {
+  from {
+      transform: rotate(0deg);
+  }
+  to { 
+      transform: rotate(360deg);
+  }
+}
+
+
+@-webkit-keyframes rotate {
+  from {
+      -webkit-transform: rotate(0deg);
+  }
+  to { 
+      -webkit-transform: rotate(360deg);
+  }
+}
+
+.load {
+width: 14px;
+height: 14px;
+/* margin: 110px auto 0; */
+border-color: inherit;
+border-width: 3px;
+border-radius: 50%;
+border-right-color: transparent;
+border-bottom-color: transparent;
+ -webkit-transition: all 0.5s ease-in;
+  -webkit-animation-name:             rotate; 
+  -webkit-animation-duration:         1.0s; 
+  -webkit-animation-iteration-count:  infinite;
+  -webkit-animation-timing-function: linear;
+    
+     transition: all 0.5s ease-in;
+  animation-name:             rotate; 
+  animation-duration:         1.0s; 
+  animation-iteration-count:  infinite;
+  animation-timing-function: linear; 
+}
+
+
+
+
+
+
+
+
+
+@-webkit-keyframes swing-in-top-fwd {
+  0% {
+    -webkit-transform: rotateX(-100deg);
+            transform: rotateX(-100deg);
+    -webkit-transform-origin: top;
+            transform-origin: top;
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: rotateX(0deg);
+            transform: rotateX(0deg);
+    -webkit-transform-origin: top;
+            transform-origin: top;
+    opacity: 1;
+  }
+}
+@keyframes swing-in-top-fwd {
+  0% {
+    -webkit-transform: rotateX(-100deg);
+            transform: rotateX(-100deg);
+    -webkit-transform-origin: top;
+            transform-origin: top;
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: rotateX(0deg);
+            transform: rotateX(0deg);
+    -webkit-transform-origin: top;
+            transform-origin: top;
+    opacity: 1;
+  }
+}

@@ -1,0 +1,192 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'BRFirma';
+  src: url('./assets/fonts/BR\ Firma\ Font\ Family/BRFirma-Regular.ttf');
+}
+@font-face {
+  font-family: 'BRFirmaBold';
+  src: url('./assets/fonts/BR\ Firma\ Font\ Family/BRFirma-Bold.ttf');
+}
+@font-face {
+  font-family: 'Helvetica_Neue';
+  src: url('./assets/fonts/Helvetica-Neue-Font/Helvetica Neue Medium Extended/Helvetica\ Neue\ Medium\ Extended.otf');
+}
+
+* {
+  border-color: #EEEFF1;
+}
+
+body {
+  margin: 0;
+  font-family: 'DM Sans';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  @apply light-bg;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+@layer base {
+  
+  .test {
+    @apply border border-red-500;
+  }
+  
+  .light-bg {
+    background-color: rgba(var(--primary-color), 0.03);
+  }
+
+
+  /* [9:47 AM, 11/20/2023] +234 817 000 0560: <h1></h1>	Bold 2.125rem (34px)
+  [9:47 AM, 11/20/2023] +234 817 000 0560: <h2></h2>	Bold 1.875rem (30px)
+  [9:47 AM, 11/20/2023] +234 817 000 0560: <h3></h3>	Bold 1.5rem (24px)
+  [9:47 AM, 11/20/2023] +234 817 000 0560: <h4></h4>	Bold 1.25rem (20px)
+  [9:48 AM, 11/20/2023] +234 817 000 0560: <h5></h5>	Bold 1.125rem (18px)
+  [9:48 AM, 11/20/2023] +234 817 000 0560: <h6></h6>	Bold 1rem (16px) */
+  h1,.h1 {
+    @apply text-4xl sm:text-6xl font-['Rubik'] font-bold leading-[101%] text-[#1C2A4B];
+  }
+  h2,.h2 {
+    @apply text-3xl sm:text-5xl font-['Rubik'] font-bold leading-[101%] text-[#1C2A4B];
+  }
+  h3,.h3 {
+    @apply text-xl sm:text-4xl font-['Rubik'] font-bold leading-[101%] text-[#1C2A4B];
+  }
+  h4,.h4 {
+    @apply text-base sm:text-[30px] font-['Rubik'] font-bold leading-[101%] text-[#1C2A4B];
+  }
+  h5,.h5 {
+    @apply text-sm sm:text-xl font-['Rubik'] font-bold leading-[101%] text-[#1C2A4B];
+  }
+  h6,.h6 {
+    @apply text-xs sm:text-base font-['Rubik'] font-bold leading-[101%] text-[#1C2A4B];
+  }
+
+  p {
+    @apply font-thin !text-[#818083];
+  }
+
+  .bg-emptypage {
+    background: url('./assets/images/cancelled-ticket\ 1.png') no-repeat;
+    background-position: right -10% bottom 0;
+    background-size: contain;
+  }
+  .bg-bubble {
+    background: url('./assets/icons/green\ bubbles.svg') no-repeat;
+    background-position: left 0 bottom 0;
+    background-size: contain 50%;
+  }
+  .bg-bubble-warn {
+    background: url('./assets/icons/Yellow\ bubbles.svg') no-repeat;
+    background-position: left 0 bottom 0;
+    background-size: contain 50%;
+  }
+  .bg-frame {
+    background: url('./assets/images/Frame\ 2609999.svg') no-repeat;
+    background-size: cover;
+  }
+
+  .btn {
+    @apply rounded-md border bg-primary/80 text-white p-2 px-4 cursor-pointer font-normal;
+  }
+  .btn.disabled {
+    @apply text-primary/30 font-bold cursor-not-allowed;
+  }
+  .btn-small {
+    @apply btn text-sm;
+  }
+  .btn-outlined {
+    @apply btn bg-primary/0;
+  }
+  .btn-light {
+    @apply btn bg-primary/10 text-primary/80;
+  }
+    
+  .btn-theme {
+    @apply !bg-theme1 !text-secondary !capitalize flex gap-2 p-2 !px-4 cursor-pointer font-normal;
+  }
+  .btn-theme-light {
+    @apply !bg-secondary !text-primary/60 p-2 !px-4 flex gap-2 !shadow-none hover:shadow !capitalize cursor-pointer font-normal;
+  }
+
+
+  .content-max-w {
+    @apply max-w-[830px];
+  }
+
+
+  .menuItem {
+    @apply flex flex-col bg-secondary rounded-lg p-2
+  }
+
+
+  .pd-md {
+    @apply px-6 sm:px-16 py-10;
+  }
+  .px-md {
+    @apply px-6 sm:px-16;
+  }
+
+
+  .title {
+    @apply relative;
+  }
+  .title:hover::after {
+    content: attr(custom-title);
+    @apply bg-secondary mx-4 shadow-md shadow-primary/40 text-sm text-primary font-normal p-2 rounded-md; /* Example styles for the ::after element */
+    position: absolute;
+    top: 0;
+    left: 100%;
+  }
+  .title.title-hide::after {
+    content: '';
+    @apply hidden;
+  }
+
+  .error {
+    @apply bg-red-300 px-2 py-1 rounded-md text-red-800 font-bold;
+  }
+  .success {
+    @apply bg-green-300 px-2 py-1 rounded-md text-green-800 font-bold;
+  }
+  .warn {
+    @apply bg-orange-300 px-2 py-1 rounded-md text-orange-800 font-bold;
+  }
+  .triumph {
+    @apply bg-blue-300 px-2 py-1 rounded-md text-blue-700 font-bold;
+  }
+
+  .flight {
+    @apply text-[#2970F8] bg-[#EAF2FA];
+  }
+  .tour {
+    @apply text-[#844AF9] bg-[#E8DDFF];
+  }
+  .stay {
+    @apply text-[#7F3E00] bg-[#FFEFE0];
+  }
+
+  .vector-bg {
+    background-image: url(./assets/images/bg-vector.png);
+    background-size: cover;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-secondary p-10 sm:p-16 rounded-3xl 
+  }
+
+  .tooltip {
+    @apply bg-[#D9A513]/20 border-l-[10px] border-l-[#D9A513] text-[#A97500] p-2;
+  }
+  .tooltip.error {
+    @apply bg-[#ea4545]/20 border-l-[10px] border-l-[#ea4545] text-[#ea4545];
+  }
+}
