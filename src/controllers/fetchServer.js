@@ -7,6 +7,7 @@ export default async function fetchServer({
   url,
   data,
   headers = {},
+  // api = 'https://dev.intraversewebservices.com/api',
   api = process.env.API || "https://btm-staging-service.onrender.com/api",
   onDownloadProgress,
 }) {
