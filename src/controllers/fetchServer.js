@@ -7,7 +7,8 @@ export default async function fetchServer({
   url,
   data,
   headers = {},
-  api = process.env.API || "https://btm-staging-service.onrender.com/api",
+  cancelToken,
+  api = process.env.API || "https://dev.intraversewebservices.com/api",
   onDownloadProgress,
 }) {
   // console.log('api: ',api,process.env.REACT_APP_API)
@@ -27,6 +28,7 @@ export default async function fetchServer({
     data,
     onDownloadProgress,
     headers,
+    cancelToken
   }).catch((err) => {
     if (err?.response?.status === 401) {
       store.dispatch(logout());

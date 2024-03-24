@@ -31,7 +31,7 @@ export default function RadioGroup(props) {
       <div className={` ${className}`}>
         {options?.map((obj,i) => {
           return (
-          <RadioInput key={i} value={obj?.value} checked={selected?.toString() === obj?.value?.toString()} className={radioClass}>
+          <RadioInput required={props?.required} key={i} value={obj?.value} checked={selected?.toString() === obj?.value?.toString()} className={radioClass}>
             {render && !obj.render ? 
               render(obj) 
               : obj.render ?

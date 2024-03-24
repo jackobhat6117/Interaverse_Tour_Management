@@ -6,8 +6,11 @@ import Button1 from "../../../components/form/Button1";
 import CustomTable from "../../../components/Table/CustomTable";
 import getCommissionTransactions from "../../../controllers/Flight/Commission/getTransactions";
 import moment from "moment";
+import Modal1 from "../../../components/DIsplay/Modal/Modal1";
+import CommissionForm from "./CommissionForm";
 
 export default function CommissionSettings() {
+  const [showCommisionForm,setShowCommissionForm] = useState(false);
   const [commissionFor, setCommissionFor] = useState("FlightCommission");
   const [commissionData, setCommissionData] = useState();
   const [status, setStatus] = useState();
@@ -18,29 +21,31 @@ export default function CommissionSettings() {
   const [keyword, setKeyword] = useState("");
 
   useEffect(() => {
-    async function load() {
-      let range = undefined;
-      const date =
-        dateFilter?.range !== "All"
-          ? moment(dateFilter?.date)
-              .subtract(1, dateFilter?.range)
-              .format("MM/D/YYYY")
-          : undefined;
-      if (date) {
-        range = date + "," + dateFilter?.date;
-      }
-      const res = await getCommissionTransactions(
-        commissionFor,
-        status,
-        range,
-        keyword,
-      );
-      if (res.return) {
-        setCommissionData(res.data?.data);
-      }
-    }
     load();
+    //eslint-disable-next-line
   }, [commissionFor, dateFilter, keyword, status]);
+
+  async function load() {
+    let range = undefined;
+    const date =
+      dateFilter?.range !== "All"
+        ? moment(dateFilter?.date)
+            .subtract(1, dateFilter?.range)
+            .format("MM/D/YYYY")
+        : undefined;
+    if (date) {
+      range = date + "," + dateFilter?.date;
+    }
+    const res = await getCommissionTransactions(
+      commissionFor,
+      status,
+      range,
+      keyword,
+    );
+    if (res.return) {
+      setCommissionData(res.data?.data);
+    }
+  }
 
   /**
    * @param {number} current
@@ -126,7 +131,7 @@ export default function CommissionSettings() {
   ];
 
   return (
-    <div className="content-max-w flex flex-col gap-5">
+    <div className=" flex flex-col gap-5">
       <div className="flex gap-3 flex-wrap">
         <button
           onClick={() => setCommissionFor("FlightCommission")}
@@ -152,6 +157,14 @@ export default function CommissionSettings() {
         >
           Tours
         </button>
+        <div className="flex-1 flex items-center justify-end">
+          <Button1 className='!w-auto' onClick={() => setShowCommissionForm(true)}>Create Commission</Button1>
+          <Modal1 open={showCommisionForm} setOpen={setShowCommissionForm}>
+            <div className="bg-secondary p-4 rounded-md">
+              <CommissionForm callback={() => {setShowCommissionForm(false);load()}} />
+            </div>
+          </Modal1>
+        </div>
       </div>
 
       <div className="flex items-center justify-between gap-4">

@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { InputAdornment, TextField } from "@mui/material";
 import FetcherInput from "../mini/FetcherInput";
 import getAirlineCodes from "../../controllers/Flight/getAirlines";
+import axios from "axios";
+
+let cancelToken = null;
 
 export default function AirlinesInput({
   val,
@@ -10,6 +13,7 @@ export default function AirlinesInput({
   label,
   icon,
   multiple,
+  required
 }) {
   const [ariline, setAriline] = useState([]);
   const [data, setData] = useState(val || "");
@@ -35,7 +39,12 @@ export default function AirlinesInput({
 
   async function getAriline(val, callback) {
     if (val === "") return false;
-    const res = await getAirlineCodes(val);
+
+    if(cancelToken)
+      cancelToken.cancel('Canceled for another search')
+    cancelToken = axios.CancelToken.source();
+    
+    const res = await getAirlineCodes(val,cancelToken.token);
     if (res.return)
       if (!callback) setAriline(res.data?.data);
       else callback(res.data?.data);
@@ -68,7 +77,8 @@ export default function AirlinesInput({
       renderInput={(params) => (
         <TextField
           {...params}
-          label={label}
+          required={required}
+          label={label || 'Airline'}
           InputProps={{
             ...params.InputProps,
             type: "search",
