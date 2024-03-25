@@ -8,6 +8,7 @@ export const financeLinks = [
   {to: "/settings/finance/payment", title: 'payment', icon: 'simple-icons:contactlesspayment', label: "Payment Method"},
   {to: "/settings/finance/gateway", title: 'gateway', icon: 'fluent:collections-add-20-filled', label: "Payment Gateway"},
   {to: "/settings/finance/balance", title: 'balance', icon: 'material-symbols-light:account-balance-wallet', label: "Wallet Balance"},
+  {to: "/settings/finance/currency", title: 'currency', icon: 'ph:currency-ngn-fill', label: "Exchange Rate"},
 ]
 
 export default function FinanceContainer() {
