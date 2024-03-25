@@ -50,6 +50,7 @@ import PromoSettings from './pages/Settings/Order/PromoCodes/PromoCodes.js';
 import EmailTemplateSettings from './pages/Settings/EmailTemplates/EmailTemplates.js';
 import ChangeFlightOrder from './pages/Orders/Flight/Booked/ChangeOrder/ChangeOrder.js';
 import CurrencySetting from './pages/Settings/Agency/Currency/CurrencySetting.js';
+import FAQSetting from './pages/Settings/FAQ/FAQSetting.js';
 // import 'dotenv/config'
 
 
@@ -152,6 +153,7 @@ function App() {
                     <Route path='currency' element={<CurrencySetting />} />
                     <Route path='*' element={<PageNotFound />} />
                   </Route>
+                  <Route path='faq' element={<FAQSetting />} />
                 </Route>
               </Route>
             </Routes>

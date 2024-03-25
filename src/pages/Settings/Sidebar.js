@@ -37,6 +37,8 @@ function Sidebar() {
     page = 'order';
   else if(pathname.includes('settings/finance'))
     page = 'finance';
+  else if(pathname.includes('settings/faq'))
+    page = 'faq';
 
   const activeClass = ' border-l-4 -translate-x-1 border-theme1';
   // pathname = (pathname[-1])?.toLowerCase();
@@ -80,6 +82,11 @@ function Sidebar() {
           {/* <Money className='text-primary/50' /> */}
           <Icon icon='fa6-solid:coins' className='text-[#4A5C6B] !w-5 !h-5' />
           <span className='hidden md:block'>Finance</span>
+        </Link>
+        <Link to='/settings/faq/' custom-title='faq' className={`flex gap-2 title md:title-hide  p-2 px-4 ${page === 'faq' ? activeClass:''} `}>
+          {/* <Money className='text-primary/50' /> */}
+          <Icon icon='wpf:faq' className='text-[#4A5C6B] !w-5 !h-5' />
+          <span className='hidden md:block'>FAQ</span>
         </Link>
       </div>
 
