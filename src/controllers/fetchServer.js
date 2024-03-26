@@ -8,7 +8,7 @@ export default async function fetchServer({
   data,
   headers = {},
   cancelToken,
-  api = process.env.API || "https://dev.intraversewebservices.com/api",
+  api = process.env.REACT_APP_API || "https://dev.intraversewebservices.com/api",
   onDownloadProgress,
 }) {
   // console.log('api: ',api,process.env.REACT_APP_API)
