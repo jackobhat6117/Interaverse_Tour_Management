@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { InputAdornment, TextField } from "@mui/material";
 import FetcherInput from "../mini/FetcherInput";
 import getAirlineCodes from "../../controllers/Flight/getAirlines";
@@ -17,6 +17,10 @@ export default function AirlinesInput({
 }) {
   const [ariline, setAriline] = useState([]);
   const [data, setData] = useState(val || "");
+
+  useEffect(() => {
+    setData(val || "")
+  },[val])
 
   // option?.map(val => {
   //   let airlines = [];

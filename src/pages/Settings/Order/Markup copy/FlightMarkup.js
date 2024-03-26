@@ -6,6 +6,7 @@ import CreateMarkup from "./CreateMarkup";
 import { Link } from "react-router-dom";
 import Button1 from "../../../../components/form/Button1";
 import getFlightPriceAdjustments from "../../../../controllers/flightPriceAdjustment/getFlightPriceAdjustments";
+import { Switch } from "@mui/material";
 import activateFlightAdjustment from "../../../../controllers/flightPriceAdjustment/activateFlightAdjustment";
 import deactivateFlightAdjustment from "../../../../controllers/flightPriceAdjustment/deactivateFlightAdjustment";
 import MarkupDelete from "./MarkupDelete";
@@ -20,15 +21,11 @@ export default function FlightMarkup() {
 
   useEffect(() => {
     load();
-    //eslint-disable-next-line
   }, []);
 
   async function load() {
-    if(open) setOpen(false);
     setEditObj();
-    setLoading(true);
     const res = await getFlightPriceAdjustments();
-    setLoading(false);
     if (res.return) {
       if (Array.isArray(res.data?.data?.data)) {
         setFlightMarkups(res.data?.data?.data);
@@ -79,12 +76,12 @@ export default function FlightMarkup() {
           <Link to="?type=Flights" className={"btn"}>
             Flights
           </Link>
-          {/* <Link to="?type=Stays" className={"btn-theme-light rounded-md"}>
+          <Link to="?type=Stays" className={"btn-theme-light rounded-md"}>
             Stays
           </Link>
           <Link to="?type=Tours" className={"btn-theme-light rounded-md"}>
             Tours
-          </Link> */}
+          </Link>
         </div>
         {/* <h5 className='text-primary/70'>Created Mark ups</h5> */}
         <div>
@@ -120,7 +117,7 @@ export default function FlightMarkup() {
       </Modal1>
       <Modal1 open={editObj} setOpen={setEditObj}>
         <div className="p-6">
-          <CreateMarkup forType={"Flights"} reload={load} update data={editObj} />
+          <CreateMarkup update data={editObj} />
         </div>
       </Modal1>
     </div>
@@ -131,13 +128,13 @@ function ActionCol({ params }) {
   return (
     <ActionContext.Consumer>
       {(value) => {
-        const { setEditObj, setDeleteObj } = value || {};
+        const { setEditObj, changeStatus, setDeleteObj } = value || {};
         return (
           <div className="flex gap-2">
-            {/* <Switch
+            <Switch
               checked={params.status === "Active"}
               onChange={(ev) => changeStatus(ev.target.checked, params)}
-            /> */}
+            />
             <label
               className="bg-primary/10 rounded-md cursor-pointer p-2 text-primary/30"
               onClick={() => setEditObj(params)}

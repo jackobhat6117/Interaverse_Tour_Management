@@ -30,7 +30,7 @@ export default async function createFlightPriceAdjustment(data) {
 
   await fetchServer({
     method: "POST",
-    url: "/product/v1/flightPriceAdjustment",
+    url: "/product/v1/adminFlightPriceAdjustment",
     data,
   })
     .then((res) => {

@@ -11,27 +11,6 @@ import AirlinesInput from "../../../../components/form/AirlinesInput";
 import ToolTip from "../../../../components/DIsplay/ToolTip";
 import Checkbox from "../../../../components/form/Checkbox";
 import filterTruthyValues from "../../../../features/utils/filterTruthyObjectValues";
-import { flightSuppliers } from "../../../../data/ENUM/FlightProviders";
-
-const initData = {
-  appliedTo: "Flight",
-  method: "Percentage",
-  airlines: [],
-  type: "Markup",
-  amount: 0,
-  name: "",
-  currency: undefined,
-  passengerType: undefined,
-  flightRoute: undefined,
-  airline: undefined,
-  departureAirport: undefined,
-  arrivalAirport: undefined,
-  transitAirport: undefined,
-  cabinClass: undefined,
-  ticketClass: undefined,
-  arrivalTime: undefined,
-  departureTime: undefined,
-}
 
 export default function CreateMarkup({
   reload,
@@ -40,7 +19,26 @@ export default function CreateMarkup({
   data: defData,
   update,
 }) {
-  const [data, setData] = useState(defData || initData);
+  const [data, setData] = useState(
+    defData || {
+      appliedTo: "Flight",
+      method: "Percentage",
+      type: "Markup",
+      amount: 0,
+      name: "",
+      currency: undefined,
+      passengerType: undefined,
+      flightRoute: undefined,
+      airline: undefined,
+      departureAirport: undefined,
+      arrivalAirport: undefined,
+      transitAirport: undefined,
+      cabinClass: undefined,
+      ticketClass: undefined,
+      arrivalTime: undefined,
+      departureTime: undefined,
+    },
+  );
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -55,17 +53,12 @@ export default function CreateMarkup({
 
     setLoading(true);
     let res = { return: false, msg: "Error", data: [] };
-    let modData = filterTruthyValues({...data,
-      departureAirport: data?.departureAirport?.iata || data?.departureAirport,
-      arrivalAirport: data?.arrivalAirport?.iata || data?.arrivalAirport,
-    })
+    let modData = filterTruthyValues({...data})
     if (!update) res = await createFlightPriceAdjustment({ ...modData, currency });
-    else res = await updateFlightPriceAdjustment(data?._id,{ ...modData });
+    else await updateFlightPriceAdjustment(data?._id,{ ...modData });
 
     setLoading(false);
     if (res.return) {
-      if(!update)
-        setData(defData || initData)
       enqueueSnackbar(update ? "Markup updated" : "Markup created.", {
         variant: "success",
       });
@@ -76,8 +69,6 @@ export default function CreateMarkup({
   useEffect(() => {
     setData(defData);
   }, [defData]);
-
-  console.log(data)
 
   return (
     <div>
@@ -113,15 +104,6 @@ export default function CreateMarkup({
           value={data?.name}
           onChange={(ev) => setData({ ...data, name: ev.target.value })}
         />
-        <TextInput label='Suppliers' select
-          SelectProps={{ multiple: true }}
-          value={data?.suppliers || []}
-          onChange={(ev) => setData({...data,suppliers: ev?.target?.value})}>
-          {Object.entries(flightSuppliers)?.map(([key,value],i) => (
-            <MenuItem key={i} value={key}>{value}</MenuItem>
-          ))}
-        </TextInput>
-
         <div className="flex flex-row gap-2">
           <TextInput
             select
@@ -308,18 +290,18 @@ export default function CreateMarkup({
                     Oneway
                   </Checkbox>
                   <Checkbox
-                    labelClassName="flex-1 whitespace-nowrap"
+                    labelClassName="flex-1"
                     name="type"
-                    checked={data?.flightRoute === "RoundTrip"}
+                    checked={data?.flightRoute === "Return"}
                     onChange={(e) => {
                       setData({
                         ...data,
-                        flightRoute: e.target.checked ? "RoundTrip" : "",
+                        flightRoute: e.target.checked ? "Return" : "",
                       });
                     }}
-                    value="RoundTrip"
+                    value="Return"
                   >
-                    Round Trip
+                    Return
                   </Checkbox>
                   <Checkbox
                     labelClassName="flex-1 whitespace-nowrap"
@@ -345,10 +327,10 @@ export default function CreateMarkup({
                 placeholder="e.g LHR"
                 value={data?.departureAirport || ""}
                 onChange={(val) =>
-                  setData({ ...data, departureAirport: val })
+                  setData({ ...data, departureAirport: val?.iata })
                 }
               />
-              {/* <div className='relative flex items-center justify-center  cursor-pointer'>
+              {/* <div className='relative flex items-center justify-center z-10 cursor-pointer'>
                   <div className='absolute items-center justify-center flex'>
                     <span className='bg-secondary shadow-lg rounded-full p-1 hover:rotate-180 transition-all' onClick={() => swipeLoc()}>
                       <Icon icon='mdi:exchange' className='!w-5 !h-5' />
@@ -361,7 +343,7 @@ export default function CreateMarkup({
                 placeholder="e.g LOS"
                 value={data?.arrivalAirport || ""}
                 onChange={(val) =>
-                  setData({ ...data, arrivalAirport: val })
+                  setData({ ...data, arrivalAirport: val?.iata })
                 }
               />
             </div>
@@ -407,7 +389,7 @@ export default function CreateMarkup({
                 <MenuItem value="Economy">Economy</MenuItem>
                 <MenuItem value="Business">Business</MenuItem>
                 <MenuItem value="PremiumEconomy">Premium Economy</MenuItem>
-                <MenuItem value="FirstClass">First Class</MenuItem>
+                <MenuItem value="FistClass">First Class</MenuItem>
               </TextInput>
               <TextInput
                 select
