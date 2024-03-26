@@ -8,7 +8,7 @@ export default async function deleteFlightAdjustment(id) {
 
   await fetchServer({
     method: "DELETE",
-    url: `/product/v1/flightPriceAdjustment/${id}`,
+    url: `/product/v1/adminFlightPriceAdjustment/${id}`,
   })
     .then((res) => {
       if (res?.data && !res?.data?.error) {

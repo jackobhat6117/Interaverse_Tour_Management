@@ -5,7 +5,7 @@ export default async function getFlightPriceAdjustments() {
 
   await fetchServer({
     method: "GET",
-    url: "/product/v1/flightPriceAdjustment",
+    url: "/product/v1/adminFlightPriceAdjustment",
   })
     .then((res) => {
       if (res?.data && !res?.data?.error) {
