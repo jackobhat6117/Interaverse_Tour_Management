@@ -1,14 +1,14 @@
-import fetchServer from "../fetchServer";
+import fetchServer from "../../fetchServer";
 
-export default async function deleteFlightAdjustment(id) {
+export default async function getFAQs() {
   let result = {
     return: 0,
-    msg: "Something went wrong deleting status!",
+    msg: "Something went wrong getting QA!",
   };
 
   await fetchServer({
-    method: "DELETE",
-    url: `/product/v1/adminFlightPriceAdjustment/${id}`,
+    method: "GET",
+    url: "/main/v1/faq",
   })
     .then((res) => {
       if (res?.data && !res?.data?.error) {

@@ -1,14 +1,14 @@
-import fetchServer from "../fetchServer";
+import fetchServer from "../../fetchServer";
 
-export default async function deleteFlightAdjustment(id) {
+export default async function deleteCurrency(id) {
   let result = {
     return: 0,
-    msg: "Something went wrong deleting status!",
+    msg: "Something went wrong removing currency exchange rate!",
   };
 
   await fetchServer({
     method: "DELETE",
-    url: `/product/v1/adminFlightPriceAdjustment/${id}`,
+    url: "/product/v1/currency/"+id,
   })
     .then((res) => {
       if (res?.data && !res?.data?.error) {

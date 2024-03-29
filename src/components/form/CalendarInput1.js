@@ -61,6 +61,8 @@ function CalendarInput1({value,label,multiple,onChange,config,...restProps},ref)
       onChange && onChange({start,end})
     }
 
+    restProps.closeOnSelect && setAnchorEl(null) 
+
   };
 
   const modifiers = {
@@ -85,7 +87,7 @@ function CalendarInput1({value,label,multiple,onChange,config,...restProps},ref)
   return (
     <div ref={ref || null} onClick={(ev) => {ev.preventDefault();ev.stopPropagation()}}>
       <fieldset ref={fieldRef} className={'flex items-center justify-between gap-2 cursor-pointer relative '+(label?' border border-primary/30 rounded-sm p-[14px] pt-[9px] -translate-y-2 ':'')+restProps.className} onClick={handleClick}  aria-describedby={id}>
-        <legend className={`${label ? 'px-2':''} text-xs  bg-inherit text-primary/70 whitespace-nowrap max-w-[80%] overflow-hidden `} title={label}>{label || ''}</legend>
+        <legend className={`${label ? 'px-2':''} text-xs  bg-inherit text-primary/70 whitespace-nowrap max-w-[80%] overflow-hidden `} title={label}>{label || ''} {restProps?.required?'*':''}</legend>
         {/* <FormLabel component={'legend'}>{label || ''}</FormLabel> */}
         <span className='whitespace-nowrap'>
           {moment(selectedRange?.start || new Date()).format('Do MMM')}

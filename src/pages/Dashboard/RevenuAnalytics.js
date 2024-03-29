@@ -18,6 +18,11 @@ import Button1 from "../../components/form/Button1";
 import FilterCalendar from "../../components/form/FilterCalendar";
 import { getProductStats } from "../../controllers/dashboard/getDashboardStats";
 import moment from "moment";
+import { formatMoney } from "../../features/utils/formatMoney";
+import Stats from "./Stats";
+import { getUserStats } from "../../controllers/dashboard/getUserStats";
+import { getPaymentStats } from "../../controllers/dashboard/getPaymentStats";
+import { def } from "../../config";
 
 Chart.register(
   CategoryScale,
@@ -33,6 +38,8 @@ Chart.register(
 
 export default function RevenueAnalytics() {
   const [productStat, setProductStat] = useState();
+  const [userStat, setUserStat] = useState();
+  const [paymentStat, setPaymentStat] = useState();
   const [dateFilter, setDateFilter] = useState({
     range: "week",
     date: new Date().toLocaleDateString(),
@@ -50,12 +57,21 @@ export default function RevenueAnalytics() {
 
       setLoading(true);
       const productStats = await getProductStats(startDate, dateFilter?.date);
+      const userStats = await getUserStats(startDate, dateFilter?.date);
+      const paymentStats = await getPaymentStats(startDate, dateFilter?.date);
       setLoading(false);
       if (productStats.return) {
         setProductStat(productStats.data?.data);
       }
+      if(userStats.return) {
+        setUserStat(userStats.data?.data);
+      }
+      if(paymentStats) {
+        setPaymentStat(paymentStats.data?.data)
+      }
     }
     loadTransaction();
+    
   }, [dateFilter?.date, dateFilter?.range]);
 
   const getFlightChartData = () => {
@@ -183,15 +199,15 @@ export default function RevenueAnalytics() {
           <span>Total</span>
           <span>
             {/* TODO: add hotels and tours */}
-            {(productStat?.flight?.issuableBookingsAmount || 0) +
-              (productStat?.flight?.issuedBookingsAmount || 0)}
+            {formatMoney((productStat?.flight?.issuableBookingsAmount || 0) +
+              (productStat?.flight?.issuedBookingsAmount || 0))}
           </span>
         </div>
         <div className="flex-1 rounded-md light-bg p-3 flex flex-col gap-1">
           <span>Flights</span>
           <span>
-            {(productStat?.flight?.issuableBookingsAmount || 0) +
-              (productStat?.flight?.issuedBookingsAmount || 0)}
+            {formatMoney((productStat?.flight?.issuableBookingsAmount || 0) +
+              (productStat?.flight?.issuedBookingsAmount || 0))}
           </span>
         </div>
         <div className="flex-1 rounded-md light-bg p-3 flex flex-col gap-1">
@@ -303,49 +319,56 @@ export default function RevenueAnalytics() {
           </div>
         </div>
       </div>
-      <div className="flex flex-wrap gap-4 pb-4">
-        <div className="light-bg rounded-md p-4 flex-1 flex flex-col gap-3">
-          <h6>Anchillary attachment rate</h6>
-          <h3 className="text-primary/60">0%</h3>
-        </div>
-        <div className="light-bg rounded-md p-4 flex-1 flex flex-col gap-3">
-          <h6>Orders canceled via API</h6>
-          <h3 className="text-primary/60">0</h3>
-        </div>
-        <div className="light-bg rounded-md p-4 flex-1 flex flex-col gap-3">
-          <h6>Orders Changed via API</h6>
-          <h3 className="text-primary/60">0</h3>
-        </div>
-      </div>
-      <div className="grid grid-cols-2 gap-4 pb-4">
-        <div className="light-bg rounded-md p-4 flex flex-col gap-3">
-          <h6>Top 1 airline by volume</h6>
-          <ul className="list-decimal list-inside">
-            <li>Malaysia airlines</li>
-          </ul>
-        </div>
-        <div className="light-bg rounded-md p-4 flex flex-col gap-3">
-          <h6>Top 1 airline by value</h6>
-          <ol className="list-decimal list-inside">
-            <li>Malaysia airlines</li>
-          </ol>
-        </div>
-        <div className="light-bg rounded-md p-4 flex flex-col gap-3">
-          <h6>Top 2 routes by volume</h6>
-          <ul className="list-decimal list-inside">
-            <li>LOS - LHR</li>
-            <li>LOS - DXB</li>
-          </ul>
-        </div>
-        <div className="light-bg rounded-md p-4 flex flex-col gap-3">
-          <h6>Top 2 routes by value</h6>
-          <ul className="list-decimal list-inside">
-            <li>STN - LOS</li>
-            <li>LOS - STN</li>
-          </ul>
-        </div>
-      </div>
-      <div className="py-4">
+      {
+        def.devTest ? 
+          <div className="flex flex-wrap gap-4 pb-4">
+            <div className="light-bg rounded-md p-4 flex-1 flex flex-col gap-3">
+              <h6>Anchillary attachment rate</h6>
+              <h3 className="text-primary/60">0%</h3>
+            </div>
+            <div className="light-bg rounded-md p-4 flex-1 flex flex-col gap-3">
+              <h6>Orders canceled via API</h6>
+              <h3 className="text-primary/60">0</h3>
+            </div>
+            <div className="light-bg rounded-md p-4 flex-1 flex flex-col gap-3">
+              <h6>Orders Changed via API</h6>
+              <h3 className="text-primary/60">0</h3>
+            </div>
+          </div>
+        :null
+      }
+      {
+        def.devTest ? 
+          <div className="grid grid-cols-2 gap-4 pb-4">
+            <div className="light-bg rounded-md p-4 flex flex-col gap-3">
+              <h6>Top 1 airline by volume</h6>
+              <ul className="list-decimal list-inside">
+                <li>Malaysia airlines</li>
+              </ul>
+            </div>
+            <div className="light-bg rounded-md p-4 flex flex-col gap-3">
+              <h6>Top 1 airline by value</h6>
+              <ol className="list-decimal list-inside">
+                <li>Malaysia airlines</li>
+              </ol>
+            </div>
+            <div className="light-bg rounded-md p-4 flex flex-col gap-3">
+              <h6>Top 2 routes by volume</h6>
+              <ul className="list-decimal list-inside">
+                <li>LOS - LHR</li>
+                <li>LOS - DXB</li>
+              </ul>
+            </div>
+            <div className="light-bg rounded-md p-4 flex flex-col gap-3">
+              <h6>Top 2 routes by value</h6>
+              <ul className="list-decimal list-inside">
+                <li>STN - LOS</li>
+                <li>LOS - STN</li>
+              </ul>
+            </div>
+          </div>
+      :null}
+      {/* <div className="py-4">
         <div className="tooltip flex justify-between items-center border-l-theme1 bg-theme1/10 text-theme1">
           <span>
             <WbIncandescent className="rotate-180 mx-2 -translate-y-[2px]" />
@@ -365,7 +388,9 @@ export default function RevenueAnalytics() {
           <h3>234,900</h3>
           <Line options={options} data={data} className="max-h-[20vh]" />
         </div>
-      </div>
+      </div> */}
+      <Stats data={{userStat,paymentStat,productStat}} />
+
     </div>
   );
 }
