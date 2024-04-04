@@ -17,7 +17,7 @@ export default function Dashboard() {
         </div>
         <div className="flex-1 flex flex-wrap md:flex-nowrap gap-4 justify-end">
           {/* <Link className='btn whitespace-nowrap flex-1 md:flex-none' to="/">View pending orders</Link> */}
-          <Link
+          {/* <Link
             className="p-2 px-4 rounded-md flex-1 md:flex-none border-primary border flex gap-3 whitespace-nowrap items-center"
             to="/order?status=needsReview"
           >
@@ -34,7 +34,7 @@ export default function Dashboard() {
               15
             </span>
             Book on-hold orders
-          </Link>
+          </Link> */}
           <div className="flex items-center">
             <CreateOrder label='Create a new order' />
             {/* <Button1

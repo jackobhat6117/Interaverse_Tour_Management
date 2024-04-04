@@ -12,8 +12,14 @@ import PhoneNumberInput from "../../components/form/PhoneNumberInput";
 import SelectInput from "../../components/form/SelectInput";
 import { MenuItem } from "@mui/material";
 import getAccounts from "../../controllers/user/getAccounts";
-import { enqueueSnackbar } from "notistack";
+import { enqueueSnackbar, useSnackbar } from "notistack";
 import { ReviewBusinessProfile } from "../../components/ProfileSurvey/New/ProfileSurvey";
+import moment from "moment";
+import activateAccount from "../../controllers/user/activateAccount";
+import deActivateAccount from "../../controllers/user/deactivateAccount";
+import { useDispatch } from "react-redux";
+import updateUsersProfile from "../../controllers/user/updateUsersProfile";
+import { alertType } from "../../data/constants";
 
 const temp = [
   {
@@ -61,7 +67,8 @@ function UserManagement() {
   async function load() {
     setLoading(true);
     const params = {
-      populate: 'detail'
+      populate: 'detail',
+      limit: 0
     }
     const res = await getAccounts((new URLSearchParams(params))?.toString());
     setLoading(false);
@@ -71,22 +78,33 @@ function UserManagement() {
         name: `${data.firstName} ${data.lastName}`,
       }));
       setData(dataMod || []);
+      if(selected?._id)
+        setSelected(
+          dataMod.find((obj, i) => {
+            return obj._id === selected?._id;
+          }),
+        )
     } else enqueueSnackbar("Failed fetching users!", { variant: "error" });
+
   }
   const columns = [
     {
-      field: "status",
+      field: "accountStatus",
       headerName: "",
       renderCell: (params) => (
-        <b className="text-theme1 font-black light-bg p-2 rounded-md">
+        <b className={`!bg-transparent font-black light-bg p-2 rounded-md ${alertType[params.value?.toLowerCase()]}`}>
           {params.value}
         </b>
       ),
     },
     { field: "name", headerName: "Name" },
     { field: "email", headerName: "Email" },
-    { field: "userId", headerName: "User Id" },
-    { field: "createdAt", headerName: "Date Registered" },
+    { field: "_id", headerName: "User Id" },
+    { field: "createdAt", headerName: "Date Registered",
+      renderCell: (params) => (
+        moment(params.value)?.format('YYYY/MM/DD hh:mm a')
+      )
+    },
   ];
 
   function handleRowSelect(rows) {
@@ -103,12 +121,19 @@ function UserManagement() {
       <div className="flex flex-1 min-w-[400px] flex-col gap-10 overflow-hidden">
         <div className="flex flex-col gap-4">
           <h5>User Management</h5>
-          <div className="flex gap-2 items-center">
+          {/* <div className="flex gap-2 items-center">
             <SearchInput />
             <Button1 className="h-full !w-auto sm:!px-6">Search</Button1>
-          </div>
+          </div> */}
         </div>
         <CustomTable
+          searchProps={{
+            searchable: true
+          }}
+          initialState={{
+            pagination: { paginationModel: { pageSize: 20 } },
+          }}
+          pageSizeOptions={[10,20,50,100]}
           loading={loading}
           columns={columns}
           rows={data}
@@ -118,7 +143,7 @@ function UserManagement() {
       </div>
       <div className="flex justify-center" ref={detailRef}>
         {selected ? (
-          <Detail data={selected} close={() => setSelected()} reload={() => {setSelected(); console.log('hereeee'); load()}} />
+          <Detail data={selected} close={() => setSelected()} reload={() => {load()}} />
         ) : null}
       </div>
     </div>
@@ -136,6 +161,27 @@ function Detail({ data, close, reload }) {
   const [openRemove, setOpenRemove] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openBusiness,setOpenBusiness] = useState(false);
+  const [loadings,setLoadings] = useState({enableUser:false,disableUser: false})
+
+  const dispatch = useDispatch();
+
+
+  async function enableUser() {
+    setLoadings({...loadings,enableUser: true})
+    const res = await activateAccount(data?._id);
+    if(res.return) {
+      reload && reload();
+    }
+    setTimeout(() => setLoadings({...loadings,enableUser: false}),2000)
+  }
+  async function disableUser() {
+    setLoadings({...loadings,disableUser: true})
+    const res = await deActivateAccount(data?._id);
+    if(res.return) {
+      reload && reload();
+    }
+    setTimeout(() => setLoadings({...loadings,disableUser: false}),2000)
+  }
 
   console.log(" -> ",data)
   const Component = () => (
@@ -170,25 +216,32 @@ function Detail({ data, close, reload }) {
       </div>
 
       <div className="flex flex-col gap-4">
-        <Row name="User Id:" value={data.userId} />
-        <Row name="Phone Number:" value={data.phoneNumber} />
-        <Row name="Gender:" value={data.gender} />
-        <Row name="DOB:" value={data.dob} />
-        <Row name="Nationality:" value={data.nationality} />
-        <Row name="Date Registered:" value={data.date} />
-        <Row name="Completed Orders:" value={data.orders} />
+        {/* <Row name="User Id:" value={data?.detail?._id} /> */}
+        <Row name="Phone Number:" value={data?.phone} />
+        <Row name="User Type:" value={data?.userType} />
+        {/* <Row name="DOB:" value={data.dob} /> */}
+        {/* <Row name="Nationality:" value={data.nationality} /> */}
+        <Row name="Date Registered:" value={moment(data?.createdAt)?.format('YYYY/DD/MM hh:mm a')} />
+        {/* <Row name="Completed Orders:" value={data.orders} /> */}
       </div>
 
       <div className="pt-10 flex flex-col gap-4">
         <div className="flex gap-4">
-          <Button1 className="flex gap-2 !items-center !bg-primary/10 !text-primary/70">
+          <Button1 disabled className="flex gap-2 !items-center !bg-primary/10 !text-primary/70">
             <Icon fontSize={"18"} icon={"mdi:password-reset"} />
             Reset Password
           </Button1>
-          <Button1 className="flex gap-2 !items-center !bg-primary/90">
-            <Icon fontSize={"18"} icon={"mdi:user-off"} />
-            Disable User
-          </Button1>
+          {data?.accountStatus === 'Active' ? 
+            <Button1 loading={loadings.disableUser} className="flex gap-2 !border-secondary !text-secondary !items-center !bg-primary/90" onClick={disableUser}>
+              <Icon fontSize={"18"} icon={"mdi:user-off"} />
+              Disable User
+            </Button1>
+          :
+            <Button1 loading={loadings.enableUser} className="flex gap-2 !border-secondary !text-secondary !items-center !bg-primary/90" onClick={enableUser}>
+              <Icon fontSize={"18"} icon={"mdi:user"} />
+              Enable User
+            </Button1>
+          }
         </div>
         <Button1
           className={"flex gap-2 !items-center "+(data?.detail?.isVerified?'!bg-red-500 !text-white':'')}
@@ -196,13 +249,13 @@ function Detail({ data, close, reload }) {
         >
           {data?.detail?.isVerified ? 'Deactivate Business' : 'Activate Business'}
         </Button1>
-        <Button1
+        {/* <Button1
           className="flex gap-2 !items-center !bg-red-500"
           onClick={setOpenRemove}
         >
           <Icon fontSize={"18"} icon={"material-symbols:delete-outline"} />
           Remove User
-        </Button1>
+        </Button1> */}
       </div>
     </div>
   );
@@ -212,7 +265,7 @@ function Detail({ data, close, reload }) {
         <Component />
       </div>
       <Modal1 open={openEdit} setOpen={setOpenEdit}>
-        <EditForm data={data} close={() => setOpenEdit(false)} />
+        <EditForm data={data} close={() => setOpenEdit(false)} reload={() => {reload()}} />
       </Modal1>
       <Modal1 open={openRemove} setOpen={setOpenRemove} className={""}>
         <div className="p-10 flex flex-col gap-5 items-center justify-center max-w-[400px]">
@@ -247,40 +300,56 @@ function Detail({ data, close, reload }) {
   );
 }
 
-function EditForm({ data, close }) {
-  const [obj] = useState(data);
-  const fullName = obj?.name?.split(" ");
-  let firstName = fullName[0];
-  let lastName = fullName[1];
+function EditForm({ data:defData, close, reload }) {
+  const [data,setData] = useState(defData);
+  const [loading,setLoading] = useState(false);
+  const {enqueueSnackbar} = useSnackbar();
+
+  console.log(defData)
+
+  async function handleSubmit(ev) {
+    ev?.preventDefault();
+
+    const {firstName,lastName,email,phone} = data;
+    setLoading(true);
+    const res = await updateUsersProfile(data?._id,{firstName,lastName,email,phone})
+    setLoading(false);
+    if(res.return) {
+      enqueueSnackbar('Success',{variant: 'success'})
+      close && close();
+      reload && reload();
+    } else enqueueSnackbar(res.msg,{variant: 'error'})
+  }
+  
   return (
-    <div className="p-10 flex flex-col gap-3">
-      <div className="flex gap-4 justify-between pb-4">
-        <h4>Edit User Details</h4>
+    <form onSubmit={handleSubmit} className="p-10 flex flex-col gap-3">
+      <div className="flex gap-4 items-center flex-wrap justify-between pb-4">
+        <h5>Edit User Details</h5>
         <p>
-          User Id: <b>{data.userId}</b>
+          User Id: <b>{data?._id}</b>
         </p>
       </div>
       <div className="flex gap-4">
-        <TextInput label={"First Name"} value={firstName} />
-        <TextInput label={"Last Name"} value={lastName} />
+        <TextInput label={"First Name"} value={data?.firstName} onChange={(ev) => setData({...data,firstName: ev.target.value})} />
+        <TextInput label={"Last Name"} value={data?.lastName} onChange={(ev) => setData({...data,lastName: ev.target.value})} />
       </div>
-      <EmailInput label="Email Address" />
-      <PhoneNumberInput />
-      <div className="flex gap-4">
+      <EmailInput value={data?.email} onChange={(ev) => setData({...data,email: ev.target.value})} label="Email Address" />
+      <PhoneNumberInput value={data?.phone} label='Phone Number' onChange={(val) => setData({...data,phone: val})} />
+      {/* <div className="flex gap-4">
         <SelectInput>
           <MenuItem>Male</MenuItem>
           <MenuItem>Female</MenuItem>
         </SelectInput>
         <TextInput type="date" label="DOB (Date of Birth)" />
         <TextInput label={"Nationality"} />
-      </div>
+      </div> */}
       <div className="flex gap-3 py-5">
-        <Button1 variant={"text"} className="flex-1" onClick={close}>
+        <Button1 type='button' variant={"text"} className="flex-1" onClick={close}>
           Cancel
         </Button1>
-        <Button1>Save Chanages</Button1>
+        <Button1 type='submit' loading={loading}>Save Chanages</Button1>
       </div>
-    </div>
+    </form>
   );
 }
 
