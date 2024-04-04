@@ -1,10 +1,13 @@
 export const alertType = {
+  autocanceled: "error",
   cancelled: "error",
+  canceled: "error",
   past: "error",
   lost: "error",
   spent: "error",
   suspended: "error",
   expired: "error",
+  Expired: "error",
   
   
   confirmed: "success",
