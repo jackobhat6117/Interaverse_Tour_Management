@@ -4,7 +4,7 @@ export const priceTimeout = 1000 * 60 * 15; // 15 minutes
 
 export const path = {
   // api: "https://btm-backend-live.onrender.com/api",
-  // api: process.env.REACT_APP_API || "https://miles-v2-staging.onrender.com/api",
+  api: process.env.REACT_APP_API || "https://dev.intraversewebservices.com/api",
   site: window.location.protocol+"//"+window.location.host,
 }
 

@@ -2,8 +2,6 @@ import { HomeOutlined, Person, ShoppingCartOutlined } from "@mui/icons-material"
 import { Tab, Tabs } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import Icon from "./HOC/Icon";
 
 
 // const returnPage = (link) => link === 0 ? ''  
@@ -17,13 +15,13 @@ import Icon from "./HOC/Icon";
 // 0
 
 export default function NavLinks({profileCompleted}) {
-  const {user} = useSelector(state => state.user.userData);
+  // const {user} = useSelector(state => state.user.userData);
   const location = useLocation();
   const locations = location.pathname?.split('/');
   const page = locations[1]||'';
   const navigate = useNavigate();
   const [link,setLink] = useState(0)
-  const profileComplete = user?.detail?.isProfileComplete;
+  // const profileComplete = user?.detail?.isProfileComplete;
 
   // const [initialPage,setInitialPage] = useState(link);
 
@@ -38,7 +36,7 @@ export default function NavLinks({profileCompleted}) {
     page === 'support' ? 3
     :
     0)
-    setLink(!profileComplete?pag+1:pag)
+    setLink(pag)
     //eslint-disable-next-line
   },[page])
 
@@ -60,9 +58,9 @@ export default function NavLinks({profileCompleted}) {
     <div className="">
       <Tabs variant="scrollable" value={link} onChange={handleLink} className="font-bold" 
         TabIndicatorProps={{sx: {height: '4px'}}}>
-        {!profileComplete?
+        {/* {!profileComplete?
           <Tab label='Getting Started' data-link="/welcome" icon={<Icon icon='heroicons:rocket-launch' className=' -rotate-[43deg]' />} iconPosition="start" className='!capitalize !min-w-[150px] md:flex-1 !whitespace-nowrap' />
-        :null}
+        :null} */}
         <Tab label='Home' data-link="/" icon={<HomeOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
         <Tab label='Orders' data-link="/order" icon={<ShoppingCartOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
         <Tab label='Customers' data-link="/users" icon={<Person />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />

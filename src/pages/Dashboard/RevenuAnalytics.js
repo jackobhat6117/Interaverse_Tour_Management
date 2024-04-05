@@ -41,7 +41,7 @@ export default function RevenueAnalytics() {
   const [userStat, setUserStat] = useState();
   const [paymentStat, setPaymentStat] = useState();
   const [dateFilter, setDateFilter] = useState({
-    range: "week",
+    range: "All",
     date: new Date().toLocaleDateString(),
   });
   const [loading, setLoading] = useState(false);
@@ -180,6 +180,7 @@ export default function RevenueAnalytics() {
   //   ]
   // }
 
+  
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap py-4 items-center justify-between gap-4 ">
@@ -199,15 +200,15 @@ export default function RevenueAnalytics() {
           <span>Total</span>
           <span>
             {/* TODO: add hotels and tours */}
-            {formatMoney((productStat?.flight?.issuableBookingsAmount || 0) +
-              (productStat?.flight?.issuedBookingsAmount || 0))}
+            {formatMoney((paymentStat?.flight?.pendingPaymentsAmount || 0) +
+              (paymentStat?.flight?.successfulPaymentsAmount || 0))}
           </span>
         </div>
         <div className="flex-1 rounded-md light-bg p-3 flex flex-col gap-1">
           <span>Flights</span>
           <span>
-            {formatMoney((productStat?.flight?.issuableBookingsAmount || 0) +
-              (productStat?.flight?.issuedBookingsAmount || 0))}
+            {formatMoney((paymentStat?.flight?.pendingPaymentsAmount || 0) +
+              (paymentStat?.flight?.successfulPaymentsAmount || 0))}
           </span>
         </div>
         <div className="flex-1 rounded-md light-bg p-3 flex flex-col gap-1">

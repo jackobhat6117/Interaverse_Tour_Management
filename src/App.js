@@ -99,13 +99,13 @@ function App() {
             <Routes>
               <Route path='/' element={<AuthValidate />}>
                 <Route path='test' element={<Test />} />
-                <Route path='profile' element={<ProfileSurvey />} />
-                <Route path='/welcome' element={<WelcomeNavbar />} >
+                {/* <Route path='profile' element={<ProfileSurvey />} /> */}
+                {/* <Route path='/welcome' element={<WelcomeNavbar />} >
                   <Route index element={<ProfileStatusCheck />} />
                   <Route path='support' element={<LearnSupport />} />
                   <Route path='pricing' element={<LearnPricing />} />
                   <Route path='learn' element={<LearnMiles />} />
-                </Route>
+                </Route> */}
                 <Route path='/' element={<Navbar />}>
                   <Route index element={<Dashboard />} />
                   <Route path='order' element={<Orders />} />

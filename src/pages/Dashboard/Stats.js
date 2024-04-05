@@ -23,13 +23,11 @@ const Card = ({count,label,callback}) => (
 function Overview({data}) {
     let obj = {
         allBookings: (
-            data?.productStat?.flight?.systemCanceled +
-            data?.productStat?.flight?.totalFailedBookings +
-            data?.productStat?.flight?.totalIssuedBookings +
-            data?.productStat?.flight?.totalIssuableBookings +
-            data?.productStat?.flight?.totalPendingBookings
+            data?.productStat?.flight?.allFlightBookings
             ),
-        totalCustomers: data?.userStat?.flight?.totalCustomers,
+        totalCustomers: (data?.userStat?.flight?.totalCustomers +
+            data?.userStat?.flight?.totalAgents
+            ),
         allTrans: (
                 data?.paymentStat?.flight?.successfulPayments + 
                 data?.paymentStat?.flight?.pendingPayments
@@ -55,11 +53,7 @@ function Overview({data}) {
 function Flights({data}) {
     let obj = {
         allBookings: (
-            data?.productStat?.flight?.systemCanceled +
-            data?.productStat?.flight?.totalFailedBookings +
-            data?.productStat?.flight?.totalIssuedBookings +
-            data?.productStat?.flight?.totalIssuableBookings +
-            data?.productStat?.flight?.totalPendingBookings
+            data?.productStat?.flight?.allFlightBookings
             ),
         totalPayments: (
             data?.paymentStat?.flight?.successfulPaymentsAmount + 
