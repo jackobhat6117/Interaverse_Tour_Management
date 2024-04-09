@@ -24,7 +24,7 @@ function Button1(props) {
       onMouseOut={() => setShowtip(false)}
       className={
         "w-full relative !shadow-none  !rounded-lg !min-w-[80px] !px-4 !py-[7px] " +
-        props.className +
+        (disabled ? ' !cursor-not-allowed ':props.className) +
         " " +
         (props.size === "small" ? " !px-3 !rounded-sm !py-0 sm:!py-0 " : "")
       }
@@ -32,7 +32,7 @@ function Button1(props) {
       {loading ? "Please Wait..." : label || children}
       {tooltip ? (
         <div
-          className={`absolute top-full left-0 my-1 z-10 bg-primary text-secondary rounded p-2 text-xs ${
+          className={`absolute top-full left-0 my-1  bg-primary text-secondary rounded p-2 text-xs ${
             showtip ? "" : "hidden"
           }`}
         >

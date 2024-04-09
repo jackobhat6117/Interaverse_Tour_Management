@@ -1,10 +1,10 @@
 import fetchServer from "../fetchServer";
 
 
-export default async function getBookings() {
-  var result = {return: 0,msg: 'Error',data: []}
+export default async function issueTicket(data) {
+  var result = {return: 0,msg: 'Failed issuing ticket',data: []}
 
-  await fetchServer({method: "GET",url: `/product/v1/book?populate=account&populate=flightBooking`})
+  await fetchServer({method: "POST",url: `/product/v1/ticket/issue`,data})
   .then((res) => {
     if(res) {
       if(res.status === 200) {
