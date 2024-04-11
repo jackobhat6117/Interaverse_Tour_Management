@@ -3,7 +3,7 @@ import fetchServer from "../fetchServer";
 /**
  *
  * @param {{
- *   "supplier": "Amadeus",
+ *   "supplier": "Intra1A",
  *   "offers": [
  *       {
  *           "id": string,

@@ -4,7 +4,10 @@ import CreateFlightOrder from '../../../CreateFlightOrder'
 export default function ChangeFlight({callback}) {
   return (
     <div>
-        <CreateFlightOrder callback={(obj) => callback && callback(obj)} />
+        <CreateFlightOrder 
+          config={{hide: ['location']}}
+          // defaultData={{from: 'LOS', to: 'LHR'}}
+          callback={(obj) => callback && callback(obj)} />
     </div>
   )
 }

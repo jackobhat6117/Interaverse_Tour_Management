@@ -6,14 +6,15 @@ import { FlightAmenities } from "../../../../components/flight/FlightInfoCard";
 export default function FlightInfo({ minify, data }) {
   const [formattedOrder, setFormattedOrder] = useState();
 
+  console.log(data)
   useEffect(() => {
-    if (data?.orderDetail?.offers && !formattedOrder) {
-      const segments =
-        data?.orderDetail?.pricing?.offers &&
+    if ((data?.orderDetail?.offers || data?.booking?.flightBooking) && !formattedOrder) {
+      const segments = 
+        (data?.orderDetail?.pricing?.offers &&
         Array.isArray(data?.orderDetail?.pricing?.offers) &&
         data?.orderDetail?.pricing?.offers?.flatMap((offer) =>
           offer.directions.flat(),
-        );
+        )) || data?.booking?.flightBooking?.at(0)?.flights;
 
       const originalSegments =
         data?.orderDetail?.pricing?.offers &&
@@ -21,29 +22,30 @@ export default function FlightInfo({ minify, data }) {
         data?.orderDetail?.pricing?.offers
           ?.flatMap((offer) => offer.destinations)
           .slice();
-      const destinations = originalSegments[0];
+      const destinations = originalSegments?.at(0);
 
       const formatted = segments.map((segment) => ({
         ...segment,
-        from: segment?.departure?.location,
-        to: segment?.arrival?.location,
-        origin: destinations?.from,
-        destination: destinations?.to,
-        airline: segment?.airline?.image?.description,
-        airlineIcon: segment?.airline?.image?.url,
-        departureDate: segment?.departure?.date,
-        departureTime: segment?.departure?.time,
-        ArrivalDate: segment?.arrival?.date,
-        arrivalTime: segment?.arrival?.time,
-        airport: segment?.departure?.location,
+        from: segment?.departure?.location || segment?.departureLocationName,
+        to: segment?.arrival?.location || segment?.arrivalLocationName,
+        origin: destinations?.from || segment?.departureLocation,
+        destination: destinations?.to || segment?.arrivalLocation,
+        airline: segment?.airline?.image?.description || segment?.airlineName,
+        airlineIcon: segment?.airline?.image?.url || segment?.airlineImage,
+        departureDate: segment?.departure?.date || segment?.departureDate,
+        departureTime: segment?.departure?.time || segment?.departureTime,
+        ArrivalDate: segment?.arrival?.date || segment?.arrivalDate,
+        arrivalTime: segment?.arrival?.time || segment?.arrivalTime,
+        departureAirport: segment?.departure?.airport || segment?.departureLocation,
+        arrivalAirport: segment?.arrival?.airport || segment?.arrivalLocation,
         duration: moment
           .duration(
             moment(
-              `${segment?.arrival?.date} ${segment?.arrival?.time}`,
+              `${segment?.arrival?.date || segment?.arrivalDate} ${segment?.arrival?.time || segment?.arrivalTime}`,
               "MMM DD YYYY HH:mm",
             ).diff(
               moment(
-                `${segment?.departure?.date} ${segment?.departure?.time}`,
+                `${segment?.departure?.date || segment?.departureDate} ${segment?.departure?.time || segment.departureTime}`,
                 "MMM DD YYYY HH:mm",
                 "HH:mm",
               ),
@@ -51,12 +53,14 @@ export default function FlightInfo({ minify, data }) {
             ),
             "minutes",
           )
-          .humanize(),
-        stops: segment?.numberOfStops,
+          .humanize() || segment?.duration,
+        stops: segment?.numberOfStops || segment?.stops,
       }));
       setFormattedOrder(formatted);
     }
   }, [data, formattedOrder]);
+
+  console.log(formattedOrder)
 
   return (
     <>
@@ -65,45 +69,47 @@ export default function FlightInfo({ minify, data }) {
           <div className="flex gap-4 items-center">
             <div className="flex flex-col gap-2 items-center">
               <img src={formatted.airlineIcon} alt="" className="w-16 h-16" />
-              <small className="font-bold">{formatted.airline}</small>
+              <small className="font-bold min-w-[130px] text-center">{formatted.airline}</small>
             </div>
-            <div className="flex flex-1 justify-start items-center gap-4">
-              <h5>{formatted.from}</h5>
-              <hr className="w-[50px] border-primary/50" />
-              <h5>{formatted.to}</h5>
-            </div>
-            <div>
-              {formatted?.departureTime} - {formatted?.arrivalTime} &nbsp;
-              <span className="text-theme1">
-                ({formatted?.duration}, {formatted?.stops || 0} stops)
-              </span>
-              <div>
-                {formatted?.origin} - {formatted?.destination}
+            <div className="flex gap-4 items-center flex-wrap sm:flex-nowrap">
+              <div className="flex flex-1 justify-start items-center gap-4 flex-wrap">
+                <h5>{formatted.from}</h5>
+                <hr className="w-[10px] sm:w-[50px] border-primary/50" />
+                <h5>{formatted.to}</h5>
+              </div>
+              <div className="flex gap-2 flex-wrap max-w-[300px]">
+                {formatted?.departureTime} - {formatted?.arrivalTime}
+                <span className="text-theme1">
+                  ({formatted?.duration}, {formatted?.stops || 0} stops)
+                </span>
+                <div>
+                  {formatted?.origin} - {formatted?.destination}
+                </div>
               </div>
             </div>
           </div>
 
           {!minify ? (
             <div className="flex flex-col gap-0">
-              <div className="flex gap-4 items-center z-10">
+              <div className="flex gap-4 items-center ">
                 <span className="w-3 h-3 rounded-full bg-theme1"></span>
                 <b>{formatted?.departureDate}</b>
-                <p>Departing from {formatted?.airport}</p>
+                <p>Departing from {formatted?.departureAirport}</p>
               </div>
               <div className="flex gap-4 items-center h-14 -my-2">
                 <div className="vr translate-x-[4.5px] w-3 h-full"></div>
                 <p className="text-xs">Flight duration {formatted?.duration}</p>
               </div>
-              <div className="flex gap-4 items-center z-10">
+              <div className="flex gap-4 items-center ">
                 <span className="w-3 h-3 rounded-full bg-theme1"></span>
                 <b>{formatted?.ArrivalDate}</b>
-                <p>Arriving at {formatted?.airport}</p>
+                <p>Arriving at {formatted?.arrivalAirport}</p>
               </div>
             </div>
           ) : null}
 
           <div className="flex justify-between items-center gap-4 flex-wrap">
-            <div className="flex gap-6 text-primary/50">
+            <div className="flex gap-6 text-primary/50 max-w-full overflow-x-auto whitespace-nowrap pb-2">
               <span>{formatted?.cabinClass}</span>
               <span>{formatted?.airline}</span>
               <span>{formatted?.aircraftType}</span>
