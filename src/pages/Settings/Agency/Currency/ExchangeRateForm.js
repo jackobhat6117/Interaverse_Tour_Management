@@ -29,12 +29,13 @@ export default function ExchangeRateForm({data: defData,callback}) {
         setLoadings({...loadings,submit: true})
         let res = {return: 0,msg: 'Something went wrong on our end! Please contact support. 0XEXRR'}
         
-        const {name,code,exchangeRateInNaira,symbol} = data;
+        let {name,code,exchangeRateInNaira,symbol} = data;
+        exchangeRateInNaira = Number(exchangeRateInNaira)
         
         if(defData?._id)
             res = await updateCurrency(defData?._id,{name,code,exchangeRateInNaira,symbol});
         else
-            res = await createCurrency(data);
+            res = await createCurrency({name,code,exchangeRateInNaira,symbol});
         if(res?.return) {
             setData(initData);
             enqueueSnackbar('Currency Added',{variant: 'success'})

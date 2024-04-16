@@ -75,6 +75,7 @@ function UserManagement() {
     if (res.return) {
       let dataMod = res.data?.data.map((data) => ({
         ...data,
+        id: data._id,
         name: `${data.firstName} ${data.lastName}`,
       }));
       setData(dataMod || []);
