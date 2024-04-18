@@ -38,9 +38,9 @@ export default function CustomTable(props) {
   let modCols = [...columns];
   modCols = modCols.map((obj) => ({
     ...obj,
-    minWidth: setWidth(
-      obj.headerName.length * 12,
-      obj?.minWidth || minWidths[obj.field] || null,
+    minWidth: Math.max(
+      obj.headerName.length * 10 + 100,
+      obj?.minWidth || minWidths[obj.field] || 100,
     ),
   }));
   // console.log('modCols ',modCols)
@@ -49,14 +49,15 @@ export default function CustomTable(props) {
     ev?.preventDefault();
     if (searchVal === "") return setModRows(rows);
 
-    let modRows = rows.filter((row) => Object.values(row).includes(searchVal));
+    let modRows = rows.filter((row) => Object.values(row)?.toString()?.toLowerCase()?.includes(searchVal?.toLowerCase()));
+    console.log(modRows,rows)
     setModRows(modRows);
   }
 
   return (
     <div>
       {searchProps?.searchable ? (
-        <form onSubmit={handleSearch} className="flex gap-2 items-center">
+        <form onSubmit={handleSearch} className="flex gap-2 items-center pb-4">
           <SearchInput value={searchVal} onChange={setSearchVal} />
           <Button1 type="submit" className="h-full !w-auto sm:!px-6">
             Search

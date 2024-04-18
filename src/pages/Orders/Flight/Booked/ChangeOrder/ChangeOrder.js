@@ -10,6 +10,7 @@ import ChangeProperty from "./Property/ChangeProperty";
 import { LinearProgress } from "@mui/material";
 import { useParams } from "react-router-dom";
 import getBooking from "../../../../../controllers/booking/getBooking";
+import updateFlightBooking from "../../../../../controllers/booking/updateFlightBooking";
 
 export default function ChangeFlightOrder() {
   const { id } = useParams();
@@ -31,8 +32,32 @@ export default function ChangeFlightOrder() {
     fetch();
   }, [id]);
 
-  if (property) return <ChangeProperty property={property} obj={booking} />;
+  const flightBooking = booking?.booking?.flightBooking?.at(0);
+  console.log(flightBooking)
 
+  async function updateOrder(data,body) {
+    const reqBody = {
+      supplier: flightBooking?.supplier,
+      body,
+      flightBookingId: flightBooking?._id,
+      booking: {
+        // ...flightBooking,
+        ...data,
+      }
+    }
+    const res = await updateFlightBooking(reqBody)
+    return res;
+  }
+  
+
+  if (property) return <ChangeProperty property={property} obj={booking} update={updateOrder} />;
+
+  const data = {
+    travelers: booking?.orderDetail?.travelers,
+    cabinClass: booking?.orderDetail?.pricing?.offers?.at(0)?.directions?.at(0)?.at(0)?.cabinClass,
+    offers: booking?.orderDetail?.offers || [],
+  }
+  
   return (
     <>
       {loading ? (
@@ -49,7 +74,7 @@ export default function ChangeFlightOrder() {
           <div className="flex flex-col items-center">
             <div className="card p-10 py-4 flex flex-col gap-10">
               <div className="flex flex-col gap-3">
-                <PassengerView passengers={booking?.orderDetail?.travelers} />
+                <PassengerView passengers={data.travelers} />
               </div>
 
               <div className="flex flex-col gap-3">
@@ -57,7 +82,7 @@ export default function ChangeFlightOrder() {
                 <div className="flex gap-2 ">
                   <TextInput
                     label={""}
-                    value={"Economy"}
+                    value={data.cabinClass}
                     size="small"
                     disabled
                   />
@@ -72,8 +97,10 @@ export default function ChangeFlightOrder() {
 
               <div className="flex flex-col gap-3">
                 <h5>Flights</h5>
-                <FlightSearchView label="Departure" />
-                <FlightSearchView label="Return" />
+                {data.offers?.at(0)?.directions?.flat()?.map((direction,i) => 
+                  <FlightSearchView data={direction} key={i} label="Departure" />
+                )}
+                {/* <FlightSearchView label="Return" /> */}
               </div>
 
               <div className="flex flex-col gap-3">
@@ -152,6 +179,7 @@ function PassengerView({ passengers }) {
             value={selected}
             onChange={(val) => {
               setSelected(val);
+              return true;
             }}
           />
 

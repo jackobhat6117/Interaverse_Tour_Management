@@ -7,11 +7,13 @@ import Button1 from "../../../../components/form/Button1";
 import { alertType } from "../../../../data/constants";
 import moment from "moment";
 import { flightStatusMap } from "../../OrdersData";
+import { def } from "../../../../config";
+import CancelOrder from "../../cancelOrder";
 
-export default function StatusBar({ data,needsReview }) {
+export default function StatusBar({ data,needsReview,changeable, cancelOrder }) {
   const [openBaggage, setOpenBaggage] = useState(false);
   const [openSeats, setOpenSeats] = useState(false);
-  const [cancelBooking, setCancelBooking] = useState(false);
+  // const [cancelBooking, setCancelBooking] = useState(false);
 
   const status = data?.booking?.flightBooking?.at(0)?.status;
 
@@ -39,11 +41,11 @@ export default function StatusBar({ data,needsReview }) {
         <div className="flex justify-between gap-4">
           <div className="flex gap-2 ">
             <img
-              src={`https://pics.avs.io/200/200/${data?.booking?.flightBooking[0]?.airlines[0]}@2x.png`}
+              src={`https://pics.avs.io/200/200/${data?.booking?.flightBooking?.at(0)?.airlines?.at(0)}@2x.png`}
               alt=""
               className="w-4 h-4"
             />
-            <b>{data?.booking?.flightBooking[0]?.airlines[0]} Airline</b>
+            <b>{data?.booking?.flightBooking[0]?.airlines?.at(0)} Airline</b>
           </div>
           <b>
             {moment(data?.booking?.flightBooking[0]?.createdAt).format(
@@ -72,7 +74,7 @@ export default function StatusBar({ data,needsReview }) {
         <Button1
           variant="outlined"
           className="!border-primary !text-primary"
-          onClick={() => setCancelBooking(true)}
+          onClick={() => cancelOrder(data?.booking?.bookingId)}
         >
           Cancel booking
         </Button1>
@@ -81,13 +83,14 @@ export default function StatusBar({ data,needsReview }) {
       :
       <div className="flex flex-col gap-5">
         <Button1
+          disabled={status !== 'Not Paid' || status !== 'booked'}
           variant="outlined"
           className="!border-primary !text-primary"
-          onClick={() => setOpenBaggage(true)}
+          onClick={() => cancelOrder(data?.booking?.bookingId)}
         >
           Request Cancellation
         </Button1>
-        <Button1
+        <Button1 disabled={!changeable || !def?.devTest ? true:false}
           to={`/order/flight/change/${data?.booking?._id}`}
           variant="outlined"
           className="!border-primary !text-primary"
@@ -110,11 +113,12 @@ export default function StatusBar({ data,needsReview }) {
           <AddFlightSeats data={{}} cancel={() => setOpenSeats(false)} />
         </div>
       </Modal1>
-      <Modal1 open={cancelBooking} setOpen={setCancelBooking}>
+      {/* <CancelOrder open={cancelBooking} setOpen={() => setCancelBooking(false)}  /> */}
+      {/* <Modal1 open={cancelBooking} setOpen={setCancelBooking}>
         <div className="card p-10 flex flex-col gap-4">
           <CancelFlightOrder data={{}} cancel={() => setCancelBooking(false)} />
         </div>
-      </Modal1>
+      </Modal1> */}
     </div>
   );
 }

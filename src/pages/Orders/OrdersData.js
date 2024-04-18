@@ -370,7 +370,12 @@ export default function OrdersData({ data: gotData, setData: setOrig, reload }) 
           <OrderDataChanges data={data} />
           :
         } */}
-      <CustomTable rows={data} columns={columns} />
+      <CustomTable rows={data} columns={columns}
+        pageSizeOptions={[10,20,50,100]}
+        initialState={{
+          pagination: { paginationModel: { pageSize: 20 } },
+        }}
+       />
       </ActionContext.Provider>
 
       <AddBags open={openAddBags} setOpen={setOpenAddBags} />

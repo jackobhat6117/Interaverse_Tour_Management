@@ -74,7 +74,7 @@ const properties = [
   },
 ];
 
-export default function ChangeProperty({ property, obj }) {
+export default function ChangeProperty({ property, obj, update }) {
 
   const [selected, setSelected] = useState();
   const [prevResult,setPrevResult] = useState();
@@ -97,7 +97,7 @@ export default function ChangeProperty({ property, obj }) {
   }, [property]);
 
   function handleTab(val) {
-    setSelected(options.find((obj) => obj.value === val));
+    // setSelected(options.find((obj) => obj.value === val));
   }
 
   function next(obj) {
@@ -139,6 +139,7 @@ export default function ChangeProperty({ property, obj }) {
           <div className="bg-secondary p-10">
             {selected?.elem &&
               React.cloneElement(selected?.elem, {
+                update,
                 callback: (obj) => next(obj),
                 back,
                 orgi: obj,

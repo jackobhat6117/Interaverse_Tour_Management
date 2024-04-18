@@ -18,9 +18,9 @@ export default function Insurance({cancel,callback,orgi}) {
         // },
       ],
       plans: [
-        {value: 1,title: 'I want disruption protection',description: 'Miles  will cover the cost of a new trip or offer an instant refund.',price: 100000},
-        {value: 2,title: 'I want disruption protection',description: 'Miles  will cover the cost of a new trip or offer an instant refund.',price: 200000},
-        {value: 3,title: 'I want disruption protection',description: 'Miles  will cover the cost of a new trip or offer an instant refund.',price: 300000},
+        {value: 1,title: 'I want disruption protection',description: 'Intraverse  will cover the cost of a new trip or offer an instant refund.',price: 100000},
+        {value: 2,title: 'I want disruption protection',description: 'Intraverse  will cover the cost of a new trip or offer an instant refund.',price: 200000},
+        {value: 3,title: 'I want disruption protection',description: 'Intraverse  will cover the cost of a new trip or offer an instant refund.',price: 300000},
       ]
     }
     if(orgi) {
