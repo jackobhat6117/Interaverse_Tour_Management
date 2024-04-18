@@ -76,6 +76,8 @@ function UserManagement() {
       let dataMod = res.data?.data.map((data) => ({
         ...data,
         id: data._id,
+        email: data?.email,
+        businessStatus: data?.detail?.isVerified ? 'Verified' : data?.detail?.requestedVerification ? 'Requested Verification' : 'Not Submited',
         name: `${data.firstName} ${data.lastName}`,
       }));
       setData(dataMod || []);
@@ -89,23 +91,22 @@ function UserManagement() {
 
   }
   const columns = [
-    {
-      field: "accountStatus",
-      headerName: "",
-      renderCell: (params) => (
-        <b className={`!bg-transparent font-black light-bg p-2 rounded-md ${alertType[params.value?.toLowerCase()]}`}>
-          {params.value}
-        </b>
-      ),
-    },
     { field: "name", headerName: "Name" },
-    { field: "email", headerName: "Email" },
-    { field: "_id", headerName: "User Id" },
+    { field: "email", headerName: "Email"},
+    { field: "businessStatus", headerName: 'Business Status'},
+    // { field: "_id", headerName: "User Id" },
     { field: "createdAt", headerName: "Date Registered",
       renderCell: (params) => (
         moment(params.value)?.format('YYYY/MM/DD hh:mm a')
       )
     },
+    {field: 'accountStatus', headerName: 'Account Status',
+      renderCell: (params) => (
+        <b className={`!bg-transparent font-black light-bg p-2 rounded-md ${alertType[params.value?.toLowerCase()]}`}>
+          {params?.value}
+        </b>
+      )
+    }
   ];
 
   function handleRowSelect(rows) {
@@ -188,11 +189,14 @@ function Detail({ data, close, reload }) {
   const Component = () => (
     <div className="p-4 rounded-lg light-bg flex flex-col gap-4 flex-1">
       <div className="flex gap-4 justify-between items-center py-4">
-        {data.accountStatus === 'Active' ? (
-          <span className="success">Active</span>
-        ) : (
-          <span className="error">Inactive</span>
-        )}
+        <div className='flex flex-col gap-1 text-center'>
+          <small>Account Status</small>
+          {data.accountStatus === 'Active' ? (
+            <span className="success">Active</span>
+          ) : (
+            <span className="error">Inactive</span>
+          )}
+        </div>
         <div className="p-2 bg-secondary">
           <CloseOutlined
             onClick={() => close()}
@@ -218,11 +222,12 @@ function Detail({ data, close, reload }) {
 
       <div className="flex flex-col gap-4">
         {/* <Row name="User Id:" value={data?.detail?._id} /> */}
-        <Row name="Phone Number:" value={data?.phone} />
-        <Row name="User Type:" value={data?.userType} />
-        {/* <Row name="DOB:" value={data.dob} /> */}
-        {/* <Row name="Nationality:" value={data.nationality} /> */}
-        <Row name="Date Registered:" value={moment(data?.createdAt)?.format('YYYY/DD/MM hh:mm a')} />
+        <Row name="Id" value={data?._id} />
+        <Row name="Phone Number" value={data?.phone} />
+        <Row name="User Type" value={data?.userType} />
+        {/* <Row name="DOB" value={data.dob} /> */}
+        {/* <Row name="Nationality" value={data.nationality} /> */}
+        <Row name="Date Registered" value={moment(data?.createdAt)?.format('YYYY/DD/MM hh:mm a')} />
         {/* <Row name="Completed Orders:" value={data.orders} /> */}
       </div>
 
@@ -244,12 +249,15 @@ function Detail({ data, close, reload }) {
             </Button1>
           }
         </div>
-        <Button1
-          className={"flex gap-2 !items-center "+(data?.detail?.isVerified?'!bg-red-500 !text-white':'')}
-          onClick={() => setOpenBusiness(true)}
-        >
-          {data?.detail?.isVerified ? 'Deactivate Business' : 'Activate Business'}
-        </Button1>
+        <div title={!data?.detail?.isVerified && !data?.detail?.requestedVerification ? 'User havent submitted bussiness information':null}>
+          <Button1
+            disabled={!data?.detail?.isVerified && !data?.detail?.requestedVerification}
+            className={"flex gap-2 !items-center "+(data?.detail?.isVerified?'!bg-red-500 !text-white':'')}
+            onClick={() => setOpenBusiness(true)}
+          >
+            {data?.detail?.isVerified ? 'Deactivate Business' : 'Activate Business'}
+          </Button1>
+        </div>
         {/* <Button1
           className="flex gap-2 !items-center !bg-red-500"
           onClick={setOpenRemove}
