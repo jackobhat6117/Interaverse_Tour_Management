@@ -153,9 +153,11 @@ export default function FlightOrder() {
   let orderType = (orderData) ? 'flight' : ''
   console.log(order)
 
-  const amenities = order?.orderDetail?.pricing?.offers?.at(0)?.directions?.at(0)?.at(0)?.amenities
-  const refundable = amenities?.find(amen => amen.description === 'REFUNDS')
-  const changable = amenities?.find(amen => amen.description === "CHANGEABLE TICKET")
+  // const amenities = order?.orderDetail?.pricing?.offers?.at(0)?.directions?.at(0)?.at(0)?.amenities
+  // const refundable = amenities?.find(amen => amen.description === 'REFUNDS')
+  const refundable = orderData?.isRefundable;
+  const changable = orderData?.isChangeable;
+  // const changable = amenities?.find(amen => amen.description === "CHANGEABLE TICKET")
 
   
   return (

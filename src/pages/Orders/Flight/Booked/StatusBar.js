@@ -35,18 +35,18 @@ export default function StatusBar({ data,needsReview,changeable, cancelOrder }) 
 
       <div className="flex flex-col gap-2">
         <div className="flex justify-between gap-4">
-          <p>Airline</p>
+          {/* <p>Airline</p> */}
           <p>Date</p>
         </div>
         <div className="flex justify-between gap-4">
-          <div className="flex gap-2 ">
+          {/* <div className="flex gap-2 ">
             <img
               src={`https://pics.avs.io/200/200/${data?.booking?.flightBooking?.at(0)?.airlines?.at(0)}@2x.png`}
               alt=""
               className="w-4 h-4"
             />
             <b>{data?.booking?.flightBooking[0]?.airlines?.at(0)} Airline</b>
-          </div>
+          </div> */}
           <b>
             {moment(data?.booking?.flightBooking[0]?.createdAt).format(
               "MMM DD YYYY",
