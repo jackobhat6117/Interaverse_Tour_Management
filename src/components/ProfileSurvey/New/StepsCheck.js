@@ -19,7 +19,7 @@ export default function StepsCheck({i,obj,complete,link}) {
         // className='bg-primary/[5%] rounded-md p-4 hidden sm:flex items-center justify-center'
         >
         {/* {i+1} */}
-        <div className='hidden w-10 h-10 md:flex justify-center relative items-center rounded-full bg-primary/10'>
+        <div className='w-10 h-10 flex justify-center relative items-center rounded-full bg-primary/10'>
           <Icon icon='game-icons:check-mark' className={`${complete?'text-green-600':'text-primary/20'}`} />
         </div>
       </div>

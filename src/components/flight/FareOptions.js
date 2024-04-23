@@ -7,7 +7,6 @@ import { formatMoney, getNumber } from '../../features/utils/formatMoney';
 import { useSelector } from 'react-redux';
 import Icon from '../HOC/Icon';
 import LoadingBar from '../animation/LoadingBar';
-import { clone } from '../../features/utils/objClone';
 
 
 export default function FareOptions({data,handleReturn}) {
@@ -23,12 +22,7 @@ export default function FareOptions({data,handleReturn}) {
 
   async function load() {
     setLoading(true);
-    let modData = clone(data);
-    try {
-      modData.segments = undefined;
-      modData.fareRules = undefined;
-    } catch(ex) {}
-    const res = await getBrandedFares({offers: [modData],supplier: data?.supplier});
+    const res = await getBrandedFares({offers: [data],supplier: data?.supplier});
     if(res.return) {
       setOptions(res?.data || [])
     } else setOptions(null)

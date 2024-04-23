@@ -25,10 +25,10 @@ export default function checkProfileComplete(user) {
           temp.complete = true;
         break;
       
-      // case 'training':
-      //   if(detail?.haveScheduledTraining)
-      //     temp.complete = true;
-      //   break;
+      case 'training':
+        if(detail?.haveScheduledTraining)
+          temp.complete = true;
+        break;
 
       default: break;
     }

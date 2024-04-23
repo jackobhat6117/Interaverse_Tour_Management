@@ -31,7 +31,7 @@ export default async function updateFlightPriceAdjustment(id, data) {
 
   await fetchServer({
     method: "PATCH",
-    url: `/product/v1/flightPriceAdjustment/${id}`,
+    url: `/product/v1/adminFlightPriceAdjustment/${id}`,
     data,
   })
     .then((res) => {

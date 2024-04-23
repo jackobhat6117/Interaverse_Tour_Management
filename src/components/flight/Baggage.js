@@ -7,7 +7,6 @@ import baggage2x from '../../assets/images/2xbaggage.svg';
 import Button1 from '../form/Button1';
 import { formatMoney } from '../../features/utils/formatMoney';
 import { useSnackbar } from 'notistack';
-import SelectInput from '../form/SelectInput';
 
 export default function AddFlightBaggage({data,cancel,callback}) {
     const {enqueueSnackbar} = useSnackbar();
@@ -25,15 +24,14 @@ export default function AddFlightBaggage({data,cancel,callback}) {
 
         setLoading(false);
     }
-
   return (
     <div className='flex flex-col gap-3 max-w-[600px]'>
-        <SelectInput label='Select Passengers'>
-          {data?.passengers?.map((obj,i) => (
-            <MenuItem key={i} value={obj.id}>{obj?.name?.firstName} {obj?.name?.lastName}</MenuItem>
-          ))}
-        </SelectInput>
-
+        <TextInput select label='Select passenger'>
+            <MenuItem>Okafor Chinema</MenuItem>
+            {data?.passengers?.map((obj,i) => (
+                <MenuItem value={obj?.id}>{obj?.firstName} {obj?.lastName}</MenuItem>
+            ))}
+        </TextInput>
         <div className='flex gap-4 justify-between'>
             <b>Primary Passenger</b>
             <p>Adult (over 12 years)</p>

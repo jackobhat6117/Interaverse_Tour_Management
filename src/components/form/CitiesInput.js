@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Autocomplete, InputAdornment, TextField } from "@mui/material";
 import getCityCodes from "../../controllers/Flight/getCityCodes";
-import axios from "axios";
-
-
-var cancelTokenSource = null;
 
 export default function CitiesInput({
   value,
@@ -26,25 +22,19 @@ export default function CitiesInput({
     load();
     //eslint-disable-next-line
   }, [value]);
-  
+
   async function load() {
     if (!value) return setOption([]);
     if (value?.icao) return false;
-    
-    if(cancelTokenSource) {
-      cancelTokenSource.cancel('Request canceled.')
-    }
-    cancelTokenSource = axios.CancelToken.source();
-    
+
     setLoading(true);
-    const res = await getCityCodes(value,cancelTokenSource?.token);
+    const res = await getCityCodes(value);
     setLoading(false);
     if (res.return) {
       let data = res?.data?.data;
       if (optionLabel) data = data?.filter((obj) => obj[optionLabel]);
       setOption(data);
     }
-
   }
 
   function handleChange(newVal,fromKey) {

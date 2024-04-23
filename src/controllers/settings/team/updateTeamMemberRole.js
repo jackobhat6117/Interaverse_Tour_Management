@@ -3,7 +3,7 @@ import fetchServer from "../../fetchServer"
 export default async function updateTeamMemberRole(id,data) {
   let result = {return: 0,msg: 'Something went updating role!'}
 
-  await fetchServer({method: 'PATCH',url: '/main/v1/staff/update/'+id,data})
+  await fetchServer({method: 'PATCH',url: '/main/v1/team/'+id,data})
   .then((res) => {
     // console.log(" => ",res)
     if(res?.data && !res?.data?.error) {

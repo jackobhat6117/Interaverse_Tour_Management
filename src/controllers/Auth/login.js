@@ -7,10 +7,7 @@ export default async function login(data) {
   .then((res) => {
     if(res.data && res?.data?.data) {
       result = {return: 1,msg: 'Welcome',data: res.data?.data}
-    } else {
-      result['msg'] = res?.data?.error || result['msg']
-      result['data'] = res?.data;
-    }
+    } else result['msg'] = res?.data?.error || result['msg']
   })
   .catch((err) => {
     console.log(err)

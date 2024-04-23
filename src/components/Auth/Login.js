@@ -6,11 +6,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { loginReqData } from "../../data/user/Auth/loginReq";
 import login from "../../controllers/Auth/login";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setUserData } from "../../redux/reducers/userSlice";
 import Icon from "../HOC/Icon";
 import Logo from "../Logo/Logo";
-import staffLogin from "../../controllers/Auth/staff/login";
 
 export default function Login() {
   const [data, setData] = useState({ ...loginReqData, confirmPassword: "" });
@@ -18,31 +17,25 @@ export default function Login() {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const {userData: {agent}} = useSelector(state => state?.user)
 
   async function handleSubmit(ev) {
     ev.preventDefault();
 
     setLoading(true);
-    let res = {return: 0,msg: 'Something went wrong on our end! Please contact support. 0xSTLOG'}
-    if(agent)
-      res = await staffLogin({...data,agentId: agent?._id});
-    else
-      res = await login(data);
+    const res = await login(data);
     setLoading(false);
     if (res.return) {
-      // enqueueSnackbar("You are logged in.", { variant: "success" });
+      enqueueSnackbar("You are logged in.", { variant: "success" });
       dispatch(
         setUserData({
           loggedIn: true,
           accessToken: res?.data?.token,
           user: res?.data?.account,
-          agent
         }),
       );
     } else {
       enqueueSnackbar(res?.msg || "Invalid Credentials.", { variant: "error" });
-      if (res?.data?.detail?.accountStatus === "Inactive")
+      if (res?.msg === "Account not active")
         navigate("/?view=verify&email=" + data.email);
     }
   }
@@ -62,8 +55,8 @@ export default function Login() {
         onSubmit={handleSubmit}
         className="w-full flex flex-col items-center justify-center flex-1"
       >
-        <div className="card flex flex-col gap-5 text-center !pt-12">
-          <h4 className="pb-6">Sign in to your account</h4>
+        <div className="card flex flex-col gap-5 text-center">
+          <h4 className="pb-4">Sign in to your account</h4>
           <EmailInput
             required
             className="!w-full sm:!w-[400px] max-w-full"
@@ -85,19 +78,17 @@ export default function Login() {
               Forgot your password?{" "}
               <span className="text-theme1">Recover now</span>
             </Link>
-            {!agent ? 
-              <div
-              className="btn flex gap-4 !bg-transparent border-none items-center !justify-center !text-primary px-[8px]"
-                onClick={() => !loading && handleGoogleAuth()}
-              >
-                <Icon icon="devicon:google" className="p-[1px]" />
-                <span className="">
-                  {loading ? "Please wait..." : "Sign in with google"}
-                </span>
-              </div>
-            :null}
+            <div
+              className="btn flex gap-4 !bg-transparent border-none !justify-center !text-primary px-[8px]"
+              onClick={() => !loading && handleGoogleAuth()}
+            >
+              <Icon icon="devicon:google" className="p-[1px]" />
+              <span className="">
+                {loading ? "Please wait..." : "Sign in with google"}
+              </span>
+            </div>
 
-            <div className="flex flex-wrap gap-2 items-center justify-center">
+            <div className="flex gap-2 items-center justify-center">
               <p className="text-primary/40">Dont have an account?</p>
               <Link className="text-theme1 font-bold" to="?view=register">
                 Sign up

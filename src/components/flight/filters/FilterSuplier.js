@@ -1,22 +1,21 @@
 import { useEffect, useState } from "react";
 import Collapse from "../../mini/Collapse";
-import { getSupplierName } from "../../../data/flight/supplier/getSupplierName";
 
 export default function FilterSuplier({ returnData, clear, orgi }) {
   const [suplier, setSuplier] = useState([
     // {
-    //   name: "Intra1T",
-    //   id: "Intra1T",
+    //   name: "Travelport",
+    //   id: "Travelport",
     //   value: true,
     // },
     // {
-    //   name: "Intra1A",
-    //   id: "Intra1A",
+    //   name: "Amadeus",
+    //   id: "Amadeus",
     //   value: true,
     // },
     // {
-    //   name: "Intra1S",
-    //   id: "Intra1S",
+    //   name: "Sabre",
+    //   id: "Sabre",
     //   value: true,
     // },
   ]);
@@ -44,12 +43,12 @@ export default function FilterSuplier({ returnData, clear, orgi }) {
         <label key={i} className="flex gap-4 justify-between">
           <span className="flex gap-2">
             <input
-              name="intra1ASuplier"
+              name="amadeuSuplier"
               checked={obj.value}
               onChange={(ev) => handleCheck(ev.target.checked, i)}
               type="checkbox"
             />
-            <span>{getSupplierName(obj.name)}</span>
+            <span>{obj.name}</span>
           </span>
         </label>
       ))}

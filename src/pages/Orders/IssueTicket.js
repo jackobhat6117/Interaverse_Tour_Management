@@ -1,13 +1,11 @@
 import React, { useState } from 'react'
 import Button1 from '../../components/form/Button1'
+import issueTicket from '../../controllers/booking/issueTicket'
 import { useSnackbar } from 'notistack'
-import queueTicket from '../../controllers/booking/queueTicket';
 
 export default function TicketIssue({data,close,callback}) {
     const [loading,setLoading] = useState(false);
     const {enqueueSnackbar} = useSnackbar();
-
-    console.log(data?.pnr)
     
     async function handleTicket() {
         const reqBody = {
@@ -21,10 +19,9 @@ export default function TicketIssue({data,close,callback}) {
             // ]
         }
         setLoading(true);
-        const res = await queueTicket(reqBody);
+        const res = await issueTicket(reqBody);
         setLoading(false);
         if(res.return) {
-            enqueueSnackbar('Your ticket request has been received.',{variant: 'success'})
             callback && callback()
         } else enqueueSnackbar(res.msg,{variant: 'error'})
     }

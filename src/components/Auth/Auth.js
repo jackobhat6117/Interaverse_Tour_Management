@@ -13,7 +13,7 @@ import logo from '../../assets/icons/logo.svg'
 
 
 
-export default function Auth({agency}) {
+export default function Auth() {
   const location = useLocation();
   const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
@@ -50,7 +50,7 @@ export default function Auth({agency}) {
       {view === 'register' ? 
         <Signup />
       :
-      view === 'verify' && !agency ?
+      view === 'verify' ?
         <VerifyEmail />
       :
       view === 'reset' ?

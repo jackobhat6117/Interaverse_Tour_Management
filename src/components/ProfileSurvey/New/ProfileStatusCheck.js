@@ -30,7 +30,7 @@ export default function ProfileStatusCheck() {
     {title: 'Support',description: 'Find answers to some of the most frequently asked questions about Intraverse.',
       link: '/welcome/support',
       icon: <Icon icon='material-symbols-light:contact-support' />, footer: <Button1 variant='outlined'>Continue</Button1>},
-    {title: 'Learn about Intraverse',description: 'Discover all the features of our flagship product and the tools to grow your business.',
+    {title: 'Learn about Miles',description: 'Discover all the features of our flagship product and the tools to grow your business.',
       link: '/welcome/learn',
       icon: <Icon icon='iconoir:learning' />, footer: <Button1 variant='outlined'>Continue</Button1>},
     {title: 'Pricing',description: 'We only make money when you are happy using our platform',
@@ -44,11 +44,11 @@ export default function ProfileStatusCheck() {
           {/* <h4 className='w-full py-4 text-start slide-out duration-600 '>
             Welcome back, {user.firstName} {user.lastName}
           </h4> */}
-          <div className=' flex justify-center sticky top-0 z-10 '>
-            <img src={rocket} alt='rocket' className=' h-[500px] xtranslate-y-[100px]  hidden md:block' />
+          <div className=' flex justify-center sticky top-0 z-20'>
+            <img src={rocket} alt='rocket' className='z-20 h-[500px]  xtranslate-y-[100px]  hidden md:block' />
           </div>
-          <div className='relative z-[9] w-[400px] self-center'>
-            <img src={rocketGear} alt='' className=' hidden md:block translate-y-[50%] ' />
+          <div className='relative z-10'>
+            <img src={rocketGear} alt='' className='z-10 hidden md:block translate-y-[80px]' />
           </div>
         </div>
         <div className='flex flex-col gap-4 max-w-[800px] text-start overflow-x-clip'>

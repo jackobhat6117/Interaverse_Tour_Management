@@ -11,10 +11,12 @@ import AirlinesInput from "../../../../components/form/AirlinesInput";
 import ToolTip from "../../../../components/DIsplay/ToolTip";
 import Checkbox from "../../../../components/form/Checkbox";
 import filterTruthyValues from "../../../../features/utils/filterTruthyObjectValues";
+import { flightSuppliers } from "../../../../data/ENUM/FlightProviders";
 
 const initData = {
   appliedTo: "Flight",
   method: "Percentage",
+  airlines: [],
   type: "Markup",
   amount: 0,
   name: "",
@@ -54,7 +56,6 @@ export default function CreateMarkup({
     setLoading(true);
     let res = { return: false, msg: "Error", data: [] };
     let modData = filterTruthyValues({...data,
-      amount: parseFloat(data?.amount),
       departureAirport: data?.departureAirport?.iata || data?.departureAirport,
       arrivalAirport: data?.arrivalAirport?.iata || data?.arrivalAirport,
     })
@@ -112,6 +113,15 @@ export default function CreateMarkup({
           value={data?.name}
           onChange={(ev) => setData({ ...data, name: ev.target.value })}
         />
+        <TextInput label='Suppliers' select
+          SelectProps={{ multiple: true }}
+          value={data?.suppliers || []}
+          onChange={(ev) => setData({...data,suppliers: ev?.target?.value})}>
+          {Object.entries(flightSuppliers)?.map(([key,value],i) => (
+            <MenuItem key={i} value={key}>{value}</MenuItem>
+          ))}
+        </TextInput>
+
         <div className="flex flex-row gap-2">
           <TextInput
             select
@@ -173,7 +183,7 @@ export default function CreateMarkup({
             <MenuItem value="NGN">NGN</MenuItem>
             <MenuItem value="USD">USD</MenuItem>
           </TextInput>
-          <TextInput type='number'
+          <TextInput
             required
             value={data?.amount || ""}
             label="Value"
@@ -328,18 +338,16 @@ export default function CreateMarkup({
                 </div>
               </div>
             </div>
-            <div className="flex gap-2 flex-wrap">
-              <div className="flex-1">
-                <CitiesInput
-                  label="Departure Airport"
-                  size="small"
-                  placeholder="e.g LHR"
-                  value={data?.departureAirport || ""}
-                  onChange={(val) =>
-                    setData({ ...data, departureAirport: val })
-                  }
-                  />
-              </div>
+            <div className="flex gap-2">
+              <CitiesInput
+                label="Departure Airport"
+                size="small"
+                placeholder="e.g LHR"
+                value={data?.departureAirport || ""}
+                onChange={(val) =>
+                  setData({ ...data, departureAirport: val })
+                }
+              />
               {/* <div className='relative flex items-center justify-center  cursor-pointer'>
                   <div className='absolute items-center justify-center flex'>
                     <span className='bg-secondary shadow-lg rounded-full p-1 hover:rotate-180 transition-all' onClick={() => swipeLoc()}>
@@ -347,19 +355,17 @@ export default function CreateMarkup({
                     </span>
                   </div>
                 </div> */}
-              <div className="flex-1">
-                <CitiesInput
-                  label={"Arrival Airport"}
-                  size="small"
-                  placeholder="e.g LOS"
-                  value={data?.arrivalAirport || ""}
-                  onChange={(val) =>
-                    setData({ ...data, arrivalAirport: val })
-                  }
-                />
-              </div>
+              <CitiesInput
+                label={"Arrival Airport"}
+                size="small"
+                placeholder="e.g LOS"
+                value={data?.arrivalAirport || ""}
+                onChange={(val) =>
+                  setData({ ...data, arrivalAirport: val })
+                }
+              />
             </div>
-            <div className="flex gap-2 flex-wrap sm:flex-nowrap">
+            <div className="flex gap-2">
               <TextInput
                 select
                 label={"Departure Time"}
@@ -388,7 +394,7 @@ export default function CreateMarkup({
               </TextInput>
             </div>
 
-            <div className="flex gap-2 flex-wrap sm:flex-nowrap">
+            <div className="flex gap-2">
               <TextInput
                 select
                 label={"Cabin Class"}
@@ -418,13 +424,11 @@ export default function CreateMarkup({
           </div>
         ) : null}
 
-        <div className="flex gap-4 flex-wrap-reverse whitespace-nowrap">
+        <div className="flex gap-4">
           {footer}
-          <div className="flex-1">
-            <Button1 loading={loading} type="submit" className='flex-1 '>
-              {update ? "Update Markup" : "Create Markup"}
-            </Button1>
-          </div>
+          <Button1 loading={loading} type="submit">
+            {update ? "Update Markup" : "Create Markup"}
+          </Button1>
         </div>
       </form>
     </div>

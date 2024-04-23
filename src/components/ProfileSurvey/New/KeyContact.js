@@ -13,7 +13,7 @@ import { useLocation } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 
 
-function KeyContact({updateProfile,back,next,review}) {
+function KeyContact({updateProfile,back,next,review,user: defUser}) {
   const {user} = useSelector(state => state.user.userData);
   const userDetails = mergeRecursive(clone(profileSurveyData),user?.detail || {},{createNew: false})
   const [data,setData] = useState({...profileSurveyData,...userDetails});
@@ -45,18 +45,18 @@ function KeyContact({updateProfile,back,next,review}) {
   }
 
   if(review && !edit)
-    return <ReviewDisplay data={user?.detail} review={review} setEdit={setEdit} />
+    return <ReviewDisplay data={defUser?.detail || user?.detail} review={review} setEdit={setEdit} />
 
 
   return (
     <div className='flex flex-col gap-4 slide'>
       {!qedit ? 
         <div className='flex flex-col gap-2 py-4'>
-          <h5 className=''>Tell us about your business representative</h5>
+          <h4 className=''>Tell us about your business representative</h4>
           <p className=''>A business representative is either an owner, director or shareholder of your business.</p>
         </div>
       : 
-        <h5 className='py-4'>Edit representative details</h5>
+        <h4 className='py-4'>Edit representative details</h4>
       }
       <form onSubmit={handleSubmit} className='flex flex-col flex-wrap gap-4 justify-between self-stretch py-4'>
         <div className='flex gap-4 flex-nowrap'>

@@ -3,7 +3,7 @@ import fetchServer from "../../fetchServer"
 export default async function getTeamMembers(query) {
   let result = {return: 0,msg: 'Something went wrong fetching members!'}
 
-  await fetchServer({method: 'GET',url: '/main/v1/staff/getAll?'+query})
+  await fetchServer({method: 'GET',url: '/main/v1/team?populate=member&'+query})
   .then((res) => {
     // console.log(" => ",res)
     if(res?.data && !res?.data?.error) {

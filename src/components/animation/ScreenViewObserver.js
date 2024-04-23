@@ -22,9 +22,6 @@ const ScreenViewObserver = (props) => {
           else if(top > 0) {
             setInView(false)
             handleComponentOffView();  
-          } else if(entry.isIntersecting) {
-            handleComponentInView();
-            setInView(true)
           }
         });
       },

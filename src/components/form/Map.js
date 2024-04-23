@@ -132,7 +132,7 @@ const Map = ({label,className,handleReturn}) => {
       <TextInput label={label||'Location'} onFocus={() => setOpen(true)} className={className} value={value} />
       <Modal1 open={open} setOpen={setOpen}>
         <div className='card w-[800px] max-w-full h-[90vh] max-h-full p-0 overflow-hidden rounded-md relative'>
-          <div className='absolute top-0 left-0 w-full flex  items-center justify-center '>
+          <div className='absolute top-0 left-0 w-full flex  items-center justify-center z-10'>
             <div className='card rounded-md p-4 m-2 sm:w-1/2 flex gap-4 max-w-full min-w-[300px]'>
               <Autocomplete onPlaceChanged={onPlaceChanged} onLoad={onLoad} className='flex-1'>
                 <TextInput label='' placeholder={'Search your Location'} className='w-full' size='small'
@@ -145,7 +145,7 @@ const Map = ({label,className,handleReturn}) => {
                 <Button1 onClick={() => setOpen(false)}>Done</Button1>
               </div>
             </div>
-            {/* <div className=' top-0 right-0 p-2 m-2 rounded-full  hidden sm:block'>
+            {/* <div className=' top-0 right-0 p-2 m-2 rounded-full z-10 hidden sm:block'>
               <div className='flex items-center justify-center p-4 hover:scale-110 cursor-pointer rounded-full bg-secondary shadow'
                 onClick={() => setOpen(false)}
               >

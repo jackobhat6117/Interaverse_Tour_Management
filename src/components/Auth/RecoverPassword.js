@@ -4,13 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import recoverPassword from "../../controllers/Auth/recoverPassword";
 import PasswordInput from "../form/PasswordInput";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setUserData } from "../../redux/reducers/userSlice";
 import resendOTP from "../../controllers/Auth/resendOTP";
 import OTPInput from "./OTPInput";
 import Logo from "../Logo/Logo";
-import staffRecoverPassword from "../../controllers/Auth/staff/recoverPassword";
-import staffResendOTP from "../../controllers/Auth/staff/resendOTP";
 
 export default function RecoverPassword() {
   const [data, setData] = useState({ otp: "", password: "" });
@@ -20,18 +18,12 @@ export default function RecoverPassword() {
   const dispatch = useDispatch();
   const searchParams = new URLSearchParams(window.location.search);
   const email = searchParams.get("email");
-  const {userData: {agent}} = useSelector(state => state.user)
-
 
   async function handleSubmit(ev) {
     ev.preventDefault();
 
     setLoading(true);
-    let res = {return: 0,msg: 'Something went wrong on our end! Please contact support 0xRCVPWD'}
-    if(agent)
-      res = await staffRecoverPassword(data);
-    else
-      res = await recoverPassword(data);
+    const res = await recoverPassword(data);
     setLoading(false);
     if (res.return) {
       enqueueSnackbar(res.msg || "Password Recovered.", { variant: "success" });
@@ -49,11 +41,7 @@ export default function RecoverPassword() {
 
   async function handleResendOTP() {
     setLoading(true);
-    let res = {return: 0,msg: 'Something went wrong on our end! Please contact support 0xRSTPWD'}
-    if(agent)
-      res = await staffResendOTP({email})
-    else
-      res = await resendOTP({ email });
+    const res = await resendOTP({ email });
     setLoading(false);
     if (res.return) {
       enqueueSnackbar(res.msg || "OTP has been resent.", {

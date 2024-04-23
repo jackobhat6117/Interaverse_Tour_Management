@@ -1,14 +1,11 @@
-import { GroupsOutlined, LockOutlined, LockPersonOutlined, SettingsOutlined } from '@mui/icons-material';
+import { Code, EmailOutlined, GroupsOutlined, LayersOutlined, LockOutlined, SettingsOutlined } from '@mui/icons-material';
 import { Button } from '@mui/material';
 import React from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
-import { def } from '../../config';
-import { getTestLevel } from '../../utils/testLevel';
 
 export const accountLinks = [
   {to: "/settings/", title: '', icon: SettingsOutlined, label: "Account"},
   {to: "/settings/security", title: 'security', icon: LockOutlined,label: "Security"},
-  {to: "/settings/roles", title: 'roles', icon: LockPersonOutlined,label:"Access Control"},
   {to: "/settings/team", title: 'team', icon: GroupsOutlined,label:"Team Members"},
   // {to: "/settings/contact", title: 'contact', icon: EmailOutlined,label: "Contact Emails"},
   // {to: "/settings/balance", title: 'balance', icon: LayersOutlined, label: "Balance"},
@@ -22,11 +19,9 @@ export default function AccountNav() {
   // console.log('page: ',page)
 
   return (
-    <div className='flex flex-col gap-4 w-full h-full flex-1'>
+    <div className='flex flex-col gap-4 w-full h-full'>
       <div className='hidden sm:flex gap-2 overflow-x-auto overflow-hidden w-full'>
-        {accountLinks?.filter(obj => (
-          getTestLevel(def.devStatus) > 0 ? (!['roles','team']?.includes(obj?.title)) : true
-        )).map(({to,title,icon,label},i) => (
+        {accountLinks.map(({to,title,icon,label},i) => (
           <CustomLink key={i} to={to} active={!page ? title === '' : title === page} Icon={icon} label={label} />
         ))}
         {/* <Link to="/settings/"> <Button className={`${!page ? 'btn-theme' : 'btn-theme-light'}  whitespace-nowrap`}><SettingsOutlined className={`${!page || (page==='') ? 'text-secondary/80' : ''} `} fontSize='small' /> Preference</Button></Link>

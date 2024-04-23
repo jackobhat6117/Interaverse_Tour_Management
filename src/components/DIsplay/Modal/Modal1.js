@@ -8,9 +8,9 @@ export default function Modal1({open,setOpen,children,className,config={bg: true
       setOpen && setOpen(false);
   }
   return (
-    <div className={`fixed top-0 left-0 w-screen h-screen justify-center items-center bg-black/30 z-30 ${open?'':'hidden'} `} 
+    <div className={`fixed top-0 left-0 w-screen h-screen justify-center items-center bg-black/30 z-[99]  ${open?'':'hidden'} `} 
       onClick={(ev) => handleCLickAway(ev)}
-      style={{zIndex: 20}}
+      style={{ transform: 'translate3d(0, 0, 0)' }}
       name='ModalParent'
     >
       <div className={'flex flex-col relative items-center justify-center h-full p-4 '+className} >

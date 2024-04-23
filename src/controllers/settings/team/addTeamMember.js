@@ -8,7 +8,7 @@ export default async function addTeamMember(data) {
   let headers = {
     Authorization: 'Bearer '+token,
   }
-  await fetchServer({method: 'POST',url: '/main/v1/staff/invite',data,
+  await fetchServer({method: 'POST',url: '/main/v1/team',data,
     headers
   })
   .then((res) => {

@@ -8,7 +8,7 @@ import fetchServer from "../fetchServer";
 export default async function getPointTransactions(status, keyword) {
   let result = {
     return: 0,
-    msg: "Something went wrong fetching Intraverse points!",
+    msg: "Something went wrong fetching miles points!",
   };
 
   await fetchServer({

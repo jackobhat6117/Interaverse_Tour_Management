@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Autocomplete, FormControl, FormGroup, InputAdornment, InputLabel, TextField } from '@mui/material';
 import {countries} from 'country-data';
-import Icon from '../HOC/Icon';
 
 export default function PhoneNumberInput({value,onChange,label,className,disabled,required,size,placeholder}) {
   const option = countries.all.filter((country) => country.status === 'assigned');
@@ -37,16 +36,14 @@ export default function PhoneNumberInput({value,onChange,label,className,disable
     <FormControl variant='outlined' component='fieldset' className='!border-primary/20 hover:!border-primary !rounded-md !flex !nowrap !p-2 -translate-y-2' sx={{border: 1}} required={required}>
       {/* <InputLabel shrink className='bg-secondary font-bold !px-2 -ml-2' >{label !== null ? label : 'Phone Number'} </InputLabel> */}
       <legend shrink className='!px-2 text-xs' >{label !== null ? label : 'Phone Number'} {required?'*':''} </legend>
-      <div className='flex justify-end items-center'>
+      <div className='flex justify-end'>
       <input className={'!w-[60px] !px-2 py-1 flex-none cursor-pointer bg-inherit '+(size==='small'?'!py-0':'')} disabled={disabled}
         name='phoneCode'
         value={"+"+(code||'234')}
         tabIndex={0}
         onChange={() => true}
         onFocus={() => {setOpen(true); setTimeout(() => {sqRef.current && sqRef.current.focus()},100)}} />
-      <Icon icon='bxs:down-arrow' className='!w-2 !h-2 -translate-x-[10px] text-primary/70' />
-
-      <input className='!flex-1 !xborder-0 bg-inherit ' name='phone' ref={phoneRef} disabled={disabled}
+      <input className='!flex-1 !xborder-0 bg-inherit' name='phone' ref={phoneRef} disabled={disabled}
         placeholder={placeholder || '940067966'}
         value={phone||""}
         maxLength={10}
@@ -60,7 +57,7 @@ export default function PhoneNumberInput({value,onChange,label,className,disable
         />
       </div>
     </FormControl>
-    <FormGroup className={' z-10 absolute top-[calc(100%+10px)] left-0 !bg-secondary drop-shadow p-4 -my-4 w-full border border-primary/20 '+(open ? ' ': ' !hidden ')}>
+    <FormGroup className={' z-10 absolute top-0 left-0 !bg-secondary drop-shadow p-4 -my-4 w-full border border-primary/20 z-2 '+(open ? ' ': ' !hidden ')}>
       <FormControl variant='outlined'>
       <InputLabel shrink className='bg-secondary px-2' >Country </InputLabel>
       <Autocomplete className='min-w-[200px]'

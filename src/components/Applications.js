@@ -14,8 +14,6 @@ import team from '../assets/icons/Applications/team.svg'
 import template from '../assets/icons/Applications/template.svg'
 import tree from '../assets/icons/Applications/tree.svg'
 import website from '../assets/icons/Applications/website.svg'
-import { getTestLevel } from '../utils/testLevel'
-import { def } from '../config'
 
 export default function Applications() {
     const lists = [
@@ -30,7 +28,7 @@ export default function Applications() {
         {name: 'Embed Link',link: '/order/new/tour',icon: link},
         {name: 'Suppliers',link: '/settings/order/suppliers',icon: chess},
         {name: 'Team',link: '/settings/team',icon: team},
-        {name: 'Intraverse Points',link: '/settings/order/points',icon: reward},
+        {name: 'Miles Points',link: '/settings/order/points',icon: reward},
     ]
 
     const ListItem = ({obj: {name,link,icon}}) => (
@@ -39,15 +37,6 @@ export default function Applications() {
             <span className='text-sm'>{name}</span>
         </Link>
     )
-
-    function passedTest(name) {
-        const devStatus = getTestLevel(def?.devStatus);
-        const underTest = ['Stays','Tours','Developers','Templates','Website','Widget','Embed Link','Suppliers','Team','Intraverse Points'];
-        if(devStatus >= 1)
-            return !underTest?.includes(name)
-        
-        return true
-    }
   return (
     <div>
         <CustomMenu 
@@ -56,7 +45,7 @@ export default function Applications() {
             )}
             >
             <div className='card p-10 grid grid-cols-3 gap-3'>
-                {lists?.filter(obj => passedTest(obj?.name)).map((list,i) => (
+                {lists.map((list,i) => (
                     <ListItem key={i} obj={list} />
                 ))}
             </div>

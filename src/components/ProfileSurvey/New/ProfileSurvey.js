@@ -14,6 +14,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import checkProfileComplete from "../../../features/profile/checkProfileComplete";
 import Button1 from "../../form/Button1";
 import Logo from "../../Logo/Logo";
+import verifyBusiness from "../../../controllers/user/verifyBusiness";
+import verifyBusinessRemove from "../../../controllers/user/verifyBusinessRemove";
 
 export const profileSteps = [
   { label: "Business Detail", elem: <BusinessDetail /> },
@@ -166,14 +168,9 @@ export default function ProfileSurvey() {
           </div>
           <Link
             to="/welcome/"
-            className="flex items-center justify-start sm:justify-end gap-1 w-full sm:px-6 my-2 py-2 text-gray-500 font-bold"
+            className="flex items-center justify-end gap-1 w-full px-6 my-2 py-2 text-gray-500 font-bold"
           >
-            <span className="sm:hidden flex gap-2 items-center">
-              <Icon icon="ep:back" className="!h-4" /> Back
-            </span>
-            <span className="hidden sm:flex gap-2 items-center">
-              <Icon icon="lucide:home" className="!h-4" /> Home
-            </span>
+            <Icon icon="lucide:home" className="!h-4" /> Home
           </Link>
           {!completed || step < steps.length ? (
             <div className="flex flex-col gap-5 w-[600px] min-h-[85%] max-w-full">
@@ -201,9 +198,9 @@ export default function ProfileSurvey() {
                     loading={loading}
                     />
                 :
-                  <div className="flex flex-col items-center text-center">
+                  <div className="flex flex-col items-center">
                     <h5>Your request is under review!</h5>
-                    <p>You'll be able to update after confirmation </p>
+                    <p>You'll be able to update after confirmaion </p>
                   </div>
                 }
                 <Link
@@ -232,7 +229,7 @@ export default function ProfileSurvey() {
   );
 }
 
-function ReviewBusinessProfile({ setStep, activate, completed }) {
+export function ReviewBusinessProfile({ setStep, activate, completed, user, callback }) {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -257,21 +254,46 @@ function ReviewBusinessProfile({ setStep, activate, completed }) {
     setLoading(false);
   }
 
+  async function handleVerify() {
+    setLoading(true);
+    const res = await verifyBusiness(user?._id)
+    setLoading(false);
+    if(res.return) {
+      enqueueSnackbar('Bussiness Approved',{variant: 'success'})
+    } else 
+      enqueueSnackbar(res.msg,{variant: 'error'})
+
+    callback && callback(res.return)
+  }
+
+  async function handleRemoveVerify() {
+    setLoading(true);
+    const res = await verifyBusinessRemove(user?._id)
+    setLoading(false);
+    if(res.return) {
+      enqueueSnackbar('Bussiness Approved',{variant: 'success'})
+    } else 
+      enqueueSnackbar(res.msg,{variant: 'error'})
+
+    callback && callback(res.return)
+  }
+
   const EditDetail = ({ n }) => (
-    <button className="p-1 text-theme1 bg-theme1/5" onClick={() => setStep(n)}>
-      Edit Details
-    </button>
+    false
+    // <button className="p-1 text-theme1 bg-theme1/5" onClick={() => setStep(n)}>
+    //   Edit Details
+    // </button>
   );
   return (
     <div className="flex flex-col gap-5 w-[600px] min-h-[85%] max-w-full py-10">
-      {/* <div className="w-full p-3 px-5 flex md:hidden gap-2 justify-center md:justify-start">
+      <div className="w-full p-3 px-5 flex md:hidden gap-2 justify-center md:justify-start">
         <Logo />
-      </div> */}
+      </div>
       {!edit || Number(edit) === 1 || Number(edit) > 3 ? (
         <div className="flex flex-col gap-5">
           <div className="p-4 bg-primary/10">Business Detail</div>
           <div>
-            <BusinessDetail review={<EditDetail n={0} />} />
+            <BusinessDetail user={user} review={<EditDetail n={0} />} />
           </div>
         </div>
       ) : null}
@@ -279,7 +301,7 @@ function ReviewBusinessProfile({ setStep, activate, completed }) {
         <div className="flex flex-col gap-5">
           <div className="p-4 bg-primary/10">Legal Entity</div>
           <div>
-            <LegalEntity review={<EditDetail n={1} />} />
+            <LegalEntity user={user} review={<EditDetail n={1} />} />
           </div>
         </div>
       ) : null}
@@ -287,10 +309,18 @@ function ReviewBusinessProfile({ setStep, activate, completed }) {
         <div className="flex flex-col gap-5">
           <div className="p-4 bg-primary/10">Key Contact</div>
           <div>
-            <KeyContact review={<EditDetail n={2} />} />
+            <KeyContact user={user} review={<EditDetail n={2} />} />
           </div>
         </div>
       ) : null}
+
+      <div>
+        {user?.detail?.isVerified ? 
+          <Button1 loading={loading} className='!bg-red-500 !text-white' onClick={handleRemoveVerify}>Remove Business Verification</Button1>
+        :
+          <Button1 loading={loading} onClick={handleVerify}>Verify Business</Button1>
+        }
+      </div>
 
       {edit && Number(edit) <= steps.length ? (
         <div>
@@ -328,9 +358,6 @@ function Congradulations() {
         </div>
       ) : (
         <div className="flex flex-1 flex-col items-center justify-center text-center w-full gap-10 p-4">
-          <div className="w-full  px-5 flex gap-2 justify-center ">
-            <Logo />
-          </div>
           <h4>We have received your activation request</h4>
           <div className="flex flex-col items-center gap-4">
             {/* <h4 className='max-w-[500px]'>Your business has been registered with us</h4> */}
@@ -346,7 +373,7 @@ function Congradulations() {
             </div>
           </div>
           <Link
-            to="/getting-started"
+            to="/"
             className="btn-theme rounded-md w-full justify-center max-w-[500px]"
           >
             Continue
@@ -379,7 +406,7 @@ function ProfileStepperNav({ activeStep, steps, setStep }) {
                   {i + 1}
                 </div>
                 <span
-                  className={`cursor-pointer text-center whitespace-nowrap flex-1 ${
+                  className={`cursor-pointer text-center flex-1 ${
                     activeStep === i ? "text-theme1" : "text-primary/50"
                   }`}
                 >

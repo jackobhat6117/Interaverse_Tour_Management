@@ -2,15 +2,14 @@ import axios from "axios";
 import { store } from "../redux/store";
 import { logout } from "../redux/reducers/userSlice";
 
-
 export default async function fetchServer({
   method,
   url,
   data,
   headers = {},
-  api = process.env.REACT_APP_API,
+  cancelToken,
+  api = process.env.REACT_APP_API || "https://dev.intraversewebservices.com/api",
   onDownloadProgress,
-  ...restOptions
 }) {
   // console.log('api: ',api,process.env.REACT_APP_API)
 
@@ -29,13 +28,13 @@ export default async function fetchServer({
     data,
     onDownloadProgress,
     headers,
-    ...restOptions
+    cancelToken
   }).catch((err) => {
     if (err?.response?.status === 401) {
       store.dispatch(logout());
     }
     if(!err?.response?.status)
-      throw new Error(err || "Network Error! Please check your network connectivity.")
+      throw new Error(err?.response?.status || "Network Error! Please check your network connectivity.")
 
     return err?.response?.data;
   })

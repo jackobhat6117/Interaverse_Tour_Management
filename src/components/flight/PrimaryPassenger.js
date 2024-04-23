@@ -129,10 +129,7 @@ export default function PrimaryPassenger({data:gotData,label,type,handleReturn,c
           <h5>Additional details</h5>
           <div className='flex gap-4'>
             <div className='flex-1'>
-              <TextInput label='Frequent flyer number' placeholder='Enter here'
-                value={data?.frequentFlyer}
-                onChange={(ev) => handleData({...data,frequentFlyer: ev?.target?.value})}
-              />
+              <TextInput label='Frequent flyer number' placeholder='Enter here'/>
             </div>
             <div className='flex-1'>
               <SelectInput label='Special assistance' placeholder='Select'>
@@ -142,10 +139,7 @@ export default function PrimaryPassenger({data:gotData,label,type,handleReturn,c
           </div>
 
           <h5>Remarks</h5>
-          <TextInput multiline rows={4} label='' placeholder={'Add remarks to booking'}
-            value={data?.generalRemark}
-            onChange={(ev) => handleData({...data,generalRemark: ev?.target?.value})}
-           />
+          <TextInput multiline rows={4} label='' placeholder={'Add remarks to booking'} />
         </div>
       </Collapser>
     </div>

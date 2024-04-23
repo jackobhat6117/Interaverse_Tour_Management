@@ -3,10 +3,9 @@ import moment from 'moment';
 import React from 'react'
 import getFlightDuration from '../../features/flight/getFlightDuration';
 import Icon from '../HOC/Icon';
-import MD from '../DIsplay/Screen/MD';
 
 
-export default function FlightDisplay({flight: data,body}) {
+export default function FlightDisplay({flight: data}) {
   let flight = data;
   //test
   const departureDateTime = moment(`${flight?.departureDate} ${flight?.departureTime}`, "YYYY-MM-DD HH:mm");
@@ -14,25 +13,22 @@ export default function FlightDisplay({flight: data,body}) {
   const duration = getFlightDuration(departureDateTime,arrivalDateTime,'short');
 
   return (flight && flight?.flights[0]) && (
-    <div className='flex flex-1 flex-wrap-reverse sm:flex-nowrap'>
-      <div className='flex sm:flex-col flex-wrap-reverse items-center justify-center md:justify-center p-3 w-full md:w-auto  text-center'>
-        <div className='max-w-[140px] w-full flex items-center justify-center'>
-          <img alt='airline' src={flight?.flights[0].carrierIcon} className=' w-full min-w-[100px] object-cover'/>
-        </div>
-        <MD><p className='w-full'>{flight?.flights[0].carrierName}</p></MD>
-        <div className='sm:hidden'>{body}</div>
+    <div className='flex flex-1 '>
+      <div className='flex flex-col items-center justify-center p-3 w-[140px] text-center'>
+        <img alt='airline' src={flight?.flights[0].carrierIcon} className=''/>
+        <p className=''>{flight?.flights[0].carrierName}</p>
       </div>
-      <div className='flex flex-col gap-1 grow p-3 md:py-8 '>
+      <div className='flex flex-col gap-1 grow p-3 py-8'>
         {/* <p className=''>{flight?.flights[0].departureAirportName}</p> */}
         <div className='flex justify-between items-center relative gap-2'>
           <div className='flex flex-col justify-center gap-1 h-full  items-between '>
-            <div className='flex gap-2 items-center'>
+            <div className='flex gap-2'>
               <b>{flight?.departureTime}</b>
               <h6>{flight?.departureLocation}</h6>
             </div>
-            <div className='overflow-hidden flex-1  max-w-[150px]'><MD>{flight?.departureAirport},</MD> {flight?.departureCity}</div>
+            <div className='overflow-hidden flex-1  max-w-[150px]'>{flight?.departureAirport}, {flight?.departureCity}</div>
           </div>
-          <div className='hidden xs:flex flex-col items-center justify-center '>
+          <div className='flex flex-col items-center justify-center '>
             <small className='whitespace-nowrap py-1 flex items-center gap-1'>
               <AccessTime className='!w-4 !h-4' />
               {/* {flight?.duration} */}
@@ -48,11 +44,11 @@ export default function FlightDisplay({flight: data,body}) {
             </small>
           </div>
           <div className='flex flex-col justify-center gap-1 h-full items-between '>
-            <div className='flex gap-2 items-center'>
+            <div className='flex gap-2'>
               <b>{flight?.arrivalTime}</b>
               <h6>{flight?.arrivalLocation}</h6>
             </div>
-            <div className='overflow-hidden flex-1  max-w-[150px]'><MD>{flight?.arrivalAirport},</MD> {flight?.arrivalCity}</div>
+            <div className='overflow-hidden flex-1  max-w-[150px]'>{flight?.arrivalAirport}, {flight?.arrivalCity}</div>
           </div>
         </div>
         <div className='p-1 flex gap-2'>

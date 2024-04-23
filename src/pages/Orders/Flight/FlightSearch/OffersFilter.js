@@ -56,7 +56,7 @@ export default function FlightOfferFilter({orgi:defOrgi,data,cats,setData}) {
   function filterByStops(data,objs) {
     if(!data) return [];
 
-    // console.log(data,objs)
+    console.log(data,objs)
     let newData = data.filter(obj => {
       if(obj.segments) {
         if(!objs.allowOv && obj.segments.every(item => item.numberOfStops > 0 && item.flights.every((flight,ind,arr) => {
@@ -105,7 +105,7 @@ export default function FlightOfferFilter({orgi:defOrgi,data,cats,setData}) {
   }
   function filterByAirline(data,objs) {
     if(!data) return [];
-    // console.log(data,objs)
+    console.log(data,objs)
     
     if(objs.every(obj => !obj.value))
       return data;
@@ -116,15 +116,11 @@ export default function FlightOfferFilter({orgi:defOrgi,data,cats,setData}) {
           // (segIndex && i === segIndex) || 
           item.flights.some((flight) => 
             objs.filter(obj => obj.value).some((d) => (d.id === flight.marketingCarrier))
-            // &&
-            // objs.filter(obj => obj.value).some((d) => (d.id === item.flights?.at(0)?.marketingCarrier))
-          
         )))
         return true;
       
       return false;
     })
-    // console.log(newData)
     
     return newData;
   }
@@ -132,8 +128,7 @@ export default function FlightOfferFilter({orgi:defOrgi,data,cats,setData}) {
     if(!data) return [];
 
     let newData = data.filter(obj => {
-      // let found = objs.find(suplier => suplier.value && obj[suplier.id])
-      let found = objs.find(suplier => suplier.value && (obj?.supplier === suplier.id))
+      let found = objs.find(suplier => suplier.value && obj[suplier.id])
       if(found) return true;
       return false;
     })
@@ -156,7 +151,7 @@ export default function FlightOfferFilter({orgi:defOrgi,data,cats,setData}) {
     if(!data) return [];
 
     if(obj?.name === 'Any') return data
-    // console.log(' -> ',obj)
+    console.log(' -> ',obj)
     let newData = data?.filter(offer => {  
       let refundable = offer?.segments?.every(segment => segment.flights?.every(flight => flight?.amenities?.find(amen => amen.description === 'REFUNDS')))  
       if(obj?.name === 'Refundable')

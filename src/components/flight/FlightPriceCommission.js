@@ -24,7 +24,6 @@ export default function FlightPriceCommission({
           data?.booking?.flightBooking?.at(0)?.basePrice,
         commission: data?.booking?.flightBooking?.at(0)?.expectedCommission,
         ticketingFee: data?.booking?.flightBooking?.at(0)?.ticketingFee || 0,
-        payable: data?.booking?.flightBooking?.at(0)?.payable,
       };
       setPayable(formattedData.grandTotal + formattedData.ticketingFee);
       setBookingInfo(formattedData);
@@ -70,12 +69,6 @@ export default function FlightPriceCommission({
         <div className="flex gap-4 justify-between">
           <span>Tax:</span>
           <span>{formatMoney(bookingInfo?.tax, bookingInfo?.currency)}</span>
-        </div>
-        <br />
-        <hr />
-        <div className="flex gap-4 justify-between font-bold">
-          <h6>Payable to Intraverse:</h6>
-          <b>{formatMoney(bookingInfo?.payable, bookingInfo?.currency)}</b>
         </div>
         <div className="flex gap-4 justify-between">
           <span>Commission:</span>

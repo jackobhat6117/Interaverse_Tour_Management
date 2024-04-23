@@ -16,11 +16,11 @@ export default function WelcomeNavbar(props) {
   const location = useLocation();
   const locations = location.pathname?.split('/');
   let page = locations[2];
-  if(page === 'getting-started')
+  if(page === '')
     page = 'welcome';
-  else if(page === undefined || !page) page = 'getting-started';
+  else if(page === undefined || !page) page = '';
   
-  const links = ['getting-started','pricing','learn','support']
+  const links = ['','pricing','learn','support']
   
   const [tabIndex,setTabIndex] = useState(
     links.indexOf(page)
@@ -28,18 +28,13 @@ export default function WelcomeNavbar(props) {
 
   useEffect(() => {
     window.scrollTo(0,0)
-    setTabIndex(links.indexOf(page))
-    //eslint-disable-next-line
   },[location])
-
-  console.log('tab: ',tabIndex, locations[2])
 
 
   function handleChange(ev,val) {
     ev?.preventDefault();
     setTabIndex(val);
     navigate(ev.target.dataset.link)
-    return true;
   }
   return (
     <div className='flex flex-col min-h-screen '>
@@ -48,12 +43,12 @@ export default function WelcomeNavbar(props) {
           <Header />
         :null
       }
-      <div className='w-full hidden md:block px-md shadow-sm bg-secondary border-b'>
+      <div className='w-full px-md shadow-sm bg-secondary border-b'>
         <Tabs variant="scrollable" value={tabIndex} className="font-bold" 
           onChange={(ev,val) => handleChange(ev,val)}
           TabIndicatorProps={{sx: {height: '4px'}}}>
-            <Tab label='Getting Started' data-link="/getting-started" icon={<Icon icon='heroicons:rocket-launch' className='!min-w-[20px] !h-6 -rotate-[43deg]' />} iconPosition="start" className='!capitalize !min-w-[150px] md:flex-1 !whitespace-nowrap' />
-            {profileComplete && underReview ?
+            <Tab label='Getting Started' data-link="/welcome" icon={<Icon icon='heroicons:rocket-launch' className='!min-w-[20px] !h-6 -rotate-[43deg]' />} iconPosition="start" className='!capitalize !min-w-[150px] md:flex-1 !whitespace-nowrap' />
+            {profileComplete || underReview ?
               <Tab label='Home' data-link="/" icon={<HomeOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
             :null}
             <Tab label='Pricing' data-link="/welcome/pricing" icon={

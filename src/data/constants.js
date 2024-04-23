@@ -8,15 +8,13 @@ export const alertType = {
   suspended: "error",
   expired: "error",
   Expired: "error",
-  Failed: "error",
   
   
   confirmed: "success",
   created: "success",
   earned: "success",
   active: "success",
-  Success: "success",
-  success: "success",
+
   'issuable': "success",
   'paid': "success",
   'completed': "success",
@@ -30,7 +28,7 @@ export const alertType = {
   "on hold": "warn",
   'needs review': 'warn',
   Pending: "warn",
-  Issuing: 'warn',
-  issuing: 'warn',
-  
+  Failed: "error",
+  Success: "success",
+  success: "success",
 };

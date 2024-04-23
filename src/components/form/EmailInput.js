@@ -19,7 +19,7 @@ export default function EmailInput(props) {
   }
   return (
     <div className='w-full'>
-      <TextInput type='email' className='w-full !min-w-[200px] ' 
+      <TextInput type='email' className='w-full ' 
         error={props.value !== '' && error}
         // pattern
         // helperText={'Invalid Email Pattern'}
