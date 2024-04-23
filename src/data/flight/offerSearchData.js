@@ -16,7 +16,9 @@ export const offerSearchTemp = {
     "Intra2A",
     "Intra3A",
     'Intra1K'
-  ]?.filter(val => !(['Intra1K']?.includes(val) && (getTestLevel() >= getTestLevel('dev')))),
+  ]?.filter(val => !(['Intra1K']?.includes(val) && (getTestLevel() === getTestLevel('qa')))
+    && !(['Intra1FR']?.includes(val) && (getTestLevel() > getTestLevel('qa')))
+  ),
   currency: "NGN",
   maxSolutions: 100,
   originDestinations: [

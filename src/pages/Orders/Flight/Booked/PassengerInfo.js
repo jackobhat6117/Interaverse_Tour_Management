@@ -18,6 +18,7 @@ export default function PassengerInfo({ label, traveler,order }) {
             <td className='pr-4'>Name</td>
             <td className='px-4'>Date of birth</td>
             <td className='px-4'>Gender</td>
+            <td className='px-4'>{traveler?.document?.documentType} Id</td>
           </thead>
           <tbody>
             <td className='pr-4'>
@@ -25,6 +26,7 @@ export default function PassengerInfo({ label, traveler,order }) {
             </td>
             <td className='px-4'>{traveler?.birthDate}</td>
             <td className='px-4'>{traveler?.gender ? toPascalCase(traveler?.gender) : ""}</td>
+            <td className='px-4'>{traveler?.document?.number}</td>
           </tbody>
         </table>
       </div>
