@@ -10,7 +10,7 @@ import { clone } from '../../../features/utils/objClone'
 import { useLocation } from 'react-router-dom'
 
 
-function LegalEntity({updateProfile,back,next,review,user:defUser}) {
+function LegalEntity({updateProfile,back,next,review}) {
   const {user} = useSelector(state => state.user.userData);
   const userDetails = mergeRecursive(clone(profileSurveyData),user?.detail || {},{createNew: false})
   const [data,setData] = useState({...profileSurveyData,...userDetails});
@@ -41,18 +41,18 @@ function LegalEntity({updateProfile,back,next,review,user:defUser}) {
   }
 
   if(review && !edit)
-    return <ReviewDisplay data={defUser?.detail || user?.detail} review={review} setEdit={setEdit} />
+    return <ReviewDisplay data={user?.detail} review={review} setEdit={setEdit} />
 
   
   return !(user?.detail?.agencyType === 'starterBusiness') ? (
     <div className='flex flex-col gap-4 slide'>
       {!qedit ? 
         <div className='flex flex-col gap-2 py-4'>
-          <h4 className=''>Enter your business registration informaiton</h4>
+          <h5 className=''>Enter your business registration informaiton</h5>
           <p className=''>As a regulated travel technology company, we would need  your business registration information.</p>
         </div>
       :
-        <h4 className='py-4'>Edit business registration information</h4>
+        <h5 className='py-4'>Edit business registration information</h5>
       }
       <form onSubmit={handleSubmit} className='flex flex-col flex-wrap gap-4 justify-between self-stretch py-4'>
         <div>

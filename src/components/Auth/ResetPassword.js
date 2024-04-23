@@ -5,6 +5,8 @@ import Button1 from '../form/Button1'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import forgotPassword from '../../controllers/Auth/forgotPassword'
+import { useSelector } from 'react-redux'
+import staffForgotPassword from '../../controllers/Auth/staff/forgotPassword'
 
 
 export default function ResetPassword() {
@@ -12,12 +14,17 @@ export default function ResetPassword() {
   const navigate = useNavigate()
   const [loading,setLoading] = useState(false);
   const {enqueueSnackbar} = useSnackbar();
+  const {userData: {agent}} = useSelector(state => state.user)
 
   async function handleSubmit(ev) {
     ev.preventDefault();
 
     setLoading(true);
-    const res = await forgotPassword({email});
+    let res = {return: 0,msg: 'Something went wrong on our end! Please contact support 0xRSTPWD'}
+    if(agent)
+      res = await staffForgotPassword({email})
+    else
+      res = await forgotPassword({email});
     setLoading(false);
     if(res.return) {
       enqueueSnackbar(res.msg || 'Reset link sent to your email.',{variant: 'success'});

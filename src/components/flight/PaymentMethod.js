@@ -2,11 +2,15 @@ import RadioGroup from "../form/RadioGroup";
 import Button1 from "../form/Button1";
 import payForTicket from "../../controllers/Flight/payForTicket";
 import { useSnackbar } from "notistack";
-import { useState } from "react";
-import { Modal } from "@mui/material";
+import { useEffect, useState } from "react";
+import { MenuItem, Modal } from "@mui/material";
 import card from "../../assets/icons/payment/card-payment.svg";
 import payment from "../../assets/icons/payment/payment.svg";
 import wallet from "../../assets/icons/payment/wallet.svg";
+import holdFlightBooking from "../../controllers/booking/holdFlightBooking";
+import TextInput from "../form/TextInput";
+import getSavedCards from "../../controllers/Bank/getSavedCards";
+import { getTestLevel } from "../../utils/testLevel";
 
 export default function PaymentMethod({
   flightBookingId,
@@ -25,7 +29,7 @@ export default function PaymentMethod({
       icon: <img alt="" src={card} className="" />,
       name: "Pay with stored card",
       description: "Pay with stored card",
-      value: "stored",
+      value: "SavedCard",
     },
     {
       icon: <img alt="" src={payment} className="" />,
@@ -33,18 +37,30 @@ export default function PaymentMethod({
       description: "Pay with a debit or credit card",
       value: "Card",
     },
-    {
-      icon: <img alt="" src={wallet} className="" />,
-      name: "Pay with miles balance",
-      description: "Pay with a debit or credit card",
-      value: "balance",
-    },
   ];
+
+  if(getTestLevel() < getTestLevel('qa'))
+    options.push({
+      icon: <img alt="" src={wallet} className="" />,
+      name: "Pay with Intraverse balance",
+      description: "Pay with a debit or credit card",
+      value: "Wallet",
+    })
+  
   const [method, setMethod] = useState(options[1].value);
   const [loading, setLoading] = useState(false);
+  const [loadingCards, setLoadingCards] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   // const navigate = useNavigate();
   const [paymentUrl, setPaymentUrl] = useState();
+  const [cards,setCards] = useState([])
+  const [selectedCard,setSelectedCard] = useState();
+
+  useEffect(() => {
+    if(method === 'SavedCard')
+      loadCards();
+    //eslint-disable-next-line
+  },[method])
 
   async function handlePay() {
     const url = new URL(window.location.href);
@@ -56,11 +72,14 @@ export default function PaymentMethod({
 
     let obj = {
       flightBookingId,
-      paymentMode: method,
+      paymentMode: method,//method,
       callback: newUrl,
       onClose: callback && callback,
       deductCommission,
     };
+    if(method === 'SavedCard')
+      obj.savedCardId = selectedCard;
+
     setLoading(true);
     const res = await payForTicket(obj);
     setLoading(false);
@@ -76,17 +95,42 @@ export default function PaymentMethod({
 
       // const options = `width=${width}, height=${height}, left=${left}, top=${top}`;
 
-      setPaymentUrl(url);
-      const popup = window.open(url,'popupWindow')
-      const checkPopupClosed = setInterval(() => {
-        if (popup.closed) {
-          clearInterval(checkPopupClosed);
-          setPaymentUrl(undefined)
-          callback && callback();
-        }
-      }, 1000);
+      if(url) {
+        setPaymentUrl(url);
+        const popup = window.open(url,'popupWindow')
+        const checkPopupClosed = setInterval(() => {
+          if (popup.closed) {
+            clearInterval(checkPopupClosed);
+            setPaymentUrl(undefined)
+            callback && callback();
+          }
+        }, 1000);
+      } else {
+        enqueueSnackbar(res?.msg,{variant: 'success'});
+        callback && callback();
+      }
     } else enqueueSnackbar(res?.msg, { variant: "error" });
   }
+
+  async function loadCards() {
+    setLoadingCards(true);
+    const res = await getSavedCards();
+    setLoadingCards(false);
+    if(res.return) {
+      setCards(res?.data?.data)
+    } else enqueueSnackbar(res?.msg,{variant: 'error'})
+  }
+
+  async function handleHold() {
+    setLoading(true);
+    const res = await holdFlightBooking(flightBookingId);
+    setLoading(false);
+    if(res.return) {
+
+      callback && callback()
+    }
+  }
+
   return (
     <div
       className={"border p-4 flex flex-col gap-6 md:min-w-[400px] " + className}
@@ -95,6 +139,27 @@ export default function PaymentMethod({
       <hr />
       {paynow ? (
         <div className="flex flex-col gap-3">
+          {method === 'SavedCard' ? 
+            <TextInput select onChange={(ev) => setSelectedCard(ev?.target?.value)} label={'Saved Cards'}>
+              <div className="w-full flex justify-center items-center">
+                {loadingCards ? <div className="load text-primary"></div> : null}
+              </div>
+              {cards?.map((card,i) => (
+                <MenuItem value={card?._id} key={i}>
+                  <div className="flex gap-4 justify-between items-center w-full">
+                    <div>
+                      <b>{card?.bank}</b>
+                      <p>{card?.bin} {card?.last4}</p>
+                    </div>
+                    <div className='flex flex-col gap-1 text-xs'>
+                      <span className='flex gap-2 justify-between'>EXPIRY <span>{card?.exp_month}/{card?.exp_year}</span></span>
+                      <span className='flex gap-2 justify-between'>{card?.channel} <span>{card?.card_type}</span></span>
+                    </div>
+                  </div>
+                </MenuItem>
+              ))}
+            </TextInput>
+          :null}
           <RadioGroup
             options={options}
             value={method}
@@ -112,14 +177,14 @@ export default function PaymentMethod({
             )}
           />
           <hr />
-          {!hide || !hide.includes('flexify') ? 
+          {(!hide || !hide.includes('flexify')) && getTestLevel() < getTestLevel('qa') ? 
             <div className="flex flex-col ">
               <h5>Flexify</h5>
               <p>Pay in instalments</p>
               <hr />
             </div>
           :null}
-          {!hide || !hide.includes('freeze') ? 
+          {(!hide || !hide.includes('freeze')) && getTestLevel() < getTestLevel('qa') ? 
             <div className="flex flex-col ">
               <h5>Price freeze</h5>
               <p>Hold price for a while</p>
@@ -128,13 +193,13 @@ export default function PaymentMethod({
           :null}
           <Button1 loading={loading} onClick={handlePay}>Pay now</Button1>
           {!hide || !hide.includes('booklater') ? 
-            <button className="p-2" onClick={() => callback && callback()}>Hold booking and pay later</button>
+            <Button1 variant='outlined' className="!p-2 !border !border-primary !bg-transparent !text-primary" loading={loading} onClick={handleHold}>Hold booking and pay later</Button1>
           :null}
         </div>
       ) : (
         <div className="flex flex-col gap-3">
           <Button1 onClick={() => setPaynow(true)}>Pay now</Button1>
-          <button className="btn bg-primary" onClick={() => callback && callback()}>Hold booking and pay later</button>
+          <Button1 className="!btn !bg-primary/90 !text-secondary" loading={loading} onClick={handleHold}>Hold booking and pay later</Button1>
         </div>
       )}
       <Modal

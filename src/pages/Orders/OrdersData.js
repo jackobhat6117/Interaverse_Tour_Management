@@ -17,6 +17,12 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { def } from "../../config";
 import PaymentMethod from "../../components/flight/PaymentMethod";
 import Modal1 from "../../components/DIsplay/Modal/Modal1";
+import moment from "moment";
+import { clone } from "../../features/utils/objClone";
+import { generateReport } from "../../utils/generateReport";
+import IssueTicket from "./IssueTicket";
+import CancelTicket from "./CancelTicket";
+import { getTestLevel } from "../../utils/testLevel";
 
 
 const ActionContext = createContext();
@@ -46,8 +52,9 @@ export const Menu = (props) => {
 };
 
 export function OrderMenus({callback,data:{status,id,bookingID,orderType,row},actions,inDetail}) {
-  const {addBags,addSeats,addInsurance,cancelOrder,pay} = actions || {}
+  const {addBags,addSeats,addInsurance,issueTicket,cancelOrder,pay,cancelTicket} = actions || {}
   const navigate = useNavigate();
+  const devStage = getTestLevel(def?.devStatus);
   
   // 'booked': 'Not Paid',
   // 'issuable': 'Paid',
@@ -55,7 +62,7 @@ export function OrderMenus({callback,data:{status,id,bookingID,orderType,row},ac
 
   return (
     <div>
-      <div className="menuItem" onClick={() => callback && callback()}>
+      <div className="menuItem " onClick={() => callback && callback()}>
         {!inDetail?
           <Menu
             value={status}
@@ -65,43 +72,55 @@ export function OrderMenus({callback,data:{status,id,bookingID,orderType,row},ac
             }
           />
         :null}
-        <Menu
-          value={status}
-          label="Make Payment"
-          showFor={["Not Paid","booked"]}
-          onClick={() => pay && pay(bookingID)}
-        />
+        { devStage < 3 ?
+          <Menu
+            value={status}
+            label="Make Payment"
+            showFor={["Not Paid","booked"]}
+            onClick={() => pay && pay(bookingID)}
+            />
+          :null
+        }
         <Menu
           value={status}
           label="Issue Ticket"
           showFor={["Paid","issuable"]}
-          className="!btn disabled"
+          // className="!btn disabled"
+          onClick={() => issueTicket && issueTicket()}
         />
-        <Menu
-          value={status}
-          label="Manage Ticket"
-          showFor={["Completed","issued"]}
-        />
-        <Menu
-          value={status}
-          label="Add Seats"
-          showFor={["Not Paid","booked"]}
-          onClick={() => navigate('/order/flight/change/'+id+'?property=seat')}
-          // onClick={() => addSeats && addSeats(row)}
-          />
-        <Menu
-          value={status}
-          label="Add Bags"
-          showFor={["Not Paid","booked"]}
-          onClick={() => navigate('/order/flight/change/'+id+'?property=bags')}
-          // onClick={() => addBags && addBags(id)}
-        />
-        {def.devTest ? 
+        {devStage < 1 ?
           <Menu
-            value={"pending"}
+            value={status}
+            label="Cancel Ticket"
+            showFor={["Completed","issued"]}
+            onClick={() => cancelTicket && cancelTicket()}
+          />
+        :null}
+        { devStage < 1 ?
+          <Menu
+            value={status}
+            label="Add Seats"
+            showFor={["Not Paid","booked"]}
+            onClick={() => navigate('/order/flight/change/'+id+'?property=seat')}
+            // onClick={() => addSeats && addSeats(row)}
+          />
+        :null}
+        { devStage < 1 ?
+          <Menu
+            value={status}
+            label="Add Bags"
+            showFor={["Not Paid","booked"]}
+            onClick={() => navigate('/order/flight/change/'+id+'?property=bags')}
+            // onClick={() => addBags && addBags(id)}
+          />
+        :null}
+        {devStage < 1 ? 
+          <Menu
+            value={status}
             label="Add Insurance"
-            hideFor={["Completed","issued"]}
-            onClick={() => addInsurance && addInsurance(id)}
+            hideFor={["Completed","issued",'Expired']}
+            // onClick={() => addInsurance && addInsurance(id)}
+            onClick={() => navigate('/order/flight/change/'+id+'?property=insurance')}
           />
         :null}
 
@@ -115,11 +134,12 @@ export function OrderMenus({callback,data:{status,id,bookingID,orderType,row},ac
         <Menu
           value={status}
           label="Cancel Order"
-          showFor={['Paid','issuable']}
+          showFor={['Not Paid','booked']}
           className="!bg-red-500 !text-white !rounded-md"
-          onClick={() => cancelOrder && cancelOrder(id)}
+          onClick={() => cancelOrder && cancelOrder()}
           />
-      </div>      
+        <Menu label='' className='min-w-[150px]' />
+      </div>
     </div>
 
   )
@@ -132,16 +152,30 @@ export function flightStatusMap(status) {
   //   Failed = "Failed",
   //   Booked = "Booked",
   //   Issued = "Issued",
+  //   ----------------------
+  //   Paid = "Paid",
+  //   PendingTicketIssueApproval = "PendingTicketIssueApproval",
+  //   PendingTicketIssue = "PendingTicketIssue",
+  //   Expired = "Expired",
+  //   AutoCanceled = "AutoCanceled",
+  //   Canceled = "Canceled",
+  //   TicketCanceled = "TicketCanceled",
+  //   Refunded = "Refunded",
+  //   TicketCancelationRequested = "TicketCancelationRequested",
   // }
 
   let map = {
     'booked': 'Not Paid',
     'issuable': 'Paid',
-    'issued': 'Completed'
+    'pendingticketissueapproval': 'Issuing',
+    'pendingticketissue': 'Issuing',
+    'issued': 'Completed',
+    'autocanceled': 'Expired',
+    'canceled': 'Canceled'
   }
 
   try {
-    return map[status?.toLowerCase()]
+    return map[status?.toLowerCase()] || status
   } catch(ex) {return status}
 }
 function StatusCol({ params }) {
@@ -149,33 +183,35 @@ function StatusCol({ params }) {
   
   const orderType = params?.row?.type?.toLowerCase() || "type";
   const bookingID = params?.row?.flightObj?._id;
-
-  console.log(' --> ',params.row)
   
   return (
-    <div className="flex justify-between items-center gap-2 w-full ">
-      <span className={`${alertType[status]}`}>{status}</span>
-      <CustomMenu
-        element={
-          <label className="block p-2 px-4 cursor-pointer">
-            <Icon icon={"pepicons-pop:dots-y"} />
-          </label>
-        }
-      >
-        <ActionContext.Consumer>
-          {(value) => {
-            const {bags,seats,cancel,payment} = value || {}
-            return (
-              <OrderMenus data={{row: params.row,id: params.id,bookingID,status,orderType}} actions={{
-                addBags: bags?.open,
-                addSeats: seats?.open,
-                cancelOrder: cancel?.open,
-                pay: payment?.open,
-              }} />
-            )
-          }}
-        </ActionContext.Consumer>
-      </CustomMenu>
+    <div className="flex justify-between items-center gap-2 w-full">
+      <span className={`${alertType[status]} overflow-hidden text-ellipsis`} title={status}>{status}</span>
+      <div className="sticky right-0 ">
+        <CustomMenu
+          element={
+            <label className="block p-2 px-4 cursor-pointer">
+              <Icon icon={"pepicons-pop:dots-y"} />
+            </label>
+          }
+        >
+          <ActionContext.Consumer>
+            {(value) => {
+              const {bags,seats,cancel,payment,issueTicket,cancelTicket} = value || {}
+              return (
+                <OrderMenus data={{row: params.row,id: params.id,bookingID,status,orderType}} actions={{
+                  addBags: bags?.open,
+                  addSeats: seats?.open,
+                  cancelOrder: () => cancel?.open(params.row?.flightObj._id),
+                  pay: payment?.open,
+                  issueTicket: () => issueTicket(params.row?.flightObj),
+                  cancelTicket: () => cancelTicket(params.row?.flightObj),
+                }} />
+              )
+            }}
+          </ActionContext.Consumer>
+        </CustomMenu>
+      </div>
     </div>
   );
 }
@@ -204,6 +240,8 @@ export default function OrdersData({ data: gotData, setData: setOrig, reload }) 
   const [openAddSeats, setOpenAddSeats] = useState(false);
   const [openCancelOrder, setOpenCancelOrder] = useState(false);
   const [openPayment,setOpenPayment] = useState(false);
+  const [openIssueTicket,setOpenIssueTicket] = useState(false);
+  const [openCancelTicket,setOpenCancelTicket] = useState(false);
 
   let countObj = {
     all: gotData?.length,
@@ -221,6 +259,7 @@ export default function OrdersData({ data: gotData, setData: setOrig, reload }) 
   });
 
   const [filter, setFilter] = useState("ALL");
+  const [timeFilter, setTimeFilter] = useState({range: "all",date: moment().toString()});
 
   useEffect(() => {
     if ((!filter || filter === "ALL") && !status) return setData(gotData);
@@ -237,7 +276,8 @@ export default function OrdersData({ data: gotData, setData: setOrig, reload }) 
 
           if(status === 'needsReview') {
             pass = obj?.flightObj?.needsReview
-          }
+          } else if(status === 'onHold')
+            pass = obj?.flightObj?.isHeldBooking
 
           return pass;
         }
@@ -246,11 +286,16 @@ export default function OrdersData({ data: gotData, setData: setOrig, reload }) 
     //eslint-disable-next-line
   }, [filter, status, gotData]);
 
+  useEffect(() => {
+    setData(filterWithTime(gotData,timeFilter))
+  },[timeFilter,gotData])
+
+
   const filterOptions = [
     { label: "All", value: "ALL", count: countObj.all },
     { label: "Flights", value: "FLIGHT", count: countObj.flights },
-    { label: "Stays", value: "Stay", count: countObj.stays },
-    { label: "Tours", value: "Tour", count: countObj.tours },
+    { label: "Stays", value: "Stay", count: countObj.stays, disabled: !def.devTest },
+    { label: "Tours", value: "Tour", count: countObj.tours, disabled: !def.devTest },
   ];
 
   const columns = [
@@ -287,14 +332,38 @@ export default function OrdersData({ data: gotData, setData: setOrig, reload }) 
       headerName: "Status",
       minWidth: 160,
       renderCell: (params) => (
-        <StatusCol
-          params={params}
-        />
+        <StatusCol params={params} />
       ),
     },
   ];
+
+  const filterWithTime = (data, filter) => {
+    const { range, date } = filter;
+    if(range === 'all')
+      return data;
+    
+    const filteredData = data.filter(item => {
+      const itemDate = moment(item.updatedAt);
   
-  console.log(data)
+      const startDate = moment(date).subtract(1, range);
+      const endDate = moment(date);
+
+      // console.log(startDate.format('YYYY-MM-DD'),itemDate?.format('YYYY-MM-DD'),endDate.format('YYYY-MM-DD'))
+      
+      return itemDate.isBetween(startDate, endDate, null, '[]');
+    });
+  
+    return filteredData;
+  };
+  
+  function handleExport() {
+    generateReport(data,columns,(fieldName,value) => {
+      if(fieldName === 'amount' || fieldName === 'commission')
+        return formatMoney(value);
+      
+      return value;
+    })
+  }
 
   return (
     <div className="pd-md flex-1 flex flex-col gap-1">
@@ -303,15 +372,17 @@ export default function OrdersData({ data: gotData, setData: setOrig, reload }) 
         {/* <div className='flex gap-4 flex-wrap items-center justify-between md:justify-start flex-1 max-w-full'> */}
         <div className="order-3 md:order-2 max-w-full">
           <TableFilter
-            options={filterOptions}
+            options={filterOptions?.filter(obj => !obj.disabled)}
             value={filter}
             onChange={(val) => setFilter(val)}
           />
         </div>
         <div className="order-2 md:order-3 flex gap-2">
-          <button className="btn-theme-light !bg-primary/10 rounded-md">
-            Queue
-          </button>
+          {def.devTest ? 
+            <button className="btn-theme-light !bg-primary/10 rounded-md">
+              Queue
+            </button>
+          :null}
           <CreateOrder
             label="Create new order"
             handleReturn={() => setData([...data, tempObj])}
@@ -321,25 +392,38 @@ export default function OrdersData({ data: gotData, setData: setOrig, reload }) 
       </div>
       <hr />
       <div className="flex gap-4 justify-between items-center flex-wrap">
-        <div className="flex gap-2 btn-theme-light">
+        {/* <div className="flex gap-2 btn-theme-light">
           + <span>Filter</span>
-        </div>
+        </div> */}
         <div className="flex gap-2">
-          <Link to={status === 'needsReview' ? '?status=null' : '?status=needsReview'} className={status === 'needsReview' ? 'btn' : "btn-theme-light"}>Needs review</Link>
-          <button className={status === 'onhold' ? 'btn' : "btn-theme-light"}>On hold</button>
+          {
+            def.devTest ? 
+              <Link to={status === 'needsReview' ? '?status=null' : '?status=needsReview'} className={status === 'needsReview' ? 'btn' : "btn-theme-light"}>Needs review</Link>
+            :null
+          }
+          {
+            def.devTest ? 
+              <Link to={status === 'onHold' ? '?status=null' : '?status=onHold'} className={status === 'onHold' ? 'btn' : "btn-theme-light"}>On hold</Link>
+            :null
+          }
         </div>
-        <div className="flex gap-2 items-center">
-          <Button1 variant="text" className="capitalize">
+        <div className="flex gap-2 items-center flex-wrap">
+          <Button1 variant="text" className="capitalize !w-auto" onClick={handleExport}>
             Export
           </Button1>
           <div className="flex gap-2 items-center light-bg rounded-md p-2">
-            <SelectInput defaultValue="Weekly" size="small" label="">
-              <MenuItem>Hourly</MenuItem>
-              <MenuItem value="Weekly">Weekly</MenuItem>
-              <MenuItem>Monthly</MenuItem>
-              <MenuItem>Yearly</MenuItem>
+            <SelectInput defaultValue="Weekly" size="small" label=""
+              value={timeFilter?.range}
+              onChange={(ev) => setTimeFilter({...timeFilter,range: ev.target.value})}
+            >
+              <MenuItem value='hour'>Hourly</MenuItem>
+              <MenuItem value='day'>Daily</MenuItem>
+              <MenuItem value='week'>Weekly</MenuItem>
+              <MenuItem value='month'>Monthly</MenuItem>
+              <MenuItem value='year'>Yearly</MenuItem>
+              <MenuItem value='all'>All</MenuItem>
             </SelectInput>
-            <CalendarInput1 />
+            <CalendarInput1 value={timeFilter?.date} onChange={(obj) => setTimeFilter({...timeFilter,date: obj?.start})} />
           </div>
         </div>
       </div>
@@ -363,26 +447,35 @@ export default function OrdersData({ data: gotData, setData: setOrig, reload }) 
           },
           payment: {
             open: (val) => setOpenPayment(val)
-          }
+          },
+          issueTicket: setOpenIssueTicket,
+          cancelTicket: setOpenCancelTicket,
         }}
       >
         {/* {status === 'needsReview' ? 
           <OrderDataChanges data={data} />
           :
         } */}
-      <CustomTable rows={data} columns={columns}
-        pageSizeOptions={[10,20,50,100]}
-        initialState={{
-          pagination: { paginationModel: { pageSize: 20 } },
-        }}
-       />
+      <CustomTable rows={data} columns={columns} />
       </ActionContext.Provider>
 
       <AddBags open={openAddBags} setOpen={setOpenAddBags} />
       <AddSeats open={openAddSeats} setOpen={setOpenAddSeats} />
-      <CancelOrder open={openCancelOrder} setOpen={setOpenCancelOrder} />
+      <CancelOrder open={openCancelOrder} setOpen={setOpenCancelOrder} callback={() => {reload();setOpenCancelOrder(false)}} />
       <Modal1 open={openPayment} setOpen={setOpenPayment}>
         <PaymentMethod callback={() => {reload();setOpenPayment(false)}} flightBookingId={openPayment} hide={['booklater']} expand />
+      </Modal1>
+      <Modal1 open={openIssueTicket} setOpen={setOpenIssueTicket}>
+        <IssueTicket
+          data={openIssueTicket}
+          callback={() => {reload();setOpenIssueTicket(false)}}
+          close={() => setOpenIssueTicket(false)} />
+      </Modal1>
+      <Modal1 open={openCancelTicket} setOpen={setOpenCancelTicket}>
+        <CancelTicket
+          data={openCancelTicket}
+          callback={() => {reload();setOpenCancelTicket(false)}}
+          close={() => setOpenCancelTicket(false)} />
       </Modal1>
     </div>
   );

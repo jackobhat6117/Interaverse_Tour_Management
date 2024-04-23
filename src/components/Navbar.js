@@ -7,14 +7,15 @@ import { useSelector } from 'react-redux';
 import checkProfileComplete from '../features/profile/checkProfileComplete';
 import WelcomeNavbar from './WelcomeNavbar';
 import GettingStarted from '../pages/Welcome/GettingStarted';
+import { getsubDomain } from '../utils/getsubDomain';
 
 
 function Navbar() {
   const {user} = useSelector(state => state.user.userData);
-
+  const agency = getsubDomain();
   const profileCompleteCheck = checkProfileComplete(user);
-  const completed = profileCompleteCheck?.every(obj => obj.complete);
   const verified = user?.detail?.isVerified;
+  const completed = (profileCompleteCheck?.every(obj => obj.complete) && user?.detail?.requestedVerification) || verified;
 
   useEffect(() => {
     if(window?.Intercom)
@@ -26,19 +27,19 @@ function Navbar() {
   return (
     <div className='flex flex-col min-h-screen'>
       <Header />
-      <div className='w-full px-md shadow-sm bg-secondary border-b'>
-        <NavLinks profileCompleted={true} />
+      <div className='w-full hidden md:block px-md shadow-sm bg-secondary border-b'>
+        <NavLinks profileCompleted={completed || agency} />
       </div>
       {/* <ProfileSurvey /> */}
       <div className='bg-secondary flex flex-col h-full flex-1'>
-        {/* {completed && !verified ? ( */}
+        {agency || (completed) ? (
           <Outlet />
-        {/* ):(
+        ):(
           <WelcomeNavbar>
             <GettingStarted />
-            <ProfileStatusCheck data={profileCompleteCheck} />
+            {/* <ProfileStatusCheck data={profileCompleteCheck} /> */}
           </WelcomeNavbar>
-        )} */}
+        )}
       </div>
     </div>
   )

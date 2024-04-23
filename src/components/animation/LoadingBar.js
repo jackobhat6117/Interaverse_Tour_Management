@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react'
-import loadingBar from '../../assets/json/loading-bar.json';
+// import loadingBar from '../../assets/json/loading-bar.json';
+import Plane from '../../assets/json/Plane.json';
 import Lottie from 'lottie-web';
 
-export default function LoadingBar({config={},className,duration}) {
+export default function LoadingBar({config={},className,duration,message}) {
   const animationContainer = useRef(null);
   const animationInstance = useRef(null);
   // const initTime = (new Date()).getMilliseconds();
@@ -11,9 +12,9 @@ export default function LoadingBar({config={},className,duration}) {
     animationInstance.current = Lottie.loadAnimation({
       container: animationContainer.current,
       renderer: 'svg',
-      loop: false,
+      loop: true,
       autoplay: true,
-      animationData: loadingBar,
+      animationData: Plane,
       rendererSettings: {
         preserveAspectRatio: 'xMidYMid slice',
       },
@@ -21,8 +22,8 @@ export default function LoadingBar({config={},className,duration}) {
     })
 
     if(duration) {
-      const animationDuration = animationInstance.current.getDuration();
-      animationInstance.current.setSpeed(animationDuration / duration);
+      // const animationDuration = animationInstance.current.getDuration();
+      // animationInstance.current.setSpeed(animationDuration / duration);
 
       // const desiredDuration = 10; // Desired duration in seconds
       // const animationDuration = animationInstance.current.getDuration(); // Convert animation duration to seconds
@@ -39,8 +40,13 @@ export default function LoadingBar({config={},className,duration}) {
   },[config,duration])
 
   return (
-    <div className='flex items-center justify-center'>
-      <div ref={animationContainer} className={'h-[60px] max-w-full w-[200px] flex items-center justify-center '+className}></div>
+    <div className='flex flex-col text-center gap-2 items-center justify-center'>
+      <div ref={animationContainer} className={'h-[125px] max-w-full w-[200px] flex items-center justify-center '+className}></div>
+      {message ? 
+        <div className='flex flex-wrap gap-2 items-center'>
+          {message}
+        </div>
+      :null}
     </div>
   )
 }

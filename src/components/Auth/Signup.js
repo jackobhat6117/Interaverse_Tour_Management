@@ -4,7 +4,7 @@ import logo from '../../assets/icons/logo.svg'
 import EmailInput from '../form/EmailInput'
 import PasswordInput from '../form/PasswordInput'
 import Button1 from '../form/Button1'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import flightCheckedIcon from '../../assets/icons/Checkmark.svg';
 import hotelCheckedIcon from '../../assets/icons/Checkmark (2).svg';
 import packageCheckedIcon from '../../assets/icons/Checkmark (1).svg';
@@ -16,25 +16,39 @@ import Checkbox from '../form/Checkbox'
 import PhoneNumberInput from '../form/PhoneNumberInput'
 import Icon from '../HOC/Icon'
 import Logo from '../Logo/Logo'
+import { useSelector } from 'react-redux'
+import acceptInvitation from '../../controllers/Auth/staff/acceptInvitation'
+import { path } from '../../config'
+import { getsubDomain } from '../../utils/getsubDomain'
 
 
 export default function Signup() {
-  // const location = useLocation();
-  // const searchParam = new URLSearchParams(location.search)
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const email = searchParams.get('email')
   // let type = searchParam.get('type')
-  const [data,setData] = useState({...signupReqData,userType: "Agent",confirmPassword: ''});
+  const [data,setData] = useState({...signupReqData,userType: "Agent",confirmPassword: '',email: email || ''});
   const navigate = useNavigate();
   const [loading,setLoading] = useState(false);
   const {enqueueSnackbar} = useSnackbar();
-  const [type,setType] = useState(false);
   const [terms,setTerms] = useState(false);
+  const [type,setType] = useState(email || false);
+  const {userData: {agent}} = useSelector(state => state?.user)
+  const agency = getsubDomain();
+
 
 
   async function handleSubmit(ev) {
-    ev.preventDefault();
+    ev?.preventDefault();
 
+    const {firstName,lastName,email,password} = data;
     setLoading(true);
-    const res = await signup(data);
+    let res = {return: 0,msg: 'Something went wrong on our end! Please contact support. 0xSTLOG'}
+    console.log(agent)
+    if(agent)
+      res = await acceptInvitation({firstName,lastName,email,password,agentId: agent?._id,hash: agent?.hash})
+    else
+      res = await signup(data);
     setLoading(false);
     if(res.return) {
       enqueueSnackbar('Registered Successfully.',{variant: 'success'});
@@ -49,14 +63,14 @@ export default function Signup() {
     window.location.href = (process.env.REACT_APP_API+'/main/v1/auth/google?'+curUrl)
   }
 
-  return (
+  return agency ? <AgencySignup data={data} setData={setData} handleSignup={handleSubmit} /> : (
     <div className='flex min-h-screen '>
       <div className='bg-black hidden md:block flex-0 '>
         <div className='w-full h-full hidden md:flex flex-col bg-theme1/40'>
           <div className='lg:px-20 p-10 py-5 flex gap-2 text-white'>
             {/* <img src={logo} alt='' className='object-contain' /> */}
             {/* <img src={textlogo} alt='' className='' /> */}
-            <Logo />
+            <Logo textClassName={'text-secondary capitalize'} />
           </div>
           <div className='flex flex-col p-10 lg:px-20 flex-1 gap-6 text-secondary justify-center'>
             <h4 className='pb-4 text-secondary'>Sell travel online seamlessly</h4>
@@ -74,45 +88,6 @@ export default function Signup() {
           </div>
         </div>
       </div>
-        {/* <div className='flex flex-col justify-center gap-5 p-10 py-5 flex-1 bg-[#CCE2FA]'>
-          <h5 className='px-4'>Select your business type</h5>
-          <RadioGroup name='userType' className='flex flex-col gap-4' value={data.userType} onChange={((ev) => setData({...data,userType: ev.target.value}))}>
-            <label className='card cursor-pointer p-4 py-2 flex items-center gap-4'>
-                <Radio value={'Agent'} />
-                <div className='flex flex-col'>
-                  <h5>Travel Agency</h5>
-                  <p>Allow your customers to search, book and pay for flights, stays and tours on your own website. Manage bookings and issue tickets.</p>
-                </div>
-            </label>
-            <label className='card cursor-pointer p-4 py-2 flex items-center gap-4'>
-                <Radio value={'Business'} />
-                <div className='flex flex-col'>
-                  <h5>Business</h5>
-                  <p>Search, book and pay for flights, stays and tours. Manage bookings and issue tickets.</p>
-                </div>
-            </label>
-            <label className='card cursor-pointer p-4 py-2 flex items-center gap-4'>
-                <Radio value={'Customer'} />
-                <div className='flex flex-col'>
-                  <h5>Freelancer</h5>
-                  <p>Search, book and pay for flights, stays and tours for your customers using the Miles dashboard. Manage bookings and issue tickets.</p>
-                </div>
-            </label>
-            <label className='card cursor-pointer p-4 py-2 flex items-center gap-4'>
-                <Radio value={'Affiliate'} />
-                <div className='flex flex-col'>
-                  <h5>Developer</h5>
-                  <p>Access to comprehensive documentation for the Miles API</p>
-                </div>
-            </label>
-          </RadioGroup>
-          <Link to={`?view=register&type=${data.userType}`}><Button1 size='large' className='p-3' >Signup</Button1></Link>
-          <div className='self-center text-center flex flex-col gap-3'>
-            <div className='flex gap-2 items-center'>
-              <p className='text-primary/40'>Already have an account?</p><Link className='text-theme1 font-bold' to="?login">Login</Link>
-            </div>
-          </div>
-        </div> */}
       {!type ? (
         <div className='flex-1 bg-secondary flex flex-col '>
           <div className='lg:px-20 px-4 self-center md:hidden p-4 flex gap-2 w-[80%]'>
@@ -123,7 +98,7 @@ export default function Signup() {
           <div className='flex flex-1 flex-col justify-center items-center '>
 
             <div className='flex flex-col gap-8 w-[80%]'>
-              <h4>Create your account on Intraverse</h4>
+              <h4>Create your account on {path.siteName}</h4>
               {/* <div id='signInDiv'></div> */}
               <div className='flex flex-col gap-4'>
                 <div className='btn flex gap-4 !bg-secondary !text-primary px-[8px] py-5'
@@ -174,7 +149,7 @@ export default function Signup() {
                   onChange={(ev) => setData({...data,lastName: ev.target.value})}          
                   />
               </div>
-              <EmailInput size='small' required
+              <EmailInput size='small' required disabled={email}
                 value={data.email}
                 onChange={(ev) => setData({...data,email: ev.target.value})}          
               />
@@ -198,7 +173,10 @@ export default function Signup() {
                   I’d like to receive occasionaly updates
                 </Checkbox>
                 <Checkbox labelClassName='bg-secondary px-2 py-1' onChange={(ev) => setTerms(ev.target.checked)}>
-                  I’ve read and agree with Miles Terms & Privacy Policy
+                  I’ve read and agree with Intraverse 
+                  <Link to='/tos' target='_blank'>Terms</Link>
+                   & 
+                  <Link to='/privacy-policy' target='_blank'>Privacy Policy</Link>
                 </Checkbox>
               </div>
               <Button1 loading={loading} type={'submit'} label={'Sign up'} disabled={!terms}></Button1>
@@ -216,6 +194,51 @@ export default function Signup() {
   )
 }
 
+function AgencySignup({data,setData,handleSignup}) {
+  const [loading,setLoading] = useState(false);
+
+  async function handleSubmit(ev) {
+    ev?.preventDefault();
+    setLoading(true);
+    await handleSignup();
+    setLoading(false);
+  }
+  return (
+    <div className='flex flex-col items-center justify-center gap-4 min-h-screen p-10'>
+      <form onSubmit={handleSubmit} className='flex flex-col items-center text-center gap-10 max-w-[500px]'>
+        <Logo />
+        <h4>Welcome to {path.siteName} Travels</h4>
+        <div>
+          A teammate has invited you to join their account. Please complete the fields below to get started creating your account
+        </div>
+        <div className='flex flex-col gap-6'>
+          <div className='flex gap-6'>
+            <TextInput label='First Name' value={data?.firstName}
+              onChange={(ev) => setData({...data,firstName: ev.target.value})} />
+            <TextInput label='Last Name' value={data?.lastName}
+              onChange={(ev) => setData({...data,lastName: ev.target.value})} />
+          </div>
+          <div className='flex gap-6'>
+            <PasswordInput size='small' required
+              value={data.password}
+              onChange={(ev) => setData({...data,password: ev.target.value})}          
+            />
+            <PasswordInput size='small' label={'Confirm password'} required
+              value={data.confirmPassword}
+              onChange={(ev) => setData({...data,confirmPassword: ev.target.value})}
+            />
+          </div>
+          <div className='py-5'>
+            <Button1 loading={loading} type='submit'>Join Team</Button1>
+          </div>
+          <div>
+            <Link to='/'>Login</Link>
+          </div>
+        </div>
+      </form>
+    </div>
+  )
+}
 function Service({title,icon,children}) {
   return (
     <div className='flex gap-5 text-white'>

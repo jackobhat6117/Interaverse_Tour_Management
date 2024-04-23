@@ -2,29 +2,25 @@ import React, { useEffect, useState } from "react";
 import { InputAdornment, TextField } from "@mui/material";
 import FetcherInput from "../mini/FetcherInput";
 import getAirlineCodes from "../../controllers/Flight/getAirlines";
-import axios from "axios";
-
-let cancelToken = null;
 
 export default function AirlinesInput({
   val,
   returnData,
+  placeholder,
   option,
   label,
   icon,
   multiple,
-  required
 }) {
-  const [ariline, setAriline] = useState([]);
+  const [airline, setAirline] = useState([]);
   const [data, setData] = useState(val || "");
 
   useEffect(() => {
     setData(val || "")
   },[val])
-
   // option?.map(val => {
   //   let airlines = [];
-  //   getAriline(val.id,(data) => (
+  //   getAirline(val.id,(data) => (
   //     airlines = [...data]
   //   ))
   //   console.log('----------')
@@ -33,7 +29,7 @@ export default function AirlinesInput({
 
   async function handleChange(val) {
     if (!val || val.length === 0) return returnData && returnData(null);
-    getAriline(val);
+    getAirline(val);
     setData(val);
   }
   function handleReturn(val) {
@@ -41,16 +37,11 @@ export default function AirlinesInput({
     if (returnData) returnData(val);
   }
 
-  async function getAriline(val, callback) {
+  async function getAirline(val, callback) {
     if (val === "") return false;
-
-    if(cancelToken)
-      cancelToken.cancel('Canceled for another search')
-    cancelToken = axios.CancelToken.source();
-    
-    const res = await getAirlineCodes(val,cancelToken.token);
+    const res = await getAirlineCodes(val);
     if (res.return)
-      if (!callback) setAriline(res.data?.data);
+      if (!callback) setAirline(res.data?.data);
       else callback(res.data?.data);
   }
 
@@ -66,7 +57,7 @@ export default function AirlinesInput({
   return (
     <FetcherInput
       className="min-w-[200px]"
-      options={ariline}
+      options={airline}
       getOptionLabel={(option) =>
         typeof option === "string" ? option : option.name
       }
@@ -81,8 +72,8 @@ export default function AirlinesInput({
       renderInput={(params) => (
         <TextField
           {...params}
-          required={required}
-          label={label || 'Airline'}
+          placeholder={val || placeholder}
+          label={label}
           InputProps={{
             ...params.InputProps,
             type: "search",

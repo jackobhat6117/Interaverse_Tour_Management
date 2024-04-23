@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import EmailInput from "../form/EmailInput";
 import Button1 from "../form/Button1";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import verifyEmail from "../../controllers/Auth/verifyEmail";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../../redux/reducers/userSlice";
 import resendVerifyEmail from "../../controllers/Auth/resendVerifyEmail";
 import OTPInput from "./OTPInput";
 import MailVerified from "../animation/MailVerified";
 import MailSent from "../animation/MailSent";
 import Logo from "../Logo/Logo";
+import staffVerifyEmail from "../../controllers/Auth/staff/verifyEmail";
+import staffForgotPassword from "../../controllers/Auth/staff/forgotPassword";
 
 export default function VerifyEmail() {
   const searchParam = new URLSearchParams(window?.location?.search);
@@ -20,7 +22,10 @@ export default function VerifyEmail() {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const [verified, setVerified] = useState(false);
+  const {userData: {agent}} = useSelector(state => state.user)
 
+  const navigate = useNavigate();
+  
   
   async function handleSubmit(ev) {
     ev?.preventDefault();
@@ -35,15 +40,23 @@ export default function VerifyEmail() {
       // enqueueSnackbar('Welcome, your email has been verified.',{variant: 'success'});
       let { token: accessToken, account: user } = res.data?.data;
       dispatch(setUserData({ accessToken, user, loggedIn: true }));
+      navigate('/')
 
-    } else enqueueSnackbar(res.msg, { variant: "error" });
+    } else {
+      setData({...data,otp: ""})
+      enqueueSnackbar(res.msg, { variant: "error" })
+    }
   }
 
   async function resSubmit(ev) {
     ev.preventDefault();
 
     setLoading(true);
-    const res = await resendVerifyEmail(data);
+    let res = {return: 0,msg: 'Something went wrong on our end! Please contact support 0xRSTPWD'}
+    if(agent)
+      res = await staffForgotPassword(data)
+    else
+      res = await resendVerifyEmail(data);
     setLoading(false);
     if (res.return) {
       enqueueSnackbar(res.msg || "Verification code sent.", {

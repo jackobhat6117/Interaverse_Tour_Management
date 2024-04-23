@@ -1,7 +1,7 @@
 import fetchServer from "../fetchServer";
 
 export default async function createContactMail(data) {
-  let result = {return: 0,msg: 'Something went wrong removing Mail!'}
+  let result = {return: 0,msg: 'Something went wrong adding Mail!'}
 
   await fetchServer({method: 'POST',url: '/main/v1/contact/',data})
   .then((res) => {

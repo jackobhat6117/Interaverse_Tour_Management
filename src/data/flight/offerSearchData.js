@@ -1,13 +1,24 @@
 import mergeRecursive from "../../features/utils/mergeRecursive";
+import { getTestLevel } from "../../utils/testLevel";
 
+//  Intra1A = Amadeus
+//  Intra2A = AmadeuSoapNG
+//  Intra3A = AmadeusSoapDXB
+//  Intra1T = Travelport
+//  Intra1S = Sabre
+//  Intra1K = TravX
 export const offerSearchTemp = {
   supplier: [
-    "Amadeus",
-    //   "Travelport",
-    //   "Sabre"
-  ],
+    "Intra1A",
+    // "Intra1T",
+    // "Intra1S",
+    "Intra1FR",
+    "Intra2A",
+    "Intra3A",
+    'Intra1K'
+  ]?.filter(val => !(['Intra1K']?.includes(val) && (getTestLevel() >= getTestLevel('dev')))),
   currency: "NGN",
-  maxSolutions: 200,
+  maxSolutions: 100,
   originDestinations: [
     {
       from: "",

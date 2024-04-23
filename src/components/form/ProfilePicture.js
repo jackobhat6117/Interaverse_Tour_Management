@@ -130,11 +130,12 @@ export function ProfilePicture({
       </span>
       <Modal1 open={open} setOpen={setOpen}>
         <div className="p-4 flex flex-col gap-4">
-          <div className="w-[90vw] sm:w-[60vw] lg:w-[700px]">
+          <div className="w-[90vw] sm:w-[60vw] lg:w-[700px] max-w-full">
+            <small>Crop Tool</small>
             <ReactCrop
               crop={crop}
               aspect={aspect}
-              className="w-full"
+              className="w-full max-h-[70vh]"
               onChange={(c) => {
                 setCrop(c);
                 //REMOVE CONSOLE LOGS PLEASE

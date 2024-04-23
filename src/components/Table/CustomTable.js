@@ -49,15 +49,14 @@ export default function CustomTable(props) {
     ev?.preventDefault();
     if (searchVal === "") return setModRows(rows);
 
-    let modRows = rows.filter((row) => Object.values(row)?.toString()?.toLowerCase()?.includes(searchVal?.toLowerCase()));
-    console.log(modRows,rows)
+    let modRows = rows.filter((row) => Object.values(row).includes(searchVal));
     setModRows(modRows);
   }
 
   return (
     <div>
       {searchProps?.searchable ? (
-        <form onSubmit={handleSearch} className="flex gap-2 items-center pb-4">
+        <form onSubmit={handleSearch} className="flex gap-2 items-center">
           <SearchInput value={searchVal} onChange={setSearchVal} />
           <Button1 type="submit" className="h-full !w-auto sm:!px-6">
             Search

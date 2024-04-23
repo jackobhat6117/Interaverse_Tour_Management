@@ -24,7 +24,7 @@ function Button1(props) {
       onMouseOut={() => setShowtip(false)}
       className={
         "w-full relative !shadow-none  !rounded-lg !min-w-[80px] !px-4 !py-[7px] " +
-        (disabled ? ' !cursor-not-allowed ':props.className) +
+        (disabled ? " !cursor-not-allowed " : props.className) +
         " " +
         (props.size === "small" ? " !px-3 !rounded-sm !py-0 sm:!py-0 " : "")
       }

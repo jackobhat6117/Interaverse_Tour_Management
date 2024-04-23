@@ -11,6 +11,7 @@ import { clone } from '../../../features/utils/objClone'
 import MapAutoComplete from '../../form/MapAutoComplete'
 import { useLocation } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
+import { camelToSpace } from '../../../features/utils/CamelCase'
 
 
 const steps = [
@@ -21,7 +22,7 @@ const CurComp = (props) => {
   return React.cloneElement(props.component || <></>,props)
 }
 
-function BusinessDetail({updateProfile,back,next,review,user: defUser}) {
+function BusinessDetail({updateProfile,back,next,review}) {
   // const [obj,setObj] = useState({...profileSurveyData,...data})
   const {user} = useSelector(state => state.user.userData);
   const [step,setStep] = useState(user?.detail?.agencyType ? 1 : 0);
@@ -52,7 +53,7 @@ function BusinessDetail({updateProfile,back,next,review,user: defUser}) {
       <CurComp key={'editor'} component={steps[step]} next={stepNext} back={stepBack} updateProfile={updateProfile} />
     </div>
   ) : (
-    <ReviewDisplay data={defUser?.detail || user?.detail} setEdit={(val) => setEdit(val)} review={review} />
+    <ReviewDisplay data={user?.detail} setEdit={(val) => setEdit(val)} review={review} />
   )
 }
 
@@ -78,17 +79,17 @@ function BusinessType({next,updateProfile}) {
   return (
     <div>
       <div className='flex flex-col gap-2'>
-        <h4 className=''>{user.firstName} {user.lastName}, Welcome to Intraverse!</h4>
+        <h5 className=''>{user.firstName} {user.lastName}, Welcome to Intraverse!</h5>
         <p className=''>What type of business are you selling travel with?</p>
       </div>
       <div className='flex flex-col flex-wrap gap-4 justify-between self-stretch py-4'>
         <RadioGroup className='flex flex-col gap-4 py-4' options={[
           {value: 'starterBusiness',label: 'Starter Business',description: "I'm new to travel and preparing to register my business."},
           {value: 'registeredBusinessWithIATALicense',label: 'Registered business with IATA license',description: "My business has the approval (CAC), documentations and all licences required to operate legally and is IATA certified."},
-          {value: 'registeredBusinessWithOutIATALicense',label: 'Registered business with out IATA license',description: "My business has the approval (CAC), documentations and all licences required to operate legally but is  not IATA certified."},
+          {value: 'registeredBusinessWithOutIATALicense',label: 'Registered business without IATA license',description: "My business has the approval (CAC), documentations and all licences required to operate legally but is  not IATA certified."},
         ]} render={({label,description}) => (
           <div className='px-3'>
-            <h5>{label}</h5>
+            <b>{label}</b>
             <p className=''>{description}</p>
           </div>
         )}
@@ -102,10 +103,10 @@ function BusinessType({next,updateProfile}) {
 }
 
 function ReviewDisplay({data,review}) {
-  const Col = ({name,value}) => (
+  const Col = ({name,value,valueClassName}) => (
     <div className='flex flex-col gap-2'>
       <p>{name}</p>
-      <b>{value}</b>
+      <b className={valueClassName}>{value}</b>
     </div>
   )
   return (
@@ -113,7 +114,7 @@ function ReviewDisplay({data,review}) {
       <div className='absolute right-0 top-0 px-2'>
         {review ? review : null}
       </div>
-      <Col name='Business Type' value={data?.agencyType} />
+      <Col name='Business Type' value={camelToSpace(data?.agencyType)} valueClassName='capitalize' />
       <Col name='Trading Name' value={data?.tradingName} />
       <Col name='Business Address' value={data?.address?.businessLocation} />
       <Col name='Business Email' value={data?.businessEmail} />
@@ -159,6 +160,7 @@ function DetailInfo({next,back,updateProfile}) {
     if(!place?.lng?.toString())
       return enqueueSnackbar('Location details missing. Please try similar locations',{variant: 'warning'})
 
+    setLoc(place?.formattedAddress)
     setData({
       ...data,
       address: {
@@ -171,16 +173,18 @@ function DetailInfo({next,back,updateProfile}) {
     })
   }
 
+  const [loc,setLoc] = useState(data?.address?.businessLocation || '');
+
   // console.log(user,data)
   return (
     <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
       {!edit ? 
         <div className='flex flex-col gap-2 py-4'>
-          <h4 className=''>Hey {user.firstName}, let's get you started!</h4>
+          <h5 className=''>Hey {user.firstName}, let's get you started!</h5>
           <p className=''>Please tell us a little about your travel business to serve you better.</p>
         </div>
       :
-        <h4 className='py-4'>Edit business detail</h4>
+        <h5 className='py-4'>Edit business detail</h5>
       }
       <div>
         <TextInput key={'tradeName'} label={'Trading name'} required
@@ -192,6 +196,8 @@ function DetailInfo({next,back,updateProfile}) {
         <MapAutoComplete handleReturn={handleLocation}>
           <TextInput key='regName' label={'Business Address'} required
             placeholder={data?.address?.businessLocation || 'e.g 14b wole ariyo street, Lekki, Lagos'}
+            value={loc}
+            onChange={(ev) => setLoc(ev.target.value)}
             // value={data?.address?.location[0] || ''}
             // onChange={(ev) => setData({...data,address:{location: [Number(ev.target.value),Number(ev.target.value)]}})}
             />

@@ -21,8 +21,8 @@ import CitiesInput from '../../../components/form/CitiesInput'
 import { useSnackbar } from 'notistack'
 import AirlinesInput from '../../../components/form/AirlinesInput'
 
-export default function CreateFlightOrder({callback,data,returnData}) {
-  const [travelClass,setTravelClass] = useState('All');
+export default function CreateFlightOrder({callback,data,returnData,defaultData,config}) {
+  const [travelClass,setTravelClass] = useState('Economy');
   const [type,setType] = useState('return');
   const {bookingData} = useSelector(state => state.flightBooking);
   const [passengers,setPassengers] = useState(offerSearchTemp.passengers);
@@ -48,9 +48,6 @@ export default function CreateFlightOrder({callback,data,returnData}) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   
-  console.log(' -> ',qObj);
-
-
   useEffect(() => {
     if(q || data) {
       let obj = JSON.parse(decrypt(q)) || data;
@@ -62,9 +59,9 @@ export default function CreateFlightOrder({callback,data,returnData}) {
 
       let type = 'oneway'
       if(obj.originDestinations?.length) {
-        if(obj.originDestinations?.at(0)?.from?.iata === obj?.originDestinations?.at(-1)?.to?.iata)
+        if(obj.originDestinations?.at(0)?.from?.iata === obj?.originDestinations?.at(-1)?.to?.iata && obj?.originDestinations?.length === 2)
           type = 'return'
-        if(obj.originDestinations.length > 2)
+        else if(obj.originDestinations.length >= 2)
           type = 'multiple'
       }
       setType(type)
@@ -85,7 +82,8 @@ export default function CreateFlightOrder({callback,data,returnData}) {
       }
       if(date.length < 2)
         setDate([...date,""])
-    }
+    } else if(date.length > 1)
+      setDate([...date]?.slice(0,1))
     //eslint-disable-next-line
   },[type])
 
@@ -98,10 +96,14 @@ export default function CreateFlightOrder({callback,data,returnData}) {
   function handleSearch(ev) {
     ev?.preventDefault();
 
+    console.log(date)
+    const accurateDates = date?.reduce((acc, curr) => moment(curr).isSameOrAfter(moment(acc)) ? curr : false);
+    if(!accurateDates && date?.length > 1) return enqueueSnackbar('Invalid date orders!',{variant: 'error'})
+
     let searchObj = {...offerSearchTemp};
     searchObj['originDestinations'] = clone(destination);
     date.map((d,i) => {
-      if(i !== 0 && (!searchObj['originDestinations'][i] || !searchObj['originDestinations'][i]?.from)) {
+      if(i !== 0 && (!searchObj['originDestinations'][i] || !searchObj['originDestinations'][i]?.from || type === 'return')) {
         let reversed = clone(searchObj['originDestinations'][i-1]);
         reversed.to = reversed.from;
         reversed.from = clone(searchObj['originDestinations'][i-1])?.to;
@@ -171,12 +173,15 @@ export default function CreateFlightOrder({callback,data,returnData}) {
         return false;
       if(obj.from?.iata === obj.to?.iata)
         return false;
+      if(!obj.date)
+        return false;
 
       // if(i > 0 && obj.departureLocation === searchObj['destinations'][i-1].departureLocation)
 
       return true;
     })
-    if(valid.some(val => !val)) return enqueueSnackbar('Invalid Route! Please select valid destination.',{variant: 'error'})
+    
+    if(!callback && valid.some(val => !val)) return enqueueSnackbar('Invalid Request! Please select valid destination and date.',{variant: 'error'})
 
     
     // searchObj['currencyOverride'] = def.currencyCode;
@@ -216,9 +221,9 @@ export default function CreateFlightOrder({callback,data,returnData}) {
     setDate(tempDate);
 
     if(calendarRef.current?.at(i+1)) {
-      calendarRef.current[i]?.toggle();
       calendarRef.current[i+1]?.toggle(calendarRef.current[i+1]?.ref?.current);
     }
+    calendarRef.current[i]?.toggle();
 
   } 
 
@@ -233,23 +238,17 @@ export default function CreateFlightOrder({callback,data,returnData}) {
   function handleAdd() {
     setDate([...date,""]);
     let lastDestination = clone(destination[destination.length-1]);
-    let newDestination = clone(lastDestination);
+    let newDestination = (lastDestination);
     newDestination.from = lastDestination.to;
     newDestination.to = '';
+    setLocUpd(true);
     setDestination([...destination,newDestination]);
   }
 
   function handleRemove(i) {
-    setDate(date => {
-      const newArray = clone(date);
-      newArray.splice(i,1);
-      return newArray;
-    });
-    setDestination(dest => {
-      const newArray = clone(dest);
-      newArray.splice(i,1);
-      return newArray;
-    });
+    setDate(date => date.filter((_, index) => index !== i));
+    setLocUpd(true);
+    setDestination(dest => dest.filter((_, index) => index !== i));
   }
 
   function swapLoc(i=0) {
@@ -275,12 +274,12 @@ export default function CreateFlightOrder({callback,data,returnData}) {
         </BreadCrumb>
       :null}
       <div className='justify-center items-center flex flex-col gap-4'>
-        <div className='flex flex-col gap-4'>
+        <div className='flex flex-col gap-4 max-w-full'>
           <div>
             {/* <h6>Journey Type</h6> */}
             {!callback ? 
               <RadioGroup value={type} onChange={(ev) => setType(ev.target.value)} >
-                <div className='flex gap-4'>
+                <div className='flex gap-4 overflow-x-auto max-w-full'>
                   <RadioInput className='whitespace-nowrap' value={'return'} checked={type === 'return'}>Return</RadioInput>
                   <RadioInput className='whitespace-nowrap' value={'oneway'} checked={type === 'oneway'}>One way</RadioInput>
                   <RadioInput className='whitespace-nowrap' value={'multiple'} checked={type === 'multiple'}>Multi-city</RadioInput>
@@ -288,26 +287,29 @@ export default function CreateFlightOrder({callback,data,returnData}) {
               </RadioGroup>
             :null}
           </div>
-          <div className='flex gap-[2px]'>
-            <CitiesInput label='Where from?' placeholder='Origin' lockUpdate={lockupd}
-              value={destination[0]?.from || ''}
-              onChange={(val) => handleSetDestination({...destination[0],from: val})}
-            />
-            <div className='relative flex items-center justify-center z-10 cursor-pointer'>
-              <div className='absolute items-center justify-center flex'>
-                <span className='bg-secondary shadow-lg rounded-full p-1 hover:rotate-180 transition-all' onClick={() => swapLoc()}>
-                  <Icon icon='mdi:exchange' className='!w-5 !h-5' />
-                </span>
+          {!config?.hide?.includes('location') ? 
+            <div className='flex gap-1 sm:gap-[2px] flex-wrap '>
+              <CitiesInput label='Where from?' placeholder='Origin' lockUpdate={lockupd} disabled={defaultData?.from}
+                value={destination[0]?.from || ''} className='flex-1'
+                onChange={(val) => handleSetDestination({...destination[0],from: val})}
+              />
+              <div className='relative flex items-center justify-end pr-4 sm:pr-0 sm:justify-center w-full sm:w-auto cursor-pointer'>
+                <div className='absolute items-center justify-center flex z-10 rotate-90 sm:rotate-0'>
+                  <span className='bg-secondary shadow-lg rounded-full p-1 hover:rotate-180 transition-all' onClick={() => !(defaultData?.from || defaultData?.to) && swapLoc()}>
+                    <Icon icon='mdi:exchange' className='!w-5 !h-5' />
+                  </span>
+                </div>
               </div>
+              <CitiesInput label={'Where to?'} placeholder='Destination'  lockUpdate={lockupd} disabled={defaultData?.to}
+                value={destination[0]?.to || ''} className='flex-1'
+                onChange={(val) => handleSetDestination({...destination[0],to: val})}            
+              />
             </div>
-            <CitiesInput label={'Where to?'} placeholder='Destination'  lockUpdate={lockupd}
-              value={destination[0]?.to || ''}
-              onChange={(val) => handleSetDestination({...destination[0],to: val})}            
-            />
-          </div>
-          <div className='flex justify-stretch gap-4'>
+          :null}
+          <div className='flex justify-stretch gap-4 flex-wrap'>
             <div className='flex-1'>
               <CalendarInput1 ref={(el) => calendarRef.current[0] = el} label='Departure Date' className='w-full border border-primary/20 rounded-md p-2'
+                header={<CalendarHeader>{destination[0]?.from?.iata} - {destination[0]?.to?.iata}</CalendarHeader>}
                 value={date[0] || ''}
                 onChange={(value) => handleSetDate(value?.start || value)}
                 config={{validDates: [new Date()]}}
@@ -316,6 +318,7 @@ export default function CreateFlightOrder({callback,data,returnData}) {
             {type === 'return' ? 
               <div className='flex-1'>
                 <CalendarInput1 ref={(el) => calendarRef.current[1] = el} label='Return Date' className='w-full border border-primary/20 rounded-md p-2'
+                  header={<CalendarHeader>{destination[0]?.to?.iata} - {destination[0]?.from?.iata}</CalendarHeader>}
                   value={date[1] || ''}
                   onChange={(value) => handleSetDate(value?.start || value,1)}
                   defaultMonth={new Date(date[0] || new Date())}
@@ -328,27 +331,28 @@ export default function CreateFlightOrder({callback,data,returnData}) {
             <div className='flex flex-col gap-3'>
               {
               date.slice(1).map((d,i) => (
-                <div key={i+1} className='flex gap-4 items-center'>
-                  <div className='flex flex-col gap-4'>
-                    <div className='flex gap-4'>
-                      <CitiesInput label='Where from?' placeholder='Origin' lockUpdate={lockupd}
-                        value={destination[i+1]?.from || ''}
+                <div key={i+1} className='flex gap-4 items-center flex-wrap'>
+                  <div className='flex flex-col gap-4 flex-1'>
+                    <div className='flex gap-4 flex-wrap'>
+                      <CitiesInput label='Where from?' placeholder='Origin' lockUpdate={lockupd} disabled={defaultData?.from}
+                        value={destination[i+1]?.from || ''} className={'flex-1'}
                         onChange={(val) => handleSetDestination({...destination[i+1],from: val?.alpha2 || val},i+1)}
                       />
-                      <CitiesInput label={'Where to?'} placeholder='Destination'  lockUpdate={lockupd}
-                        value={destination[i+1]?.to || ''}
+                      <CitiesInput label={'Where to?'} placeholder='Destination'  lockUpdate={lockupd} disabled={defaultData?.to}
+                        value={destination[i+1]?.to || ''} className={'flex-1'}
                         onChange={(val) => handleSetDestination({...destination[i+1],to: val?.alpha2 || val},i+1)}         
                       />
                     </div>
                     <CalendarInput1 ref={el => calendarRef.current[i+1] = el} label='Departure Date' className='w-full border border-primary/20 rounded-md p-2'
+                      header={<CalendarHeader>{destination[i+1]?.from?.iata} - {destination[i+1]?.to?.iata}</CalendarHeader>}
                       value={d || ''}
                       onChange={(value) => handleSetDate(value?.start || value,i+1)}
                       defaultMonth={new Date(date[i-1]||date[0]) || new Date()}
                       config={{validDates: [date[i-1]||date[0] || new Date()]}}
                     />
                   </div>
-                  <div>
-                    <Icon icon='carbon:close-filled' className='cursor-pointer' onClick={() => handleRemove(i)} />
+                  <div className='-translate-y-2 '>
+                    <Icon icon='carbon:close-filled' className='cursor-pointer' onClick={() => handleRemove(i+1)} />
                   </div>
                 </div>
               ))
@@ -358,7 +362,7 @@ export default function CreateFlightOrder({callback,data,returnData}) {
                 Add another flight</Button1>
             </div>
           ):null}
-          <div className={'flex gap-4 '+(callback?'order-first':'')}>
+          <div className={'flex gap-4 flex-wrap '+(callback?'order-first':'')}>
             {!callback ? 
               <div className='flex-1'>
                 <TravelInfo q={qObj} returnPassenger={handleSetPassengers} />
@@ -383,31 +387,45 @@ export default function CreateFlightOrder({callback,data,returnData}) {
             </button>
           :null}
           {showAdvanced ? 
-            <div className='flex flex-col gap-4'>
+            <div className='flex flex-col gap-4 '>
+              <div className='text-center'>Markup</div>
+              <div className='flex gap-4 flex-wrap'>
+                <div className='flex-1'>
+                  <TextInput label='Markup Value' 
+                    value={markup?.value}
+                    onChange={(ev) => setMarkup({...markup,value: ev.target.value})}
+                  />
+                </div>
+                <div className='flex-1'>
+                  <TextInput select label='Markup by'
+                    value={markup?.type}
+                    onChange={(ev) => setMarkup({...markup,type: ev.target.value})}
+                  >
+                    <MenuItem value='Percentage'>Percent</MenuItem>
+                    <MenuItem value='Fixed'>value</MenuItem>
+                  </TextInput>
+                </div>
+              </div>
+              <div className='text-center'>Airline</div>
               <div>
                 <AirlinesInput label='Preferred Airline' placeholder='Search'
                   // value={airline || ''}
                   returnData={(value) => setAirline(value?.id || value)}
                 />
               </div>
-              <div className='flex gap-4'>
-                <TextInput label='Markup Value' 
-                  value={markup?.value}
-                  onChange={(ev) => setMarkup({...markup,value: ev.target.value})}
-                />
-                <TextInput select label='Markup by'
-                  value={markup?.type}
-                  onChange={(ev) => setMarkup({...markup,type: ev.target.value})}
-                >
-                  <MenuItem value='Percentage'>Percent</MenuItem>
-                  <MenuItem value='Fixed'>value</MenuItem>
-                </TextInput>
-              </div>
             </div>
           :null}
           <Button1 onClick={handleSearch}>Search for flights</Button1>
         </div>
       </div>
+    </div>
+  )
+}
+
+function CalendarHeader(props) {
+  return (
+    <div className='w-full flex justify-center !h-0 border-theme1 border'>
+      {props.children}
     </div>
   )
 }

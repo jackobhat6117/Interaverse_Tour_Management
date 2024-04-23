@@ -8,8 +8,15 @@ function convertPriceToNumber(price) {
   var numericPrice = parseFloat(price.replace(regex, '').replaceAll(',',''));
   return numericPrice;
 }
+function renameSupplier(supplier) {
+  // if(supplier?.toLowerCase() === 'amadeus')
+  //   return 'Miles'
+  
+  return supplier
+}
 export default function convertFlightObject(newObj) {
-
+  // Amadeus-A1
+  // Amadeus - A2
   var oldObj = {
     farePrice: {
       fareTotal: convertPriceToNumber(newObj?.pricingInformation?.price?.totalPrice),
@@ -18,7 +25,8 @@ export default function convertFlightObject(newObj) {
     passengers:newObj?.pricingInformation?.passengerFares,
     totalAmount: convertPriceToNumber(newObj?.pricingInformation?.price?.totalPrice),
     segments: [],
-    ...newObj
+    ...newObj,
+    supplier: renameSupplier(newObj?.supplier)
   };
   for (const key in oldObj.passengers) {
     if (Object.hasOwnProperty.call(oldObj.passengers, key)) {
@@ -256,7 +264,7 @@ export const newFlightObj = {
       }
     }
   ],
-  "supplier": "Amadeus"
+  "supplier": "Inta1A"
 }
 
 export function createFlightCat(oldObjects) {

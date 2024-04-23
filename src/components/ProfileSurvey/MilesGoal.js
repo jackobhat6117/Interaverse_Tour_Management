@@ -29,9 +29,9 @@ export default function MilesGoal({data,returnData}) {
   }
   return (
     <div className='flex flex-col gap-4 items-center'>
-      <h4 className='text-center'>What's your goal with Miles?</h4>
+      <h4 className='text-center'>What's your goal with Intraverse?</h4>
       <p className=''>Sharing this information will enhance your experience without any restrictions on feature access.</p>
-      <RadioGroup name='milesGoal' value={goal} onChange={(ev) => handleChange(ev.target.value)} className='flex flex-col gap-4 justify-between self-stretch py-4'>
+      <RadioGroup name='intraverseGoal' value={goal} onChange={(ev) => handleChange(ev.target.value)} className='flex flex-col gap-4 justify-between self-stretch py-4'>
         {goals.map((obj,i) => (
           <CustomRadio key={i} data={obj} selected={obj.active} onChange={(val) => handleChange(val,i) } />
         ))}

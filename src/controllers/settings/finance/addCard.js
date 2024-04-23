@@ -17,7 +17,7 @@ export default async function addCard(reference) {
       } else if (res?.data?.error) result["msg"] = res.data.error;
     })
     .catch((err) => {
-      console.log("Network Error!");
+      console.log("Network Error!",err);
     });
 
   return result;
