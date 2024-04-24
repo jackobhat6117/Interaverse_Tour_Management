@@ -68,36 +68,41 @@ export function FlightSeatDisplay({obj,offers:gotOffers,routeIndex,readOnly,call
   const {bookingData} = useSelector(state => state.flightBooking);
   let offers = clone(gotOffers || bookingData?.offersPrice || bookingData?.offer) || []
   let offer = Array.isArray(offers) ? offers?.at(-1) : offers;
+  offer = offer?.orgi || offer;
   const dispatch = useDispatch();
 
   const [data,setData] = useState([]);
   const [selectedSeat,setSelectedSeat] = useState();
 
-  let flights = offer?.directions?.flat()
+  // let flights = offer?.directions?.flat()
 
   async function handleSelect(open) {
     setOpen(open);
     if(!open) return false;
 
-    const flight = flights?.find((_,i) => i === routeIndex)
+    // const flight = flights?.find((_,i) => i === routeIndex)
     // const flight = flights?.find((ob,i) => JSON.stringify(ob) === JSON.stringify(obj))
 
     let modOffer = clone(offer);
-    if(modOffer) {
-      modOffer.directions = [[flight]]
-      modOffer.segments = null;
-    }
+    // if(modOffer) {
+    //   // modOffer.directions = [[flight]]
+    //   modOffer.segments = null;
+    //   modOffer.fareRules = null;
+    // }
 
     const reqData = {
       offers: [modOffer],
       supplier: offer?.supplier
     }
+
+    const arrivalLocation = modOffer?.directions?.flat()?.at(routeIndex)?.arrival?.location;
+    const departureLocation = modOffer?.directions?.flat()?.at(routeIndex)?.departure?.location;
     setLoading(true);
     const res = await getFlightSeats(reqData);
     setLoading(false);
     if(res.return) {
-      setData(res.data);
-      setSelectedSeat()
+      setData([res.data?.find(obj => obj.arrivalLocation === arrivalLocation && obj.departureLocation === departureLocation)] || []);
+      // setSelectedSeat()
     } else setData([]);
 
   }
@@ -136,8 +141,8 @@ export function FlightSeatDisplay({obj,offers:gotOffers,routeIndex,readOnly,call
           <p>{selectedSeat ? selectedSeat[0]?.seatNumber : 'No seat selected'}</p>
         </div>
         <div className='flex flex-col gap-4'>
-          <div className='btn text-center bg-primary/10 cursor-default text-primary' >{selectedSeat ? selectedSeat[0]?.seatNumber : 'NON'}</div>
-          <Button1 variant='outlined' onClick={() => handleSelect(!open)}>{!open?'Select Seat':'Hide Seats'}</Button1>
+          <div className='btn text-center bg-primary/10 cursor-default text-primary' >{selectedSeat?.at(0)?.seatNumber ? selectedSeat[0]?.seatNumber : 'NON'}</div>
+          <Button1 variant='outlined' onClick={() => handleSelect(!open)}>{!open? (selectedSeat && selectedSeat[0]?.seatNumber ? 'Change Seat' : 'Select Seat' ) :'Hide Seats'}</Button1>
         </div>
       </div>
       {!readOnly ? 
