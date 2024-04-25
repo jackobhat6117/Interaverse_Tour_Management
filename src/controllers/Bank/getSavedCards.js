@@ -1,15 +1,15 @@
 import fetchServer from "../fetchServer";
 
 
-export default async function cancelTicket(data) {
-  var result = {return: 0,msg: 'Failed canceling ticket',data: []}
+export default async function getSavedCards() {
+  var result = {return: 0,msg: 'Error',data: []}
 
-  await fetchServer({method: "PATCH",url: `/product/v1/ticket/cancelTicket`,data})
+  await fetchServer({method: "GET",url: `/payment/v1/personalAccount/savedCards`})
   .then((res) => {
     if(res) {
       if(res.status === 200) {
         result = {return: 1,msg: "Successfull",data: res.data.data};
-      } else if (res?.data?.error) result["msg"] = res.data.error;
+      } else if(res.error) result['msg'] = res.error?.message;
     } 
   })
   .catch((err) => {

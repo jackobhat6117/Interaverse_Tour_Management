@@ -1,10 +1,10 @@
 import fetchServer from "../fetchServer";
 
 
-export default async function cancelTicket(data) {
-  var result = {return: 0,msg: 'Failed canceling ticket',data: []}
+export default async function issueTicketManually(data) {
+  var result = {return: 0,msg: 'Failed issuing ticket',data: []}
 
-  await fetchServer({method: "PATCH",url: `/product/v1/ticket/cancelTicket`,data})
+  await fetchServer({method: "POST",url: `/product/v1/ticket/manualIssue`,data})
   .then((res) => {
     if(res) {
       if(res.status === 200) {

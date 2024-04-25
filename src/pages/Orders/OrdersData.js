@@ -85,13 +85,13 @@ export function OrderMenus({callback,data:{status,id,bookingID,orderType,row},ac
             />
           :null
         }
-        <Menu
+        {/* <Menu
           value={status}
           label="Approve Ticket"
           // showFor={["pendingticketissueapproval","pendingticketissue","Ticket Requested"]}
           // className="!btn disabled"
           onClick={() => approveTicket && approveTicket()}
-        />
+        /> */}
         {devStage < 1 ?
           <Menu
             value={status}
@@ -238,6 +238,7 @@ export default function OrdersData({ data: gotData, setData: setOrig, reload }) 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const status = searchParams.get('status');
+  const orderType = searchParams.get('type');
 
   const [data, setData] = useState(gotData || []);
 
@@ -404,6 +405,11 @@ export default function OrdersData({ data: gotData, setData: setOrig, reload }) 
         <div className="flex gap-2">
           {
             getTestLevel() <= getTestLevel('dev') ? 
+              <Link to={orderType === 'ticket' ? '?type=null' : '?type=ticket'} className={orderType === 'ticket' ? 'btn' : "btn-theme-light"}>Tickets</Link>
+            :null
+          }
+          {
+            getTestLevel() <= getTestLevel('dev') ? 
               <Link to={status === 'needsReview' ? '?status=null' : '?status=needsReview'} className={status === 'needsReview' ? 'btn' : "btn-theme-light"}>Needs review</Link>
             :null
           }
@@ -463,7 +469,15 @@ export default function OrdersData({ data: gotData, setData: setOrig, reload }) 
           <OrderDataChanges data={data} />
           :
         } */}
-      <CustomTable rows={data} columns={columns} />
+        {orderType === 'ticket' ? 
+          <ApproveTicket
+            loadAll={true}
+            data={openApproveTicket}
+            callback={() => {reload();setOpenApproveTicket(false)}}
+            close={() => setOpenApproveTicket(false)} />
+        :
+          <CustomTable rows={data} columns={columns} />
+        }
       </ActionContext.Provider>
 
       <AddBags open={openAddBags} setOpen={setOpenAddBags} />
