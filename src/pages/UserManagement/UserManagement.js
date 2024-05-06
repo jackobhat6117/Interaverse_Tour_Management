@@ -168,9 +168,6 @@ function Detail({ data, close, reload }) {
 
   const [openDocUpload,setOpenDocUpload] = useState(false);
   
-  const dispatch = useDispatch();
-
-
   async function enableUser() {
     setLoadings({...loadings,enableUser: true})
     const res = await activateAccount(data?._id);
@@ -188,8 +185,15 @@ function Detail({ data, close, reload }) {
     setTimeout(() => setLoadings({...loadings,disableUser: false}),2000)
   }
 
-  async function handleDocUpload() {
-    
+  async function handleDocUpload(payload) {
+
+    const res = await updateUsersProfile(data?._id,payload)
+    if(res.return) {
+      enqueueSnackbar('Documents Uploaded',{variant: 'success'})
+      setOpenDocUpload(false);
+      reload && reload()
+    } else enqueueSnackbar(res.msg,{variant: 'error'})
+    return res.return
   }
 
   console.log(" -> ",data)
