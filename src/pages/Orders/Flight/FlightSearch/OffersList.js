@@ -1,4 +1,4 @@
-import React, { createRef, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { createRef, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { SwipeableDrawer, Tab, Tabs, ThemeProvider, createTheme } from '@mui/material';
 import FlightOfferDisplay from '../../../../components/flight/FlightOfferDisplay';
 import { FlightOfferDetail } from '../../../../components/flight/FlightOfferDetail';
@@ -29,7 +29,10 @@ import SelectInput from '../../../../components/form/SelectInput';
 import IOSSwitch from '../../../../components/form/IOSSwitch';
 import EmailInput from '../../../../components/form/EmailInput';
 import PriceAlert from '../../../../components/flight/PriceAlert';
+import axios from 'axios';
 // import getCalendarSearch from '../../../controllers/search/getCalendarSearch';
+
+let cancelToken = null;
 
 
 const tempCat = {
@@ -64,10 +67,13 @@ export default function OffersList({hide}) {
   const [searchParam] = useSearchParams();
   const q = useMemo(() => searchParam.get('q'),[searchParam]);
   const qIndex = searchParam.get('path');
+  const fareOpt = searchParam.get('fareOption');
   const [openFilter,setOpenFilter] = useState(false);
   const [openSearch,setOpenSearch] = useState(false);
   const [openSort,setOpenSort] = useState(false);
   const [orgiData,setOrgiData] = useState([]);
+
+  const offerRef = useRef();
 
   const [sortby,setSortBy] = useState('price');
   
@@ -85,41 +91,61 @@ export default function OffersList({hide}) {
   
   const dispatch = useDispatch();
 
-  console.log('fetchedData: ',fetchedData)
+  if(!fetchedData?.current?.length && parseInt(qIndex)) {
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set('path', 0);
+    
+    const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
+
+    // Change the URL without reloading the page
+    // window.history.pushState(null, '', newUrl);
+    navigate(newUrl)
+
+  }
+
+
+  // console.log('fetchedData: ',fetchedData)
   useEffect(() => {
     let path = [];
     for(let i = 0;i<=qIndex||0;i++) {
       path.push(searchObj?.destinations[i])
     }
     setSearchPath(path)
-    console.log('path changed')
     filterForNextRoute();
     //eslint-disable-next-line
   },[qIndex])
 
   function filterForNextRoute() {
-    console.log("also here")    
     if(!parseInt(qIndex)) {
       setData(fetchedData.current || [])
+      setOrgiData(fetchedData.current)
       dispatch(setBookingData({...bookingData,offer: []}))
       return false; 
     };
 
-    console.log('here')
     let airline = bookingData?.offer?.at(Math.max(0,qIndex-1))?.segments[0].flights[0].marketingCarrier
+    const offerSeg = bookingData?.offer?.at(Math.max(0,qIndex-1));
+    const id = offerSeg?.id
     let supplier = bookingData?.offer?.at(Math.max(0,qIndex-1))?.supplier;
-    let newData = (fetchedData.current)?.filter(obj => {
-      if(obj.segments)
-        return obj.segments[qIndex-1]?.flights?.every((flight) => (flight.marketingCarrier === airline) && obj.supplier === supplier)
+    
+    let newData = fareOpt ? [offerSeg] : (fetchedData.current)?.filter(obj => {
+      if(obj.segments) {
+        // return obj.segments?.some(segment => segment?.flights?.every((flight) => (flight.marketingCarrier === airline) && obj.supplier === supplier))
+        // return obj.segments?.some(segment => segment?.flights?.some((flight) => (flight.marketingCarrier === airline) && obj.supplier === supplier))
+        if(supplier === 'Intra1K')
+          return obj?.id === id;
+        else
+          return obj.segments[qIndex]?.flights?.some((flight) => (flight.marketingCarrier === airline) && obj.supplier === supplier)
+      }
               
       return false;
     })
-    console.log((qIndex),'here',airline,supplier,orgiData,newData)
+    // console.log((qIndex),'here',airline,supplier,orgiData,newData)
 
     setOrgiData(newData);
     setData(newData)
   }
-  console.log('data now: ',data)
+  // console.log('data now: ',data)
   
   function onDownloadProgress(progressEvent) {
     // const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
@@ -169,9 +195,13 @@ export default function OffersList({hide}) {
     // let userId = null;
     // if(bookingData.as)
     //   userId = bookingData.as.id;
+    if(cancelToken)
+      cancelToken.cancel('Cancelled for another search')
+    cancelToken = axios.CancelToken.source();
+
     const newRes = await getFlightOffers(obj,null,onDownloadProgress);
     if(newRes.return) {
-      let data = newRes?.data?.data?.map(obj => convertFlightObject(obj))
+      let data = newRes?.data?.data?.map(obj => ({...(convertFlightObject(obj) || {}),og: obj}))
       return {return: 1,msg: 'Successfull',data,cat: createFlightCat(data)}
     } else return newRes;
     
@@ -333,7 +363,7 @@ export default function OffersList({hide}) {
 
 
   async function showDetail(obj) {
-    console.log(obj)
+    // console.log(obj)
     // if(obj)
     //   setCurDetail(obj)
 
@@ -353,23 +383,33 @@ export default function OffersList({hide}) {
     // }
   }
 
-  function handleOfferSelect(obj) {
-
+  function handleOfferSelect(obj,config) {
+    const {fareOption=false} = config || {}
     let offer = clone(bookingData.offer) || []
     if(!Array.isArray(offer))
       offer = [offer];
 
+    if(fareOption)
+      offer = [offer?.at(-1)]
     // if(obj.fareDetailsBySegment)
     //   offer[offer.length-1] = obj;
     // else
-      offer.push(obj)
+
+    if(offerRef.current)
+      offerRef.current?.scrollIntoView({behavior: 'smooth'})
+
+    let pathIndex = qIndex || 0
+    offer[Math.min(offer.length,pathIndex)] = obj;
+    // offer.push(obj)
     
-    dispatch(setBookingData({...bookingData,offer,orderData: null,beforePrice: obj}))
+    dispatch(setBookingData({...bookingData,offer,orderData: null,beforePrice: offer}))
 
     if(searchPath.length < searchObj?.destinations.length) {
       const currentPath = location.pathname;
       const searchParams = new URLSearchParams(location.search);
       searchParams.set('path', searchPath.length);
+      if(fareOption)
+        searchParams.set('fareOption', true);
       const newPath = `${currentPath}?${searchParams.toString()}`;
       
       navigate(newPath)
@@ -415,7 +455,7 @@ export default function OffersList({hide}) {
   const departDate = searchObj?.destinations[0]?.date || 0;
   const arrivalDate = searchObj?.destinations[1]?.date || 0;
   const passengersCount = Object.values(searchObj?.passengers || {})?.reduce((p,c) => Number(p)+Number(c),0);
-
+  const [zIndex,setZIndex] = useState()
 
   // classify with airline and price
   let modData = [];
@@ -423,10 +463,10 @@ export default function OffersList({hide}) {
   modData = rearrageFlight(data);
 
   return (
-    <div className='w-full flex flex-col gap-2 py-4 flex-1'>
+    <div className='w-full flex flex-col gap-2 py-4 flex-1 relative'>
       <PriceTimeout />
       
-      <div className='flex gap-10 justify-between pd-md py-5'>
+      <div className='hidden md:flex gap-10 justify-between pd-md py-5'>
         <div className='flex gap-4 justify-between'>
           <div className='flex gap-2 uppercase'>
             <h6>{searchObj?.destinations[0]?.departureLocation}</h6>
@@ -445,12 +485,11 @@ export default function OffersList({hide}) {
       </div>
       
 
-      <div className='flex gap-4 flex-1'>
+      <div className='flex gap-4 flex-1 '>
         {!hide || !hide?.includes('filter') ? 
-        
           //  Filter  Part 
 
-          <div className='hidden md:block self-end sticky bottom-0 rounded-2xl max-w-[300px] z-[90]'>
+          <div className={`hidden md:block self-end sticky bottom-0 rounded-2xl max-w-[300px] ${zIndex === 1 ? 'z-10' : 'z-0'} `} onMouseEnter={() => setZIndex(1)}>
             <PriceAlert />
             <FlightOfferFilter cats={cat} orgi={orgiData} data={data} setData={setData} />
           </div>
@@ -459,10 +498,10 @@ export default function OffersList({hide}) {
 
         {/* Offers List */}
 
-        <div className='flex-1 flex flex-col gap-2 py-5 px-4 md:px-0 overflow-hidden sticky bottom-0 self-end min-h-screen z-[98]'>
+        <div ref={offerRef} className={`flex-1 flex flex-col gap-2 py-5 px-4 md:px-0 overflow-hidden sticky bottom-0 self-end min-h-screen ${zIndex === 2 ? 'z-10' : 'z-0'}`} onMouseEnter={() => setZIndex(2)}>
            {!hide || !hide?.includes('breadcrumb') ? 
-              <div className='px-10 py-2 max-w-full'>
-                <BreadCrumb>
+              <div className='pd-md py-2 max-w-full whitespace-nowrap overflow-x-auto'>
+                <BreadCrumb className='!flex-nowrap' >
                   <Link to={'/order'}>Orders</Link>
                   {/* <Link to='/order/new/flight'>New order</Link> */}
                   {searchObj?.destinations.map((obj,i) => {
@@ -473,7 +512,7 @@ export default function OffersList({hide}) {
                       return (
                         <b>{label} ({obj?.departureLocation} to {obj?.arrivalLocation})</b>
                       )
-                    if(!bookingData?.offers?.at(i-1) && i > 0)
+                    if(!bookingData?.offer?.at(i-1) && i > 0)
                         return (
                           <p>{label} ({obj?.departureLocation} to {obj?.arrivalLocation})</p>
                         )
@@ -491,7 +530,7 @@ export default function OffersList({hide}) {
               </div>
             :null}
 
-            {!hide || !hide?.includes('sort') ? 
+            {(!hide || !hide?.includes('sort')) && !parseInt(qIndex) ? 
               <div className='hidden md:flex justify-center  max-w-full gap-6'>
                 <FlightOfferSort {...{cat,getCatInfo,sortByCat}} />
                 <div className='flex flex-col gap-1 border border-primary/20 p-1 px-3 rounded-md'>
@@ -510,7 +549,7 @@ export default function OffersList({hide}) {
             loading ?
               <div className='py-6 flex flex-col items-center justify-center gap-1'>
                 {/* <div>Please wait, we are searching.</div> */}
-                <LoadingBar duration={8} />
+                <LoadingBar message='Please wait, we are searching.' duration={8} />
               </div>
               // <h5 className='bg-secondary p-5 rounded-md flex items-center justify-center text-primary/30 '>{progress}% Loading...</h5>
             : data?.length < 1 ?
@@ -530,19 +569,22 @@ export default function OffersList({hide}) {
 
           {/* <FlightOfferDisplay showDetail={(obj) => setCurDetail(obj)} /> */}
         </div>
+
         <div className='hidden lg:block self-end sticky bottom-0'>
           <FlightOfferDetail data={data} setData={setData} obj={curDetail} />
         </div>
       </div>
 
 
-      <div className='flex md:hidden bg-secondary w-full self-end sticky bottom-0 border-t shadow'>
+      <div className='flex md:hidden bg-secondary w-full self-end sticky bottom-0 border-t shadow z-10'>
         <div className='bg-primary/10 flex-1 p-5 flex justify-center items-center cursor-pointer'
           onClick={() => setOpenSort(true)}
         >
           <span className='flex gap-2'>
             <Icon icon='iconoir:sort' />
-            Sort
+            <span className='hidden sm:block'>
+              Sort
+            </span>
           </span>
         </div>
         <div className='w-[50%] flex flex-col items-center justify-center cursor-pointer' 
@@ -560,14 +602,21 @@ export default function OffersList({hide}) {
         >
           <span className='flex gap-2'>
             <Icon icon='icon-park:setting-config' />
-            Filter
+            <span className='hidden sm:block'>
+              Filter
+            </span>
           </span>
         </div>
       </div>
 
 
 
-      <SwipeableDrawer anchor='right' open={openFilter} onClose={() => setOpenFilter(false)} >
+      <SwipeableDrawer anchor='right' open={openFilter} 
+        onOpen={() => setOpenFilter(true)} 
+        onClose={() => setOpenFilter(false)} 
+        SlideProps={{className: ' max-w-[90vw]'}}
+
+        >
         <div className='max-h-screen'>
           <FlightOfferFilter cats={cat} orgi={fetchedData.current} data={data} setData={setData} />
         </div>
@@ -601,12 +650,12 @@ export const SortedOffers = ({obj,offer,params:{qIndex,showDetail,handleOfferSel
     <FlightOfferDisplay path={qIndex} offer={offer} data={obj?.objects[0]} showDetail={async () => await showDetail(obj)} select={handleOfferSelect} />
     {obj.objects.length > 1 ? (
       <div className={'flex flex-col gap-4 relative  '+(view?'bg-[#F3F7FF] ':'')}>
-        <div className={'absolute -translate-y-[12px] p-2 w-full -z-10 '+(view?'bg-[#f3f7ff]':'')}></div>
+        <div className={'absolute -translate-y-[12px] p-2 w-full '+(view?'bg-[#f3f7ff]':'')}></div>
         <div className='relative flex flex-col gap-2 mb-4'>
           <button className={'text-sm text-theme1 font-bold self-center shadow-inner border border-b-0 absolute bottom-0 max-h-[1.3rem] rounded-t-lg  pt-2 w-[50%] '+(view?'bg-[#F3F7FF]':'bg-secondary')} 
             onClick={() => setView(!view)}>
               <div className={'px-4 pb-2 rounded-lg '+(view?'bg-[#F3F7FF]':'bg-secondary')}>
-                {view ? `Hide flights` : `${obj.objects.length-1} more flight options available at this price`}
+                {view ? `Hide flights` : <span>{obj.objects.length-1} more <span className='hidden md:inline'>flight options available at this price</span></span>}
               </div>
           </button>
         </div>

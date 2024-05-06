@@ -20,6 +20,7 @@ export default function CheckedBags({data,selected:gotSelected,callback,offer,hi
         return true;
     })
 
+    
     useEffect(() => {
         // console.log(' -> ',gotSelected ? JSON.stringify(gotSelected) : init)
         const {label,quantity,weight,price} = gotSelected || {};
@@ -31,58 +32,11 @@ export default function CheckedBags({data,selected:gotSelected,callback,offer,hi
         setSelected(bag)
         
         callback && callback(JSON.parse(bag||"{}"));
-        // let price = 0;
-        
-        // let modDirection = clone(data?.direction);
-        // modDirection?.map((flight,i) => {
-        //     let passengerBag = [];
-        //     let {quantity,weight} = JSON.parse(bag || '{}');
-        //     try {
-        //         passengerBag = [...flight.additionalServices.chargeableCheckedBags];
-        //     } catch(ex) {}
-
-        //     const w = weight.match(/\d+/)[0];
-
-        //     passengerBag.push({quantity,weight:parseInt(w),passenger: data.passenger + 1})
-
-        //     // bags[i][j]?.filter(obj => obj)?.map(obj => ({...obj,passenger: obj?.passenger + 1}));
-        //     try {
-        //         flight.additionalServices.chargeableCheckedBags = passengerBag
-        //         // flight.additionalServices.chargeableCheckedBags.push(bags[i][j])
-        //     } catch(ex) {
-        //         // console.log('0XbagsPush')
-        //         // flight.additionalServices.chargeableCheckedBags = [bags[i][j]]
-        //         console.log('0XbagsCreate')
-        //         try {
-        //         flight.additionalServices = {chargeableCheckedBags: passengerBag}
-        //         } catch(ex) {
-        //         console.log('0XadditionalServiceCreate')
-        //         }
-        //     }
-        //     return true;
-        // })
-
-        // let modOffer = clone(offer);
-        // modOffer.directions.map((_,i) => {
-        //     if(i === data.index)
-        //         modOffer.directions[i] = modDirection
-        //     return true;
-        // })
-
-        // console.log(' --> ',data.index,modDirection,modOffer.directions[data.index])
-
-        // const req = {
-        //     supplier: modOffer?.supplier,
-        //     offers: [modOffer]
-        // }
-        // const res = await getFlightOfferPrice(req);
-        // if(res.return)
-        //     console.log(res.data.data)
             
     }
 
     const obj = JSON.parse(selected || init)
-    console.log(' -> ',obj)
+    console.log(' -> ',obj,data)
   return (
     <div className='flex w-full min-w-[300px] flex-col gap-4'>
         <b>{data?.departure?.location} to {data?.arrival?.location}</b>

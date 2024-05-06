@@ -20,6 +20,7 @@ import deActivateAccount from "../../controllers/user/deactivateAccount";
 import { useDispatch } from "react-redux";
 import updateUsersProfile from "../../controllers/user/updateUsersProfile";
 import { alertType } from "../../data/constants";
+import BusinessDocument from "../../components/ProfileSurvey/New/BusinessDocument";
 
 const temp = [
   {
@@ -165,9 +166,8 @@ function Detail({ data, close, reload }) {
   const [openBusiness,setOpenBusiness] = useState(false);
   const [loadings,setLoadings] = useState({enableUser:false,disableUser: false})
 
-  const dispatch = useDispatch();
-
-
+  const [openDocUpload,setOpenDocUpload] = useState(false);
+  
   async function enableUser() {
     setLoadings({...loadings,enableUser: true})
     const res = await activateAccount(data?._id);
@@ -183,6 +183,17 @@ function Detail({ data, close, reload }) {
       reload && reload();
     }
     setTimeout(() => setLoadings({...loadings,disableUser: false}),2000)
+  }
+
+  async function handleDocUpload(payload) {
+
+    const res = await updateUsersProfile(data?._id,payload)
+    if(res.return) {
+      enqueueSnackbar('Documents Uploaded',{variant: 'success'})
+      setOpenDocUpload(false);
+      reload && reload()
+    } else enqueueSnackbar(res.msg,{variant: 'error'})
+    return res.return
   }
 
   console.log(" -> ",data)
@@ -232,6 +243,15 @@ function Detail({ data, close, reload }) {
       </div>
 
       <div className="pt-10 flex flex-col gap-4">
+        <div className="flex gap-4">
+          <div className="flex-1"></div>
+          <div className='flex-1'>
+            <Button1 className='flex items-center gap-2' onClick={() => setOpenDocUpload(true)}>
+              <Icon icon='ep:document' />
+              Upload Document
+            </Button1>
+          </div>
+        </div>
         <div className="flex gap-4">
           <Button1 disabled className="flex gap-2 !items-center !bg-primary/10 !text-primary/70">
             <Icon fontSize={"18"} icon={"mdi:password-reset"} />
@@ -305,6 +325,11 @@ function Detail({ data, close, reload }) {
           <Component />
         </Modal1>
       </div>
+      <Modal1 open={openDocUpload} setOpen={setOpenDocUpload}>
+        <div className="p-10">
+          <BusinessDocument updateProfile={handleDocUpload} next={() => console.log('callback')} user={data} />
+        </div>
+      </Modal1>
     </div>
   );
 }

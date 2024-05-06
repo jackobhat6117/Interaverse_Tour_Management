@@ -1,77 +1,99 @@
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import getFlightOfferPrice from "../../controllers/Flight/getOfferPrice";
 import Modal1 from "../DIsplay/Modal/Modal1";
+import Icon from "../HOC/Icon";
 
-export default function ViewFareRule(data) {
-  // const dispatch = useDispatch();
-  // const scrollRef = createRef();
+
+export default function ViewFareRule({data,button}) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [curDetail, setCurDetail] = useState(data);
+  const [fareRules, setFareRules] = useState();
+  const [miniRules,setMiniRules] = useState(data?.fareRules?.rules);
   const { bookingData } = useSelector((state) => state.flightBooking);
-
-  function handleScroll(ev) {
-    // if(ev.deltaY > 0)
-    //   scrollRef.current.scrollTop += 30;
-    // else
-    //   scrollRef.current.scrollTop -= 30;
-  }
 
   async function showDetail() {
     let userId = null;
     if (bookingData.as) userId = bookingData.as.id;
+    const req = {
+      supplier: data?.supplier,
+      offers: [data]
+    }
 
     setLoading(true);
-    const res = await getFlightOfferPrice({ offer: data.data }, userId);
+    const res = await getFlightOfferPrice(req, userId);
     setLoading(false);
     if (res.return) {
-      // dispatch(setBookingData({...bookingData,offer: res.data,beforePrice: obj}))
-
-      setCurDetail(res.data);
+      setFareRules(res?.data?.data?.map((obj,i) => Object.values(obj.fareRules)));
     }
   }
 
   function openFareRule() {
-    // dispatch(setModal(true))
-    // dispatch(setModalComp(modalComp));
     setOpen(true);
-    if (!curDetail.fareRule) showDetail();
+    console.log(miniRules,' --> ')
+    if(!miniRules.length)
+      showDetail();
+    else setOpen(false);
   }
 
-  // const modalComp = (
-  //   <div className='!max-h-screen realtive px-2 !w-full  py-5' onWheel={handleScroll}>
-  //     <div className='bg-secondary rounded-md p-5 pt-10 relative overflow-hidden !max-h-[calc(100vh-50px)] '>
-  //       <div className='btn_close' onClick={() => dispatch(setModal(false))}>X</div>
-  //       <div className="flex justify-center p-4">
-  //         {loading ? <div className="load"></div> : null}
-  //       </div>
-  //       <div dangerouslySetInnerHTML={{__html: curDetail.fareRule || (!loading && "No Fare Rules")}} className="max-h-[calc(100vh-100px)] overflow-y-auto">
-  //       </div>
-  //     </div>
-  //   </div>
-  // )
-  // console.log('farerule : ',data)
+  // console.log('farerule : ',fareRules)
+  // console.log(Object.values(fareRules || {})?.map((rule,i) => rule))
+
   return (
     <div>
-      <button onClick={openFareRule} className="py-4 text-theme1">
-        View fare rule
-      </button>
+      {button ? 
+        React.cloneElement(button,{onClick: openFareRule})
+      :
+        <button onClick={openFareRule} className="py-4 text-theme1">
+          View fare rule
+        </button>
+      }
       <Modal1 open={open} setOpen={setOpen}>
-        <div className="bg-secondary rounded-md p-5 pt-10 relative overflow-hidden !max-h-[calc(100vh-50px)] ">
-          <div className="btn_close" onClick={() => setOpen(false)}>
-            X
-          </div>
-          <div className="flex flex-col items-center gap-4 justify-center p-4 border-theme1">
-            {loading ? <div className="load"></div> : null}
-            {loading ? <div className="">Please Wait</div> : null}
-          </div>
-          <div
-            dangerouslySetInnerHTML={{
-              __html: curDetail.fareRule || (!loading ? "No Fare Rules" : ""),
-            }}
-            className="max-h-[calc(100%-20px)] overflow-y-auto"
-          ></div>
+        <div className="card p-5 flex flex-col gap-4 border-primary relative w-[500px] max-w-full ">
+          <Icon icon='carbon:close-filled' className="btn_close self-end sticky top-2" onClick={() => setOpen(false)} />
+          {loading ? <div className="load self-center"></div> : null}
+          {loading ? <div className="text-center">Please Wait, we are searching.</div> : null}
+          {miniRules ? 
+            miniRules?.map((obj,h) => (
+              <div key={h}>
+                {
+                  Object.entries(obj)?.map(([key,val],i) => (
+                    <div className="flex flex-col gap-3 items-center justify-between" key={i}>
+                      {key === 'category' ? <b>{val}</b> 
+                      : 
+                      <div>
+                        {key}: {val}
+                      </div>
+                      }
+                    </div>
+                  ))
+                }
+              </div>
+            ))
+          :
+            fareRules?.slice(0,1)?.map((fareRule,i) => (
+              <div className={`${i!==0?'border-t my-3':''}`}>
+                {
+                  fareRule?.slice(0,1).map((rule,j) => (
+                    <div className="flex flex-col gap-3">
+                      {
+                        rule?.fareNotes?.descriptions?.map((description,k) => (
+                          <div key={`${i}${j}${k}`}>
+                            <h5>{description.descriptionType}</h5>
+                            <p>{description.text}</p>
+                            {/* <Collapsible header={
+                            } value={i===0 && j === 0}>
+                            </Collapsible> */}
+                          </div>
+                        ))
+                      }
+                      <hr /><br />
+                    </div>
+                  ))
+                }
+              </div>
+            ))
+          }
         </div>
       </Modal1>
     </div>
