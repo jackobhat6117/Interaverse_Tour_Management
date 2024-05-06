@@ -25,6 +25,7 @@ import CancelTicket from "./CancelTicket";
 import { getTestLevel } from "../../utils/testLevel";
 import { getSupplierName } from "../../data/flight/supplier/getSupplierName";
 import ApproveTicket from "./ApproveTicket";
+import Transactions from "./Transactions";
 
 
 const ActionContext = createContext();
@@ -405,7 +406,12 @@ export default function OrdersData({ data: gotData, setData: setOrig, reload }) 
         <div className="flex gap-2">
           {
             getTestLevel() <= getTestLevel('dev') ? 
-              <Link to={orderType === 'ticket' ? '?type=null' : '?type=ticket'} className={orderType === 'ticket' ? 'btn' : "btn-theme-light"}>Tickets</Link>
+            <Link to={orderType === 'ticket' ? '?type=null' : '?type=ticket'} className={orderType === 'ticket' ? 'btn' : "btn-theme-light"}>Tickets</Link>
+            :null
+          }
+          {
+            getTestLevel() <= getTestLevel('dev') ? 
+            <Link to={orderType === 'transactions' ? '?type=null' : '?type=transactions'} className={orderType === 'transactions' ? 'btn' : "btn-theme-light"}>Transactions</Link>
             :null
           }
           {
@@ -471,6 +477,12 @@ export default function OrdersData({ data: gotData, setData: setOrig, reload }) 
         } */}
         {orderType === 'ticket' ? 
           <ApproveTicket
+            loadAll={true}
+            data={openApproveTicket}
+            callback={() => {reload();setOpenApproveTicket(false)}}
+            close={() => setOpenApproveTicket(false)} />
+        : orderType === 'transactions' ? 
+          <Transactions
             loadAll={true}
             data={openApproveTicket}
             callback={() => {reload();setOpenApproveTicket(false)}}
