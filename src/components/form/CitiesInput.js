@@ -74,7 +74,7 @@ export default function CitiesInput({
           placeholder={restProps.placeholder}
           required={required}
           value="test"
-          label={label || "Nationality"}
+          label={label ? label : label !== '' ? "Nationality" : ''}
           InputProps={{
             ...params.InputProps,
             type: "search",
