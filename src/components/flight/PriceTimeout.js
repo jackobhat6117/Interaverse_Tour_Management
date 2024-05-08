@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 // )
 
 
-export default function PriceTimeout({returnData,gotTime,onBook}) {
+export default function PriceTimeout({returnData,gotTime,onBook,callback}) {
   const [open,setOpen] = useState(false);
   const {bookingData} = useSelector((state) => state.flightBooking);
   const navigate = useNavigate();
@@ -55,19 +55,21 @@ export default function PriceTimeout({returnData,gotTime,onBook}) {
     <Modal1 open={open} setOpen={handleOpen}>
       <div className="self-center max-w-[600px] ">
         {onBook ? (
-          <div className='bg-secondary p-10 m-2 rounded-md flex flex-col gap-4 items-center'>
+          <div className='card m-2 rounded-md flex flex-col gap-4 items-center'>
             <h4>This ticket is no longer available!</h4>
             <div className='text-center'>The offer has expired and we can no longer guarentee the price of this ticket. We recommend you restart the search.</div>
             <Button1 className='btn1' onClick={() => navigate('/order/new/flight')}>Launch New Search</Button1>
           </div>
         ):(
-          <div className='bg-secondary p-10 m-2 rounded-md'>
-            <h4 className='py-2'>You have been gone for too long.</h4>
-            <p> The flight offer may have changed. Click the button to get the latest price.</p>
+          <div className='card m-2 rounded-md'>
+            {/* <h4 className='py-2'>You have been gone for too long.</h4> */}
+            <h4 className='py-2'>Please refresh your search for the latest prices.</h4>
+            {/* <p> The flight offer may have changed. Click the button to get the latest price.</p> */}
+            <p>Flight prices change frequently due to availability and demand. We want to make sure you always see the best prices, guaranteed.</p>
             <br />
-            <div className='flex justify-between gap-4'>
-              <Button1 className='!w-auto self-end' variant='outlined' onClick={() => navigate('/order/new/flight')}>New Search</Button1>
-              <Button1 className='btn1 !w-auto self-end' onClick={() => window.location.reload()}>Refresh</Button1>
+            <div className='flex  flex-wrap justify-between gap-4'>
+              <Button1 className='!w-auto self-end' variant='outlined' onClick={() => navigate('/order/new/flight')}><span className='hidden sm:inline-block pr-1'>New</span> Search</Button1>
+              <Button1 className='btn1 !w-auto self-end' onClick={() => (callback && callback()) || window.location.reload()}>Refresh</Button1>
             </div>
           </div>
         )}

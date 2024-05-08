@@ -3,7 +3,7 @@ import fetchServer from "../../fetchServer"
 export default async function deleteTeamMember(id) {
   let result = {return: 0,msg: 'Something went wrong removing member!'}
 
-  await fetchServer({method: 'DELETE',url: '/main/v1/team/remove/'+id})
+  await fetchServer({method: 'DELETE',url: '/main/v1/staff/remove/'+id})
   .then((res) => {
     // console.log(" => ",res)
     if(res?.data && !res?.data?.error) {
