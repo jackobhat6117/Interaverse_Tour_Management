@@ -10,6 +10,7 @@ import moment from 'moment'
 
 export function validateAge(birthDate,type) {
   let age = moment().diff(birthDate,'years')
+  age += Math.max(0,(moment().month() - moment(birthDate).month())) / 100
   let valid = false;
   let msg = '';
 
@@ -17,14 +18,14 @@ export function validateAge(birthDate,type) {
   const errorMsg = (val) => {msg = val};
   
   if(type === 'infant')
-    validate(age < 3) || errorMsg(`${type}s should be under 3 `);
+    validate(age < 2) || errorMsg(`${type}s should be under 3 `);
   else if(type === 'child')
     validate(age < 12) || errorMsg(`${type}s should be between 3 and 12 `);
   else if(type === 'adult')
     validate(age >= 12) || errorMsg(`${type}s should be over 11 `);
 
 
-  return [valid,msg];
+  return [valid,msg,age];
 }
 
 export default function PrimaryPassenger({data:gotData,label,type,handleReturn,count=0,collapse=false,config:gotConfig}) {

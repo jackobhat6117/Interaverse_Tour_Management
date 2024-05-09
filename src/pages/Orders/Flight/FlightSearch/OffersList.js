@@ -115,10 +115,26 @@ export default function OffersList({hide}) {
     //eslint-disable-next-line
   },[qIndex])
 
+  function moveIdToFront(arr, id) {
+    console.log("array id: ",id,arr)
+    const index = arr.findIndex(obj => obj.id === id);
+    if (index >= arr.length || index < 0) {
+      // Index out of bounds, return the original array
+      return arr;
+    }
+  
+    const element = arr.splice(index, 1)[0];
+    arr.unshift(element);
+  
+    console.log("array ordered: ",index,arr)
+    return arr;
+  }
+
   function filterForNextRoute() {
+
     if(!parseInt(qIndex)) {
       setData(fetchedData.current || [])
-      setOrgiData(fetchedData.current)
+      setOrgiData(fetchedData.current || [])
       dispatch(setBookingData({...bookingData,offer: []}))
       return false; 
     };
@@ -128,18 +144,31 @@ export default function OffersList({hide}) {
     const id = offerSeg?.id
     let supplier = bookingData?.offer?.at(Math.max(0,qIndex-1))?.supplier;
     
-    let newData = fareOpt ? [offerSeg] : (fetchedData.current)?.filter(obj => {
+    let chosen = false;
+    let newData = fareOpt ? [offerSeg] : (fetchedData.current)?.filter((obj,i) => {
       if(obj.segments) {
         // return obj.segments?.some(segment => segment?.flights?.every((flight) => (flight.marketingCarrier === airline) && obj.supplier === supplier))
         // return obj.segments?.some(segment => segment?.flights?.some((flight) => (flight.marketingCarrier === airline) && obj.supplier === supplier))
+        if(obj?.id === id) {
+          chosen = true;
+          console.log('chosen: ',obj)
+          // obj.chosen = true;
+        }
+        
         if(supplier === 'Intra1K')
           return obj?.id === id;
+        else if(obj?.id === id)
+          return true;
         else
           return obj.segments[qIndex]?.flights?.some((flight) => (flight.marketingCarrier === airline) && obj.supplier === supplier)
       }
               
       return false;
     })
+    if(chosen)
+      newData = moveIdToFront(newData,id)
+
+    console.log('data: ',fetchedData.current,newData)
     // console.log((qIndex),'here',airline,supplier,orgiData,newData)
 
     setOrgiData(newData);
@@ -404,9 +433,10 @@ export default function OffersList({hide}) {
     
     dispatch(setBookingData({...bookingData,offer,orderData: null,beforePrice: offer}))
 
+    const currentPath = location.pathname;
+    const searchParams = new URLSearchParams(location.search);
+
     if(searchPath.length < searchObj?.destinations.length) {
-      const currentPath = location.pathname;
-      const searchParams = new URLSearchParams(location.search);
       searchParams.set('path', searchPath.length);
       if(fareOption)
         searchParams.set('fareOption', true);
@@ -416,7 +446,9 @@ export default function OffersList({hide}) {
 
       // setSearchPath([...searchPath,searchObj?.destinations[searchPath.length]])
     } else if(searchPath.length === searchObj?.destinations.length) {
-      navigate(`/order/new/flight/book/${q}`);
+      const action = searchParams.get('action')
+      const id = searchParams.get('flightBookingId')
+      navigate(`/order/new/flight/book/${q}?action=${action}&flightBookingId=${id}`);
     }
   }
 
@@ -457,10 +489,15 @@ export default function OffersList({hide}) {
   const passengersCount = Object.values(searchObj?.passengers || {})?.reduce((p,c) => Number(p)+Number(c),0);
   const [zIndex,setZIndex] = useState()
 
+  const lastPath = qIndex && (bookingData?.offer)?.at(-1)
+  
   // classify with airline and price
   let modData = [];
 
-  modData = rearrageFlight(data);
+  modData = rearrageFlight(data,lastPath);
+
+  const [showCombinations,setShowCombinations] = useState(false);
+  console.log(' ==> ',modData)
 
   return (
     <div className='w-full flex flex-col gap-2 py-4 flex-1 relative'>
@@ -561,9 +598,48 @@ export default function OffersList({hide}) {
                 <h5 className='bg-secondaryx p-5 rounded-md flex text-center items-center justify-center text-primary/30 uppercase'>Sorry something went wrong from our end! Please try again.</h5>
                 <p>If this error persists please contact our support team.</p>
               </div>
-            :
+            : 
               <Paginate className='flex flex-col gap-4 pt-4' data={modData} limit={10} render={(obj,i) => 
-                <SortedOffers obj={obj} key={i} params={{qIndex,showDetail,handleOfferSelect}} />
+                  <div key={i}>
+                    {lastPath && parseInt(qIndex) ? 
+                      i === 0 ? 
+                        <SortedOffers obj={obj} index={i} params={{qIndex,showDetail,handleOfferSelect}} />
+                      : showCombinations ? 
+                        <SortedOffers obj={obj} index={i} params={{qIndex,showDetail,handleOfferSelect}} />
+                      :null
+                    :
+                      <SortedOffers obj={obj} index={i} params={{qIndex,showDetail,handleOfferSelect}} />
+                    }
+                  
+                    {
+                      lastPath && i === 0 && modData?.length > 1 && parseInt(qIndex) ? 
+                      <div className='flex items-center justify-center text-theme1 p-6 my-2 w-full'>
+                        <div className='flex gap-2 justify-center items-center cursor-pointer ' onClick={() => setShowCombinations(!showCombinations)}>
+                          {showCombinations ? 
+                            <span>Hide flight combinations</span>
+                          :
+                            <span>Click to view other flight combinations</span>
+                          }
+                          <Icon icon={showCombinations ? 'mingcute:up-fill' : 'mingcute:down-fill'} />
+                        </div>
+                      </div>
+                      :null
+                    }
+                    {lastPath && i === 0 && modData?.length > 1 && parseInt(qIndex) ? 
+                      showCombinations ? 
+                      <div className='flex flex-col gap-4 '>
+                        <div className='flex flex-col gap-1 p-6 my-2'>
+                          <h5>Flight Combination</h5>
+                          <div>
+                            Choose a different return for the current selected flight offer. 
+                            There might be a price change as a result of your new selection
+                          </div>
+                        </div>
+                        <SortedOffers obj={obj} index={true} params={{qIndex,showDetail,handleOfferSelect}} />
+                      </div>
+                      :null
+                    :null}
+                  </div>
               } />
           }
 
@@ -642,13 +718,13 @@ export default function OffersList({hide}) {
   )
 }
 
-export const SortedOffers = ({obj,offer,params:{qIndex,showDetail,handleOfferSelect,...restParams}}) => {
+export const SortedOffers = ({obj,offer,index,params:{qIndex,showDetail,handleOfferSelect,...restParams}}) => {
   const [view,setView] = useState(false);
 
   return (
   <div className='px-4'>
-    <FlightOfferDisplay path={qIndex} offer={offer} data={obj?.objects[0]} showDetail={async () => await showDetail(obj)} select={handleOfferSelect} />
-    {obj.objects.length > 1 ? (
+    <FlightOfferDisplay path={qIndex} index={index} offer={offer} data={obj?.objects[0]} showDetail={async () => await showDetail(obj)} select={handleOfferSelect} />
+    {obj.objects.length > 1 && !obj.chosen ? (
       <div className={'flex flex-col gap-4 relative  '+(view?'bg-[#F3F7FF] ':'')}>
         <div className={'absolute -translate-y-[12px] p-2 w-full '+(view?'bg-[#f3f7ff]':'')}></div>
         <div className='relative flex flex-col gap-2 mb-4'>
@@ -663,7 +739,7 @@ export const SortedOffers = ({obj,offer,params:{qIndex,showDetail,handleOfferSel
           <div className='flex flex-col gap-4 p-3'>
             {
               obj.objects.slice(1).map((obj,i) => (
-                <FlightOfferDisplay key={i} path={qIndex} offer={offer} data={obj} showDetail={async () => showDetail && await showDetail(obj)} select={handleOfferSelect} {...restParams} />
+                <FlightOfferDisplay key={i} index={index} path={qIndex} offer={offer} data={obj} showDetail={async () => showDetail && await showDetail(obj)} select={handleOfferSelect} {...restParams} />
               ))
             }
           </div>
@@ -674,7 +750,7 @@ export const SortedOffers = ({obj,offer,params:{qIndex,showDetail,handleOfferSel
   )
 }
 
-export function rearrageFlight(array) {
+export function rearrageFlight(array,lastPath) {
   const airlinesMatch = (cur,prev) => {
     try {
       let curAirlines = [...new Set(cur?.segments?.map(obj => obj.flights).flat().map(obj => obj.marketingCarrier))]
@@ -687,7 +763,7 @@ export function rearrageFlight(array) {
     return false;
   }
   const result = array?.reduce((acc,cur,ind) => {
-    if(ind > 0 && (cur.totalAmount === array[ind - 1].totalAmount &&
+    if((ind > (lastPath ? 1 : 0)) && (cur.totalAmount === array[ind - 1].totalAmount &&
                    airlinesMatch(cur,array[ind - 1]))) {
       const prev = acc?.at(-1);
       prev.objects.push(cur);
