@@ -108,9 +108,9 @@ export default function FlightInfoCard({data,label='Depart'}) {
                   </div>
                 </div>
               </div>
-              <div className='flex gap-6 p-4 px-6 indent-1 uppercase flex-wrap'>
-                <label className={`${!changable?'error':'triumph'} text-xs bg-opacity-30`}>{!changable ? 'Non Changable Ticket' : 'Changable Ticket'}</label>
-                <label className={`${!refundable?'error':'triumph'} text-xs bg-opacity-30`}>{!refundable ? 'Non refundable Ticket':'Refundable Ticket'}</label>
+              <div className='flex gap-2 p-4 px-6 indent-1 uppercase flex-wrap'>
+                <label className={`${!changable?'error':'triumph'} mr-6 text-xs bg-opacity-30`}>{!changable ? 'Non Changable Ticket' : 'Changable Ticket'}</label>
+                <label className={`${!refundable?'error':'triumph'} mr-6 text-xs bg-opacity-30`}>{!refundable ? 'Non refundable Ticket':'Refundable Ticket'}</label>
                 <div className='flex gap-4'>
                   <FlightAmenities flight={flight} />
                 </div>
@@ -129,11 +129,14 @@ export default function FlightInfoCard({data,label='Depart'}) {
               // const length = 'short'; // long, very long 
               
               return (
-                <div className='border-y p-3 flex items-center gap-6 '>
-                  <span className='min-w-[50px] px-2'>
+                <div className='border-y p-3 flex items-center gap-1 flex-wrap whitespace-nowrap'>
+                  <span className='min-w-[50px] pr-4'>
                     {duration}
                   </span>
-                  Changes plane at {flight.arrivalAirportName} ({flight.arrivalLocation}) {flight.duration > 2 ? <b className='text-[#533218] bg-[#f48a3885] rounded-md px-2 p-1'>Long stopover</b>:''}
+                  <span className='pr-4'>
+                    Changes plane at {flight.arrivalAirportName} ({flight.arrivalLocation}) 
+                  </span>
+                  {/* {flight.duration > 2 ? <b className='text-[#533218] bg-[#f48a3885] rounded-md px-2 p-1'>Long stopover</b>:''} */}
 
                   <span className={`${length === 'long' ? 'error bg-opacity-50' : length === 'very long' ? 'error' : 'warn'} uppercase text-xs`}>{length} stopover</span>
                 </div>

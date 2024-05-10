@@ -32,23 +32,23 @@ export default function FlightPayment() {
   const [booking, setBooking] = useState();
   const navigate = useNavigate();
 
-  const location = useLocation();
-  const searchParam = new URLSearchParams(location.search);
-  const canceled = searchParam.get('canceled')
+  // const location = useLocation();
+  // const searchParam = new URLSearchParams(location.search);
+  // const canceled = searchParam.get('canceled')
 
   function handleSearchRoute(i) {
     navigate("/order/new/flight/offers?q=" + id + "&path=" + i);
   }
 
-  const url = new URL(window.location.href);
+  // const url = new URL(window.location.href);
 
-  const searchParams = url.searchParams;
-  searchParams.set('canceled', true);
-  url.search = searchParams.toString();
-  const newUrl = url.toString();
+  // const searchParams = url.searchParams;
+  // searchParams.set('canceled', true);
+  // url.search = searchParams.toString();
+  // const newUrl = url.toString();
 
-  if(!canceled)
-    window.location.href = newUrl
+  // if(!canceled)
+  //   window.location.href = newUrl
 
   useEffect(() => {
     if (bookingData?.orderData?.booking?._id) {
@@ -71,25 +71,27 @@ export default function FlightPayment() {
 
   return (
     <div className="pd-md py-4 flex flex-col gap-4">
-      <BreadCrumb>
-        <Link to={"/order"}>Orders</Link>
-        <Link to="/order/new/flight">New order</Link>
-        {qObj?.destinations?.slice(0, 1)?.map((obj, i) => {
-          return (
-            <div
-              onClick={() => handleSearchRoute(i)}
-              className="cursor-pointer"
-            >
-              {obj.departureLocation} to {obj.arrivalLocation}
-            </div>
-          );
-        })}
-        <Link to={`/order/new/flight/book/details/${id}`}>
-          Passenger details
-        </Link>
-        <Link to={`/order/new/flight/book/ancillaries/${id}`}>Ancillaries</Link>
-        <label>Payment</label>
-      </BreadCrumb>
+      <div className="whitespace-nowrap max-w-full overflow-x-auto pb-2">
+        <BreadCrumb>
+          <Link to={"/order"}>Orders</Link>
+          <Link to="/order/new/flight">New order</Link>
+          {qObj?.destinations?.slice(0, 1)?.map((obj, i) => {
+            return (
+              <p
+                // onClick={() => handleSearchRoute(i)}
+                className="cursor-pointer"
+              >
+                {obj.departureLocation} to {obj.arrivalLocation}
+              </p>
+            );
+          })}
+          <p>
+            Passenger details
+          </p>
+          {/* <Link to={`/order/new/flight/book/ancillaries/${id}`}>Ancillaries</Link> */}
+          <label>Payment</label>
+        </BreadCrumb>
+      </div>
 
       {loading ? (
         <LinearProgress /> //TODO: change this

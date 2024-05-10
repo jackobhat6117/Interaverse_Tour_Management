@@ -12,6 +12,7 @@ import ToolTip from "../../../../components/DIsplay/ToolTip";
 import Checkbox from "../../../../components/form/Checkbox";
 import filterTruthyValues from "../../../../features/utils/filterTruthyObjectValues";
 import { flightSuppliers } from "../../../../data/ENUM/FlightProviders";
+import Icon from "../../../../components/HOC/Icon";
 
 const initData = {
   appliedTo: "Flight",
@@ -25,6 +26,7 @@ const initData = {
   flightRoute: undefined,
   airline: undefined,
   departureAirport: undefined,
+  excludedDepartureAirports: [],
   arrivalAirport: undefined,
   transitAirport: undefined,
   cabinClass: undefined,
@@ -58,6 +60,7 @@ export default function CreateMarkup({
     let modData = filterTruthyValues({...data,
       departureAirport: data?.departureAirport?.iata || data?.departureAirport,
       arrivalAirport: data?.arrivalAirport?.iata || data?.arrivalAirport,
+      amount: Number(data?.amount),
     })
     if (!update) res = await createFlightPriceAdjustment({ ...modData, currency });
     else res = await updateFlightPriceAdjustment(data?._id,{ ...modData });
@@ -394,6 +397,10 @@ export default function CreateMarkup({
               </TextInput>
             </div>
 
+            <ExcludedDepartureAirport data={data?.excludedDepartureAirports} setData={(val) => setData({...data,excludedDepartureAirports: val})} />
+
+            <hr />
+            
             <div className="flex gap-2">
               <TextInput
                 select
@@ -433,4 +440,51 @@ export default function CreateMarkup({
       </form>
     </div>
   );
+}
+
+function ExcludedDepartureAirport({data,setData}) {
+  const [excludedDepartureAirport,setExcludedDepartureAirport] = useState("");
+
+  const Tag = ({value}) => (
+    <div className="flex items-center border rounded-full text-sm border-primary/30">
+      <span className="px-2 py-[2px]">
+        {value || ""}
+      </span>
+      <span className="hover:text-red-400 flex-1 py-[2px] rounded-r-full cursor-pointer pr-2 inline-block h-full"
+       onClick={() => handleRemove(value)} 
+      >
+        <Icon icon='mdi:close' className='!w-4 !h-4' />
+      </span>
+    </div>
+  )
+
+  function handleRemove(iata) {
+    setData && setData(data?.filter(val => val !== iata))
+  }
+
+  function handleChange(val) {
+    setExcludedDepartureAirport(val)
+    if(val?.iata)
+      setData && setData([ ...(data || []), val?.iata ])
+  }
+  
+  return (
+    <div className="flex flex-col">
+      <small>Excluded Departure Airports</small>
+      <div className="flex gap-2 items-center max-w-[500px] overflow-x-auto pb-1 my-2">
+        {(data)?.map((val,i) => 
+          <Tag value={val} key={i} />
+        )}
+      </div>
+      <CitiesInput
+        label={""}
+        size="small"
+        placeholder="e.g LOS"
+        value={excludedDepartureAirport || ""}
+        onChange={(val) =>
+          handleChange(val)
+        }
+      />
+    </div>
+  )
 }

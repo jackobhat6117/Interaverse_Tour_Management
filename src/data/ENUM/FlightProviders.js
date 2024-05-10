@@ -1,15 +1,15 @@
 export const flightProviders = [
-  "TRAVEL_PORT",
-  "AMADEUS",
-  "AMADEUS_DXB",
+  "Intra1T",
+  "Intra1A",
+  "Intra3A",
 ]
 
 
 export const flightSuppliers = {
-  "Amadeus": "Amadeus",
-  "AmadeusSoapNG": "Amadeus Soap NG",
-  "AmadeusSoapDXB": "Amadeus Soap DXB",
-  "Sabre": "Sabre",
-  "Travelport": "Travel Port",
-  "TravX": "TravX"
+  "Intra1A": "Amadeus",
+  "Intra2A": "Amadeus Soap NG",
+  "Intra3A": "Amadeus Soap DXB",
+  "Intra1S": "Sabre",
+  "Intra1T": "Travel Port",
+  "Intra1FR": "TravX"
 }

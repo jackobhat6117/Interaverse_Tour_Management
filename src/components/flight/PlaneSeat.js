@@ -1,4 +1,6 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useState } from 'react';
+import { formatMoney } from '../../features/utils/formatMoney';
+import { getCurrencySymbol } from '../../features/utils/countires';
 
 export const colorCode = {
   additional: '#aaa',
@@ -12,10 +14,10 @@ export const colorCode = {
 function PlaneSeat({seatMapData,loading,returnData}) {
   const [selected,setSelected] = useState({});
   let deck = seatMapData[0]?.decks?.at(0);
-	let seats = deck?.seats
+	let seats = deck?.seats || seatMapData[0]?.seatMap?.flat();
 
-	let width = deck?.deckConfiguration?.width;
-	let length = deck?.deckConfiguration?.length;
+	let width = deck?.deckConfiguration?.width || seatMapData[0]?.seatMap?.length;
+	let length = deck?.deckConfiguration?.length || seatMapData[0]?.seatMap?.at(0)?.length;
 
 
   function handleReturn(newObj) {
@@ -33,6 +35,8 @@ function PlaneSeat({seatMapData,loading,returnData}) {
   } 
 
   function toggleSeat(obj,loc) {
+    if(!loc) return false;
+    
     if(selected[loc]) removeFromSeat(loc)
     else placeSeat(obj,loc)
   }
@@ -48,8 +52,9 @@ function PlaneSeat({seatMapData,loading,returnData}) {
     handleReturn(rest)
   }
 
+  console.log(seatMapData);
   return (
-    <div className='flex flex-col justify-center gap-2 p-2 flex-wrap'>
+    <div className='flex flex-col justify-center overflow-x-auto gap-2 p-2 flex-wrap'>
       {loading ? (
         <div className='w-full h-full flex border-primary/40 py-2 items-center justify-center'>
           <div className='load'></div>
@@ -68,15 +73,22 @@ function PlaneSeat({seatMapData,loading,returnData}) {
               <span 
                 // className='bg-black text-white p-2 m-2 w-10 h-10 flex flex-col items-center justify-center '
                 onClick={() => toggleSeat(seat,seat?.number)}
-                className={`w-10 h-10 bg-primary/10 flex flex-col items-center justify-center cursor-pointer
-                hover:shadow-md shadow-primary hover:border-theme1 border
+                className={`w-10 h-10 bg-primary/10 flex flex-col items-center justify-center
+                hover:shadow-md shadow-primary  border transition-all
                 ${selected[seat?.number] ? ' bg-theme1 ':''}
+                ${seat?.number ? ' cursor-pointer hover:border-theme1 hover:scale-150 ':' cursor-not-allowed '}
               `}>
                 {seat?.number}
                 {/* {width*i+j} */}
-                <sub className='text-[8px]'>
-                  {seat?.characteristicsCodes?.includes('W') ? 'window':''}
-                </sub>
+                {/* <sub className='text-[8px] text-theme1'> */}
+                <small className={`text-[8px]  font-bold 
+                  ${selected[seat?.number] ? ' text-secondary ':' text-theme1 '}
+                `}>
+                  {!seat?.pricing?.total ? 
+                    seat?.travelerPricing?.at(0)?.price?.total ? `${formatMoney(seat?.travelerPricing?.at(0)?.price?.total,getCurrencySymbol(seat?.travelerPricing?.at(0)?.price?.currency))}` : ''
+                   : formatMoney(seat?.pricing?.total,getCurrencySymbol(seat?.pricing?.total?.split(' ')[0]))}
+                  {/* {seat?.characteristicsCodes?.includes('W') ? 'window':''} */}
+                </small>
               </span>
             )
           })

@@ -29,6 +29,7 @@ import { useSnackbar } from "notistack";
 import CancelOrder from "../../cancelOrder";
 import TicketIssue from "../../IssueTicket";
 import { def } from "../../../../config";
+import ApproveTicket from "../../ApproveTicket";
 
 export default function FlightOrder() {
   const { id } = useParams();
@@ -38,6 +39,7 @@ export default function FlightOrder() {
   const [openPDFExport, setOpenPDFExport] = useState(false);
   const [openInsurance, setOpenInsurance] = useState(false);
   const [openIssueTicket, setOpenIssueTicket] = useState(false);
+  const [openApproveTicket, setOpenApproveTicket] = useState(false);
   const [openPayment,setOpenPayment] = useState(false);
   const [selectedOption, setSelectedOption] = useState();
   const [order, setOrder] = useState();
@@ -209,7 +211,8 @@ export default function FlightOrder() {
                         addInsurance: (id) => setOpenInsurance(id),
                         pay: () => setOpenPayment(orderData?._id),
                         cancelOrder: () => setOpenCancelOrder(orderData?._id),
-                        issueTicket: () => setOpenIssueTicket(orderData)
+                        issueTicket: () => setOpenIssueTicket(orderData),
+                        approveTicket: () => setOpenApproveTicket(orderData),
                       }}
                     />
                     </CustomMenu>
@@ -365,6 +368,13 @@ export default function FlightOrder() {
       </Modal1>
 
       <CancelOrder open={openCancelOrder} setOpen={setOpenCancelOrder} callback={() => {fetch();setOpenCancelOrder(false)}}/>
+
+      <Modal1 open={openApproveTicket} setOpen={setOpenApproveTicket}>
+        <ApproveTicket
+          data={openApproveTicket}
+          callback={() => {fetch();setOpenApproveTicket(false)}}
+          close={() => setOpenApproveTicket(false)} />
+      </Modal1>
 
       <Modal1 open={openIssueTicket} setOpen={setOpenIssueTicket}>
         <TicketIssue

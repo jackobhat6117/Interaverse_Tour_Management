@@ -10,6 +10,7 @@ import moment from 'moment'
 
 export function validateAge(birthDate,type) {
   let age = moment().diff(birthDate,'years')
+  age += Math.max(0,(moment().month() - moment(birthDate).month())) / 100
   let valid = false;
   let msg = '';
 
@@ -17,14 +18,14 @@ export function validateAge(birthDate,type) {
   const errorMsg = (val) => {msg = val};
   
   if(type === 'infant')
-    validate(age < 3) || errorMsg(`${type}s should be under 3 `);
+    validate(age < 2) || errorMsg(`${type}s should be under 3 `);
   else if(type === 'child')
     validate(age < 12) || errorMsg(`${type}s should be between 3 and 12 `);
   else if(type === 'adult')
     validate(age >= 12) || errorMsg(`${type}s should be over 11 `);
 
 
-  return [valid,msg];
+  return [valid,msg,age];
 }
 
 export default function PrimaryPassenger({data:gotData,label,type,handleReturn,count=0,collapse=false,config:gotConfig}) {
@@ -129,7 +130,10 @@ export default function PrimaryPassenger({data:gotData,label,type,handleReturn,c
           <h5>Additional details</h5>
           <div className='flex gap-4'>
             <div className='flex-1'>
-              <TextInput label='Frequent flyer number' placeholder='Enter here'/>
+              <TextInput label='Frequent flyer number' placeholder='Enter here'
+                value={data?.frequentFlyer}
+                onChange={(ev) => handleData({...data,frequentFlyer: ev?.target?.value})}
+              />
             </div>
             <div className='flex-1'>
               <SelectInput label='Special assistance' placeholder='Select'>
@@ -139,7 +143,10 @@ export default function PrimaryPassenger({data:gotData,label,type,handleReturn,c
           </div>
 
           <h5>Remarks</h5>
-          <TextInput multiline rows={4} label='' placeholder={'Add remarks to booking'} />
+          <TextInput multiline rows={4} label='' placeholder={'Add remarks to booking'}
+            value={data?.generalRemark}
+            onChange={(ev) => handleData({...data,generalRemark: ev?.target?.value})}
+           />
         </div>
       </Collapser>
     </div>
