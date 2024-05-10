@@ -113,6 +113,7 @@ export default function FlightBookDetails() {
           <b>Details</b>
         </BreadCrumb>
       </div>
+      {}
       <div className="flex gap-10 flex-wrap-reverse ">
         <div className="flex flex-col gap-6 flex-[2] max-w-full">
           {/* <PayTime callback={(val) => handlePayTime(val)} /> */}

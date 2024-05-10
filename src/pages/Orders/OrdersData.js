@@ -13,7 +13,7 @@ import AddBags from "./AddBags";
 import AddSeats from "./AddSeats";
 import CancelOrder from "./cancelOrder";
 import { formatMoney } from "../../features/utils/formatMoney";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { def } from "../../config";
 import PaymentMethod from "../../components/flight/PaymentMethod";
 import Modal1 from "../../components/DIsplay/Modal/Modal1";
@@ -26,6 +26,10 @@ import { getTestLevel } from "../../utils/testLevel";
 import { getSupplierName } from "../../data/flight/supplier/getSupplierName";
 import ApproveTicket from "./ApproveTicket";
 import Transactions from "./Transactions";
+import { offerSearchTemp } from "../../data/flight/offerSearchData";
+import { encrypt } from "../../features/utils/crypto";
+import { useDispatch } from "react-redux";
+import { setBookingData } from "../../redux/reducers/flight/flightBookingSlice";
 
 
 const ActionContext = createContext();
@@ -57,7 +61,7 @@ export const Menu = (props) => {
 };
 
 export function OrderMenus({callback,data:{status,id,bookingID,orderType,row},actions,inDetail}) {
-  const {addBags,addSeats,addInsurance,issueTicket,approveTicket,cancelOrder,pay,cancelTicket} = actions || {}
+  const {addBags,addSeats,addInsurance,issueTicket,approveTicket,rebook,cancelOrder,pay,cancelTicket} = actions || {}
   const navigate = useNavigate();
   const devStage = getTestLevel(def?.devStatus);
   
@@ -128,6 +132,15 @@ export function OrderMenus({callback,data:{status,id,bookingID,orderType,row},ac
             onClick={() => navigate('/order/flight/change/'+id+'?property=insurance')}
           />
         :null}
+        {devStage < 1 ? 
+          <Menu
+            value={status}
+            label="Rebook"
+            showFor={["Denied","Canceled",'Expired']}
+            // onClick={() => addInsurance && addInsurance(id)}
+            onClick={() => rebook && rebook()}
+          />
+        :null}
 
         {/* <Menu
           value={status}
@@ -185,9 +198,60 @@ export function flightStatusMap(status) {
 }
 function StatusCol({ params }) {
   const status = params.value || "";
+  const dispatch = useDispatch();
+  const [searchParam] = useSearchParams();
   
   const orderType = params?.row?.type?.toLowerCase() || "type";
   const bookingID = params?.row?.flightObj?._id;
+
+  function handleRebook(data) {
+    console.log(data,data?.flights?.at(0)?.departureDate,moment(data?.flights?.at(0)?.departureDate).format('YYYY-MM-DD'))
+    const searchObj = clone(offerSearchTemp)
+    searchObj.cabinClass = [data?.flights?.at(0)?.cabinClass || searchObj.cabinClass]
+    data?.destinations ? 
+      searchObj.originDestinations = data?.destinations?.map(obj => ({
+        from: obj?.from,
+        to: obj?.to,
+        departure: {
+          date: obj?.departureDate
+        },
+        date: obj?.departureDate
+      }))
+    :
+      searchObj.originDestinations = data?.flights?.map(obj => ({
+        from: obj?.departureLocation,
+        to: obj?.arrivalLocation,
+        departure: {
+          date: moment(obj?.departureDate).format('YYYY-MM-DD')
+        },
+        date: obj?.departureDate,
+      }))
+    
+    searchObj['destinations'] = searchObj.originDestinations.map(obj => {
+      return {
+        departureLocation: obj.from?.iata || obj?.from,
+        arrivalLocation: obj.to?.iata || obj?.to,
+        date: obj?.departure?.date
+      };
+    })
+
+    searchObj.passengers = {
+      adult: data?.travelers?.filter(obj => obj.travelerType === 'ADT')?.length || 0,
+      child: data?.travelers?.filter(obj => obj.travelerType === 'CHD')?.length || 0,
+      infant: data?.travelers?.filter(obj => obj.travelerType === 'INF')?.length || 0,
+    }
+
+    console.log(searchObj)
+
+    let enc = encrypt(JSON.stringify(searchObj));
+
+    dispatch(setBookingData({offer: null,time: null}))
+
+    let referralCode = searchParam.get('refCode');
+
+    window.open(`/order/new/flight/offers?referralCode=${referralCode}&q=${enc}&action=rebook&flightBookingId=${data?._id}`,'_blank');
+
+  }
   
   return (
     <div className="flex justify-between items-center gap-2 w-full">
@@ -212,6 +276,7 @@ function StatusCol({ params }) {
                   issueTicket: () => issueTicket(params.row?.flightObj),
                   approveTicket: () => approveTicket(params.row?.flightObj),
                   cancelTicket: () => cancelTicket(params.row?.flightObj),
+                  rebook: () => handleRebook(params.row?.flightObj),
                 }} />
               )
             }}

@@ -17,7 +17,9 @@ hr {
   @apply bg-primary rounded-full w-2 h-2;
 }
 
-
+.css-4pdmu4-MuiBreadcrumbs-ol {
+  flex-wrap: nowrap !important;
+}
 .shad-hover:hover {
   box-shadow: 0 5px 10px 0 #aaa;
   transition: all .3s;

@@ -26,7 +26,7 @@ export default function FilterSuplier({ returnData, clear, orgi }) {
   },[clear])
 
   useEffect(() => {
-    let suppliers = [...new Set(orgi?.map(obj => obj.supplier))]?.map(supplier => ({name: supplier?.replace('_',' '),id: supplier,value: false}))
+    let suppliers = [...new Set(orgi?.map(obj => obj?.supplier))]?.map(supplier => ({name: supplier?.replace('_',' '),id: supplier,value: false}))
     setSuplier(suppliers)
   },[orgi])
   

@@ -63,7 +63,7 @@ export default function FlightBook() {
     const res = await getFlightOfferPrice(req);
     setLoading(false);
     if(res.return) {
-      let data = (res.data.data?.map(obj => convertFlightObject(obj)) || [])
+      let data = (res.data.data?.map(obj => ({...convertFlightObject(obj),orgi:obj})) || [])
       setOffer(data)
       dispatch(setBookingData({...bookingData,offersPrice: data,time: new Date().getTime()}))
       setPriceDiff({
@@ -87,7 +87,7 @@ export default function FlightBook() {
           <Link to='/order/new/flight'>New order</Link>
           {qObj?.destinations?.map((obj,i) => {
             return (
-              <div onClick={() => handleSearchRoute(i)} className='cursor-pointer'>
+              <div onClick={() => i===0 && handleSearchRoute(i)} className='cursor-pointer'>
                 {obj.departureLocation} to {obj.arrivalLocation}
               </div>
             )
@@ -99,12 +99,12 @@ export default function FlightBook() {
         <div className='flex flex-col gap-2 flex-1'>
           {offer ? offer?.at(0)?.segments?.map((obj,i) => (
             <div key={i}>
-              <FlightSegmentDisplay changeRoute={() => handleSearchRoute(i)} data={obj} />
+              <FlightSegmentDisplay index={i} changeRoute={() => handleSearchRoute(i)} data={obj} />
             </div>
           )): !loading && (
             <div className='flex flex-col justify-center items-center p-4'>
-              <p>This offer is not bookable!</p>
-              <button className='text-theme1' onClick={() => handleSearchRoute(0)}>Please select another flight</button>
+              <p>The selected flight is unavailable to book from the airline. Kindly select a different offer and try again!</p>
+              <button className='text-theme1 border border-theme1 rounded-md p-2 my-2' onClick={() => handleSearchRoute(0)}>Select a new offer</button>
               {/* <button className='text-theme1' onClick={getPrice}>Reload</button> */}
             </div>
           )}
@@ -143,7 +143,7 @@ export default function FlightBook() {
           </div>
         </div>
         <div className='flex-1 '>
-          <FlightPriceSummary data={offer?.at(0)} />
+          <FlightPriceSummary data={offer?.at(0)} rePrice={getPrice} />
         </div>
       </div>
       <Modal1 open={priceDiff && priceDiff?.change} setOpen={setPriceDiff}>
