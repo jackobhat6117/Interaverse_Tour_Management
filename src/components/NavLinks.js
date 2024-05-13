@@ -51,9 +51,18 @@ export default function NavLinks({profileCompleted}) {
 
   function handleLink(ev,val) {
     setLink(val)
-    navigate(ev.target.dataset.link)
+    console.log(window.location.pathname)
+    // navigate(ev.target.dataset.link)
   }
 
+  function handleNav(link) {
+    if(link === window.location.pathname)
+      window.location.reload();
+
+    navigate(link);
+
+  }
+  
   return profileCompleted ? (
     <div className="">
       <Tabs variant="scrollable" value={link} onChange={handleLink} className="font-bold" 
@@ -61,9 +70,9 @@ export default function NavLinks({profileCompleted}) {
         {/* {!profileComplete?
           <Tab label='Getting Started' data-link="/welcome" icon={<Icon icon='heroicons:rocket-launch' className=' -rotate-[43deg]' />} iconPosition="start" className='!capitalize !min-w-[150px] md:flex-1 !whitespace-nowrap' />
         :null} */}
-        <Tab label='Home' data-link="/" icon={<HomeOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
-        <Tab label='Orders' data-link="/order" icon={<ShoppingCartOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
-        <Tab label='Customers' data-link="/users" icon={<Person />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
+        <Tab label='Home' onClick={() => handleNav("/")} data-link="/" icon={<HomeOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
+        <Tab label='Orders' onClick={() => handleNav("/order")} data-link="/order" icon={<ShoppingCartOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
+        <Tab label='Customers' onClick={() => handleNav("/users")} data-link="/users" icon={<Person />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
         {/* <Tab label='Support' data-link="/support" icon={<SupportAgentOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' /> */}
       </Tabs>
     </div>
