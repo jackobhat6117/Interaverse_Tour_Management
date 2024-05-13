@@ -34,8 +34,16 @@ export default function WelcomeNavbar(props) {
   function handleChange(ev,val) {
     ev?.preventDefault();
     setTabIndex(val);
-    navigate(ev.target.dataset.link)
   }
+  
+  function handleNav(link) {
+    if(link === window.location.pathname)
+      window.location.reload();
+
+    navigate(link);
+
+  }
+
   return (
     <div className='flex flex-col min-h-screen '>
       {
@@ -47,19 +55,19 @@ export default function WelcomeNavbar(props) {
         <Tabs variant="scrollable" value={tabIndex} className="font-bold" 
           onChange={(ev,val) => handleChange(ev,val)}
           TabIndicatorProps={{sx: {height: '4px'}}}>
-            <Tab label='Getting Started' data-link="/welcome" icon={<Icon icon='heroicons:rocket-launch' className='!min-w-[20px] !h-6 -rotate-[43deg]' />} iconPosition="start" className='!capitalize !min-w-[150px] md:flex-1 !whitespace-nowrap' />
+            <Tab label='Getting Started' onClick={() => handleNav("/welcome")} data-link="/welcome" icon={<Icon icon='heroicons:rocket-launch' className='!min-w-[20px] !h-6 -rotate-[43deg]' />} iconPosition="start" className='!capitalize !min-w-[150px] md:flex-1 !whitespace-nowrap' />
             {profileComplete || underReview ?
-              <Tab label='Home' data-link="/" icon={<HomeOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
+              <Tab label='Home' onClick={() => handleNav("/")} data-link="/" icon={<HomeOutlined />} iconPosition="start" className='!capitalize md:flex-1 !whitespace-nowrap' />
             :null}
-            <Tab label='Pricing' data-link="/welcome/pricing" icon={
+            <Tab label='Pricing' onClick={() => handleNav("/welcome/pricing")} data-link="/welcome/pricing" icon={
               <div className={'flex justify-center items-center  w-5 h-5 rounded-full border '+(tabIndex === 1 ? 'border-theme1':'border-primary/40')}>
                 <Icon icon='tabler:currency-naira' className=' ' />
               </div>
             } iconPosition="start" className='!capitalize !min-w-[150px] md:flex-1 !whitespace-nowrap' />
-            <Tab label='Learn More' data-link="/welcome/learn" icon={
+            <Tab label='Learn More' onClick={() => handleNav("/welcome/learn")} data-link="/welcome/learn" icon={
               <LearnIcon className='text-theme-1' />
             } iconPosition="start" className='!capitalize !min-w-[150px] md:flex-1 !whitespace-nowrap' />
-            <Tab label='Support' data-link="/welcome/support" icon={<Icon icon='material-symbols-light:contact-support-outline' className=' ' />} iconPosition="start" className='!capitalize !min-w-[150px] md:flex-1 !whitespace-nowrap' />
+            <Tab label='Support' onClick={() => handleNav("/welcome/support")} data-link="/welcome/support" icon={<Icon icon='material-symbols-light:contact-support-outline' className=' ' />} iconPosition="start" className='!capitalize !min-w-[150px] md:flex-1 !whitespace-nowrap' />
         </Tabs>
       </div>
 
