@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import BreadCrumb from "../../../../components/DIsplay/Nav/BreadCrumb";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { decrypt } from "../../../../features/utils/crypto";
@@ -24,13 +24,23 @@ import CheckedBags from "../../../../components/flight/CheckedBags";
 import SeatSelection from "./SeatSelection";
 import ExpandWrapper from "../../../../components/DIsplay/ExpandWrapper";
 import { def } from "../../../../config";
+import getFlightOfferPrice from "../../../../controllers/Flight/getOfferPrice";
+import convertFlightObject from "../../../../features/utils/flight/flightOfferObj";
+import PriceTimeout from "../../../../components/flight/PriceTimeout";
+import LoadingBar from "../../../../components/animation/LoadingBar";
+import { getTestLevel } from "../../../../utils/testLevel";
+import { formatMoney, getNumber } from "../../../../features/utils/formatMoney";
+
 
 export default function FlightBookDetails() {
   const { id } = useParams();
   const qObj = JSON.parse(decrypt(id));
   const { bookingData } = useSelector((state) => state.flightBooking);
   const offer = bookingData?.offersPrice?.at(-1) || bookingData?.offers?.at(-1);
-  // const dispatch = useDispatch();
+  const [bagsPrice,setBagsPrice] = useState();
+  const [seatsPrice,setSeatsPrice] = useState();
+  const [loading,setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
@@ -38,30 +48,72 @@ export default function FlightBookDetails() {
     navigate("/order/new/flight/offers?q=" + id + "&path=" + i);
   }
 
+  async function getPrice() {
+    const length = (qObj?.originDestinations?.length)
+    let flightOffers = clone(bookingData.offer?.at((length)-1)?.og || bookingData.offer?.at((length)-1))
+    // bookingData.offer?.slice(0,length)?.map((obj,i) => {
+    //   try {
+    //     flightOffers.directions[i] = obj.directions[i];
+    //     // flightOffers.segments[i] = obj.segments[i];
+    //   } catch(ex) {console.log(ex)}
+    //   return true;
+    // })
+    // flightOffers.segments = null;
+    // flightOffers.fareRules = null;
+
+    // .map(obj => {
+    //   let temp = clone(obj);
+    //   // temp.directions = [temp.directions[0]]
+    //   return temp
+    // })
+    const req = {
+      supplier: flightOffers?.supplier,
+      offers: [flightOffers]
+    }
+    if(qObj.adjustment)
+      req['adjustment'] = qObj.adjustment;
+
+    setLoading(true);
+    const res = await getFlightOfferPrice(req);
+    setLoading(false);
+    if(res.return) {
+      let data = (res.data.data?.map(obj => convertFlightObject(obj)) || [])
+      dispatch(setBookingData({...bookingData,offersPrice: data,time: new Date().getTime()}))
+    }
+  }
+
+
   // function handlePayTime(val) {
   //   dispatch(setBookingData({ ...bookingData, payTime: val }));
   // }
 
-  return (
+  return loading ? 
+    <div className="flex-1 flex justify-center items-center">
+      <LoadingBar  />
+    </div>
+  : (
     <div className="pd-md py-4 flex flex-col gap-4">
-      {/* <PriceTimeout onBook /> */}
+      <PriceTimeout callback={() => getPrice()} />
 
-      <BreadCrumb>
-        <Link to={"/order"}>Orders</Link>
-        <Link to="/order/new/flight">New order</Link>
-        {qObj?.destinations?.map((obj, i) => {
-          return (
-            <div
-              onClick={() => handleSearchRoute(i)}
-              className="cursor-pointer"
-            >
-              {obj.departureLocation} to {obj.arrivalLocation}
-            </div>
-          );
-        })}
-        <Link to={`/order/new/flight/book/${id}`}>Review</Link>
-        <b>Details</b>
-      </BreadCrumb>
+      <div className="whitespace-nowrap overflow-x-auto max-w-full pb-2">
+        <BreadCrumb>
+          <Link to={"/order"}>Orders</Link>
+          <Link to="/order/new/flight">New order</Link>
+          {qObj?.destinations?.map((obj, i) => {
+            return (
+              <div
+                onClick={() => handleSearchRoute(i)}
+                className="cursor-pointer"
+              >
+                {obj.departureLocation} to {obj.arrivalLocation}
+              </div>
+            );
+          })}
+          <Link to={`/order/new/flight/book/${id}`}>Review</Link>
+          <b>Details</b>
+        </BreadCrumb>
+      </div>
+      {}
       <div className="flex gap-10 flex-wrap-reverse ">
         <div className="flex flex-col gap-6 flex-[2] max-w-full">
           {/* <PayTime callback={(val) => handlePayTime(val)} /> */}
@@ -70,7 +122,7 @@ export default function FlightBookDetails() {
             data is securely protected.
           </ContentInfo>
 
-          <PassengerDetails offer={offer} />
+          <PassengerDetails offer={offer} setBagsPrice={setBagsPrice} setSeatsPrice={setSeatsPrice} getPrice={getPrice} />
         </div>
         <div className="flex flex-col gap-4 flex-1">
           {offer?.segments?.map((obj, i) => (
@@ -79,7 +131,7 @@ export default function FlightBookDetails() {
             </div>
           ))}
           <div className="sticky top-5">
-            <FlightPriceSummary onBook data={offer} />
+            <FlightPriceSummary onBook data={{...offer,bagsPrice,seatsPrice}} />
           </div>
         </div>
       </div>
@@ -87,10 +139,13 @@ export default function FlightBookDetails() {
   );
 }
 
-function PassengerDetails({ offer }) {
+function PassengerDetails({ offer, setBagsPrice, setSeatsPrice, getPrice }) {
   const { id } = useParams();
+  const qObj = JSON.parse(decrypt(id));
   const { bookingData } = useSelector((state) => state.flightBooking);
+  const {user} = useSelector(state => state.user.userData);
   const segments = bookingData?.offer?.at(-1)?.segments || [];
+  const [rareChanceHappend,setRareChanceHappend] = useState(false);
   let totalPassenger = Object.values(offer.passengers).map(o => o.total).reduce((p,c) => p+c);
   
   const [bags,setBags] = useState([...offer.directions.map(seg => seg.map(f => [...Array(totalPassenger)]))])
@@ -107,7 +162,7 @@ function PassengerDetails({ offer }) {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search)
   const justBooked = searchParams.get('justBooked')
-  const payed = searchParams.get('payed')
+  const isVerified = user?.detail?.isVerified;
 
   const navigate = useNavigate();
 
@@ -115,13 +170,13 @@ function PassengerDetails({ offer }) {
 
   const [data, setData] = useState({ ...clone(travelersInfo), passengers: [...Array(totalPassenger)] });
 
-  if(bookingData.orderData && !bookingDone && !justBooked)
+  if(bookingData.orderData && !bookingDone && !justBooked && isVerified)
     navigate({
       pathname: '/order/new/flight/book/payment/'+id
     })
     
 
-  async function book() {
+  async function book(ev,acceptPriceChange=false) {
     if(!data.email || data.phone?.length < 10)
       return enqueueSnackbar('Email and Phone number fields are required!')
 
@@ -136,7 +191,9 @@ function PassengerDetails({ offer }) {
       return enqueueSnackbar('Some Passenger informations are empty!',{variant: 'error'})
     }
 
-    let modOffer = clone(offer);
+    let modOffer = clone(offer?.orgi || offer);
+    modOffer.segments = undefined;
+    modOffer.fareRules = undefined;
     modOffer.directions.map((seg,i) => seg.map((flight,j) => {
     //   "additionalServices": {
     //     "chargeableCheckedBags": {
@@ -148,7 +205,7 @@ function PassengerDetails({ offer }) {
 
       // Adding seats
       try {
-        const passengersSeat = seats[i][j]?.filter(obj => obj)?.map(obj => ({...obj,passenger: obj?.passenger + 1}));
+        const passengersSeat = seats[i][j]?.filter(obj => obj)?.map(obj => ({seatNumber: obj?.seatNumber,passenger: obj?.passenger + 1}));
         if(passengersSeat && passengersSeat?.length) {
           try {
             // flight.additionalServices.chargeableSeatNumber.push(seats[i][j])
@@ -172,7 +229,11 @@ function PassengerDetails({ offer }) {
       const getWeightNum = (weight) => {
         try {
           const w = weight.match(/\d+/)[0];
-          return parseInt(w)
+          let kg = w;
+          if(weight?.match(/\D+/)[0]?.includes('pc'))
+            kg = parseInt(w) * 23;
+          
+          return parseInt(kg)
         } catch(ex) {}
       }
       // Adding additional bags
@@ -185,7 +246,7 @@ function PassengerDetails({ offer }) {
           } catch(ex) {
             // console.log('0XbagsPush')
               // flight.additionalServices.chargeableCheckedBags = [bags[i][j]]
-            console.log('0XbagsCreate')
+            // console.log('0XbagsCreate')
             try {
               flight.additionalServices = {chargeableCheckedBags: passengerBag}
             } catch(ex) {
@@ -199,11 +260,29 @@ function PassengerDetails({ offer }) {
       return true;
     }))
     // return console.log(" ==>>> ",modOffer,bags)
+    const {id,directions,pricingInformation,destinations,supplier} = modOffer; // allowed
+
+    // Rare Case Tester
+    // pricingInformation.price.totalPrice = "NGN 100,001"
+    // pricingInformation.price.totalAmount = 10001
+
     let req = {
       supplier: offer?.supplier,
-      offers: [modOffer],
+      offers: [{id,directions,pricingInformation,destinations,supplier}],
       travelersInfo: clone(data?.passengers)?.slice(0, totalPassenger || 1),
+      share: data?.shareToEmail?.map(email => ({shareToEmail: [email],includePrice: data?.includePrice})) || [],
+      acceptPriceChange,
     };
+
+    if(qObj.adjustment)
+      req['adjustment'] = qObj.adjustment;
+
+
+    // if(data?.shareToEmail?.some(email => email)) {
+      // req['shareToEmail'] = data?.shareToEmail
+      // req['includePrice'] = data?.includePrice
+    // }
+
     let pn = data?.phone?.toString()?.split("-");
     let countryObj = Object.values(countries)?.find((obj) =>
       obj?.countryCallingCodes?.includes("+" + pn?.at(0)),
@@ -234,14 +313,24 @@ function PassengerDetails({ offer }) {
     );
     const res = await bookFlightOffer(req);
     setLoading(false);
-
+    
+    console.log('res: ',res)
     if (res.return) {
       dispatch(setBookingData({ ...bookingData, orderData: res?.data }));
-      navigate({
-        search: 'justBooked=true'
-      })
       setBookingDone(true);
-    } else enqueueSnackbar(res.msg, { variant: "error" });
+      if(isVerified)
+        navigate({
+          search: 'justBooked=true'
+        })
+    } else if(res?.msg === 'Price Changed') {
+      let data = (res.data?.map(obj => convertFlightObject(obj)) || [])
+      dispatch(setBookingData({...bookingData,offersPrice: data,time: new Date().getTime()}))
+      setRareChanceHappend({
+        price: data?.at(0)?.totalAmount,
+        change: data?.at(0)?.totalAmount - (getNumber(pricingInformation?.price?.totalPrice))
+      })
+    } 
+    else enqueueSnackbar(res.msg, { variant: "error" });
     setOpen(false);
   }
 
@@ -298,20 +387,29 @@ function PassengerDetails({ offer }) {
 
       console.log(temp,'--------')
       setBags(temp);
+      setBagsPrice(temp?.map(arr => arr?.at(0) || [])?.flat())
+      // setBagsPrice(temp?.flat()?.flat()?.reduce((acc,cur) => (
+      //   {
+      //     quantity: acc.quantity + (cur?.quantity || 0),
+      //     price: acc?.price + (cur?.price || 0)
+      //   }
+      // ),{quantity: 0, price: 0}))
     } catch(ex) {console.log(ex)}
     console.log(obj,segment,bags)  
   }
 
   function handleSeat(obj,{i,j,seg}) {
-    console.log(" => ",obj,i)
+    // console.log(" => ",obj,i)
     try {
-      const {seatNumber} = obj[0];
+      const {seatNumber,...restObj} = obj[0] || {};
       let temp = clone(seats);
       // console.log(temp,seg,i,j)
-      const newObj = {seatNumber,passenger: i};
-      if(seatNumber)
-        temp[seg][j][i] = newObj;
+      const newObj = seatNumber ? {seatNumber,passenger: i,...restObj} : null;
+      // if(seatNumber)
+      temp[seg][j][i] = newObj;
       setSeats(temp);
+      // console.log(temp,temp?.map(arr => arr?.flat())?.flat())
+      setSeatsPrice(temp?.map(arr => arr?.flat() || [])?.flat())
     } catch(ex) {console.log(ex)}
   }
 
@@ -340,12 +438,12 @@ function PassengerDetails({ offer }) {
     setOpen(true);
   }
 
-  console.log(' ----> ',expands)
+  // console.log(' ----> ',expands,offer)
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6 pb-10 max-w-full">
       <h5>Contact Details</h5>
-      <div className="flex gap-4">
+      <div className="flex gap-4 flex-wrap">
         <div className="flex-1">
           <EmailInput size='large' required
             label="Enter your email"
@@ -353,7 +451,7 @@ function PassengerDetails({ offer }) {
             onChange={(ev) => setData({ ...data, email: ev.target.value })}
           />
         </div>
-        <div className="flex-1">
+        <div className="flex-1 ">
           <PhoneNumberInput required
             label="Enter your phone number"
             value={data.phone}
@@ -387,18 +485,22 @@ function PassengerDetails({ offer }) {
                   }
                   return (
                     <div className="my-4 max-w-full" id={'pass'+i}>
-                      <div className="rounded-md border border-gray-300 light-bg flex gap-4 p-4 items-center">
-                        {type === "adult" ? <Icon icon='el:person' className='w-8 h-8' /> : 
-                         type === 'child' ? <Icon icon='vaadin:child' className='w-8 h-8' /> :
-                         type === 'infant' ? <Icon icon='cil:child' className='w-8 h-8' /> : ''}
+                      <div className="rounded-md border border-gray-300 light-bg flex flex-wrap gap-4 p-4 items-center">
+                        {type === "adult" ? <div><Icon icon='el:person' className='w-8 h-8' /></div> : 
+                         type === 'child' ? <div><Icon icon='vaadin:child' className='w-8 h-8' /></div> :
+                         type === 'infant' ? <div><Icon icon='cil:child' className='w-8 h-8' /></div> : ''}
 
-                         <div className="flex-1" onDoubleClick={() => def.devTest && handlePassengers(null,i,true)}>
+                         <div className="flex-1 flex flex-col justify-center items-start" onDoubleClick={() => getTestLevel(def.devStatus) < 2 && handlePassengers(null,i,true)}>
+                          <span className="">
                           {i === 0 ? 'Primary Passenger' : `
                             Passenger ${i+1} 
                           `}
-                          {type === "adult" ? " (Adult over 12 years)" : 
-                          type === 'child' ? ' (Child 2 - 11 years)' :
-                          type === 'infant' ? ' (Infant 0 - 2 years)' : ''}
+                          </span>
+                          <span className="inline-block ">
+                            {type === "adult" ? " (Adult over 12 years)" : 
+                            type === 'child' ? ' (Child 2 - 11 years)' :
+                            type === 'infant' ? ' (Infant 0 - 2 years)' : ''}
+                          </span>
                          </div>
 
                          <div>
@@ -433,20 +535,24 @@ function PassengerDetails({ offer }) {
                           />
 
 
-                          <div className="flex flex-col gap-4 ">
-                            <h5>Flight extras</h5>
+                          {bookingData?.offer?.at(-1)?.pricingInformation?.price?.additionalServices?.find(obj => 
+                            obj?.service === 'CHECKED_BAGS' && obj?.price
+                          ) ? 
+                            <div className="flex flex-col gap-4 ">
+                              <h5>Flight extras</h5>
 
-                            <div className="flex gap-4 justify-between max-w-full w-[700px] overflow-auto snap-x">
-                              {offer?.directions?.map((direction,index) => {
-                                let obj = {departure: direction[0].departure,arrival: direction?.at(-1)?.arrival,baggage: direction[0]?.baggage,direction,index,passenger: i};
-                                return (
-                                  <div key={index} className="snap-mandatory snap-center pb-3">
-                                    <CheckedBags offer={bookingData?.offer?.at(-1)} hide={(index !== 0) ? ['wantMore']:null} selected={bags[index]?.[0][i]} data={obj} callback={(obj) => handleBag({...obj,i},[index,0])} />
-                                  </div>
-                                )
-                              })}
+                              <div className="flex gap-4 justify-between max-w-full w-[700px] overflow-auto snap-x">
+                                {offer?.directions?.map((direction,index) => {
+                                  let obj = {departure: direction[0].departure,arrival: direction?.at(-1)?.arrival,baggage: direction[0]?.baggage,direction,index,passenger: i};
+                                  return (
+                                    <div key={index} className="snap-mandatory snap-center pb-3">
+                                      <CheckedBags offer={bookingData?.offer?.at(-1)} hide={(index !== 0) ? ['wantMore']:null} selected={bags[index]?.[0][i]} data={obj} callback={(obj) => handleBag({...obj,i},[index,0])} />
+                                    </div>
+                                  )
+                                })}
+                              </div>
                             </div>
-                          </div>
+                          :null}
 
 
                           <div className="flex flex-col gap-4 ">
@@ -467,7 +573,7 @@ function PassengerDetails({ offer }) {
 
       </div>
 
-      <EmailOrderConfirmation />
+      <EmailOrderConfirmation callback={(obj) => setData({...data,...(obj||{})})} />
       {/* <div className='flex justify-end self-end'>
         <Button1 variant='text' className='!font-bold'>+ Add another passenger</Button1>
       </div> */}
@@ -488,7 +594,7 @@ function PassengerDetails({ offer }) {
           <div className="flex flex-col items-center gap-4 p-10">
             <h4>Confirm flight booking</h4>
             <p>
-              By clicking confirm you have booked this flight for{" "}
+              By clicking on the confirm button below, I acknowledge that I have reviewed and accept the privacy policy, terms of use and fare rules for this flight:{" "}
               {segments.map(obj => obj.departureLocation + ' to ' + obj?.arrivalLocation)?.join('. ')}
             </p>
           </div>
@@ -499,7 +605,7 @@ function PassengerDetails({ offer }) {
           ) : (
             <div className="bg-theme1/10 flex justify-center gap-6 p-8 px-10">
               <Button1 variant="text" onClick={() => setOpen(false)}>
-                Go back
+                Cancel
               </Button1>
               <Button1 type='submit' className="sm:!p-3 sm:!px-4" onClick={book}>
                 Confirm
@@ -510,24 +616,74 @@ function PassengerDetails({ offer }) {
       </Modal1>
       <Modal1 open={bookingDone} setOpen={setBookingDone}>
         <div className="flex flex-col items-center p-8 gap-6">
-          <h5>Booking was successful</h5>
+          {isVerified ? 
+            <h5>Booking Complete</h5>
+          :
+            <h5>Order is not completed</h5>
+          }
           <p className="max-w-[400px] text-center">
-            Your booking was successful. You can now add hold or proceed
-            to make payment.
+            {isVerified ? 
+              "Your booking was successful. You can now add hold or proceed to make payment."
+            :
+              "Your business has yet to be approved to issue tickets on Intraverse"
+            }
           </p>
           <div className="flex gap-2 w-full">
-            <Link
-              to={`/order/flight/${bookingData?.orderData?.booking?._id}`}
+            {isVerified ? 
+              <Link
+                to={`/order/flight/${bookingData?.orderData?.booking?._id}`}
+                className="flex-1 text-center justify-center btn !bg-primary text-secondary"
+              >
+                Hold Booking
+              </Link>          
+            :
+              <Link
+              to={`/order/new/flight`}
               className="flex-1 text-center justify-center btn !bg-primary text-secondary"
-            >
-              Hold Booking
-            </Link>
-            <Link
-              to={`/order/new/flight/book/payment/${id}`}
-              className="flex-1 text-center justify-center btn-theme rounded-md"
-            >
-              Make Payment
-            </Link>
+              >
+                Go back to search
+              </Link>
+            }
+            {isVerified ? 
+              <Link
+                to={`/order/new/flight/book/payment/${id}`}
+                className="flex-1 text-center justify-center btn-theme rounded-md"
+              >
+                Make Payment
+              </Link>
+            :
+              <Link
+                to={`/order/flight/${bookingData?.orderData?.booking?._id}`}
+                className="flex-1 text-center justify-center btn-theme rounded-md"
+              >
+                View Order
+              </Link>
+            }
+          </div>
+        </div>
+      </Modal1>
+
+      <Modal1 open={rareChanceHappend} setOpen={() => getPrice && getPrice()}>
+        <div className="self-center max-w-[500px] ">
+          <div className='card p-8 pt-4 m-2 rounded-md flex flex-col'>
+            {/* <h4 className='py-2'>You have been gone for too long.</h4> */}
+            <h5 className='py-2 self-center'>Price Change</h5>
+            {/* <p> The flight offer may have changed. Click the button to get the latest price.</p> */}
+            <div className="text-primary/60">There has been a price change by :  
+              <b className={`inline-block p-1 ${rareChanceHappend?.change < 0 ? 'text-green-500':'text-red-400'}`}>{rareChanceHappend?.change < 0 ? '-':'+'} {formatMoney(Math.abs(rareChanceHappend?.change))}</b>
+            </div>
+            <p>
+              The updated price is <b className="font-bold text-primary">{formatMoney(rareChanceHappend?.price)}.</b>
+            </p>
+            <p>
+              Do you want to continue or pick a different offer
+            </p>
+            <br />
+            <div className='flex  flex-wrap justify-between gap-4'>
+              <Button1 className='!w-auto self-end' variant='outlined' onClick={() => navigate('/order/new/flight')}><span className='hidden sm:inline-block pr-1'>New</span> Offer</Button1>
+              {/* <Button1 className='btn1 !w-auto self-end' onClick={() => (getPrice && getPrice()) || window.location.reload()}>Refresh</Button1> */}
+              <Button1 loading={loading} className='btn1 !w-auto self-end' onClick={() => book(null,true)}>Continue</Button1>
+            </div>
           </div>
         </div>
       </Modal1>
@@ -536,20 +692,33 @@ function PassengerDetails({ offer }) {
 }
 
 
-function EmailOrderConfirmation() {
+function EmailOrderConfirmation({callback}) {
   const [emails,setEmails] = useState([''])
+  const [includePrice,setIncludePrice] = useState(false);
+
+
+  useEffect(() => {
+    if(emails?.at(0))
+      callback && callback({shareToEmail: emails,includePrice})
+
+    //eslint-disable-next-line
+  },[emails,includePrice])
 
   function handleEmail(val,i) {
     let temp = [...emails];
     temp[i] = val;
     setEmails(temp);
   }
-  console.log(emails)
+  
   return (
     <div className="flex flex-col gap-4">
       <h5>Send order confirmation to passenger (Optional)</h5>
       
       <div className="border border-gray-300 light-bg p-6 rounded-md flex flex-col gap-3">
+        <label className="flex gap-2 items-center cursor-pointer">
+          <input type='checkbox' checked={includePrice} onChange={(ev) => setIncludePrice(ev?.target?.checked)} />
+          Include Pricings 
+        </label>
         {emails?.map((val,i) => (
           <div key={i} className="flex gap-3 items-center">
             <EmailInput value={val} onChange={(ev) => handleEmail(ev.target.value,i)} label='' className='bg-white w-full' />

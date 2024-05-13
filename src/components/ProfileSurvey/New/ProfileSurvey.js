@@ -16,6 +16,7 @@ import Button1 from "../../form/Button1";
 import Logo from "../../Logo/Logo";
 import verifyBusiness from "../../../controllers/user/verifyBusiness";
 import verifyBusinessRemove from "../../../controllers/user/verifyBusinessRemove";
+import BusinessDocument from "./BusinessDocument";
 
 export const profileSteps = [
   { label: "Business Detail", elem: <BusinessDetail /> },
@@ -289,7 +290,7 @@ export function ReviewBusinessProfile({ setStep, activate, completed, user, call
       <div className="w-full p-3 px-5 flex md:hidden gap-2 justify-center md:justify-start">
         <Logo />
       </div>
-      {!edit || Number(edit) === 1 || Number(edit) > 3 ? (
+      {!edit || Number(edit) === 1 || Number(edit) > 4 ? (
         <div className="flex flex-col gap-5">
           <div className="p-4 bg-primary/10">Business Detail</div>
           <div>
@@ -297,7 +298,7 @@ export function ReviewBusinessProfile({ setStep, activate, completed, user, call
           </div>
         </div>
       ) : null}
-      {!edit || Number(edit) === 2 || Number(edit) > 3 ? (
+      {!edit || Number(edit) === 2 || Number(edit) > 4 ? (
         <div className="flex flex-col gap-5">
           <div className="p-4 bg-primary/10">Legal Entity</div>
           <div>
@@ -305,11 +306,19 @@ export function ReviewBusinessProfile({ setStep, activate, completed, user, call
           </div>
         </div>
       ) : null}
-      {!edit || Number(edit) === 3 || Number(edit) > 3 ? (
+      {!edit || Number(edit) === 3 || Number(edit) > 4 ? (
         <div className="flex flex-col gap-5">
           <div className="p-4 bg-primary/10">Key Contact</div>
           <div>
             <KeyContact user={user} review={<EditDetail n={2} />} />
+          </div>
+        </div>
+      ) : null}
+      {!edit || Number(edit) === 4 || Number(edit) > 4 ? (
+        <div className="flex flex-col gap-5">
+          <div className="p-4 bg-primary/10">Upload Documents</div>
+          <div>
+            <BusinessDocument user={user} review={<EditDetail n={3} />} />
           </div>
         </div>
       ) : null}

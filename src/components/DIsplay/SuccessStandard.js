@@ -9,7 +9,7 @@ export default function SuccessStandard({title,message,allowClose,show:gotShow=t
     const Comp = () => (
         <div className='border flex gap-3 rounded-md bg-[#E8F4FF] min-h-[100px] relative'>
             {allowClose ? 
-                <Icon icon='ic:round-close' className='absolute top-0 right-0 m-2 z-10 cursor-pointer' onClick={() => setShow(false)} />
+                <Icon icon='ic:round-close' className='absolute top-0 right-0 m-2  cursor-pointer' onClick={() => setShow(false)} />
             :null}
             <div className='w-[100px] flex-0 bg-bubble rounded-md'>
                 <img src={success} alt='' className='px-5 -translate-y-1/2' />

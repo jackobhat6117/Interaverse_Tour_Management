@@ -39,7 +39,7 @@ export default function AddBags({open,setOpen}) {
                   </div>
                   <div className='flex gap-2 justify-between items-center'>
                     <div className='relative flex '>
-                      <Icon icon={'twemoji:luggage'} fontSize={100} className='!z-10' />
+                      <Icon icon={'twemoji:luggage'} fontSize={100} className='!' />
                       <Icon icon={'openmoji:luggage'} fontSize={100} className='top-0 left-0 -translate-x-14 translate-y-4'/>
                     </div>
                     <h6>{getCurrencySymbol('NGN')}40,000</h6>

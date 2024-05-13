@@ -2,15 +2,14 @@ import { store } from "../../redux/store";
 import fetchServer from "../fetchServer";
 
 
-export default async function getAirlineCodes(val,cancelToken) {
+export default async function getAirlineCodes(val) {
   var result = {return: 0,msg: 'Error',data: {}}
 
   let token = store.getState().user.userData.accessToken;
   
   // console.log("got iata q: ",val)
   await fetchServer({method: "GET",url: `/product/v1/flight/airportCodes/${val}`,
-      headers: {Authorization: `Bearer ${token}`},
-      cancelToken
+      headers: {Authorization: `Bearer ${token}`}
   })
   .then((res) => {
     // console.log(" => ",{...res})

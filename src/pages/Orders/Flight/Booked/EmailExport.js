@@ -4,7 +4,7 @@ import EmailInput from "../../../../components/form/EmailInput";
 import Icon from "../../../../components/HOC/Icon";
 import Button1 from "../../../../components/form/Button1";
 
-export default function EmailExport() {
+export default function EmailExport({callback}) {
     const [data,setData] = useState([{email: ''}])
   
     function handleChange(val,i) {
@@ -20,6 +20,7 @@ export default function EmailExport() {
   
     async function handleSubmit() {
       // request
+      callback && callback(data)
     }
     return (
       <div className='card p-10 flex flex-col gap-4'>

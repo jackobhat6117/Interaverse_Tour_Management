@@ -5,6 +5,8 @@ import OrdersData from './OrdersData'
 import { CircularProgress } from '@mui/material'
 import getBookings from '../../controllers/booking/getBookings'
 import { templateFlightOrderData, templateOrdersData } from '../../data/order/ordersData'
+import LearnAboutOrders from '../../components/DIsplay/LearnMore/LearnAboutOrders'
+import Button1 from '../../components/form/Button1'
 
 
 const tempObj = {
@@ -35,7 +37,7 @@ export default function Orders() {
         )
         return true;
       })
-      console.log(data)
+      // console.log(data)
       data = data?.map(obj => templateFlightOrderData(obj))
       setData(data)
     }
@@ -52,7 +54,13 @@ export default function Orders() {
       <div className='w-full sm:flex-1 py-10 sm:py-2 flex flex-col gap-4 h-full justify-center items-center'>
         <div>You don't have any orders</div>
         <div className='flex flex-col sm:flex-row gap-2 w-full sm:w-auto'>
-          <LearnMoreButton label='Learn how to create order' />
+          <LearnMoreButton label='Learn how to create order'
+            component={<LearnAboutOrders callback={({setOpen}) => 
+              <div className='flex justify-center py-4'>
+                <Button1 className='!w-auto !px-10' onClick={() => setOpen && setOpen(false)}>Get Started</Button1>
+              </div>
+            }/>}
+          />
           <CreateOrder handleReturn={() => setData([...data,tempObj])} />
         </div>
       </div>

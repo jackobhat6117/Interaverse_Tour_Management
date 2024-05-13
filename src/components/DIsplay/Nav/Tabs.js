@@ -21,9 +21,14 @@ export default function Tabs({
   }, [defValue]);
 
   function handleChange(val, i) {
+    if(onChange) {
+      const res = onChange(val);
+      console.log(res)
+      if(!res) return false;
+    }
+
     setValue(val);
     setIndex(i);
-    onChange && onChange(val);
   }
   return (
     <div className={"flex gap-4 " + className}>

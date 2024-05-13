@@ -20,6 +20,7 @@ import deActivateAccount from "../../controllers/user/deactivateAccount";
 import { useDispatch } from "react-redux";
 import updateUsersProfile from "../../controllers/user/updateUsersProfile";
 import { alertType } from "../../data/constants";
+import BusinessDocument from "../../components/ProfileSurvey/New/BusinessDocument";
 
 const temp = [
   {
@@ -75,6 +76,9 @@ function UserManagement() {
     if (res.return) {
       let dataMod = res.data?.data.map((data) => ({
         ...data,
+        id: data._id,
+        email: data?.email,
+        businessStatus: data?.detail?.isVerified ? 'Verified' : data?.detail?.requestedVerification ? 'Requested Verification' : 'Not Submited',
         name: `${data.firstName} ${data.lastName}`,
       }));
       setData(dataMod || []);
@@ -88,23 +92,22 @@ function UserManagement() {
 
   }
   const columns = [
-    {
-      field: "accountStatus",
-      headerName: "",
-      renderCell: (params) => (
-        <b className={`!bg-transparent font-black light-bg p-2 rounded-md ${alertType[params.value?.toLowerCase()]}`}>
-          {params.value}
-        </b>
-      ),
-    },
     { field: "name", headerName: "Name" },
-    { field: "email", headerName: "Email" },
-    { field: "_id", headerName: "User Id" },
+    { field: "email", headerName: "Email"},
+    { field: "businessStatus", headerName: 'Business Status'},
+    // { field: "_id", headerName: "User Id" },
     { field: "createdAt", headerName: "Date Registered",
       renderCell: (params) => (
         moment(params.value)?.format('YYYY/MM/DD hh:mm a')
       )
     },
+    {field: 'accountStatus', headerName: 'Account Status',
+      renderCell: (params) => (
+        <b className={`!bg-transparent font-black light-bg p-2 rounded-md ${alertType[params.value?.toLowerCase()]}`}>
+          {params?.value}
+        </b>
+      )
+    }
   ];
 
   function handleRowSelect(rows) {
@@ -163,9 +166,8 @@ function Detail({ data, close, reload }) {
   const [openBusiness,setOpenBusiness] = useState(false);
   const [loadings,setLoadings] = useState({enableUser:false,disableUser: false})
 
-  const dispatch = useDispatch();
-
-
+  const [openDocUpload,setOpenDocUpload] = useState(false);
+  
   async function enableUser() {
     setLoadings({...loadings,enableUser: true})
     const res = await activateAccount(data?._id);
@@ -183,15 +185,29 @@ function Detail({ data, close, reload }) {
     setTimeout(() => setLoadings({...loadings,disableUser: false}),2000)
   }
 
+  async function handleDocUpload(payload) {
+
+    const res = await updateUsersProfile(data?._id,payload)
+    if(res.return) {
+      enqueueSnackbar('Documents Uploaded',{variant: 'success'})
+      setOpenDocUpload(false);
+      reload && reload()
+    } else enqueueSnackbar(res.msg,{variant: 'error'})
+    return res.return
+  }
+
   console.log(" -> ",data)
   const Component = () => (
     <div className="p-4 rounded-lg light-bg flex flex-col gap-4 flex-1">
       <div className="flex gap-4 justify-between items-center py-4">
-        {data.accountStatus === 'Active' ? (
-          <span className="success">Active</span>
-        ) : (
-          <span className="error">Inactive</span>
-        )}
+        <div className='flex flex-col gap-1 text-center'>
+          <small>Account Status</small>
+          {data.accountStatus === 'Active' ? (
+            <span className="success">Active</span>
+          ) : (
+            <span className="error">Inactive</span>
+          )}
+        </div>
         <div className="p-2 bg-secondary">
           <CloseOutlined
             onClick={() => close()}
@@ -217,15 +233,25 @@ function Detail({ data, close, reload }) {
 
       <div className="flex flex-col gap-4">
         {/* <Row name="User Id:" value={data?.detail?._id} /> */}
-        <Row name="Phone Number:" value={data?.phone} />
-        <Row name="User Type:" value={data?.userType} />
-        {/* <Row name="DOB:" value={data.dob} /> */}
-        {/* <Row name="Nationality:" value={data.nationality} /> */}
-        <Row name="Date Registered:" value={moment(data?.createdAt)?.format('YYYY/DD/MM hh:mm a')} />
+        <Row name="Id" value={data?._id} />
+        <Row name="Phone Number" value={data?.phone} />
+        <Row name="User Type" value={data?.userType} />
+        {/* <Row name="DOB" value={data.dob} /> */}
+        {/* <Row name="Nationality" value={data.nationality} /> */}
+        <Row name="Date Registered" value={moment(data?.createdAt)?.format('YYYY/DD/MM hh:mm a')} />
         {/* <Row name="Completed Orders:" value={data.orders} /> */}
       </div>
 
       <div className="pt-10 flex flex-col gap-4">
+        <div className="flex gap-4">
+          <div className="flex-1"></div>
+          <div className='flex-1'>
+            <Button1 className='flex items-center gap-2' onClick={() => setOpenDocUpload(true)}>
+              <Icon icon='ep:document' />
+              Upload Document
+            </Button1>
+          </div>
+        </div>
         <div className="flex gap-4">
           <Button1 disabled className="flex gap-2 !items-center !bg-primary/10 !text-primary/70">
             <Icon fontSize={"18"} icon={"mdi:password-reset"} />
@@ -243,12 +269,15 @@ function Detail({ data, close, reload }) {
             </Button1>
           }
         </div>
-        <Button1
-          className={"flex gap-2 !items-center "+(data?.detail?.isVerified?'!bg-red-500 !text-white':'')}
-          onClick={() => setOpenBusiness(true)}
-        >
-          {data?.detail?.isVerified ? 'Deactivate Business' : 'Activate Business'}
-        </Button1>
+        <div title={!data?.detail?.isVerified && !data?.detail?.requestedVerification ? 'User havent submitted bussiness information':null}>
+          <Button1
+            disabled={!data?.detail?.isVerified && !data?.detail?.requestedVerification}
+            className={"flex gap-2 !items-center "+(data?.detail?.isVerified?'!bg-red-500 !text-white':'')}
+            onClick={() => setOpenBusiness(true)}
+          >
+            {data?.detail?.isVerified ? 'Deactivate Business' : 'Activate Business'}
+          </Button1>
+        </div>
         {/* <Button1
           className="flex gap-2 !items-center !bg-red-500"
           onClick={setOpenRemove}
@@ -296,6 +325,11 @@ function Detail({ data, close, reload }) {
           <Component />
         </Modal1>
       </div>
+      <Modal1 open={openDocUpload} setOpen={setOpenDocUpload}>
+        <div className="p-10">
+          <BusinessDocument updateProfile={handleDocUpload} next={() => console.log('callback')} user={data} />
+        </div>
+      </Modal1>
     </div>
   );
 }

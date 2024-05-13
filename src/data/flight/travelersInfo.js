@@ -23,5 +23,7 @@ export const travelersInfo = {
       "validityCountry": "",
       "nationality": "",
       "holder": true
-  }
+  },
+  frequentFlyer: '',
+  generalRemark: '',
 }
