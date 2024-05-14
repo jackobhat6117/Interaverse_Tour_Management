@@ -20,6 +20,9 @@ function BusinessDocument({updateProfile,back,next,review,user: defUser}) {
     identityVerificationDoc: '',
     otherDocs: [],
   })
+
+  const {enqueueSnackbar} = useSnackbar();
+
   
   async function handleSubmit(ev) {
     ev?.preventDefault();
@@ -32,6 +35,14 @@ function BusinessDocument({updateProfile,back,next,review,user: defUser}) {
         formData.append(`${key}`,file)
       })
     )
+
+    const CACCD = formData.get('CACCertificateDoc')
+    const CACCO2Doc = formData.get('CACCO2Doc')
+    const CACC07Doc = formData.get('CACC07Doc')
+
+    if(!CACC07Doc || !CACCO2Doc || !CACCD)
+      return enqueueSnackbar('Please add for the required documents with \'*\' on them',{variant: 'error'});
+
 
     setLoading(true);
     const res = await updateProfile(formData);
@@ -52,11 +63,11 @@ function BusinessDocument({updateProfile,back,next,review,user: defUser}) {
           Kindly upload your CAC document below to verify your business.
         </p>
       </div>
-      <DocUploader label={'CAC Certification Doc'} required callback={(CACCertificateDoc) => setData({...data,CACCertificateDoc})} />
-      <DocUploader label={'CAC C02 Doc'} required callback={(CACCO2Doc) => setData({...data,CACCO2Doc})} />
-      <DocUploader label={'CAC C07 Doc'} required callback={(CACC07Doc) => setData({...data,CACC07Doc})} />
+      <DocUploader label={'CAC Certification Doc *'} required callback={(CACCertificateDoc) => setData({...data,CACCertificateDoc})} />
+      <DocUploader label={'CAC C02 Doc *'} required callback={(CACCO2Doc) => setData({...data,CACCO2Doc})} />
+      <DocUploader label={'CAC C07 Doc *'} required callback={(CACC07Doc) => setData({...data,CACC07Doc})} />
       <hr />
-      <DocUploader label={'Identity Verification Doc'} required callback={(identityVerificationDoc) => setData({...data,identityVerificationDoc})} />
+      <DocUploader label={'Identity Verification Doc'} callback={(identityVerificationDoc) => setData({...data,identityVerificationDoc})} />
       <DocUploader multiple label='Other Docs' callback={(otherDocs) => setData({...data,otherDocs})} />
       <div>
         <Button1 loading={loading} type='submit'>Submit</Button1>
@@ -101,7 +112,8 @@ function DocUploader({label,callback,multiple,required=false}) {
   }
 
   function handleRemove(i) {
-    setFiles(files => files.filter((_,ind) => ind !== i))
+    setFiles(files => Array.from(files)?.filter((_,ind) => ind !== i) || [])
+    callback(Array.from(files)?.filter((_,ind) => ind !== i) || [])
   }
   console.log(files)
   return (
