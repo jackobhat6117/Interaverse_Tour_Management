@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { createRef, useEffect, useMemo, useState } from 'react';
 import FlightDisplay from './FlightDisplay';
 import FlightInfoCard from './FlightInfoCard';
 import { formatMoney } from '../../features/utils/formatMoney';
@@ -15,11 +15,13 @@ import MD from '../DIsplay/Screen/MD';
 import { getSupplierName } from '../../data/flight/supplier/getSupplierName';
 // import { offerDataTemp } from '../../data/flight/offerData';
 
-export default function FlightOfferDisplay({data,path,showDetail,select,offer}) {
+export default function FlightOfferDisplay({data,index,path,showDetail,select,offer}) {
   const [loading,setLoading] = useState(false);
   const [openDetail,setOpenDetail] = useState(false);
   const [openFareOptions,setOpenFareOptions] = useState(false);
   const {bookingData} = useSelector(state => state.flightBooking);
+
+  const detailRef = createRef(null);
 
   const [searchParam] = useSearchParams();
   let qIndex = useMemo(() => searchParam.get('path'),[searchParam]) || 0;
@@ -28,6 +30,21 @@ export default function FlightOfferDisplay({data,path,showDetail,select,offer}) 
   const lastPath = qIndex && (offer || bookingData?.offer)?.at(-1)
   // const data = offerDataTemp;
   // data.flightData.booked_flights[1] = (flightDataTemp.flightData.booked_flights[0])
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (detailRef.current && openDetail) {
+        detailRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 50);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+
+    //eslint-disable-next-line
+  }, [openDetail]);
+
+
   async function loadDetail(ev,data) {
     ev?.stopPropagation();
 
@@ -86,7 +103,7 @@ export default function FlightOfferDisplay({data,path,showDetail,select,offer}) 
   };
 
   // console.log(data.passengers)
-  const totalPassengers = Object.values(data?.passengers).reduce((p,c) => c.total + parseInt(p),[0])
+  const totalPassengers = Object.values(data?.passengers || {}).reduce((p,c) => c.total + parseInt(p),[0]) || 0
 
   const PriceDisplay = ({className}) => (
     <div className={'flex flex-col p-2 gap-2 justify-center items-center w-[35%] border-l border-b border-primary/10 py-4 '+className}>
@@ -101,6 +118,11 @@ export default function FlightOfferDisplay({data,path,showDetail,select,offer}) 
         <small className={'rounded-md px-2 uppercase font-bold tracking-widest '+getSupplierClass(data?.supplier)}>
           {getSupplierName(data?.supplier)}
         </small>
+        {lastPath ? 
+          <Button1 size='small' className='!my-2 !w-auto'>
+            {index ? 'View' :'Continue'}
+          </Button1>
+        :null}
         {/* <p>{data?.segments[0].cabin} {data?.segments[0]?.bookingClass}</p> */}
       </div>
       {/* <p>N Seats left at this price</p> */}
@@ -113,7 +135,10 @@ export default function FlightOfferDisplay({data,path,showDetail,select,offer}) 
   )
 
   return (
-    <div className='bg-secondary rounded-2xl overflow-clip border border-primary/10 hover:shadow-xl shadow-primary cursor-pointer transition-all' data-container={true} onClick={handleOpenDetail}>
+    <div className='bg-secondary rounded-2xl overflow-clip border border-primary/10 hover:shadow-xl shadow-primary cursor-pointer transition-all' 
+      data-container={true} 
+      onClick={handleOpenDetail}
+    >
       <div className={`flex ${openDetail ? 'bg-[#F3F7FF]':''}`}>
         <div className='flex flex-col justify-stretch grow '>
           {
@@ -128,7 +153,7 @@ export default function FlightOfferDisplay({data,path,showDetail,select,offer}) 
         </div>
         <PriceDisplay className={'hidden sm:flex'}/>
       </div>
-      <div className={` border-[#e7e7e7] ${openDetail?'block':'hidden'}`} onClick={(ev) => ev.stopPropagation()}>
+      <div ref={detailRef} className={` border-[#e7e7e7] ${openDetail?'block':'hidden'}`} onClick={(ev) => ev.stopPropagation()}>
         {/* <Collapse className='test'> */}
           {(data?.segments || []).slice(qIndex,qIndex+1).map((flights,i) => (
             <FlightInfoCard key={i} data={flights} label={initLoc === flights.arrivalLocation ? 'Return' : 'Depart'} />
