@@ -11,5 +11,6 @@ export const flightSuppliers = {
   "Intra3A": "Amadeus Soap DXB",
   "Intra1S": "Sabre",
   "Intra1T": "Travel Port",
-  "Intra1FR": "TravX"
+  "Intra1FR": "TravX",
+  "Intra1K": "Kiwi",
 }

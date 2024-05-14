@@ -2,6 +2,7 @@ import { Code, EmailOutlined, GroupsOutlined, LayersOutlined, LockOutlined, Sett
 import { Button } from '@mui/material';
 import React from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
+import { CustomLink } from './CustomLink';
 
 export const accountLinks = [
   {to: "/settings/", title: '', icon: SettingsOutlined, label: "Account"},
@@ -38,11 +39,5 @@ export default function AccountNav() {
 
       <Outlet />
     </div>
-  )
-}
-
-function CustomLink({to,active,Icon,label}) {
-  return (
-    <Link to={to}> <Button className={`${active ? 'btn-theme' : 'btn-theme-light'}  whitespace-nowrap`}><Icon className={`${active ? 'text-secondary/80' : ''} `} fontSize='small' />{label}</Button></Link>
   )
 }

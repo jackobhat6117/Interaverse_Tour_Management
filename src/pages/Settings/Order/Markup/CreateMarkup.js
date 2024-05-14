@@ -121,7 +121,7 @@ export default function CreateMarkup({
           value={data?.suppliers || []}
           onChange={(ev) => setData({...data,suppliers: ev?.target?.value})}>
           {Object.entries(flightSuppliers)?.map(([key,value],i) => (
-            <MenuItem key={i} value={key}>{value}</MenuItem>
+            <MenuItem key={i} value={key}>{key}</MenuItem>
           ))}
         </TextInput>
 
