@@ -316,7 +316,7 @@ function StatusCol({params}) {
                                         showFor={['Open']}
                                         onClick={() => deny(params?.row)} value={params.value} >Deny</MenuContainer>
                                     <MenuContainer loader={'issue'}
-                                        showFor={['Pending']}
+                                        showFor={['Pending','RequestedInfo']}
                                         onClick={() => issue(params?.row?._id)} value={params.value} >Issue Ticket</MenuContainer>
                                     <MenuContainer loader={'manualIssue'}
                                         showFor={['Pending']}

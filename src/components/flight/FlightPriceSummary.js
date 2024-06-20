@@ -21,6 +21,7 @@ export default function FlightPriceSummary({data,onBook,footer,rePrice}) {
   const searchParams = new URLSearchParams(location.search);
   const flightBookingId = searchParams.get('flightBookingId');
   const action = searchParams.get('action')
+  const agent = searchParams.get('agent')
 
   const [loading,setLoading] = useState(false);
   
@@ -33,6 +34,10 @@ export default function FlightPriceSummary({data,onBook,footer,rePrice}) {
 
   if(action === 'rebook')
     urlQuery = `action=rebook&flightBookingId=${flightBookingId}`
+  if(agent)
+    if(urlQuery)
+      urlQuery += '&agent='+agent
+    else urlQuery = 'agent='+agent
 
   urlQuery = urlQuery ? '?'+urlQuery : '';
 
