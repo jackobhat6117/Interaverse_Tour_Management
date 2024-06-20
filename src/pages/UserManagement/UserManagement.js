@@ -17,10 +17,11 @@ import { ReviewBusinessProfile } from "../../components/ProfileSurvey/New/Profil
 import moment from "moment";
 import activateAccount from "../../controllers/user/activateAccount";
 import deActivateAccount from "../../controllers/user/deactivateAccount";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import updateUsersProfile from "../../controllers/user/updateUsersProfile";
 import { alertType } from "../../data/constants";
 import BusinessDocument from "../../components/ProfileSurvey/New/BusinessDocument";
+import topupAgencyWallet from "../../controllers/settings/wallet/topupAgencyWallet";
 
 const temp = [
   {
@@ -165,6 +166,7 @@ function Detail({ data, close, reload }) {
   const [openEdit, setOpenEdit] = useState(false);
   const [openBusiness,setOpenBusiness] = useState(false);
   const [loadings,setLoadings] = useState({enableUser:false,disableUser: false})
+  const [openWalletTopup,setOpenWalletTopup] = useState(false);
 
   const [openDocUpload,setOpenDocUpload] = useState(false);
   
@@ -244,7 +246,12 @@ function Detail({ data, close, reload }) {
 
       <div className="pt-10 flex flex-col gap-4">
         <div className="flex gap-4">
-          <div className="flex-1"></div>
+          <div className="flex-1">
+            {/* <Button1 onClick={() => setOpenWalletTopup(true)}>
+              Topup Wallet
+            </Button1> */}
+            <WalletTopup data={data} reload={() => reload && reload()} />
+          </div>
           <div className='flex-1'>
             <Button1 className='flex items-center gap-2' onClick={() => setOpenDocUpload(true)}>
               <Icon icon='ep:document' />
@@ -334,6 +341,63 @@ function Detail({ data, close, reload }) {
   );
 }
 
+function WalletTopup({reload,data:defData}) {
+    const [open, setOpen] = useState(false);
+    const [data, setData] = useState({ ...(defData || {}),amount: undefined });
+    const [loading,setLoading] = useState(false);
+  
+    console.log(defData)
+    const handleTopUp = async () => {
+      setLoading(true);
+      const res = await topupAgencyWallet({
+        accountId: data?._id,
+        amount: Number(data?.amount),
+      });
+      setLoading(false);
+      if(res.return) {
+        enqueueSnackbar('Wallet debited successully',{variant: 'success'})
+        setOpen(false);
+      } else enqueueSnackbar(res.msg,{variant: 'error'})
+    };
+  
+    return (
+      <div>
+        <Button1 onClick={() => setOpen(true)}>Top-up Balance</Button1>
+        <Modal1 open={open} setOpen={setOpen}>
+          <div className="p-4 flex flex-col gap-6 max-w-[800px]">
+            <h4>Top-up balance</h4>
+            <TextInput
+              label="Amount"
+              type="number"
+              value={data.amount}
+              onChange={(ev) => setData({ ...data, amount: ev.target.value })}
+              InputProps={{
+                endAdornment: "NGN",
+              }}
+            />
+          </div>
+          <div className="flex gap-2 p-4">
+            <Button1 className="btn-theme-light" onClick={() => setOpen(false)}>
+              Cancel
+            </Button1>
+            {/* <PaystackButton
+              config={{
+                amount: data.amount * 100,
+                reference: generateRef("WTR-"),
+                email: user?.email,
+              }}
+              onSuccess={(reference) => {
+                handleTopUp(reference?.reference);
+              }}
+            > */}
+              <Button1 loading={loading} onClick={handleTopUp} className={"whitespace-nowrap"}>Save Changes</Button1>
+            {/* </PaystackButton> */}
+          </div>
+        </Modal1>
+      </div>
+    );
+  }
+  
 function EditForm({ data:defData, close, reload }) {
   const [data,setData] = useState(defData);
   const [loading,setLoading] = useState(false);
