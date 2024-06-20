@@ -20,6 +20,8 @@ import TextInput from '../../../components/form/TextInput'
 import CitiesInput from '../../../components/form/CitiesInput'
 import { useSnackbar } from 'notistack'
 import AirlinesInput from '../../../components/form/AirlinesInput'
+import getAccounts from '../../../controllers/user/getAccounts'
+import FetchUsersInput from '../../../components/form/FetchUsersInput'
 
 export default function CreateFlightOrder({callback,data,returnData,defaultData,config}) {
   const [travelClass,setTravelClass] = useState('Economy');
@@ -43,6 +45,8 @@ export default function CreateFlightOrder({callback,data,returnData,defaultData,
   const [noStops,setNoStops] = useState(qObj && qObj.noAirportChange)
 
   const [lockupd,setLocUpd] = useState(false);
+
+  const [agent,setAgent] = useState()
 
 
   const navigate = useNavigate();
@@ -203,10 +207,14 @@ export default function CreateFlightOrder({callback,data,returnData,defaultData,
     if(returnData)
       returnData(searchObj)
 
+    let query = ''
+    if(agent)
+      query = `&agent=${agent}`;
+
     if(callback)
       callback(searchObj);
     else
-      navigate(`/order/new/flight/offers?referralCode=${referralCode}&q=${enc}`);
+      navigate(`/order/new/flight/offers?referralCode=${referralCode}&q=${enc}${query||''}`);
 
   }
 
@@ -263,7 +271,31 @@ export default function CreateFlightOrder({callback,data,returnData,defaultData,
     setDestination(tempDestination);
   }
 
+  const [customers,setCustomers] = useState([])
+  const [loadingCust,setLoadingCust] = useState(false)
+  
+  
+  useEffect(() => {
+    fetchCustomers();
+  },[])
+  async function fetchCustomers() {
+    const params = {
+      populate: 'detail',
+      limit: 0
+    }
 
+    setLoadingCust(true);
+    const res = await getAccounts(new URLSearchParams(params)?.toString());
+    setLoadingCust(false);
+    if(res.return) {
+      setCustomers(res?.data?.data)
+    }
+  }
+
+  function handleAgentSelect(obj) {
+    if(obj?._id)
+      setAgent(obj?._id)
+  }
 
   return (
     <div className='self-center flex flex-col gap-5 flex-1 pd-md w-full py-5'>
@@ -275,6 +307,9 @@ export default function CreateFlightOrder({callback,data,returnData,defaultData,
       :null}
       <div className='justify-center items-center flex flex-col gap-4'>
         <div className='flex flex-col gap-4 max-w-full'>
+          <FetchUsersInput from={customers} onChange={(obj) => handleAgentSelect(obj)}
+            label=' Agency' 
+            loading={loadingCust}/>
           <div>
             {/* <h6>Journey Type</h6> */}
             {!callback ? 
