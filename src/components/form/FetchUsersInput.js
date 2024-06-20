@@ -3,7 +3,7 @@ import { Autocomplete, InputAdornment, TextField } from '@mui/material';
 // import { getUsers } from '../../controllers/user/getUsers';
 import { Add } from '@mui/icons-material';
 
-export default function FetchUsersInput({from,value,onChange,label,shrink,enableNew}) {
+export default function FetchUsersInput({from,value,onChange,label,shrink,enableNew,loading}) {
   const [option,setOption] = useState(from || []);
 
   useEffect(() => {
@@ -41,6 +41,7 @@ export default function FetchUsersInput({from,value,onChange,label,shrink,enable
       (option) =>
         option.firstName.toLowerCase().startsWith(inputValueLowerCase) ||
         (option.apiUserData && option.apiUserData.companyName.toLowerCase().startsWith(inputValueLowerCase)) ||
+        (option.detail?.agencyName && option.detail?.agencyName.toLowerCase().startsWith(inputValueLowerCase)) ||
         (option.email && option.email.toLowerCase().startsWith(inputValueLowerCase)) ||
         (option.lastName && option.lastName.toLowerCase().startsWith(inputValueLowerCase)) ||
         (option.lastName && (option.firstName+" "+option.lastName).toLowerCase().startsWith(inputValueLowerCase))
@@ -53,6 +54,7 @@ export default function FetchUsersInput({from,value,onChange,label,shrink,enable
   return (
     <Autocomplete className='min-w-[200px]'
     noOptionsText='No data'
+    loading={loading}
     disableClearable
     freeSolo
     options={option}
@@ -88,11 +90,11 @@ export default function FetchUsersInput({from,value,onChange,label,shrink,enable
         </div>
       let agencyName = "";
       try {
-         agencyName = opt.apiUserData.companyName;
+         agencyName = opt.detail?.agencyName || opt.apiUserData.companyName;
       } catch(ex) {}
       return (
         <div {...props} key={opt.id} className='flex flex-col !p-2 !cursor-pointer' style={{padding: 10,cursor: 'pointer'}}>
-          <h4>{opt.firstName} {opt.lastName}</h4>
+          <h5>{opt.firstName} {opt.lastName}</h5>
           {agencyName !== "" ? (
             <small>{agencyName}</small>
           ): (

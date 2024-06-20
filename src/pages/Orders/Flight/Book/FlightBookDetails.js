@@ -30,6 +30,7 @@ import PriceTimeout from "../../../../components/flight/PriceTimeout";
 import LoadingBar from "../../../../components/animation/LoadingBar";
 import { getTestLevel } from "../../../../utils/testLevel";
 import { formatMoney, getNumber } from "../../../../features/utils/formatMoney";
+import getAccountById from "../../../../controllers/user/getAccountById";
 
 
 export default function FlightBookDetails() {
@@ -162,7 +163,23 @@ function PassengerDetails({ offer, setBagsPrice, setSeatsPrice, getPrice }) {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search)
   const justBooked = searchParams.get('justBooked')
-  const isVerified = user?.detail?.isVerified;
+  const agent = searchParams.get('agent')
+
+  const isVerified = true //user?.detail?.isVerified;
+  
+  useEffect(() => {
+    if(agent)
+      loadAgent()
+    //eslint-disable-next-line
+  },[])
+
+  async function loadAgent() {
+    const res = await getAccountById(agent)
+    if(res.return) {
+      const obj = res?.data;
+      setData({...data,email: obj?.email || data?.phone,phone: obj?.phone || data?.phone})
+    }
+  }
 
   const navigate = useNavigate();
 
@@ -270,8 +287,9 @@ function PassengerDetails({ offer, setBagsPrice, setSeatsPrice, getPrice }) {
       supplier: offer?.supplier,
       offers: [{id,directions,pricingInformation,destinations,supplier}],
       travelersInfo: clone(data?.passengers)?.slice(0, totalPassenger || 1),
-      share: data?.shareToEmail?.map(email => ({shareToEmail: [email],includePrice: data?.includePrice})) || [],
+      share: data?.shareToEmail?.map(email => ({shareToEmail: email,includePrice: data?.includePrice})) || [],
       acceptPriceChange,
+      agentId: agent || undefined
     };
 
     if(qObj.adjustment)
@@ -445,14 +463,14 @@ function PassengerDetails({ offer, setBagsPrice, setSeatsPrice, getPrice }) {
       <h5>Contact Details</h5>
       <div className="flex gap-4 flex-wrap">
         <div className="flex-1">
-          <EmailInput size='large' required
+          <EmailInput size='large' required disabled={agent}
             label="Enter your email"
             value={data.email}
             onChange={(ev) => setData({ ...data, email: ev.target.value })}
           />
         </div>
         <div className="flex-1 ">
-          <PhoneNumberInput required
+          <PhoneNumberInput required disabled={agent}
             label="Enter your phone number"
             value={data.phone}
             onChange={(val) => setData({ ...data, phone: val })}
