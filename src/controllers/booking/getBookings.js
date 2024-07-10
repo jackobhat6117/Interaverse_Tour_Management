@@ -4,7 +4,7 @@ import fetchServer from "../fetchServer";
 export default async function getBookings() {
   var result = {return: 0,msg: 'Error',data: []}
 
-  await fetchServer({method: "GET",url: `/product/v1/book?populate=account&populate=flightBooking`})
+  await fetchServer({method: "GET",url: `/product/v1/book?populate=account&populate=flightBooking&limit=0`})
   .then((res) => {
     if(res) {
       if(res.status === 200) {

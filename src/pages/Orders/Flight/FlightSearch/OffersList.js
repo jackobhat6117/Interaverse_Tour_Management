@@ -448,7 +448,9 @@ export default function OffersList({hide}) {
     } else if(searchPath.length === searchObj?.destinations.length) {
       const action = searchParams.get('action')
       const id = searchParams.get('flightBookingId')
-      navigate(`/order/new/flight/book/${q}?action=${action}&flightBookingId=${id}`);
+      const agent = searchParams.get('agent')
+      const agentQuery = agent ? `&agent=${agent}` : ''
+      navigate(`/order/new/flight/book/${q}?action=${action}&flightBookingId=${id}${agentQuery||''}`);
     }
   }
 
