@@ -17,19 +17,24 @@ export default function PassengerInfo({ label, traveler,order }) {
         <div className="flex flex-col gap-6">
           <table className="w-[500px]" >
             <thead>
-              <td className='pr-4'>Name</td>
+              <td className='pr-4'>First Name</td>
+              <td className='pr-4'>Middle Name</td>
+              <td className='pr-4'>Last Name</td>
               <td className='px-4'>Date of birth</td>
-              <td className='px-4'>Email</td>
             </thead>
             <tbody>
               <td className='pr-4'>
-                <Copier value={`${traveler?.firstName || traveler?.name?.firstName} ${traveler?.lastName || traveler?.name?.lastName}`} className={'w-[100px]'} />
+                <Copier value={`${traveler?.firstName || traveler?.name?.firstName}`} className={'w-[100px]'} />
+              </td>
+              <td className='pr-4'>
+
+                <Copier value={`${traveler?.middleName || traveler?.name?.middleName || ''}`} className={'w-[100px]'} />
+              </td>
+              <td className='pr-4'>
+                <Copier value={`${traveler?.lastName || traveler?.name?.lastName}`} className={'w-[100px]'} />
               </td>
               <td className='px-4'>
                 <Copier value={traveler?.birthDate} className={'w-[100px]'} />
-              </td>
-              <td className='px-4'>
-                <Copier value={`${traveler?.email}`}  />
               </td>
             </tbody>
           </table>
@@ -38,12 +43,16 @@ export default function PassengerInfo({ label, traveler,order }) {
           <table className="w-[500px]" >
             <thead>
               <td className='pr-4'>Gender</td>
+              <td className='px-4'>Email</td>
               <td className='px-4'>Phone</td>
               <td className='px-4'>{traveler?.document?.documentType} Id</td>
             </thead>
             <tbody>
               <td className='pr-4'>
                 <Copier value={traveler?.gender ? toPascalCase(traveler?.gender) : ""} className={'w-[100px]'}  />
+              </td>
+              <td className='px-4'>
+                <Copier value={`${traveler?.email}`}  />
               </td>
               <td className='px-4'>
                 <Copier value={traveler?.phone} className={'w-[100px]'} />
