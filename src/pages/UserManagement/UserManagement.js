@@ -22,6 +22,8 @@ import updateUsersProfile from "../../controllers/user/updateUsersProfile";
 import { alertType } from "../../data/constants";
 import BusinessDocument from "../../components/ProfileSurvey/New/BusinessDocument";
 import topupAgencyWallet from "../../controllers/settings/wallet/topupAgencyWallet";
+import getSubscription from "../../controllers/subscription/getSubscription";
+import SkullLoad from "../../components/DIsplay/SkullLoad";
 
 const temp = [
   {
@@ -165,10 +167,23 @@ function Detail({ data, close, reload }) {
   const [openRemove, setOpenRemove] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openBusiness,setOpenBusiness] = useState(false);
-  const [loadings,setLoadings] = useState({enableUser:false,disableUser: false})
-  const [openWalletTopup,setOpenWalletTopup] = useState(false);
+  const [loadings,setLoadings] = useState({enableUser:false,disableUser: false,subscription: false})
+  const [subscription,setSubscription] = useState();
 
   const [openDocUpload,setOpenDocUpload] = useState(false);
+
+  useEffect(() => {
+    loadSubscription();
+  },[])
+  
+  async function loadSubscription() {
+    setLoadings({...loadings,subscription: true});
+    const res = await getSubscription(data?._id);
+    setLoadings({...loadings,subscription: false});
+    if(res.return) {
+      setSubscription(res?.data?.plan)
+    }
+  }
   
   async function enableUser() {
     setLoadings({...loadings,enableUser: true})
@@ -241,6 +256,17 @@ function Detail({ data, close, reload }) {
         {/* <Row name="DOB" value={data.dob} /> */}
         {/* <Row name="Nationality" value={data.nationality} /> */}
         <Row name="Date Registered" value={moment(data?.createdAt)?.format('YYYY/DD/MM hh:mm a')} />
+        <Row name="Subscription:" value={<div>
+          <SkullLoad label='Plan' value={loadings?.subscription ? null : subscription?.name || '---'}
+            render={(value) => (
+              <span>{value} 
+                {subscription?.name ? 
+                  <small> ({subscription?.annualPlanId ? 'Annual' : 'Monthly'})</small>
+                :null}
+              </span>
+            )}
+           />
+        </div>} />
         {/* <Row name="Completed Orders:" value={data.orders} /> */}
       </div>
 
