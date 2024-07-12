@@ -159,12 +159,13 @@ function UserManagement() {
   );
 }
 
-const Row = ({ name, value }) => (
+const Row = ({ name, value }) => {
+  return (
   <div className="flex gap-2">
     <p className="w-[30%]">{name}</p>
     <b className="w-[68%]">{value}</b>
   </div>
-);
+)};
 
 function Detail({ data, close, reload }) {
   const [openRemove, setOpenRemove] = useState(false);
@@ -180,7 +181,7 @@ function Detail({ data, close, reload }) {
   useEffect(() => {
     loadSubscription();
     loadWallet();
-  },[])
+  },[data])
   
   async function loadSubscription() {
     setLoadings({...loadings,subscription: true});
@@ -188,7 +189,7 @@ function Detail({ data, close, reload }) {
     setLoadings({...loadings,subscription: false});
     if(res.return) {
       setSubscription(res?.data?.plan)
-    }
+    } else setSubscription()
   }
   
   async function loadWallet() {
@@ -197,7 +198,7 @@ function Detail({ data, close, reload }) {
     setLoadings({...loadings,wallet: false});
     if(res.return) {
       setWallet('Test')
-    }
+    } else setWallet()
   }
     
   async function enableUser() {
