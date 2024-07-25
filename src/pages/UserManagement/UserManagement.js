@@ -27,6 +27,8 @@ import SkullLoad from "../../components/DIsplay/SkullLoad";
 import getWallet from "../../controllers/settings/wallet/getWallet";
 import getOthersWallet from "../../controllers/settings/wallet/getOthersWallet";
 import debitAgencyWallet from "../../controllers/settings/wallet/debitAgencyWallet";
+import { getCurrencySymbol } from "../../features/utils/countires";
+import { formatNumber } from "../../features/utils/formatNumber";
 
 const temp = [
   {
@@ -197,7 +199,7 @@ function Detail({ data, close, reload }) {
     const res = await getOthersWallet(data?._id);
     setLoadings({...loadings,wallet: false});
     if(res.return) {
-      setWallet('Test')
+      setWallet(res?.data?.balance)
     } else setWallet()
   }
     
@@ -284,10 +286,10 @@ function Detail({ data, close, reload }) {
            />
         </div>} />
         <Row name="Wallet:" value={<div>
-          <SkullLoad label='Wallet' value={loadings?.wallet ? null : wallet?.name || '---'}
-            render={(value) => (
-              <span>{value}</span>
-            )}
+          <SkullLoad label='Wallet' value={loadings?.wallet ? null : wallet || '---'}
+            render={(value) => value !== '---' ? (
+              <span>{getCurrencySymbol('NGN')}{formatNumber(Number(value)?.toFixed(2))}</span>
+            ) : '---'}
            />
         </div>} />
         {/* <Row name="Completed Orders:" value={data.orders} /> */}
@@ -407,6 +409,7 @@ function WalletTopup({reload,data:defData}) {
       if(res.return) {
         enqueueSnackbar('Wallet credited successully',{variant: 'success'})
         setOpen(false);
+        reload && reload();
       } else enqueueSnackbar(res.msg,{variant: 'error'})
     };
   
@@ -465,6 +468,7 @@ function WalletDebit({reload,data:defData}) {
       if(res.return) {
         enqueueSnackbar('Wallet debited successully',{variant: 'success'})
         setOpen(false);
+        reload && reload();
       } else enqueueSnackbar(res.msg,{variant: 'error'})
     };
   
