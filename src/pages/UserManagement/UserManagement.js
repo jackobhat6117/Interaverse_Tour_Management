@@ -22,6 +22,13 @@ import updateUsersProfile from "../../controllers/user/updateUsersProfile";
 import { alertType } from "../../data/constants";
 import BusinessDocument from "../../components/ProfileSurvey/New/BusinessDocument";
 import topupAgencyWallet from "../../controllers/settings/wallet/topupAgencyWallet";
+import getSubscription from "../../controllers/subscription/getSubscription";
+import SkullLoad from "../../components/DIsplay/SkullLoad";
+import getWallet from "../../controllers/settings/wallet/getWallet";
+import getOthersWallet from "../../controllers/settings/wallet/getOthersWallet";
+import debitAgencyWallet from "../../controllers/settings/wallet/debitAgencyWallet";
+import { getCurrencySymbol } from "../../features/utils/countires";
+import { formatNumber } from "../../features/utils/formatNumber";
 
 const temp = [
   {
@@ -154,22 +161,48 @@ function UserManagement() {
   );
 }
 
-const Row = ({ name, value }) => (
+const Row = ({ name, value }) => {
+  return (
   <div className="flex gap-2">
     <p className="w-[30%]">{name}</p>
     <b className="w-[68%]">{value}</b>
   </div>
-);
+)};
 
 function Detail({ data, close, reload }) {
   const [openRemove, setOpenRemove] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openBusiness,setOpenBusiness] = useState(false);
-  const [loadings,setLoadings] = useState({enableUser:false,disableUser: false})
+  const [loadings,setLoadings] = useState({enableUser:false,disableUser: false,subscription: false,wallet: false})
+  const [subscription,setSubscription] = useState();
+  const [wallet,setWallet] = useState();
   const [openWalletTopup,setOpenWalletTopup] = useState(false);
 
   const [openDocUpload,setOpenDocUpload] = useState(false);
+
+  useEffect(() => {
+    loadSubscription();
+    loadWallet();
+  },[data])
   
+  async function loadSubscription() {
+    setLoadings({...loadings,subscription: true});
+    const res = await getSubscription(data?._id);
+    setLoadings({...loadings,subscription: false});
+    if(res.return) {
+      setSubscription(res?.data?.plan)
+    } else setSubscription()
+  }
+  
+  async function loadWallet() {
+    setLoadings({...loadings,wallet: true});
+    const res = await getOthersWallet(data?._id);
+    setLoadings({...loadings,wallet: false});
+    if(res.return) {
+      setWallet(res?.data?.balance)
+    } else setWallet()
+  }
+    
   async function enableUser() {
     setLoadings({...loadings,enableUser: true})
     const res = await activateAccount(data?._id);
@@ -241,22 +274,41 @@ function Detail({ data, close, reload }) {
         {/* <Row name="DOB" value={data.dob} /> */}
         {/* <Row name="Nationality" value={data.nationality} /> */}
         <Row name="Date Registered" value={moment(data?.createdAt)?.format('YYYY/DD/MM hh:mm a')} />
+        <Row name="Subscription:" value={<div>
+          <SkullLoad label='Plan' value={loadings?.subscription ? null : subscription?.name || '---'}
+            render={(value) => (
+              <span>{value} 
+                {subscription?.name ? 
+                  <small> ({subscription?.annualPlanId ? 'Annual' : 'Monthly'})</small>
+                :null}
+              </span>
+            )}
+           />
+        </div>} />
+        <Row name="Wallet:" value={<div>
+          <SkullLoad label='Wallet' value={loadings?.wallet ? null : wallet || '---'}
+            render={(value) => value !== '---' ? (
+              <span>{getCurrencySymbol('NGN')}{formatNumber(Number(value)?.toFixed(2))}</span>
+            ) : '---'}
+           />
+        </div>} />
         {/* <Row name="Completed Orders:" value={data.orders} /> */}
       </div>
 
       <div className="pt-10 flex flex-col gap-4">
         <div className="flex gap-4">
-          <div className="flex-1">
+          <div className="flex-1 flex gap-2 whitespace-nowrap flex-wrap">
             {/* <Button1 onClick={() => setOpenWalletTopup(true)}>
               Topup Wallet
             </Button1> */}
             <WalletTopup data={data} reload={() => reload && reload()} />
+            <WalletDebit data={data} reload={() => reload && reload()} />
+            <div className='flex-1 px-2'>
+              <Button1 className='flex items-center gap-2' onClick={() => setOpenDocUpload(true)}>
+                <Icon icon='ep:document' />
+                Upload Document
+              </Button1>
           </div>
-          <div className='flex-1'>
-            <Button1 className='flex items-center gap-2' onClick={() => setOpenDocUpload(true)}>
-              <Icon icon='ep:document' />
-              Upload Document
-            </Button1>
           </div>
         </div>
         <div className="flex gap-4">
@@ -355,8 +407,9 @@ function WalletTopup({reload,data:defData}) {
       });
       setLoading(false);
       if(res.return) {
-        enqueueSnackbar('Wallet debited successully',{variant: 'success'})
+        enqueueSnackbar('Wallet credited successully',{variant: 'success'})
         setOpen(false);
+        reload && reload();
       } else enqueueSnackbar(res.msg,{variant: 'error'})
     };
   
@@ -398,6 +451,72 @@ function WalletTopup({reload,data:defData}) {
     );
   }
   
+function WalletDebit({reload,data:defData}) {
+    const [open, setOpen] = useState(false);
+    const [data, setData] = useState({ ...(defData || {}),amount: undefined, reason: '' });
+    const [loading,setLoading] = useState(false);
+  
+    console.log(defData)
+    const handleTopUp = async () => {
+      setLoading(true);
+      const res = await debitAgencyWallet({
+        accountId: data?._id,
+        amount: Number(data?.amount),
+        reason: data?.reason || '',
+      });
+      setLoading(false);
+      if(res.return) {
+        enqueueSnackbar('Wallet debited successully',{variant: 'success'})
+        setOpen(false);
+        reload && reload();
+      } else enqueueSnackbar(res.msg,{variant: 'error'})
+    };
+  
+    return (
+      <div>
+        <Button1 onClick={() => setOpen(true)}>Debit Balance</Button1>
+        <Modal1 open={open} setOpen={setOpen}>
+          <div className="p-4 flex flex-col gap-6 max-w-[800px]">
+            <h4>Debit balance</h4>
+            <TextInput
+              label="Amount"
+              type="number"
+              value={data.amount}
+              onChange={(ev) => setData({ ...data, amount: ev.target.value })}
+              InputProps={{
+                endAdornment: "NGN",
+              }}
+            />
+            <TextInput
+              label="Reason"
+              multiline
+              rows={4}
+              value={data.reason}
+              onChange={(ev) => setData({ ...data, reason: ev.target.value })}
+            />
+          </div>
+          <div className="flex gap-2 p-4">
+            <Button1 className="btn-theme-light" onClick={() => setOpen(false)}>
+              Cancel
+            </Button1>
+            {/* <PaystackButton
+              config={{
+                amount: data.amount * 100,
+                reference: generateRef("WTR-"),
+                email: user?.email,
+              }}
+              onSuccess={(reference) => {
+                handleTopUp(reference?.reference);
+              }}
+            > */}
+              <Button1 loading={loading} onClick={handleTopUp} className={"whitespace-nowrap"}>Save Changes</Button1>
+            {/* </PaystackButton> */}
+          </div>
+        </Modal1>
+      </div>
+    );
+  }
+
 function EditForm({ data:defData, close, reload }) {
   const [data,setData] = useState(defData);
   const [loading,setLoading] = useState(false);

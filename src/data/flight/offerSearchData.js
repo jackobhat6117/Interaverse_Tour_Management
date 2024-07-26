@@ -12,6 +12,7 @@ export const offerSearchTemp = {
     "Intra1A",
     // "Intra1T",
     // "Intra1S",
+    'Intra1PK',
     "Intra1FR",
     "Intra2A",
     "Intra3A",
