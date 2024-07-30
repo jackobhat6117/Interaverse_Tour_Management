@@ -10,7 +10,7 @@ import updateFlightPriceAdjustment from "../../../../controllers/flightPriceAdju
 import AirlinesInput from "../../../../components/form/AirlinesInput";
 import ToolTip from "../../../../components/DIsplay/ToolTip";
 import Checkbox from "../../../../components/form/Checkbox";
-import filterTruthyValues from "../../../../features/utils/filterTruthyObjectValues";
+import filterTruthyValues, { filterOutNullValues } from "../../../../features/utils/filterTruthyObjectValues";
 import { flightSuppliers } from "../../../../data/ENUM/FlightProviders";
 import Icon from "../../../../components/HOC/Icon";
 import RadioGroup from "../../../../components/form/RadioGroup";
@@ -52,6 +52,8 @@ export default function CreateMarkup({
 
   async function handleSubmit(ev) {
     ev.preventDefault();
+    // return console.log('data: ',data)
+    
     if (data.appliedTo === "" || data.method === "")
       return enqueueSnackbar("Please fill required fields!", {
         variant: "error",
@@ -59,7 +61,7 @@ export default function CreateMarkup({
 
     setLoading(true);
     let res = { return: false, msg: "Error", data: [] };
-    let modData = filterTruthyValues({...data,
+    let {_id,createdAt,updatedAt,id,...modData} = filterOutNullValues({...data,
       departureAirport: data?.departureAirport?.iata || data?.departureAirport,
       arrivalAirport: data?.arrivalAirport?.iata || data?.arrivalAirport,
       amount: Number(data?.amount),
