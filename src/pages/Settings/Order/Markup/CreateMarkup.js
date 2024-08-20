@@ -20,9 +20,13 @@ const initData = {
   appliedTo: "Flight",
   method: "Percentage",
   airlines: [],
+  excludedAirlines: [],
+  excludedAirline: undefined, 
   type: "Markup",
   amount: 0,
   name: "",
+  minPrice: undefined,
+  maxPrice: undefined,
   currency: undefined,
   passengerType: undefined,
   flightRoute: undefined,
@@ -158,6 +162,27 @@ export default function CreateMarkup({
               </div>
             </div>
           ) : null}
+
+          <div className="w-full">
+            <AirlinesInput
+              label={"Excluded Airlines"}
+              placeholder="Search or select airline"
+              // disabled={allAirline}
+              val={data?.excludedAirline}
+              returnData={(val) => {
+                if(val?.id)
+                  setData({
+                    ...data,
+                    excludedAirline: '',
+                    // airline: val?.id,
+                    excludedAirlines: [...data?.excludedAirlines||[],val?.id]
+                  });
+              }}
+            />
+            <div className="py-2">
+              <ListAirlines list={data?.excludedAirlines} setList={(excludedAirlines) => setData({...data,excludedAirlines})} />
+            </div>
+          </div>
         </div>
         {/* <div className="self-start">
           <AirlinesInput
@@ -172,7 +197,7 @@ export default function CreateMarkup({
             }}
           />
         </div> */}
-        <TextInput label='Suppliers' select
+        <TextInput label='Suppliers' select required
           SelectProps={{ multiple: true }}
           value={data?.suppliers || []}
           onChange={(ev) => setData({...data,suppliers: ev?.target?.value})}>
@@ -247,6 +272,18 @@ export default function CreateMarkup({
             value={data?.amount || ""}
             label="Value"
             onChange={(e) => setData({ ...data, amount: e.target.value })}
+          />
+        </div>
+        <div className="flex gap-2">
+          <TextInput
+            value={data?.minPrice || ""}
+            label="Price Range from"
+            onChange={(e) => setData({ ...data, minPrice: Number(e.target.value) })}
+          />
+          <TextInput
+            value={data?.maxPrice || ""}
+            label="Price Range To"
+            onChange={(e) => setData({ ...data, maxPrice: Number(e.target.value) })}
           />
         </div>
         <div>
