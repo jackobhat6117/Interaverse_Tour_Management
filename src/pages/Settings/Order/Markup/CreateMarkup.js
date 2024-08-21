@@ -10,17 +10,23 @@ import updateFlightPriceAdjustment from "../../../../controllers/flightPriceAdju
 import AirlinesInput from "../../../../components/form/AirlinesInput";
 import ToolTip from "../../../../components/DIsplay/ToolTip";
 import Checkbox from "../../../../components/form/Checkbox";
-import filterTruthyValues from "../../../../features/utils/filterTruthyObjectValues";
+import filterTruthyValues, { filterOutNullValues } from "../../../../features/utils/filterTruthyObjectValues";
 import { flightSuppliers } from "../../../../data/ENUM/FlightProviders";
 import Icon from "../../../../components/HOC/Icon";
+import RadioGroup from "../../../../components/form/RadioGroup";
+import ListAirlines from "./ListAirlines";
 
 const initData = {
   appliedTo: "Flight",
   method: "Percentage",
   airlines: [],
+  excludedAirlines: [],
+  excludedAirline: undefined, 
   type: "Markup",
   amount: 0,
   name: "",
+  minPrice: undefined,
+  maxPrice: undefined,
   currency: undefined,
   passengerType: undefined,
   flightRoute: undefined,
@@ -50,6 +56,8 @@ export default function CreateMarkup({
 
   async function handleSubmit(ev) {
     ev.preventDefault();
+    // return console.log('data: ',data)
+    
     if (data.appliedTo === "" || data.method === "")
       return enqueueSnackbar("Please fill required fields!", {
         variant: "error",
@@ -57,7 +65,7 @@ export default function CreateMarkup({
 
     setLoading(true);
     let res = { return: false, msg: "Error", data: [] };
-    let modData = filterTruthyValues({...data,
+    let {_id,createdAt,updatedAt,id,...modData} = filterOutNullValues({...data,
       departureAirport: data?.departureAirport?.iata || data?.departureAirport,
       arrivalAirport: data?.arrivalAirport?.iata || data?.arrivalAirport,
       amount: Number(data?.amount),
@@ -82,6 +90,15 @@ export default function CreateMarkup({
 
   console.log(data)
 
+  const [allAirline, setAllAirline] = useState(data?.airlines?.length ? 'Specific' : "All");
+
+  useEffect(() => {
+    if (allAirline === "All") setData({ ...data, airlines: [] });
+    else setData({ ...data, airline: undefined });
+    //eslint-disable-next-line
+  }, [allAirline]);
+
+  
   return (
     <div>
       <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-4">
@@ -96,7 +113,78 @@ export default function CreateMarkup({
             <Checkbox labelClassName='flex-1' name='type' checked={data.appliedTo.includes('Tour')} onChange={handleChange} value='Tour'>Tour</Checkbox>
             <Checkbox labelClassName='' name='type' checked={data.appliedTo.includes('Protection')} onChange={handleChange} value='Protection'>Protection</Checkbox>
           </div> */}
-        <div className="self-start">
+
+        <TextInput
+          label={"Markup Title"}
+          placeholder={"e.g Virgin Air Markup"}
+          required
+          value={data?.name}
+          onChange={(ev) => setData({ ...data, name: ev.target.value })}
+        />
+
+        <div className="self-start flex flex-col items-center gap-4 justify-between w-full">
+          <span className="w-full text-sm text-gray-500 -mb-3">
+            Applicable to
+          </span>
+          <div className="w-full">
+            <RadioGroup
+              value={allAirline}
+              options={[
+                { value: "All", label: "All Airline" },
+                { value: "Specific", label: "Specific Airlines" },
+              ]}
+              className="flex gap-4 whitespace-nowrap w-full"
+              onChange={(val) => setAllAirline(val)}
+            />
+            {/* <Checkbox value={allAirline} onChange={(ev) => ev.target.checked && setData({...data,airline: 'ALL'}) && setAllAirline(ev.target.checked)}>
+              All Airlines
+            </Checkbox> */}
+          </div>
+          {allAirline === "Specific" ? (
+            <div className="w-full">
+              <AirlinesInput
+                label={"Airline"}
+                placeholder="Search or select airline"
+                // disabled={allAirline}
+                val={data?.airline}
+                returnData={(val) => {
+                  if(val?.id)
+                    setData({
+                      ...data,
+                      airline: '',
+                      // airline: val?.id,
+                      airlines: [...data?.airlines||[],val?.id]
+                    });
+                }}
+              />
+              <div className="py-2">
+                <ListAirlines list={data?.airlines} setList={(airlines) => setData({...data,airlines})} />
+              </div>
+            </div>
+          ) : null}
+
+          <div className="w-full">
+            <AirlinesInput
+              label={"Excluded Airlines"}
+              placeholder="Search or select airline"
+              // disabled={allAirline}
+              val={data?.excludedAirline}
+              returnData={(val) => {
+                if(val?.id)
+                  setData({
+                    ...data,
+                    excludedAirline: '',
+                    // airline: val?.id,
+                    excludedAirlines: [...data?.excludedAirlines||[],val?.id]
+                  });
+              }}
+            />
+            <div className="py-2">
+              <ListAirlines list={data?.excludedAirlines} setList={(excludedAirlines) => setData({...data,excludedAirlines})} />
+            </div>
+          </div>
+        </div>
+        {/* <div className="self-start">
           <AirlinesInput
             label={"Airline"}
             placeholder="Search or select airline"
@@ -108,15 +196,8 @@ export default function CreateMarkup({
               });
             }}
           />
-        </div>
-        <TextInput
-          label={"Markup Title"}
-          placeholder={"e.g Virgin Air Markup"}
-          required
-          value={data?.name}
-          onChange={(ev) => setData({ ...data, name: ev.target.value })}
-        />
-        <TextInput label='Suppliers' select
+        </div> */}
+        <TextInput label='Suppliers' select required
           SelectProps={{ multiple: true }}
           value={data?.suppliers || []}
           onChange={(ev) => setData({...data,suppliers: ev?.target?.value})}>
@@ -191,6 +272,18 @@ export default function CreateMarkup({
             value={data?.amount || ""}
             label="Value"
             onChange={(e) => setData({ ...data, amount: e.target.value })}
+          />
+        </div>
+        <div className="flex gap-2">
+          <TextInput
+            value={data?.minPrice || ""}
+            label="Price Range from"
+            onChange={(e) => setData({ ...data, minPrice: Number(e.target.value) })}
+          />
+          <TextInput
+            value={data?.maxPrice || ""}
+            label="Price Range To"
+            onChange={(e) => setData({ ...data, maxPrice: Number(e.target.value) })}
           />
         </div>
         <div>
@@ -342,7 +435,7 @@ export default function CreateMarkup({
               </div>
             </div>
             <div className="flex gap-2">
-              <CitiesInput
+              {/* <CitiesInput
                 label="Departure Airport"
                 size="small"
                 placeholder="e.g LHR"
@@ -350,7 +443,7 @@ export default function CreateMarkup({
                 onChange={(val) =>
                   setData({ ...data, departureAirport: val })
                 }
-              />
+              /> */}
               {/* <div className='relative flex items-center justify-center  cursor-pointer'>
                   <div className='absolute items-center justify-center flex'>
                     <span className='bg-secondary shadow-lg rounded-full p-1 hover:rotate-180 transition-all' onClick={() => swipeLoc()}>
@@ -358,7 +451,7 @@ export default function CreateMarkup({
                     </span>
                   </div>
                 </div> */}
-              <CitiesInput
+              {/* <CitiesInput
                 label={"Arrival Airport"}
                 size="small"
                 placeholder="e.g LOS"
@@ -366,7 +459,28 @@ export default function CreateMarkup({
                 onChange={(val) =>
                   setData({ ...data, arrivalAirport: val })
                 }
-              />
+              /> */}
+              <TextInput
+                select
+                label={"Arrival Time"}
+                value={data?.arrivalTime}
+                onChange={(ev) =>
+                  setData({ ...data, arrivalTime: ev.target.value })
+                }
+              >
+                <MenuItem value={undefined}></MenuItem>
+                <MenuItem value="Morning">Morning</MenuItem>
+                <MenuItem value="Afternoon">Afternoon</MenuItem>
+                <MenuItem value="Evening">Evening</MenuItem>
+              </TextInput>
+
+            </div>
+
+            <ArrivalAirport data={data?.arrivalAirports||[]} setData={(val) => setData({...data,arrivalAirports: val})} />
+            <ExcludedArrivalAirport data={data?.excludedArrivalAirports} setData={(val) => setData({...data,excludedArrivalAirports: val})} />
+
+            <div className="py-4">
+              <hr />
             </div>
             <div className="flex gap-2">
               <TextInput
@@ -382,21 +496,9 @@ export default function CreateMarkup({
                 <MenuItem value="Afternoon">Afternoon</MenuItem>
                 <MenuItem value="Evening">Evening</MenuItem>
               </TextInput>
-              <TextInput
-                select
-                label={"Arrival Time"}
-                value={data?.arrivalTime}
-                onChange={(ev) =>
-                  setData({ ...data, arrivalTime: ev.target.value })
-                }
-              >
-                <MenuItem value={undefined}></MenuItem>
-                <MenuItem value="Morning">Morning</MenuItem>
-                <MenuItem value="Afternoon">Afternoon</MenuItem>
-                <MenuItem value="Evening">Evening</MenuItem>
-              </TextInput>
             </div>
 
+            <DepartureAirport data={data?.departureAirports||[]} setData={(val) => setData({...data,departureAirports: val})} />
             <ExcludedDepartureAirport data={data?.excludedDepartureAirports} setData={(val) => setData({...data,excludedDepartureAirports: val})} />
 
             <hr />
@@ -431,6 +533,12 @@ export default function CreateMarkup({
           </div>
         ) : null}
 
+        <div className="self-start">
+          <Checkbox value={'Append'} name='Append' checked={data?.append} onChange={(ev) => setData({...data,append: ev?.target?.checked})}>
+            Append with other markups
+          </Checkbox>
+        </div>
+
         <div className="flex gap-4">
           {footer}
           <Button1 loading={loading} type="submit">
@@ -440,6 +548,53 @@ export default function CreateMarkup({
       </form>
     </div>
   );
+}
+
+function DepartureAirport({data,setData}) {
+  const [departureAirport,setDepartureAirport] = useState("");
+
+  const Tag = ({value}) => (
+    <div className="flex items-center border rounded-full text-sm border-primary/30">
+      <span className="px-2 py-[2px]">
+        {value || ""}
+      </span>
+      <span className="hover:text-red-400 flex-1 py-[2px] rounded-r-full cursor-pointer pr-2 inline-block h-full"
+       onClick={() => handleRemove(value)} 
+      >
+        <Icon icon='mdi:close' className='!w-4 !h-4' />
+      </span>
+    </div>
+  )
+
+  function handleRemove(iata) {
+    setData && setData(data?.filter(val => val !== iata))
+  }
+
+  function handleChange(val) {
+    setDepartureAirport(val)
+    if(val?.iata)
+      setData && setData([ ...(data || []), val?.iata ])
+  }
+  
+  return (
+    <div className="flex flex-col">
+      <small>Departure Airports</small>
+      <div className="flex gap-2 items-center max-w-[500px] overflow-x-auto pb-1 my-2">
+        {(data)?.map((val,i) => 
+          <Tag value={val} key={i} />
+        )}
+      </div>
+      <CitiesInput
+        label={""}
+        size="small"
+        placeholder="e.g LOS"
+        value={departureAirport || ""}
+        onChange={(val) =>
+          handleChange(val)
+        }
+      />
+    </div>
+  )
 }
 
 function ExcludedDepartureAirport({data,setData}) {
@@ -481,6 +636,100 @@ function ExcludedDepartureAirport({data,setData}) {
         size="small"
         placeholder="e.g LOS"
         value={excludedDepartureAirport || ""}
+        onChange={(val) =>
+          handleChange(val)
+        }
+      />
+    </div>
+  )
+}
+
+function ArrivalAirport({data,setData}) {
+  const [ArrivalAirport,setArrivalAirport] = useState("");
+
+  const Tag = ({value}) => (
+    <div className="flex items-center border rounded-full text-sm border-primary/30">
+      <span className="px-2 py-[2px]">
+        {value || ""}
+      </span>
+      <span className="hover:text-red-400 flex-1 py-[2px] rounded-r-full cursor-pointer pr-2 inline-block h-full"
+       onClick={() => handleRemove(value)} 
+      >
+        <Icon icon='mdi:close' className='!w-4 !h-4' />
+      </span>
+    </div>
+  )
+
+  function handleRemove(iata) {
+    setData && setData(data?.filter(val => val !== iata))
+  }
+
+  function handleChange(val) {
+    setArrivalAirport(val)
+    if(val?.iata)
+      setData && setData([ ...(data || []), val?.iata ])
+  }
+  
+  return (
+    <div className="flex flex-col">
+      <small>Arrival Airports</small>
+      <div className="flex gap-2 items-center max-w-[500px] overflow-x-auto pb-1 my-2">
+        {(data)?.map((val,i) => 
+          <Tag value={val} key={i} />
+        )}
+      </div>
+      <CitiesInput
+        label={""}
+        size="small"
+        placeholder="e.g LOS"
+        value={ArrivalAirport || ""}
+        onChange={(val) =>
+          handleChange(val)
+        }
+      />
+    </div>
+  )
+}
+
+function ExcludedArrivalAirport({data,setData}) {
+  const [excludedArrivalAirport,setExcludedArrivalAirport] = useState("");
+
+  const Tag = ({value}) => (
+    <div className="flex items-center border rounded-full text-sm border-primary/30">
+      <span className="px-2 py-[2px]">
+        {value || ""}
+      </span>
+      <span className="hover:text-red-400 flex-1 py-[2px] rounded-r-full cursor-pointer pr-2 inline-block h-full"
+       onClick={() => handleRemove(value)} 
+      >
+        <Icon icon='mdi:close' className='!w-4 !h-4' />
+      </span>
+    </div>
+  )
+
+  function handleRemove(iata) {
+    setData && setData(data?.filter(val => val !== iata))
+  }
+
+  function handleChange(val) {
+    setExcludedArrivalAirport(val)
+    if(val?.iata)
+      setData && setData([ ...(data || []), val?.iata ])
+  }
+  
+  return (
+    <div className="flex flex-col">
+      <small>Excluded Arrival Airports</small>
+      <div className="flex gap-2 items-center max-w-[500px] overflow-x-auto pb-1 my-2">
+        {(data)?.map((val,i) => 
+          <Tag value={val} key={i} />
+        )}
+      </div>
+      <CitiesInput
+        label={""}
+        size="small"
+        placeholder="e.g LOS"
+        value={excludedArrivalAirport || ""}
         onChange={(val) =>
           handleChange(val)
         }
