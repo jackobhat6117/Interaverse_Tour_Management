@@ -17,6 +17,7 @@ import issueTicket from '../../controllers/booking/issueTicket';
 import issueTicketManually from '../../controllers/booking/issueTicketManually';
 import cancelTicket from '../../controllers/booking/cancelTicket';
 import requestTicketMoreInfo from '../../controllers/booking/Ticket/requestMoreInfo';
+import { clone } from '../../features/utils/objClone';
 
 const ActionContext = createContext();
 
@@ -105,11 +106,12 @@ export default function ApproveTicket({loadAll,data,close,callback}) {
             callback && callback()
         } else enqueueSnackbar(res.msg,{variant: 'error'})
     }
-    async function handleManualIssue({id,ticketNumber}) {
+    async function handleManualIssue({id,travelerTicket}) {
         const reqBody = {
             ticketQueueId: id,
-            ticketNumber,
+            travelerTicket,
         }
+        // return console.log(reqBody)
         setOpenManualIssue({...openManualIssue,loading: true})
         const res = await issueTicketManually(reqBody);
         setOpenManualIssue({...openManualIssue,loading: false})
@@ -220,9 +222,9 @@ export default function ApproveTicket({loadAll,data,close,callback}) {
         <Modal1 open={openManualIssue} setOpen={setOpenManualIssue}>
             <div className='card p-4 flex flex-col  gap-4 min-w-[300px]'>
                 <h5>Ticket Number?</h5>
-                <TextInput label=''
-                    value={openManualIssue?.ticketNumber || ''}
-                    onChange={(ev) => setOpenManualIssue({...openManualIssue,ticketNumber: ev.target.value})} />
+                <ManualTicketForm travelers={openManualIssue?.flightBooking?.travelers} 
+                    onChange={(obj) => setOpenManualIssue({...openManualIssue,travelerTicket: obj})}
+                />
                 <div className='flex justify-end items-center gap-4'>
                     <Button1 variant='outlined' className='btn-outlined flex-1' onClick={() => setOpenManualIssue(false)}>Cancel</Button1>
                     <div>
@@ -259,6 +261,63 @@ export default function ApproveTicket({loadAll,data,close,callback}) {
         </Modal1>
     </div>
   )
+}
+
+function ManualTicketForm({travelers,onChange}) {
+    const [data,setData] = useState((travelers||[])?.map(obj => ({id: obj?.id,ticketNumbers: ['']})))
+
+    useEffect(() => {
+        setData((travelers||[])?.map(obj => ({id: obj?.id,ticketNumbers: ['']})))
+    },[travelers])
+
+    function handleChange(val,i,j) {
+        try {
+            const temp = clone(data);
+            temp[i].ticketNumbers[j] = val;
+            setData(temp)
+            onChange && onChange(temp)
+        } catch(ex) {}
+    }
+    
+    function handleAdd(i) {
+        try {
+            const temp = clone(data);
+            temp[i].ticketNumbers.push('')
+            setData(temp)
+            onChange && onChange(temp)
+        } catch(ex) {}
+    }
+    function handleDel(i,j) {
+        try {
+            const temp = clone(data);
+            temp[i].ticketNumbers = temp[i].ticketNumbers?.filter((_,ind) => ind !== j)
+            setData(temp)
+            onChange && onChange(temp)
+        } catch(ex) {}
+    }
+        
+    return (
+        <div>
+            {data?.map((obj,i) => (
+                <div key={i} className='flex gap-3 flex-col'>
+                    <div className='flex gap-2 justify-between'>
+                        <div>Traveler {obj?.id}</div>
+                        <button onClick={() => handleAdd(i)}>+ Add</button>
+                    </div>
+                    {obj?.ticketNumbers?.map((ticket,t) => (
+                        <div className='flex gap-2 items-center'>
+                            <TextInput key={t} label={'Ticket '+(t+1)}
+                            value={ticket || ''}
+                            onChange={(ev) => handleChange(ev.target.value,i,t)} />
+                            {t ? 
+                                <button onClick={() => handleDel(i,t)}><Icon icon='material-symbols:delete' className='text-red-500' /></button>
+                            :null}
+                        </div>
+                    ))}
+                </div>
+            ))}
+        </div>
+    )
 }
 
 
