@@ -78,7 +78,7 @@ export default function PassengerInfo({ label, traveler,order }) {
               </td>
               <td className='px-4'><Copier value={traveler?.document?.issuanceDate} className={'w-[100px]'} /></td>
               <td className='px-4'>
-                <Copier value={traveler?.document?.birthPlace} className={'w-[100px]'} />
+                <Copier value={traveler?.document?.issuanceCountry} className={'w-[100px]'} />
               </td>
             </tbody>
           </table>
@@ -92,17 +92,31 @@ export default function PassengerInfo({ label, traveler,order }) {
             </thead>
             <tbody>
               <td className='pr-4'>
-                <Copier value={`${traveler?.document?.birthPlace}`} className={'w-[100px]'} />
+                <Copier value={`${traveler?.document?.issuanceLocation}`} className={'w-[100px]'} />
               </td>
               <td className='px-4'>
-                <Copier value={traveler?.document?.expiryDate} className={'w-[100px]'} />
+                <Copier value={traveler?.document?.nationality} className={'w-[100px]'} />
               </td>
               <td className='px-4'>
-                <Copier value={traveler?.document?.birthPlace}  />
+                <Copier value={traveler?.document?.validityCountry}  />
               </td>
             </tbody>
           </table>
 
+          <table className="w-[500px]" >
+            <thead>
+              <td className='pr-4'>Ticket No's</td>
+            </thead>
+            <tbody>
+              <td className='pr-4 flex gap-4 flex-wrap'>
+                {traveler?.ticketNumbers?.map((number,i) => (
+                  <div key={i} className="flex gap-1">
+                    <Copier value={`${number}`} className={'w-[100px]'} />
+                  </div>
+                ))}
+              </td>
+            </tbody>
+          </table>
           
         </div>
       </div>
