@@ -30,6 +30,7 @@ import { offerSearchTemp } from "../../data/flight/offerSearchData";
 import { encrypt } from "../../features/utils/crypto";
 import { useDispatch } from "react-redux";
 import { setBookingData } from "../../redux/reducers/flight/flightBookingSlice";
+import VoidRequests from "./VoidRequests";
 
 
 const ActionContext = createContext();
@@ -489,6 +490,11 @@ export default function OrdersData({ data: gotData, setData: setOrig, reload }) 
               <Link to={status === 'onHold' ? '?status=null' : '?status=onHold'} className={status === 'onHold' ? 'btn' : "btn-theme-light"}>On hold</Link>
             :null
           }
+          {
+            getTestLevel() <= getTestLevel('dev') ? 
+              <Link to={orderType === 'Voids' ? '?type=null' : '?type=Voids'} className={orderType === 'Voids' ? 'btn' : "btn-theme-light"}>Void Requests</Link>
+            :null
+          }
         </div>
         <div className="flex gap-2 items-center flex-wrap">
           <Button1 variant="text" className="capitalize !w-auto" onClick={handleExport}>
@@ -548,6 +554,12 @@ export default function OrdersData({ data: gotData, setData: setOrig, reload }) 
             close={() => setOpenApproveTicket(false)} />
         : orderType === 'transactions' ? 
           <Transactions
+            loadAll={true}
+            data={openApproveTicket}
+            callback={() => {reload();setOpenApproveTicket(false)}}
+            close={() => setOpenApproveTicket(false)} />
+        : orderType === 'Voids' ? 
+          <VoidRequests 
             loadAll={true}
             data={openApproveTicket}
             callback={() => {reload();setOpenApproveTicket(false)}}

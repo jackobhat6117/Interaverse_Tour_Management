@@ -1,10 +1,10 @@
-import fetchServer from "../../fetchServer";
+import fetchServer from "../../../fetchServer";
 
 
-export default async function listQueueTicket(data) {
-  var result = {return: 0,msg: 'Failed queueing ticket',data: []}
+export default async function voidTicket(data) {
+  var result = {return: 0,msg: 'Failed voiding ticket',data: []}
 
-  await fetchServer({method: "GET",url: `/product/v1/ticket/queue?populate=flightBooking&limit=0`,data})
+  await fetchServer({method: "POST",url: `/product/v1/voidTicket/requestVoidTicket`,data})
   .then((res) => {
     if(res) {
       if(res.status === 200) {
