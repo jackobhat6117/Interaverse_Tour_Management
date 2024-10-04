@@ -51,6 +51,7 @@ import EmailTemplateSettings from './pages/Settings/EmailTemplates/EmailTemplate
 import ChangeFlightOrder from './pages/Orders/Flight/Booked/ChangeOrder/ChangeOrder.js';
 import CurrencySetting from './pages/Settings/Agency/Currency/CurrencySetting.js';
 import FAQSetting from './pages/Settings/FAQ/FAQSetting.js';
+import Fees from './pages/Settings/Finance/Fees.js';
 // import 'dotenv/config'
 
 
@@ -152,6 +153,7 @@ function App() {
                     <Route path='gateway' element={<PaymentGateway />} />
                     <Route path='currency' element={<CurrencySetting />} />
                     <Route path='*' element={<PageNotFound />} />
+                    <Route path='fees' element={<Fees/>} />
                   </Route>
                   <Route path='faq' element={<FAQSetting />} />
                 </Route>

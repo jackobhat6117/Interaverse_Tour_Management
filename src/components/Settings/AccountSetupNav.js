@@ -9,6 +9,7 @@ export const accountSetupLinks = [
   {to: "/settings/agency/brand", title: 'brand', icon: 'material-symbols:branding-watermark', label: "Brand"},
   {to: "/settings/agency/contact", title: 'contact', icon: EmailOutlined,label: "Contact Emails"},
   {to: "/settings/agency/developer", title: 'developer', icon: Code, label: "Developers"},
+  
 
   // {to: "/settings/agency/markup", title: 'markup', icon: EmailOutlined,label: "Mark Up"},
   // {to: "/settings/agency/commission", title: 'commission', icon: LockOutlined,label: "Commision"},

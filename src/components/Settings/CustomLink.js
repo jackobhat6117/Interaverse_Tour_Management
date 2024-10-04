@@ -6,6 +6,7 @@ export function CustomLink({to,active,Icon:CIcon,label}) {
   function handleClick() {
     if(to === window.location.pathname)
       window.location.reload();
+     console.log('to', to)
   }
 
   return (
