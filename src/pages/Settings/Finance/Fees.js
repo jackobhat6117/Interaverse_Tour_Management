@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Flight from '../Fees/Flight'
+import Hotels from '../Fees/Hotels'
 
 
 
@@ -121,6 +122,9 @@ const Fees = () => {
 
         {selectedSection === 'flights' && (
           <Flight/>
+        )}
+         {selectedSection === 'hotels' && (
+          <Hotels />
         )}
      
     </div>
