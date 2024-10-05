@@ -121,9 +121,52 @@ const Flight = () => {
               aria-controls="panel1-content"
               id="panel1-header"
             >
+            <h5>Void</h5>
             </AccordionSummary>
             <AccordionDetails>
               <CardList cards={cardData3} />
+            </AccordionDetails>
+          </Accordion>
+        </div>
+        <div className="my-3">
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel2-content"
+              id="panel2-header"
+            >
+              <h5>Re-issue</h5>
+            </AccordionSummary>
+            <AccordionDetails>
+              <CardList cards={cardData4} />
+            </AccordionDetails>
+          </Accordion>
+        </div>
+        <div className="my-3">
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel2-content"
+              id="panel2-header"
+            >
+              <h5>Name Change</h5>
+            </AccordionSummary>
+            <AccordionDetails>
+              <CardList cards={cardData4} />
+            </AccordionDetails>
+          </Accordion>
+        </div>
+        <div className="my-3">
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel2-content"
+              id="panel2-header"
+            >
+              <h5>Change Passenger Details</h5>
+            </AccordionSummary>
+            <AccordionDetails>
+              <CardList cards={cardData4} />
             </AccordionDetails>
           </Accordion>
         </div>
