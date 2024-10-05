@@ -7,20 +7,18 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import SingleSelectDropdown from '../../../components/Settings/fees/SingleDropDown';
 
 
-const Insurance = () => {
+const Extras = () => {
 
 
-  const cardData1 = [
-    { title: 'Confirmed booking fee', amount: '$534,000', btn: 'save'},
-    { title: 'Cancellation fee', amount: '$534,000', btn: 'save' },
-    { title: 'Refund fee', amount: '$534,000', btn: 'save' },
-    { title: 'Change fee', amount: '$534,000', btn: 'save' }
-  ];
+const cardData1 = [
+        { title: 'SMS notifications', amount: '$534,000', btn: 'save'},
+        { title: 'whatsapp notifications', amount: '$534,000', btn: 'save' },
+      ];
 
 
   return (
     <div className="container mx-auto py-5">
-        <div>
+       
         <div className="mt-5">
           <Accordion expanded= {true}>
             <AccordionSummary
@@ -28,17 +26,18 @@ const Insurance = () => {
               aria-controls="panel1-content"
               id="panel1-header"
             >
-              <h5>Insurance</h5>
+              <h5>Extras</h5>
             </AccordionSummary>
             <AccordionDetails>
               <CardList cards={cardData1} />
             </AccordionDetails>
           </Accordion>
-        </div>
+        </div>        
        
       </div>
-    </div>
+      
+  
   );
 };
 
-export default Insurance;
+export default Extras;

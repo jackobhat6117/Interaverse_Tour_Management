@@ -11,8 +11,8 @@ const Wallet = () => {
 
 
 const cardData1 = [
-        { title: 'Card fee', amount: '$534,000', btn: 'save'},
-        { title: 'Bank transfer fee', amount: '$534,000', btn: 'save' },
+        { title: 'One time setup fee', amount: '$534,000', btn: 'save'},
+        { title: 'Monthly subscription fee', amount: '$534,000', btn: 'save' },
       ];
 
 
