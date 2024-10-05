@@ -7,7 +7,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import SingleSelectDropdown from '../../../components/Settings/fees/SingleDropDown';
 
 
-const Wallet = () => {
+const Invoice = () => {
 
 
 const cardData1 = [
@@ -40,4 +40,4 @@ const cardData1 = [
   );
 };
 
-export default Wallet;
+export default Invoice;

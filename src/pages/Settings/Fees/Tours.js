@@ -7,7 +7,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import SingleSelectDropdown from '../../../components/Settings/fees/SingleDropDown';
 
 
-const Tour = () => {
+const Tours = () => {
 
 
   const cardData1 = [
@@ -41,4 +41,4 @@ const Tour = () => {
   );
 };
 
-export default Tour;
+export default Tours;

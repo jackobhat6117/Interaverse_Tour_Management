@@ -1,6 +1,12 @@
 import React, { useState } from 'react'
 import Flight from '../Fees/Flight'
 import Hotels from '../Fees/Hotels'
+import Tours from '../Fees/Tours'
+import Insurance from '../Fees/Insurance'
+import Wallet from '../Fees/Wallet'
+import WhiteLabel from '../Fees/WhiteLabel'
+import Invoice from '../Fees/Invoice'
+import Extras from '../Fees/Extras'
 
 
 
@@ -125,6 +131,27 @@ const Fees = () => {
         )}
          {selectedSection === 'hotels' && (
           <Hotels />
+        )}
+          {selectedSection === 'tours' && (
+          <Tours />
+        )}
+          {selectedSection === 'insurance' && (
+          <Insurance />
+        )}
+          {selectedSection === 'wallet' && (
+          <Wallet />
+        )}
+
+          {selectedSection === 'white-lebel' && (
+          <WhiteLabel />
+        )}
+
+        {selectedSection === 'invoice' && (
+          <Invoice />
+        )}
+
+        {selectedSection === 'extras' && (
+          <Extras />
         )}
      
     </div>
