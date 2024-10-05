@@ -15,45 +15,35 @@ const MenuProps = {
   },
 };
 
-const names = [
-  'Oliver Hansen',
-  'Van Henry',
-
+const options = [
+  { value: 'Pre-Ticketing Fee', label: 'Pre-Ticketing Fee' },
+  { value: 'Post-Ticketing Fee', label: 'Post-Ticketing Fee' }
 ];
 
-function getStyles(name, personName, theme) {
-  return {
-    fontWeight: personName === name
-      ? theme.typography.fontWeightMedium
-      : theme.typography.fontWeightRegular,
-  };
-}
-
-export default function SingleSelectDropdown() {
+export default function SingleSelectDropdown({ onSelectionChange, selectedOption }) {
   const theme = useTheme();
-  const [personName, setPersonName] = React.useState('');
+  const [selectedOptions, setSelectedOptions] = React.useState(selectedOption);
 
   const handleChange = (event) => {
-    setPersonName(event.target.value);
+    setSelectedOptions(event.target.value);
+    onSelectionChange(event.target.value); 
   };
 
   return (
-    <div >
+    <div>
       <FormControl sx={{ mr: 1, width: 350 }}>
         <Select
-          value={personName}
+          value={selectedOption}
           onChange={handleChange}
           MenuProps={MenuProps}
           displayEmpty
         >
-          <MenuItem value="" >Select a name</MenuItem>
-          {names.map((name) => (
+          {options.map((option) => (
             <MenuItem
-              key={name}
-              value={name}
-              style={getStyles(name, personName, theme)}
+              key={option.value}
+              value={option.value}
             >
-              {name}
+              {option.label}
             </MenuItem>
           ))}
         </Select>
