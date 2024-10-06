@@ -25,7 +25,6 @@ const cardData1 = [
 
   return (
     <div className="container mx-auto py-5">
-       
         <div className="mt-5">
           <Accordion>
             <AccordionSummary
@@ -42,7 +41,7 @@ const cardData1 = [
         </div>
 
         <div className="mt-5">
-          <Accordion expanded= {true}>
+          <Accordion >
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1-content"

@@ -9,7 +9,7 @@ export const financeLinks = [
   {to: "/settings/finance/gateway", title: 'gateway', icon: 'fluent:collections-add-20-filled', label: "Payment Gateway"},
   {to: "/settings/finance/balance", title: 'balance', icon: 'material-symbols-light:account-balance-wallet', label: "Wallet Balance"},
   {to: "/settings/finance/currency", title: 'currency', icon: 'ph:currency-ngn-fill', label: "Exchange Rate"},
-  {to: "/settings/finance/fees", title: 'fees', icon: 'ph:currency-ngn-fill', label: "Fees"},
+  {to: "/settings/finance/fees", title: 'fees', icon: 'ic:baseline-dynamic-feed', label: "Fees"},
 
 ]
 

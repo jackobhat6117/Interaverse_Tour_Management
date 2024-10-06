@@ -6,7 +6,7 @@ const CardList = ({ cards }) => {
       {cards?.map((card, index) => (
         <div key={index} className="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
           <div className="p-4 flex flex-col justify-between h-full">
-            <h6 className="mb-8 text-lg font-sans text-black">{card.title}</h6>
+            <p className="mb-8 text-lg font-sans">{card.title}</p>
             <p className='border-2 border-gray-50 w-full'></p>
             <h4 className="mb-6 p-2 border-2 border-gray-200 rounded-md text-black text-sm">{card.amount}</h4>
             <button

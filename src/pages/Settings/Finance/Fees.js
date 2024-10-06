@@ -1,170 +1,65 @@
-import React, { useState } from 'react'
-import Flight from '../Fees/Flight'
-import Hotels from '../Fees/Hotels'
-import Tours from '../Fees/Tours'
-import Insurance from '../Fees/Insurance'
-import Wallet from '../Fees/Wallet'
-import WhiteLabel from '../Fees/WhiteLabel'
-import Invoice from '../Fees/Invoice'
-import Extras from '../Fees/Extras'
 
+import React, { useState, Suspense } from 'react';
+import TabButton from '../../../components/Settings/fees/FeeTabButton';
 
+const Flight = React.lazy(() => import('../Fees/Flight'));
+const Hotels = React.lazy(() => import('../Fees/Hotels'));
+const Tours = React.lazy(() => import('../Fees/Tours'));
+const Insurance = React.lazy(() => import('../Fees/Insurance'));
+const Wallet = React.lazy(() => import('../Fees/Wallet'));
+const WhiteLabel = React.lazy(() => import('../Fees/WhiteLabel'));
+const Invoice = React.lazy(() => import('../Fees/Invoice'));
+const Extras = React.lazy(() => import('../Fees/Extras'));
 
 const Fees = () => {
+  const [selectedSection, setSelectedSection] = useState('flights');
 
-    const [selectedSection, setSelectedSection] = useState("flights")
- 
-  return ( 
-    <div className='flex flex-col'>
-      <div className='flex gap-20 items-center overflow-x-auto whitespace-nowrap'>
-        <div>
+  const sections = [
+    { section: 'flights', label: 'Flights' },
+    { section: 'hotels', label: 'Hotels' },
+    { section: 'tours', label: 'Tours' },
+    { section: 'insurance', label: 'Insurance' },
+    { section: 'wallet', label: 'Wallet' },
+    { section: 'white-label', label: 'White-label' },
+    { section: 'invoice', label: 'Invoice' },
+    { section: 'extras', label: 'Extras' },
+  ];
 
-          <button
-            className={`text-lg transition duration-300 ease-in-out ${
-              selectedSection === 'flights'
-                ? 'p-2 w-36 bg-gray-800 text-white rounded-lg'
-                : 'text-gray-500'
-            }`}
-            onClick={() => setSelectedSection('flights')}
-          >
-            Flights
-          </button>
-        </div>
+  const componentMap = {
+    flights: Flight,
+    hotels: Hotels,
+    tours: Tours,
+    insurance: Insurance,
+    wallet: Wallet,
+   'white-label': WhiteLabel,
+    invoice: Invoice,
+    extras: Extras,
+  };
 
-        <div>
-          <button
-            className={`text-lg transition duration-300 ease-in-out ${
-              selectedSection === 'hotels'
-                ? 'p-2 w-36 bg-gray-800 text-white rounded-lg'
-                : 'text-gray-500'
-            }`}
-            onClick={() => setSelectedSection('hotels')}
-          >
-            Hotels
-          </button>
-        </div>
-
-        <div>
-          <button
-            className={`text-lg transition duration-300 ease-in-out ${
-              selectedSection === 'tours'
-                ? 'p-2 w-36 bg-gray-800 text-white rounded-lg'
-                : 'text-gray-500'
-            }`}
-            onClick={() => setSelectedSection('tours')}
-          >
-            Tours
-          </button>
-        </div>
-
-        <div>
-          <button
-            className={`text-lg transition duration-300 ease-in-out ${
-              selectedSection === 'insurance'
-                ? 'p-2 w-36 bg-gray-800 text-white rounded-lg'
-                : 'text-gray-500'
-            }`}
-            onClick={() => setSelectedSection('insurance')}
-          >
-            Insurance
-          </button>
-        </div>
-
-        <div>
-          <button
-            className={`text-lg transition duration-300 ease-in-out ${
-              selectedSection === 'wallet'
-                ? 'p-2 w-36 bg-gray-800 text-white rounded-lg'
-                : 'text-gray-500'
-            }`}
-            onClick={() => setSelectedSection('wallet')}
-          >
-            Wallet
-          </button>
-        </div>
-
-        <div>
-          <button
-            className={`text-lg transition duration-300 ease-in-out ${
-              selectedSection === 'white-lebel'
-                ? 'p-2 w-36 bg-gray-800 text-white rounded-lg'
-                : 'text-gray-500'
-            }`}
-            onClick={() => setSelectedSection('white-lebel')}
-          >
-            White-label
-          </button>
-        </div>
-
-        <div>
-          <button
-            className={`text-lg transition duration-300 ease-in-out ${
-              selectedSection === 'invoice'
-                ? 'p-2 w-36 bg-gray-800 text-white rounded-lg'
-                : 'text-gray-500'
-            }`}
-            onClick={() => setSelectedSection('invoice')}
-          >
-            Invoice
-          </button>
-        </div>
-
-        <div>
-          <button
-            className={`text-lg transition duration-300 ease-in-out ${
-              selectedSection === 'extras'
-                ? 'p-2 w-36 bg-gray-800 text-white rounded-lg'
-                : 'text-gray-500'
-            }`}
-            onClick={() => setSelectedSection('extras')}
-          >
-            Extras
-          </button>
-        
-        </div>
-      </div>
-
-      <div>
-
-        {selectedSection === 'flights' && (
-          <Flight/>
-        )}
-         {selectedSection === 'hotels' && (
-          <Hotels />
-        )}
-          {selectedSection === 'tours' && (
-          <Tours />
-        )}
-          {selectedSection === 'insurance' && (
-          <Insurance />
-        )}
-          {selectedSection === 'wallet' && (
-          <Wallet />
-        )}
-
-          {selectedSection === 'white-lebel' && (
-          <WhiteLabel />
-        )}
-
-        {selectedSection === 'invoice' && (
-          <Invoice />
-        )}
-
-        {selectedSection === 'extras' && (
-          <Extras />
-        )}
-     
-    </div>
-      </div>
-
-
-
-
-   
-
+  const SelectedComponent = componentMap[selectedSection];
   
-   
-  )
-}
 
-export default Fees
+  return (
+    <div className="flex flex-col">
+      <div className="flex gap-20 items-center overflow-x-auto whitespace-nowrap">
+        {sections.map(({ section, label }) => (
+          <TabButton
+            key={section}
+            section={section}
+            label={label}
+            selectedSection={selectedSection}
+            onClick={setSelectedSection}
+          />
+        ))}
+      </div>
+
+      <div className="mt-6">
+        <Suspense fallback={<div className='flex justify-center'>Loading...</div>}>
+          {SelectedComponent && <SelectedComponent />}
+        </Suspense>
+      </div>
+    </div>
+  );
+};
+
+export default Fees;

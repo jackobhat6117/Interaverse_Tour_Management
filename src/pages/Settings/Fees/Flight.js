@@ -16,17 +16,17 @@ const Flight = () => {
     setSelectedOption(value); 
   };
 
-  const handleAccordionChange = (panel) => (event, isExpanded) => {
-    setExpandedPanel(isExpanded ? panel : false);
-  };
+  // const handleAccordionChange = (panel) => (event, isExpanded) => {
+  //   setExpandedPanel(isExpanded ? panel : false);
+  // };
 
 
-  useEffect(() => {
-    if (isFirstRender) {
-      setExpandedPanel('panel1');
-      setIsFirstRender(false);
-    }
-  }, [isFirstRender]);
+  // useEffect(() => {
+  //   if (isFirstRender) {
+  //     setExpandedPanel('panel1');
+  //     setIsFirstRender(false);
+  //   }
+  // }, [isFirstRender]);
 
   const cardData1 = [
     { title: 'API ticketing fee', amount: '$534,000', btn: 'save',  highlight: true},
@@ -64,8 +64,7 @@ const Flight = () => {
         <div>
         <div className="mt-5">
           <Accordion 
-            expanded={expandedPanel === 'panel1'}
-            onChange={handleAccordionChange('panel1')}
+          
           >
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
@@ -113,8 +112,8 @@ const Flight = () => {
         <div>
         <div className="mt-5">
           <Accordion
-            expanded={expandedPanel === 'panel1'}
-            onChange={handleAccordionChange('panel1')}
+            // expanded={expandedPanel === 'panel1'}
+            // onChange={handleAccordionChange('panel1')}
           >
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
