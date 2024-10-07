@@ -22,11 +22,13 @@ const Supplier = () => {
     {flightProviders.map((section) => (
       <SupplierSection key={section.title} title={section.title} providers={section.providers} />
     ))}
+    <hr className='hidden sm:block my-5' />
     <h2 className="text-xl font-bold mb-6">Hotels</h2>
     {hotelProviders.map((section) =>
   
     <SupplierSection key={section.title} title={section.title} providers={section.providers} />
   )}
+  <hr className='hidden sm:block my-5' />
    <h2 className="text-xl font-bold mb-6">Tours</h2>
     {toursProviders.map((section) =>
   
