@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-const ToggleSwitch = () => {
-  const [isOn, setIsOn] = useState(true);
+const ToggleSwitch = ({toggleValue}) => {
+  const [isOn, setIsOn] = useState(toggleValue);
 
   return (
     <div

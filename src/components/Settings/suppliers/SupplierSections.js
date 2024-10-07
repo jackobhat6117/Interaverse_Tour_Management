@@ -15,7 +15,7 @@ import ListItemText from '@mui/material/ListItemText';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 
-const SupplierSection = ({ title, providers }) => {
+const SupplierSection = ({ title, providers, toggle}) => {
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -63,7 +63,7 @@ const SupplierSection = ({ title, providers }) => {
                 </TableCell>
                 <TableCell align="right">
                   <div className="flex justify-end gap-4 items-center">
-                    <ToggleSwitch />
+                    <ToggleSwitch toggleValue = {provider.toggle}/>
                     <MoreVertIcon
                       onClick={handleMenuClick}
                       style={{ cursor: 'pointer' }}

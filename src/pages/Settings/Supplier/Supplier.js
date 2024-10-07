@@ -4,17 +4,17 @@ import SupplierSection from '../../../components/Settings/suppliers/SupplierSect
 const Supplier = () => {
 
   const flightProviders = [
-    { title: 'GDS', providers: [{ initials: 'AM', name: 'Amadeus' }, { initials: 'SA', name: 'Sabre' }, { initials: 'TR', name: 'Travelport' }] },
-    { title: 'TRAVIX', providers: [{ initials: 'AM', name: 'Amadeus' }, { initials: 'SA', name: 'Sabre' }, { initials: 'TR', name: 'Travelport' }] },
-    { title: 'LOCAL FLIGHTS', providers: [{ initials: 'AM', name: 'Amadeus' }, { initials: 'SA', name: 'Sabre' }, { initials: 'TR', name: 'Travelport' }] },
+    { title: 'GDS', providers: [{ initials: 'AM', name: 'Amadeus', toggle: true }, { initials: 'SA', name: 'Sabre' , toggle: true}, { initials: 'TR', name: 'Travelport', toggle: true }]},
+    { title: 'TRAVIX', providers: [{ initials: 'AM', name: 'Amadeus', toggle: true }, { initials: 'SA', name: 'Sabre', toggle: true }, { initials: 'TR', name: 'Travelport', toggle: true}] , },
+    { title: 'LOCAL FLIGHTS', providers: [{ initials: 'AM', name: 'Amadeus', toggle: true}, { initials: 'SA', name: 'Sabre', toggle: true }, { initials: 'TR', name: 'Travelport', toggle: true }]},
   ];
 
   const hotelProviders = [
-    {title: 'Suppliers', providers: [{ initials: 'HB', name: 'Hotelbeds' }, { initials: 'SA', name: 'Sabre' }]}
+    {title: 'Suppliers', providers: [{ initials: 'HB', name: 'Hotelbeds' , toggle:false}, { initials: 'SA', name: 'Sabre' }], toggle:false}
   ];
 
   const toursProviders = [
-    {title: 'Suppliers', providers: [{ initials: 'HB', name: 'Hotelbeds' }, { initials: 'SA', name: 'Sabre' }]}
+    {title: 'Suppliers', providers: [{ initials: 'HB', name: 'Hotelbeds', toggle:false }, { initials: 'SA', name: 'Sabre' }], }
   ];
   return (
     <div className="container mx-auto p-4">
