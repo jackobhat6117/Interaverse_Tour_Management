@@ -37,6 +37,8 @@ function Sidebar() {
     page = 'order';
   else if(pathname.includes('settings/finance'))
     page = 'finance';
+  else if(pathname.includes('settings/supplier'))
+    page = 'supplier';
   else if(pathname.includes('settings/faq'))
     page = 'faq';
 
@@ -77,6 +79,11 @@ function Sidebar() {
           {/* <PersonOutlined className='text-primary/50' /> */}
           <Icon icon='icon-park-solid:transaction' className='text-[#4A5C6B] !w-5 !h-5' />
           <span className='hidden md:block'>Order</span>
+        </Link>
+        <Link to='/settings/supplier/' custom-title='Supplier' className={`flex gap-2 title md:title-hide  p-2 px-4 ${page === 'supplier' ? activeClass:''} `}>
+          {/* <Money className='text-primary/50' /> */}
+          <Icon icon='material-symbols:approval-delegation' className='text-[#4A5C6B] !w-5 !h-5' />
+          <span className='hidden md:block'>Supplier</span>
         </Link>
         <Link to='/settings/finance/' custom-title='Finance' className={`flex gap-2 title md:title-hide  p-2 px-4 ${page === 'finance' ? activeClass:''} `}>
           {/* <Money className='text-primary/50' /> */}

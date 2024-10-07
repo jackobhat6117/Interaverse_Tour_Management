@@ -4,7 +4,7 @@ const CardList = ({ cards }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
       {cards?.map((card, index) => (
-        <div key={index} className="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+        <div key={index} className="bg-white rounded-xl shadow-sm overflow-hidden">
           <div className="p-4 flex flex-col justify-between h-full">
             <p className="mb-8 text-lg font-sans">{card.title}</p>
             <p className='border-2 border-gray-50 w-full'></p>

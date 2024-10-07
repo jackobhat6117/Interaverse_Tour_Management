@@ -24,21 +24,26 @@ export default function SingleSelectAccordion({ onSelectionChange, selectedOptio
   };
 
   return (
-    <div > 
+    <div className='mt-5'>
       <Accordion 
-      expanded={expanded} 
-      onChange={() => setExpanded(!expanded)} 
-      sx={{  
-        width: { xs: '100%', sm: '100%', md: '400px' }, 
-        boxShadow: 'none',
-        border: '1px solid #ddd',
-      
-      }}
+        expanded={expanded} 
+        onChange={() => setExpanded(!expanded)} 
+        sx={{  
+          width: { xs: '100%', sm: '100%', md: '400px' }, 
+          boxShadow: 'none',
+          border: '1px solid #ddd',
+          borderRadius: '22px', 
+          overflow: 'hidden', 
+        }}
       >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel-content"
           id="panel-header"
+          disableGutters 
+          sx={{ 
+            borderRadius: '22px', 
+          }}
         >
           <Typography>{selectedOptions || 'Select an Option'}</Typography>
         </AccordionSummary>

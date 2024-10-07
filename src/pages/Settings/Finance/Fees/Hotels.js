@@ -1,13 +1,13 @@
 import React, { useState , useEffect } from 'react';
-import CardList from '../../../components/Settings/fees/FlightCard';
+import CardList from '../../../../components/Settings/fees/FlightCard';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import SingleSelectDropdown from '../../../components/Settings/fees/SingleDropDown';
+import SingleSelectDropdown from '../../../../components/Settings/fees/SingleDropDown';
 
 
-const Insurance = () => {
+const Hotel = () => {
 
 
   const cardData1 = [
@@ -19,34 +19,32 @@ const Insurance = () => {
 
 
   return (
-    <div className="container mx-auto py-5">
-        <div>
-        <div className="mt-5">
+    <div className="container mx-auto">
+      
+        <div className="">
           <Accordion
-              expanded={true} 
-              sx={{ 
-                boxShadow: 'none', 
-                backgroundColor: '#F7F7F7', 
-                borderBottom: '1px solid #ddd', 
-                paddingBottom: '1rem'  
-              }}
+             expanded={true} 
+             sx={{ 
+               boxShadow: 'none', 
+               backgroundColor: '#F7F7F7', 
+               borderBottom: '1px solid #ddd', 
+               paddingBottom: '1rem'  
+             }}
           >
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1-content"
               id="panel1-header"
             >
-              <h5>Insurance</h5>
+              <h5 className='text-[#2E2E32]'>Hotel Booking</h5>
             </AccordionSummary>
             <AccordionDetails>
               <CardList cards={cardData1} />
             </AccordionDetails>
           </Accordion>
         </div>
-       
-      </div>
     </div>
   );
 };
 
-export default Insurance;
+export default Hotel;

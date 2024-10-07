@@ -53,6 +53,8 @@ import CurrencySetting from './pages/Settings/Agency/Currency/CurrencySetting.js
 import FAQSetting from './pages/Settings/FAQ/FAQSetting.js';
 import Fees from './pages/Settings/Finance/Fees.js';
 import Subscription from './pages/Settings/Finance/Subscription.js';
+import SupplierContainer from './pages/Settings/Supplier/SupplierContainer.js';
+import Supplier from './pages/Settings/Supplier/Supplier.js';
 // import 'dotenv/config'
 
 
@@ -144,6 +146,10 @@ function App() {
                     <Route path='suppliers' element={<SupplierSettings />} />
                     <Route path='dealcodes' element={<PromoSettings />} />
                     <Route path='emailTemplates' element={<EmailTemplateSettings />} />
+                    <Route path='*' element={<PageNotFound />} />
+                  </Route>
+                  <Route path='supplier' element={<SupplierContainer />}>
+                    <Route index element={<Supplier />} />
                     <Route path='*' element={<PageNotFound />} />
                   </Route>
                   <Route path='finance' element={<FinanceContainer />}>

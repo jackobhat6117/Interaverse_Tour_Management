@@ -5,7 +5,7 @@ const TabButton = ({ section, label, selectedSection, onClick }) => {
     <button
       className={`text-lg transition duration-300 ease-in-out ${
         selectedSection === section
-          ? 'p-2 w-36 bg-blue-950 text-white rounded-lg'
+          ? 'p-2 w-36 bg-[#4E5662] text-white rounded-lg'
           : 'text-gray-500'
       }`}
       aria-pressed={selectedSection === section}

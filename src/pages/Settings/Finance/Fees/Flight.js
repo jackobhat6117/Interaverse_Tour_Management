@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import CardList from '../../../components/Settings/fees/FlightCard';
+import CardList from '../../../../components/Settings/fees/FlightCard';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import SingleSelectDropdown from '../../../components/Settings/fees/SingleDropDown';
+import SingleSelectDropdown from '../../../../components/Settings/fees/SingleDropDown';
 
 const Flight = () => {
   const [selectedOption, setSelectedOption] = useState('Pre-Ticketing Fee');
@@ -39,14 +39,14 @@ const Flight = () => {
   ];
 
   return (
-    <div className="container mx-auto py-5">
+    <div className="container">
       <SingleSelectDropdown 
         selectedOption={selectedOption} 
         onSelectionChange={handleSelectionChange} 
       />
       {selectedOption === 'Pre-Ticketing Fee' ? (
         <div>
-          <div className="mt-5">
+          <div className=" mx-0">
             <Accordion 
               expanded={true} 
                 sx={{ 
@@ -62,7 +62,7 @@ const Flight = () => {
                 aria-controls="panel1-content"
                 id="panel1-header"
               >
-                <h5>Ticketing</h5>
+                <h5 className='text-[#2E2E32]'>Ticketing</h5>
               </AccordionSummary>
               <AccordionDetails>
                 <CardList cards={cardData1} />
@@ -83,7 +83,7 @@ const Flight = () => {
                 aria-controls="panel2-content"
                 id="panel2-header"
               >
-                <h5>Ancillary/Extras</h5>
+                <h5 className='text-[#2E2E32]'>Ancillary/Extras</h5>
               </AccordionSummary>
               <AccordionDetails>
                 <CardList cards={cardData2} />
@@ -104,7 +104,7 @@ const Flight = () => {
                 aria-controls="panel2-content"
                 id="panel2-header"
               >
-                <h5>Reebook</h5>
+                <h5 className='text-[#2E2E32] font-bold'>Reebook</h5>
               </AccordionSummary>
               <AccordionDetails>
                 {/* <CardList cards={cardData2} /> */}
@@ -129,7 +129,7 @@ const Flight = () => {
                 aria-controls="panel1-content"
                 id="panel1-header"
               >
-                <h5>Void</h5>
+                <h5 className='text-[#2E2E32]'>Void</h5>
               </AccordionSummary>
               <AccordionDetails>
                 <CardList cards={cardData3} />
@@ -150,7 +150,7 @@ const Flight = () => {
                 aria-controls="panel2-content"
                 id="panel2-header"
               >
-                <h5>Re-issue</h5>
+                <h5 className='text-[#2E2E32]'>Re-issue</h5>
               </AccordionSummary>
               <AccordionDetails>
                 <CardList cards={cardData4} />
@@ -172,7 +172,7 @@ const Flight = () => {
                 aria-controls="panel2-content"
                 id="panel2-header"
               >
-                <h5>Name Change</h5>
+                <h5 className='text-[#2E2E32]'>Name Change</h5>
               </AccordionSummary>
               <AccordionDetails>
                 <CardList cards={cardData4} />
@@ -193,7 +193,7 @@ const Flight = () => {
                 aria-controls="panel2-content"
                 id="panel2-header"
               >
-                <h5>Change Passenger Details</h5>
+                <h5 className='text-[#2E2E32]'>Change Passenger Details</h5>
               </AccordionSummary>
               <AccordionDetails>
                 <CardList cards={cardData4} />
@@ -214,7 +214,7 @@ const Flight = () => {
                 aria-controls="panel2-content"
                 id="panel2-header"
               >
-                <h5>Cancel/Refund</h5>
+                <h5 className='text-[#2E2E32]'>Cancel/Refund</h5>
               </AccordionSummary>
               <AccordionDetails>
                 <CardList cards={cardData4} />

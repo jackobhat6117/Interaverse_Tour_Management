@@ -18,7 +18,9 @@ export default function FinanceContainer() {
   const location = useLocation();
 
   let pathname = location.pathname.split("/");
+
   let page = pathname[pathname.length-1]
+
  
 
   return (

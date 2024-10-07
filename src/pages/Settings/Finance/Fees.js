@@ -2,14 +2,14 @@
 import React, { useState, Suspense } from 'react';
 import TabButton from '../../../components/Settings/fees/FeeTabButton';
 
-const Flight = React.lazy(() => import('../Fees/Flight'));
-const Hotels = React.lazy(() => import('../Fees/Hotels'));
-const Tours = React.lazy(() => import('../Fees/Tours'));
-const Insurance = React.lazy(() => import('../Fees/Insurance'));
-const Wallet = React.lazy(() => import('../Fees/Wallet'));
-const WhiteLabel = React.lazy(() => import('../Fees/WhiteLabel'));
-const Invoice = React.lazy(() => import('../Fees/Invoice'));
-const Extras = React.lazy(() => import('../Fees/Extras'));
+const Flight = React.lazy(() => import('./Fees/Flight'));
+const Hotels = React.lazy(() => import('./Fees/Hotels'));
+const Tours = React.lazy(() => import('./Fees/Tours'));
+const Insurance = React.lazy(() => import('./Fees/Insurance'));
+const Wallet = React.lazy(() => import('./Fees/Wallet'));
+const WhiteLabel = React.lazy(() => import('./Fees/WhiteLabel'));
+const Invoice = React.lazy(() => import('./Fees/Invoice'));
+const Extras = React.lazy(() => import('./Fees/Extras'));
 
 const Fees = () => {
   const [selectedSection, setSelectedSection] = useState('flights');
@@ -41,7 +41,7 @@ const Fees = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex gap-20 items-center overflow-x-auto whitespace-nowrap">
+      <div className="flex gap-20 items-center overflow-x-auto whitespace-nowrap ">
         {sections.map(({ section, label }) => (
           <TabButton
             key={section}
@@ -52,8 +52,10 @@ const Fees = () => {
           />
         ))}
       </div>
+      {/* <p className='border border-gray-200 mt-7'></p> */}
+      <hr className='hidden sm:block mt-5' />
 
-      <div className="mt-6">
+      <div className="">
         <Suspense fallback={<div className='flex justify-center'>Loading...</div>}>
           {SelectedComponent && <SelectedComponent />}
         </Suspense>
