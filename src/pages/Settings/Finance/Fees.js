@@ -41,7 +41,7 @@ const Fees = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex gap-20 items-center overflow-x-auto whitespace-nowrap ">
+      <div className="flex gap-16 items-center overflow-x-auto whitespace-nowrap  mx-5">
         {sections.map(({ section, label }) => (
           <TabButton
             key={section}
