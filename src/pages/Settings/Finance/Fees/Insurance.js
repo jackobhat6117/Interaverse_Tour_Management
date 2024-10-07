@@ -21,7 +21,7 @@ const Insurance = () => {
   return (
     <div className="container mx-auto ">
         <div>
-        <div className="">
+        <div className="my-5">
           <Accordion
               expanded={true} 
               sx={{ 

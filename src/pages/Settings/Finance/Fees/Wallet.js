@@ -25,7 +25,7 @@ const cardData1 = [
 
   return (
     <div className="container mx-auto ">
-        <div className="">
+        <div className="my-5">
           <Accordion
                expanded={true} 
                sx={{ 

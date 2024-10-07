@@ -46,7 +46,7 @@ const Flight = () => {
       />
       {selectedOption === 'Pre-Ticketing Fee' ? (
         <div>
-          <div className=" mx-0">
+          <div className="my-5">
             <Accordion 
               expanded={true} 
                 sx={{ 
