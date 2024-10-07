@@ -52,6 +52,7 @@ import ChangeFlightOrder from './pages/Orders/Flight/Booked/ChangeOrder/ChangeOr
 import CurrencySetting from './pages/Settings/Agency/Currency/CurrencySetting.js';
 import FAQSetting from './pages/Settings/FAQ/FAQSetting.js';
 import Fees from './pages/Settings/Finance/Fees.js';
+import Subscription from './pages/Settings/Finance/Subscription.js';
 // import 'dotenv/config'
 
 
@@ -154,6 +155,7 @@ function App() {
                     <Route path='currency' element={<CurrencySetting />} />
                     <Route path='*' element={<PageNotFound />} />
                     <Route path='fees' element={<Fees/>} />
+                    <Route path='subscription' element={<Subscription />} />   
                   </Route>
                   <Route path='faq' element={<FAQSetting />} />
                 </Route>

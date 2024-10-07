@@ -1,53 +1,61 @@
 import * as React from 'react';
-import { useTheme } from '@mui/material/styles';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
 
 const options = [
   { value: 'Pre-Ticketing Fee', label: 'Pre-Ticketing Fee' },
   { value: 'Post-Ticketing Fee', label: 'Post-Ticketing Fee' }
 ];
 
-export default function SingleSelectDropdown({ onSelectionChange, selectedOption }) {
-  const theme = useTheme();
+export default function SingleSelectAccordion({ onSelectionChange, selectedOption }) {
+  const [expanded, setExpanded] = React.useState(false);
   const [selectedOptions, setSelectedOptions] = React.useState(selectedOption);
 
-  const handleChange = (event) => {
-    setSelectedOptions(event.target.value);
-    onSelectionChange(event.target.value); 
+  const handleChange = (value) => {
+    setSelectedOptions(value);
+    onSelectionChange(value);
+    setExpanded(false);  // Collapse accordion after selection
   };
 
   return (
-    <div>
-      <FormControl sx={{ mr: 1, width: 350 }}>
-        <Select
-          value={selectedOption}
-          onChange={handleChange}
-          MenuProps={MenuProps}
-          displayEmpty
+    <div > 
+      <Accordion 
+      expanded={expanded} 
+      onChange={() => setExpanded(!expanded)} 
+      sx={{  
+        width: { xs: '100%', sm: '100%', md: '400px' }, 
+        boxShadow: 'none',
+        border: '1px solid #ddd',
+      
+      }}
+      >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel-content"
+          id="panel-header"
         >
-          {options.map((option) => (
-            <MenuItem
-              key={option.value}
-              value={option.value}
-            >
-              {option.label}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+          <Typography>{selectedOptions || 'Select an Option'}</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <List>
+            {options.map((option) => (
+              <ListItemButton
+                key={option.value}
+                selected={selectedOptions === option.value}
+                onClick={() => handleChange(option.value)}
+              >
+                <ListItemText primary={option.label} />
+              </ListItemButton>
+            ))}
+          </List>
+        </AccordionDetails>
+      </Accordion>
     </div>
   );
 }
