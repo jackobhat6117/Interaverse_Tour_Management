@@ -9,14 +9,18 @@ import getFlightPriceAdjustments from "../../../../controllers/flightPriceAdjust
 import activateFlightAdjustment from "../../../../controllers/flightPriceAdjustment/activateFlightAdjustment";
 import deactivateFlightAdjustment from "../../../../controllers/flightPriceAdjustment/deactivateFlightAdjustment";
 import MarkupDelete from "./MarkupDelete";
+import TextInput from '../../../../components/form/TextInput'
+import { MenuItem } from '@mui/material'
 
 const ActionContext = createContext();
-
 export default function FlightMarkup() {
   const [open, setOpen] = useState(false);
   const [editObj, setEditObj] = useState();
   const [deleteObj, setDeleteObj] = useState();
-  const [flightMarkups, setFlightMarkups] = useState([]);
+  const [flightMarkups] = useState([
+    {id: 1,name: 'Default Markup',method: 'value',figure: '5000',appliedTo: 'Passenger Type',for: 'All', status: 'Active'},
+    {id: 2,name: 'Default Markup',method: 'Percentage',figure: '0',appliedTo: 'Flight Route',for: 'Oneway, Round Trip', status: 'Disabled'}
+  ]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -32,27 +36,33 @@ export default function FlightMarkup() {
     setLoading(false);
     if (res.return) {
       if (Array.isArray(res.data?.data?.data)) {
-        setFlightMarkups(res.data?.data?.data);
+        // setFlightMarkups(res.data?.data?.data);
       }
     }
   }
 
-  async function changeStatus(value, param) {
-    setLoading(true);
-    if (value) {
-      await activateFlightAdjustment(param._id);
-    } else {
-      await deactivateFlightAdjustment(param._id);
-    }
-    setLoading(false);
+  // async function changeStatus(value, param) {
+  //   setLoading(true);
+  //   if (value) {
+  //     await activateFlightAdjustment(param._id);
+  //   } else {
+  //     await deactivateFlightAdjustment(param._id);
+  //   }
+  //   setLoading(false);
+  //   load();
+  // }
+
+  async function changeStatus() {
+    // activate deactivate logic
     load();
   }
 
   const columns = [
     { field: "name", headerName: "Mark-up name", flex: 1 },
-    { field: "type", headerName: "Type", flex: 1 },
-    { field: "amount", headerName: "Amount", flex: 1 },
     { field: "method", headerName: "Method", flex: 1 },
+    { field: "appliedTo", headerName: "Applied To", flex: 1 },
+    { field: "figure", headerName: "Figure", flex: 1 },
+    { field: "for", headerName: "For", flex: 1 },
     {
       field: "status",
       headerName: "Action",
@@ -128,32 +138,28 @@ export default function FlightMarkup() {
   );
 }
 
-function ActionCol({ params }) {
+function ActionCol({params}) {
   return (
     <ActionContext.Consumer>
       {(value) => {
-        const { setEditObj, setDeleteObj } = value || {};
+        const {setEditObj,changeStatus} = value || {}
         return (
-          <div className="flex gap-2">
-            {/* <Switch
-              checked={params.status === "Active"}
-              onChange={(ev) => changeStatus(ev.target.checked, params)}
-            /> */}
+          <div className='flex gap-2'>
+            <TextInput select value={params.value || ''} size='small' label=''
+            >
+              <MenuItem value='active'>Active</MenuItem>
+              <MenuItem value='inactive'>Disabled</MenuItem>
+            </TextInput>
             <label
-              className="bg-primary/10 rounded-md cursor-pointer p-2 text-primary/30"
-              onClick={() => setEditObj(params)}
-            >
-              <Icon icon="tabler:edit" />
+             className='bg-primary/10 rounded-md cursor-pointer p-2 text-primary/30'
+             onClick={() => setEditObj(params?.row)}>
+              <Icon icon='tabler:edit' />
             </label>
-            <span
-              className="p-2 bg-red-100 text-red-500 rounded-md cursor-pointer"
-              onClick={() => setDeleteObj(params)}
-            >
-              <Icon icon="material-symbols-light:delete" />
-            </span>
           </div>
-        );
+        )
       }}
     </ActionContext.Consumer>
-  );
+  )
 }
+
+

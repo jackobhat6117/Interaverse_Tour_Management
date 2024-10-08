@@ -55,6 +55,7 @@ import Fees from './pages/Settings/Finance/Fees.js';
 import Subscription from './pages/Settings/Finance/Subscription.js';
 import SupplierContainer from './pages/Settings/Supplier/SupplierContainer.js';
 import Supplier from './pages/Settings/Supplier/Supplier.js';
+import Markup from './pages/Settings/Supplier/Markup/Markup.js';
 // import 'dotenv/config'
 
 
@@ -150,6 +151,7 @@ function App() {
                   </Route>
                   <Route path='supplier' element={<SupplierContainer />}>
                     <Route index element={<Supplier />} />
+                    <Route path='markup' element={<Markup />} />
                     <Route path='*' element={<PageNotFound />} />
                   </Route>
                   <Route path='finance' element={<FinanceContainer />}>

@@ -10,8 +10,7 @@ import Button1 from '../../../../components/form/Button1'
 
 
 const ActionContext = createContext();
-
-export default function ToursMarkup() {
+export default function StaysMarkup() {
   const [open,setOpen] = useState(false);
   const [data] = useState([
     {id: 1,name: 'Default Markup',type: 'value',figure: '5000',status: 'active'},
@@ -59,14 +58,14 @@ export default function ToursMarkup() {
       <div className='flex justify-between flex-wrap items-center gap-4'>
         <div className='flex gap-2'>
           <Link to='?type=Flights' className={'btn-theme-light rounded-md'}>Flights</Link>
-          <Link to='?type=Stays' className={'btn-theme-light rounded-md'}>Stays</Link>
-          <Link to='?type=Tours' className={'btn'}>Tours</Link>
+          <Link to='?type=Stays' className={'btn'}>Stays</Link>
+          <Link to='?type=Tours' className={'btn-theme-light rounded-md'}>Tours</Link>
         </div>
         {/* <h5 className='text-primary/70'>Created Mark ups</h5> */}
         <div>
           <Button1 onClick={() => setOpen(true)}>Create new markup</Button1>
           <Modal1 open={open} setOpen={setOpen}>
-            <CreateMarkup forType={'Tours'} footer={
+            <CreateMarkup forType={'Stays'} footer={
               <div>
                 <Button1 onClick={() => setOpen(false)} className='btn-theme-light'>Cancel</Button1>
               </div>

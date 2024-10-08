@@ -10,7 +10,6 @@ import Button1 from '../../../../components/form/Button1'
 
 
 const ActionContext = createContext();
-
 export default function ToursMarkup() {
   const [open,setOpen] = useState(false);
   const [data] = useState([

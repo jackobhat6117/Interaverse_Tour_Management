@@ -122,15 +122,15 @@ const SupplierSection = ({ title, providers }) => {
       {/* Modal for Deal Code */}
       <Modal isOpen={isDealCodeModalOpen} onClose={() => setIsDealCodeModalOpen(false)} title = {'Deal Codes'}>
         <div>
-          <div className="flex items-center justify-between flex-wrap gap-2">
-            <div className='w-full sm:w-[75%]'>
+          <div className="flex items-center flex-wrap ">
+            <div className='w-full sm:w-[85%]'>
               <p>Add a Code</p>
               <input
                 type="text"
-                className="border-2 rounded p-2 w-full !border-gray-300"
+                className="border-2 rounded p-1 w-full !border-gray-300"
               />
             </div>
-            <button className="bg-[#1E61DC] text-white sm:w-[20%] w-full sm:ml-2 !mt-5 sm:mt-0 px-4 py-2 rounded ">
+            <button className="bg-[#0067FF] text-white sm:w-[13%] w-full sm:ml-2 !mt-5 sm:mt-0 px-4 py-1 rounded flex items-center justify-center">
               Add
             </button>
           </div>
@@ -167,7 +167,7 @@ const SupplierSection = ({ title, providers }) => {
             <button className=" text-black rounded w-[20%]">
               Go back
             </button>
-            <button className="bg-[#1E61DC] text-white px-4 py-2 rounded w-[75%] ">
+            <button className="bg-[#0067FF] text-white px-4 py-2 rounded w-[75%] ">
               Confirm
             </button>
           </div>
