@@ -21,7 +21,9 @@ import Icon from '../../HOC/Icon';
 const SupplierSection = ({ title, providers }) => {
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [isDealCodeModalOpen, setIsDealCodeModalOpen] = useState(false); 
+  const [isPaymentTimeLimitModalOpen, setIsPaymentTimeLimitModalOpen] = useState(false); 
+
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -31,8 +33,13 @@ const SupplierSection = ({ title, providers }) => {
   };
 
   const handleDealCodeClick = () => {
-    setIsModalOpen(true); 
+    setIsDealCodeModalOpen(true); 
     handleMenuClose(); 
+  };
+
+  const handlePaymentTimeLimitClick = () => {
+    setIsPaymentTimeLimitModalOpen(true); 
+    handleMenuClose();
   };
 
   const dealCodes = ['1029033', '390833', '8928480', '3803393'];
@@ -91,7 +98,7 @@ const SupplierSection = ({ title, providers }) => {
                         horizontal: 'right',
                       }}
                     >
-                      <MenuItem onClick={handleMenuClose}>
+                      <MenuItem onClick={handlePaymentTimeLimitClick}>
                         <ListItemIcon>
                           <AccessTimeIcon fontSize="small" />
                         </ListItemIcon>
@@ -113,35 +120,58 @@ const SupplierSection = ({ title, providers }) => {
       </TableContainer>
 
       {/* Modal for Deal Code */}
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-      <div>
-    <div className="flex items-center flex-wrap gap-3">
-      <div className="w-full sm:w-[80%]">
-        <p>Add a Code</p>
-        <input
-          type="text"
-          className="border rounded p-2 w-full border-gray-300"
-        />
-      </div>
-      
-      <button className="bg-blue-500 text-white sm:w-[15%] w-full sm:ml-2 !mt-5 sm:mt-0 px-4 py-2 rounded">
-        Add
-      </button>
-    </div>
+      <Modal isOpen={isDealCodeModalOpen} onClose={() => setIsDealCodeModalOpen(false)} title = {'Deal Codes'}>
+        <div>
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className='w-full sm:w-[75%]'>
+              <p>Add a Code</p>
+              <input
+                type="text"
+                className="border-2 rounded p-2 w-full !border-gray-300"
+              />
+            </div>
+            <button className="bg-[#1E61DC] text-white sm:w-[20%] w-full sm:ml-2 !mt-5 sm:mt-0 px-4 py-2 rounded ">
+              Add
+            </button>
+          </div>
 
-    <div className="mt-4">
-      <p className="text-gray-500 !font-semibold mb-2">Current Codes</p>
-      {dealCodes.map((code, index) => (
-        <div key={index} className="flex items-center justify-between mb-2 py-3  border-b">
-          <p className='!text-gray-900'>{code}</p>
-          <div className="flex items-center gap-2">
-            <ToggleSwitch toggleValue={true} />
-            <button><Icon icon={'material-symbols-light:delete-outline'}/></button>
+          <div className="mt-4">
+            <p className="text-gray-500 mb-2">Current Codes</p>
+            {dealCodes.map((code, index) => (
+              <div key={index} className="flex items-center justify-between mb-2 py-3  border-b">
+                <p className='!text-gray-900'>{code}</p>
+                <div className="flex items-center gap-2">
+                  <ToggleSwitch toggleValue={true} />
+                  <button><Icon icon={'material-symbols-light:delete-outline'}/></button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      ))}
-    </div>
-  </div>
+      </Modal>
+
+      {/* Modal for Payment Time Limit */}
+      <Modal isOpen={isPaymentTimeLimitModalOpen} onClose={() => setIsPaymentTimeLimitModalOpen(false)} title = {'Payment Time Limit'}>
+        <div>
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className='w-full'>
+              <p>Time</p>
+              <input
+                type="text"
+                placeholder="Enter time limit"
+                className="border-2 rounded p-2 w-full !border-gray-300"
+              />
+            </div>
+          </div>
+          <div className="flex items-center justify-between mt-4">
+            <button className=" text-black rounded w-[20%]">
+              Go back
+            </button>
+            <button className="bg-[#1E61DC] text-white px-4 py-2 rounded w-[75%] ">
+              Confirm
+            </button>
+          </div>
+        </div>
       </Modal>
     </div>
   );
