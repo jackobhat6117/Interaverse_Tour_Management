@@ -1,6 +1,7 @@
 
 import React, { useState, Suspense } from 'react';
 import TabButton from '../../../components/Settings/fees/FeeTabButton';
+import LoadingBar from '../../../components/animation/LoadingBar';
 
 const Flight = React.lazy(() => import('./Fees/Flight'));
 const Hotels = React.lazy(() => import('./Fees/Hotels'));
@@ -41,6 +42,7 @@ const Fees = () => {
 
   return (
     <div className="flex flex-col">
+    
       <div className="flex gap-16 items-center overflow-x-auto whitespace-nowrap  mx-5">
         {sections.map(({ section, label }) => (
           <TabButton
@@ -56,7 +58,7 @@ const Fees = () => {
       <hr className='hidden sm:block mt-5' />
 
       <div className="">
-        <Suspense fallback={<div className='flex justify-center'>Loading...</div>}>
+        <Suspense fallback={<div className='flex justify-center'>   <LoadingBar /> </div>}>
           {SelectedComponent && <SelectedComponent />}
         </Suspense>
       </div>

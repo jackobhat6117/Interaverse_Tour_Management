@@ -14,11 +14,14 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import Modal from './Modal'; 
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import Icon from '../../HOC/Icon';
 
-const SupplierSection = ({ title, providers, toggle}) => {
+const SupplierSection = ({ title, providers }) => {
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
-
+  const [isModalOpen, setIsModalOpen] = useState(false); 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -27,16 +30,23 @@ const SupplierSection = ({ title, providers, toggle}) => {
     setAnchorEl(null);
   };
 
+  const handleDealCodeClick = () => {
+    setIsModalOpen(true); 
+    handleMenuClose(); 
+  };
+
+  const dealCodes = ['1029033', '390833', '8928480', '3803393'];
+
   return (
     <div className="mb-6">
       <TableContainer component={Paper} elevation={0}>
         <Table sx={{ minWidth: 650 }} aria-label="supplier table">
           <TableHead>
             <TableRow>
-              <TableCell className="bg-[#F0F6FC] text-gray-700 !font-semibold  px-4">
+              <TableCell className="bg-[#F0F6FC] text-gray-700 !font-semibold px-4">
                 {title}
               </TableCell>
-              <TableCell align="right" className="bg-[#F0F6FC] text-gray-700 !font-semibold  !px-10 ">
+              <TableCell align="right" className="bg-[#F0F6FC] text-gray-700 !font-semibold !px-10">
                 Actions
               </TableCell>
             </TableRow>
@@ -49,11 +59,10 @@ const SupplierSection = ({ title, providers, toggle}) => {
                 sx={{
                   cursor: 'pointer',
                   '&:hover': { backgroundColor: '' },
-                  '& .MuiTableCell-root': { padding: '10px 8px' }, 
+                  '& .MuiTableCell-root': { padding: '10px 8px' },
                 }}
               >
                 <TableCell component="th" scope="row">
-                  {/* Display initials followed by provider name */}
                   <div className="flex items-center gap-2">
                     <p className="h-10 w-10 rounded-full bg-blue-50 flex justify-center items-center text-sm">
                       {provider.initials}
@@ -63,7 +72,7 @@ const SupplierSection = ({ title, providers, toggle}) => {
                 </TableCell>
                 <TableCell align="right">
                   <div className="flex justify-end gap-4 items-center">
-                    <ToggleSwitch toggleValue = {provider.toggle}/>
+                    <ToggleSwitch toggleValue={provider.toggle} />
                     <MoreVertIcon
                       onClick={handleMenuClick}
                       style={{ cursor: 'pointer' }}
@@ -88,7 +97,7 @@ const SupplierSection = ({ title, providers, toggle}) => {
                         </ListItemIcon>
                         <ListItemText>Payment Time Limit</ListItemText>
                       </MenuItem>
-                      <MenuItem onClick={handleMenuClose}>
+                      <MenuItem onClick={handleDealCodeClick}>
                         <ListItemIcon>
                           <ConfirmationNumberIcon fontSize="small" />
                         </ListItemIcon>
@@ -102,6 +111,38 @@ const SupplierSection = ({ title, providers, toggle}) => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Modal for Deal Code */}
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      <div>
+    <div className="flex items-center flex-wrap gap-3">
+      <div className="w-full sm:w-[80%]">
+        <p>Add a Code</p>
+        <input
+          type="text"
+          className="border rounded p-2 w-full border-gray-300"
+        />
+      </div>
+      
+      <button className="bg-blue-500 text-white sm:w-[15%] w-full sm:ml-2 !mt-5 sm:mt-0 px-4 py-2 rounded">
+        Add
+      </button>
+    </div>
+
+    <div className="mt-4">
+      <p className="text-gray-500 !font-semibold mb-2">Current Codes</p>
+      {dealCodes.map((code, index) => (
+        <div key={index} className="flex items-center justify-between mb-2 py-3  border-b">
+          <p className='!text-gray-900'>{code}</p>
+          <div className="flex items-center gap-2">
+            <ToggleSwitch toggleValue={true} />
+            <button><Icon icon={'material-symbols-light:delete-outline'}/></button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+      </Modal>
     </div>
   );
 };
