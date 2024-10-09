@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -17,12 +17,27 @@ import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import Modal from './Modal'; 
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Icon from '../../HOC/Icon';
+import { useSnackbar } from 'notistack';
+import addDealCode from '../../../controllers/settings/dealCodes/addDealCode';
+import getDealCodes from '../../../controllers/settings/dealCodes/getDealCodes';
+import deleteDealCode from '../../../controllers/settings/dealCodes/deleteDealCode';
+import { Link } from 'react-router-dom';
+
+
 
 const SupplierSection = ({ title, providers }) => {
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isDealCodeModalOpen, setIsDealCodeModalOpen] = useState(false); 
   const [isPaymentTimeLimitModalOpen, setIsPaymentTimeLimitModalOpen] = useState(false); 
+  const [loading, setLoading] = useState(false)
+  const [code, setCode] = useState("")
+  const [dealCodes, setDealCodes] = useState([])
+  const { enqueueSnackbar } = useSnackbar();
+  
+  
+
+  
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -42,7 +57,61 @@ const SupplierSection = ({ title, providers }) => {
     handleMenuClose();
   };
 
-  const dealCodes = ['1029033', '390833', '8928480', '3803393'];
+
+  
+
+  async function CreateDealCode() {
+    let data = {
+    airline: "VS",
+    code: code
+    }
+    if(isDealCodeModalOpen) setIsDealCodeModalOpen(false);
+    setLoading(true);
+    const res = await addDealCode(data)
+    
+    if (res?.return && res?.return === 1){
+        enqueueSnackbar("Deal Codes Created Successfully.", { variant: "success" });
+    }
+    setLoading(false);
+    if (res.return) {
+      
+    }
+  }
+
+  async function loadDealCodes() {
+   
+    if(isDealCodeModalOpen) setIsDealCodeModalOpen(false);
+    setLoading(true);
+    const res = await getDealCodes()
+    setLoading(false);
+    
+    if (res?.return && res?.return === 1){
+        setDealCodes(res.data.data)
+    }
+    
+  }
+
+  useEffect(() => {
+    loadDealCodes()
+  }, [])
+  
+  async function DeleteDealCode(id) {
+
+    if(isDealCodeModalOpen) setIsDealCodeModalOpen(false);
+    setLoading(true);
+    const res = await deleteDealCode(id)
+    if (res?.return && res?.return === 1){
+        setLoading(false);
+        enqueueSnackbar("Deal Code Deleted Successfully.", { variant: "success" });
+    }
+  
+  }
+
+  useEffect(() => {
+    loadDealCodes()
+  }, [])
+  
+//   const dealCodes = ['1029033', '390833', '8928480', '3803393'];
 
   return (
     <div className="mb-6">
@@ -128,21 +197,24 @@ const SupplierSection = ({ title, providers }) => {
               <input
                 type="text"
                 className="border-2 rounded p-1 w-full !border-gray-300"
-              />
+                value = {code}
+                onChange={(e) => setCode(e.target.value)}
+                />
             </div>
-            <button className="bg-[#0067FF] text-white sm:w-[13%] w-full sm:ml-2 !mt-5 sm:mt-0 px-4 py-1 rounded flex items-center justify-center">
+            <button className="bg-[#0067FF] text-white sm:w-[13%] w-full sm:ml-2 !mt-5 sm:mt-0 px-4 py-1 rounded flex items-center justify-center" onClick={CreateDealCode}>
               Add
             </button>
           </div>
 
           <div className="mt-4">
+            {loading && <p>Loading...</p>}
             <p className="text-gray-500 mb-2">Current Codes</p>
-            {dealCodes.map((code, index) => (
+            {dealCodes.map((item, index) => (
               <div key={index} className="flex items-center justify-between mb-2 py-3  border-b">
-                <p className='!text-gray-900'>{code}</p>
+                <p className='!text-gray-900'>{item.code}</p>
                 <div className="flex items-center gap-2">
-                  <ToggleSwitch toggleValue={true} />
-                  <button><Icon icon={'material-symbols-light:delete-outline'}/></button>
+                  <ToggleSwitch toggleValue={item.isActive} />
+                  <button onClick={() => DeleteDealCode(item._id)}><Icon icon={'material-symbols-light:delete-outline'}/></button>
                 </div>
               </div>
             ))}
@@ -164,7 +236,7 @@ const SupplierSection = ({ title, providers }) => {
             </div>
           </div>
           <div className="flex items-center justify-between mt-4">
-            <button className=" text-black rounded w-[20%]">
+            <button className=" text-black rounded w-[20%]" onClick={() => setIsPaymentTimeLimitModalOpen(false)}>
               Go back
             </button>
             <button className="bg-[#0067FF] text-white px-4 py-2 rounded w-[75%] ">
