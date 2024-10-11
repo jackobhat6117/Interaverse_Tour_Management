@@ -1,41 +1,61 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import SupplierSection from '../../../components/Settings/suppliers/SupplierSections';
+import getSuppliersName from '../../../controllers/settings/supplier/getSuppliers';
 
 const Supplier = () => {
-
-  const flightProviders = [
-    { title: 'GDS', providers: [{ initials: 'AM', name: 'Amadeus', toggle: true }, { initials: 'SA', name: 'Sabre' , toggle: true}, { initials: 'TR', name: 'Travelport', toggle: true }]},
-    { title: 'TRAVIX', providers: [{ initials: 'AM', name: 'Amadeus', toggle: true }, { initials: 'SA', name: 'Sabre', toggle: true }, { initials: 'TR', name: 'Travelport', toggle: true}] , },
-    { title: 'LOCAL FLIGHTS', providers: [{ initials: 'AM', name: 'Amadeus', toggle: true}, { initials: 'SA', name: 'Sabre', toggle: true }, { initials: 'TR', name: 'Travelport', toggle: true }]},
-  ];
+  const [loading, setLoading] = useState(true); // Start with loading = true
+  const [flightProviders, setFlightProviders] = useState([]);
 
   const hotelProviders = [
-    {title: 'Suppliers', providers: [{ initials: 'HB', name: 'Hotelbeds' , toggle:false}, { initials: 'SA', name: 'Sabre' }], toggle:false}
+    { title: 'Suppliers', providers: [{ initials: 'HB', name: 'Hotelbeds', toggle: false }, { initials: 'SA', name: 'Sabre' }] }
   ];
 
   const toursProviders = [
-    {title: 'Suppliers', providers: [{ initials: 'HB', name: 'Hotelbeds', toggle:false }, { initials: 'SA', name: 'Sabre' }], }
+    { title: 'Suppliers', providers: [{ initials: 'HB', name: 'Hotelbeds', toggle: false }, { initials: 'SA', name: 'Sabre' }] }
   ];
+
+  const getSuppliers = async () => {
+    try {
+      setLoading(true); // Set loading to true before fetching
+      const res = await getSuppliersName();
+      setFlightProviders(res.data);
+    } catch (error) {
+      console.error("Error fetching suppliers", error);
+    } finally {
+      setLoading(false); // Set loading to false after fetching completes
+    }
+  };
+
+  useEffect(() => {
+    getSuppliers();
+  }, []);
+
+  const allSuppliers = flightProviders?.enabledSuppliers?.map((code) => ({
+    code: code,
+    name: code,
+    expiration: flightProviders.bookingExpiration[code] || null,
+  }));
+
+  const localFlights = flightProviders?.enabledSuppliers
+    ?.filter((code) => code.startsWith('Intra1'))
+    ?.map((code) => ({
+      code: code,
+      name: code,
+      expiration: flightProviders.bookingExpiration[code] || null,
+    }));
+
   return (
     <div className="container mx-auto p-4">
-    <h2 className="text-xl font-bold mb-6">Flight</h2>
-    {flightProviders.map((section) => (
-      <SupplierSection key={section.title} title={section.title} providers={section.providers} />
-    ))}
-    <hr className='hidden sm:block my-5' />
-    <h2 className="text-xl font-bold mb-6">Hotels</h2>
-    {hotelProviders.map((section) =>
-  
-    <SupplierSection key={section.title} title={section.title} providers={section.providers} />
-  )}
-  <hr className='hidden sm:block my-5' />
-   <h2 className="text-xl font-bold mb-6">Tours</h2>
-    {toursProviders.map((section) =>
-  
-    <SupplierSection key={section.title} title={section.title} providers={section.providers} />
-  )}
-  </div>
-  )
-}
+      <h2 className="text-xl font-bold mb-6">Flight</h2>
+      {/* Pass the loading state as well */}
+      <SupplierSection allSuppliers={allSuppliers} localFlights={localFlights} loading={loading} />
 
-export default Supplier
+      <hr className="hidden sm:block my-5" />
+      <h2 className="text-xl font-bold mb-6">Hotels</h2>
+      {/* Pass the loading state to handle hotel loading */}
+      <SupplierSection allSuppliers={allSuppliers} loading={loading} />
+    </div>
+  );
+};
+
+export default Supplier;

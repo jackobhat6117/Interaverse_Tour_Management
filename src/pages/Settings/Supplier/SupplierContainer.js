@@ -7,8 +7,7 @@ import { CustomLink } from '../../../components/Settings/CustomLink'
 export const supplierLinks = [
   {to: "/settings/supplier/", title: '', icon: 'vaadin:cash',label: "Suppliers"},
   {to: "/settings/supplier/markup", title: 'markup', icon: 'mdi:hand-coin',label: "Mark up"},
-  // {to: "/settings/supplier/payment", title: 'payment', icon: 'simple-icons:contactlesspayment', label: "Payment Method"},
-  // {to: "/settings/supplier/gateway", title: 'gateway', icon: 'fluent:collections-add-20-filled', label: "Payment Gateway"},
+
 
 ]
 

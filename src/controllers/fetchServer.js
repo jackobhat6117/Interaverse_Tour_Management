@@ -1,6 +1,10 @@
+
 import axios from "axios";
 import { store } from "../redux/store";
 import { logout } from "../redux/reducers/userSlice";
+
+
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 export default async function fetchServer({
   method,

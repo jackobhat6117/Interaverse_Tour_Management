@@ -80,12 +80,12 @@ export default function FlightMarkup() {
           <Link to="?type=Flights" className={"btn"}>
             Flights
           </Link>
-          <Link to="?type=Stays" className={"btn-theme-light rounded-md"}>
+          {/* <Link to="?type=Stays" className={"btn-theme-light rounded-md"}>
             Stays
           </Link>
           <Link to="?type=Tours" className={"btn-theme-light rounded-md"}>
             Tours
-          </Link>
+          </Link> */}
         </div>
         {/* <h5 className='text-primary/70'>Created Mark ups</h5> */}
         <div>
